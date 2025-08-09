@@ -1,0 +1,29 @@
+body {
+    font-family: 'Clash Grotesk', sans-serif;
+   box-sizing: border-box;
+}
+.bg-main {
+    background-image: url('../images/bg.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: bottom;
+}
+.grain {
+     background-image: url(../images/grain.jpg)
+}
+li:hover {
+    cursor: pointer;
+    opacity: .9;
+}
+.servicii {
+    background-image: url(../images/servicii-bg.webp);
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.preturi-bg{
+    background-image: url(../images/preturi-bg.webp);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}

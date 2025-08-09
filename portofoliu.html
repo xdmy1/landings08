@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Portofoliu - Landings.md</title>
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-grotesk@400,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="icon" href="./images/icon.png">
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .glass-effect:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .project-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .project-card:hover {
+            background: rgba(0, 0, 0, 0.85);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body class="">
+    <div class="bg-main w-screen h-[120vh] absolute top-0 left-0 -z-1"></div>
+    <div class="grain w-screen h-screen opacity-12 fixed z-101 pointer-events-none"></div>
+    
+    <nav class="flex w-full justify-between items-center text-white fixed z-100 h-fit px-10 py-3">
+        <div class="flex gap-15">
+           <a href="index.html"><img src="./images/logowhite.png" alt="logo" class="w-9"></a> 
+            <ul class="flex gap-10 items-center font-medium text-lg">
+                <a href="portofoliu.html"><li class="text-purple-300">Portofoliu</li></a>           
+                <a href="preturi.html"><li>Prețuri</li></a>
+            </ul>
+        </div>
+        <a href="tel:+37368327082">
+            <button class="hidden lg:block w-[150px] rounded-full px-4 py-2 border border border-white text-white hover:bg-white hover:text-black hover:cursor-pointer">Contactează-mă</button>
+        </a>
+    </nav>
+
+    <!-- Hero Section -->
+
+
+    <!-- Portfolio Grid -->
+    <section id="projects" class="px-4 py-20 w-full pt-32">
+        <h2 class="text-white text-5xl lg:text-7xl max-w-[800px] text-center font-medium mx-auto mb-10">Portofoliu</h2>
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Project 1: Elena Diacon -->
+            <div class="project-card p-6">
+                <div class="mb-4 relative">
+                    <img src="./images/img-hero.jpeg" alt="Elena Diacon Salon" class="w-full h-48 object-cover rounded-lg">
+                    <div class="absolute top-4 right-4 bg-green-500 text-white px-2 py-1 rounded text-sm font-bold">LIVE</div>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-3">Elena Diacon Salon</h3>
+                <p class="text-gray-300 mb-4">
+                    Website elegant pentru salon de înfrumusețare cu sistem de programări online și galerie foto interactivă.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">HTML5</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">CSS3</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">JavaScript</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">Responsive</span>
+                </div>
+                <a href="https://elenadiacon.md" target="_blank" class="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 px-6 rounded-full font-medium hover:opacity-90 transition-opacity">
+                    Vezi Proiectul
+                </a>
+            </div>
+
+            <!-- Project 2: RespectAuto -->
+            <div class="project-card p-6">
+                <div class="mb-4 relative">
+                    <img src="./images/img-hero.jpeg" alt="RespectAuto" class="w-full h-48 object-cover rounded-lg">
+                    <div class="absolute top-4 right-4 bg-green-500 text-white px-2 py-1 rounded text-sm font-bold">LIVE</div>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-3">RespectAuto</h3>
+                <p class="text-gray-300 mb-4">
+                    Platformă de închiriere auto cu SEO avansat și sistem de rezervări. Creștere organică de 300%.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">Next.js</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">SEO</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">Tailwind</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">Analytics</span>
+                </div>
+                <a href="https://respectauto.md" target="_blank" class="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 px-6 rounded-full font-medium hover:opacity-90 transition-opacity">
+                    Vezi Proiectul
+                </a>
+            </div>
+
+            <!-- Project 3: CMIEA -->
+            <div class="project-card p-6">
+                <div class="mb-4 relative">
+                    <img src="./images/img-hero.jpeg" alt="CMIEA Platform" class="w-full h-48 object-cover rounded-lg">
+                    <div class="absolute top-4 right-4 bg-green-500 text-white px-2 py-1 rounded text-sm font-bold">LIVE</div>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-3">CMIEA Platform</h3>
+                <p class="text-gray-300 mb-4">
+                    Platformă educațională complexă cu sistem de autentificare, cursuri interactive și dashboard pentru utilizatori.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">React</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">Node.js</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">Database</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">Auth</span>
+                </div>
+                <a href="https://cmiea.md" target="_blank" class="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 px-6 rounded-full font-medium hover:opacity-90 transition-opacity">
+                    Vezi Proiectul
+                </a>
+            </div>
+
+            <!-- Project 4: EuroGard -->
+            <div class="project-card p-6">
+                <div class="mb-4 relative">
+                    <img src="./images/img-hero.jpeg" alt="EuroGard" class="w-full h-48 object-cover rounded-lg">
+                    <div class="absolute top-4 right-4 bg-green-500 text-white px-2 py-1 rounded text-sm font-bold">LIVE</div>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-3">EuroGard</h3>
+                <p class="text-gray-300 mb-4">
+                    Landing page high-converting pentru servicii de grădinărit cu optimizare pentru conversii și vânzări.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">Landing Page</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">Conversion</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">Mobile First</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">Performance</span>
+                </div>
+                <a href="https://eurogard.md" target="_blank" class="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 px-6 rounded-full font-medium hover:opacity-90 transition-opacity">
+                    Vezi Proiectul
+                </a>
+            </div>
+
+            <!-- Demo Project 1 -->
+            <div class="project-card p-6">
+                <div class="mb-4 relative">
+                    <img src="./images/img-hero.jpeg" alt="Next.js Demo Green" class="w-full h-48 object-cover rounded-lg">
+                    <div class="absolute top-4 right-4 bg-yellow-500 text-white px-2 py-1 rounded text-sm font-bold">DEMO</div>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-3">Green Next.js Demo</h3>
+                <p class="text-gray-300 mb-4">
+                    Demo interactiv construit cu Next.js, prezentând capabilitățile moderne de dezvoltare web.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">Next.js</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">TypeScript</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">Vercel</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">API Routes</span>
+                </div>
+                <a href="https://nextjs-green-eta-60.vercel.app/" target="_blank" class="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 px-6 rounded-full font-medium hover:opacity-90 transition-opacity">
+                    Vezi Demo Live
+                </a>
+            </div>
+
+            <!-- Demo Project 2 -->
+            <div class="project-card p-6">
+                <div class="mb-4 relative">
+                    <img src="./images/img-hero.jpeg" alt="Advanced Next.js Demo" class="w-full h-48 object-cover rounded-lg">
+                    <div class="absolute top-4 right-4 bg-yellow-500 text-white px-2 py-1 rounded text-sm font-bold">DEMO</div>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-3">Advanced Green Demo</h3>
+                <p class="text-gray-300 mb-4">
+                    Demonstrație avansată cu funcționalități complexe, animații și interacțiuni moderne.
+                </p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">Next.js 14</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">Framer Motion</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">Advanced CSS</span>
+                    <span class="bg-purple-500/20 text-purple-300 px-2 py-1 rounded-lg text-sm">Performance</span>
+                </div>
+                <a href="https://green-nextjs.vercel.app/" target="_blank" class="inline-block bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 px-6 rounded-full font-medium hover:opacity-90 transition-opacity">
+                    Vezi Demo Live
+                </a>
+            </div>
+        </div>
+        <p class="text-gray-400 mt-4 text-center">*toate proiectele sunt custom dezvoltate, fără wordpress</p>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="flex gap-5 flex-col w-full items-center py-15 bg-purple-400">
+        <h2 class="text-center text-4xl font-medium lg:text-5xl xl:text-6xl text-white">Obține o consultație gratuită!</h2>
+        <a href="tel:+37368327082">
+            <button class="text-xl rounded-full px-4 py-2 border border border-white text-white hover:bg-white hover:text-black hover:cursor-pointer">Contactează-mă</button>
+        </a>
+    </section>
+
+    <footer class="bg-purple-800 text-white w-full">
+        <!-- Container principal -->
+        <div class="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row md:justify-center md:items-center gap-12">
+            <!-- Logo & Descriere -->
+            <div class="flex-1">
+                <img src="./images/logowhite.png" alt="Vizard Logo" class="h-20 mb-5">
+                
+                <p class="text-gray-300 text-sm max-w-sm">
+                    Promitem să transformăm afacerea ta într-un succes, rapid și accesibil. Cum? Create website, promovarea acestuia, ranking Google etc.
+                </p>
+                <div class="flex mt-6 space-x-4">
+                    <a href="https://instagram.com/landings.md" aria-label="Instagram" class="hover:opacity-75">
+                        <img src="./images/instagram.svg" alt="Instagram" class="w-6 h-6">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- Footer jos -->
+        <div class="bg-purple-900 py-4">
+            <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 gap-2">
+                <span>© Toate drepturile rezervate.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./js/main.js"></script>
+</body>
+</html>
