@@ -347,7 +347,7 @@ export default function HomePage() {
             transition={{ duration: 0.8, delay: 1 }}
             className="pt-4 text-center sm:text-left overflow-hidden"
           >
-            <div className="w-full max-w-full">
+            <div className="w-full max-w-full h-[55px]">
               <EncryptedText text={t.hero.encrypted} className="text-lg font-mono text-neutral-400" />
             </div>
           </motion.div>
