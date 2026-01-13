@@ -44,10 +44,10 @@ export const InteractiveGridBackground = React.memo(() => {
           const distance = Math.sqrt(Math.pow(x - mouseX, 2) + Math.pow(y - mouseY, 2));
           
           // Calculate opacity based on distance
-          let opacity = 0.01; // Base very dark visibility
+          let opacity = 0.1; // Base slightly more visible
           if (distance < hoverRadius) {
             const factor = 1 - (distance / hoverRadius);
-            opacity = 0.01 + (factor * 0.06); // Max ~0.07 opacity on hover
+            opacity = 0.1 + (factor * 0.22); // Max ~0.32 opacity on hover
           }
 
           // Draw vertical line segment

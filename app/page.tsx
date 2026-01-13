@@ -9,6 +9,7 @@ import { InteractiveGridBackground } from '@/components/ui/interactive-grid-back
 import { EncryptedText } from '@/components/ui/encrypted-text'
 import { AnimatedTooltip } from '@/components/ui/animated-tooltip'
 import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card'
+import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
 
 const techStack = [
   {
@@ -47,6 +48,22 @@ export default function HomePage() {
   const [language, setLanguage] = useState('en')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
+  // Load language from localStorage on mount, default to English
+  React.useEffect(() => {
+    const savedLanguage = localStorage.getItem('language')
+    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ro')) {
+      setLanguage(savedLanguage)
+    } else {
+      setLanguage('en')
+    }
+  }, [])
+
+  // Save language to localStorage when changed
+  const handleLanguageChange = (newLanguage: string) => {
+    setLanguage(newLanguage)
+    localStorage.setItem('language', newLanguage)
+  }
+
   const text = {
     en: {
       nav: {
@@ -55,20 +72,20 @@ export default function HomePage() {
         pricing: "Pricing",
         contact: "Contact Me"
       },
-      announcement: "Transform your business into a successful business",
+      announcement: "We create websites that sell",
       hero: {
-        title1: "Make your",
-        title2: "websites look",
-        title3: "10x",
-        title4: "better",
-        description: "We promise to transform your business into a success, fast and affordable. Custom website creation, SEO promotion, Google ranking optimization and more.",
+        title1: "Superior",
+        title2: "websites ",
+        title3: "in Europe",
+        title4: "",
+        description: "We create modern, fast and SEO-optimized websites that help your business reach new customers and increase sales.",
         cta1: "View Portfolio", 
         cta2: "Custom Quote",
-        encrypted: "professional websites at fair prices"
+        encrypted: "professional websites that drive results"
       },
       portfolio: {
-        title: "Build world class websites at warp speed",
-        subtitle: "With landings.md, you can build great looking websites within minutes."
+        title: "Create professional websites that convert",
+        subtitle: "Modern, fast, and optimized websites that help your business grow."
       }
     },
     ro: {
@@ -78,20 +95,20 @@ export default function HomePage() {
         pricing: "Prețuri",
         contact: "Contactează-mă"
       },
-      announcement: "Transformă-ți afacerea într-o afacere de succes",
+      announcement: "Creăm website-uri care vând",
       hero: {
-        title1: "Fă-ți",
-        title2: "website-urile să arate",
-        title3: "de 10x",
-        title4: "mai bine",
-        description: "Promitem să transformăm afacerea ta într-un succes, rapid și accesibil. Creare website personalizat, promovare SEO, optimizare ranking Google și multe altele.",
+        title1: "Website-uri",
+        title2: "superioare",
+        title3: "în Europa",
+        title4: "",
+        description: "Creăm website-uri moderne, rapide și optimizate SEO care ajută afacerea ta să ajungă la clienți noi și să crească vânzările.",
         cta1: "Vezi Portofoliul",
         cta2: "Ofertă Personalizată",
-        encrypted: "website-uri profesionale la prețuri corecte"
+        encrypted: "website-uri profesionale cu rezultate garantate"
       },
       portfolio: {
-        title: "Construiește website-uri de clasă mondială la viteza luminii",
-        subtitle: "Cu landings.md, poți construi website-uri frumoase în câteva minute."
+        title: "Creează website-uri profesionale care convertesc",
+        subtitle: "Website-uri moderne, rapide și optimizate care ajută afacerea ta să crească."
       }
     }
   }
@@ -133,7 +150,7 @@ export default function HomePage() {
               
               <div className="flex items-center gap-4">
                 <button
-                  onClick={() => setLanguage(language === 'en' ? 'ro' : 'en')}
+                  onClick={() => handleLanguageChange(language === 'en' ? 'ro' : 'en')}
                   className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50 hover:border-neutral-600 backdrop-blur-sm"
                 >
                   {language.toUpperCase()}
@@ -282,7 +299,7 @@ export default function HomePage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="bg-neutral-950/80 backdrop-blur-sm border border-neutral-800/50 rounded-2xl p-6"
+            className="bg-white/[0.05] backdrop-blur-2xl border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.15)] rounded-2xl p-6"
           >
             <h3 className="text-xl font-semibold text-white mb-2">
               {t.portfolio.title}
@@ -357,12 +374,9 @@ export default function HomePage() {
       </div>
 
       {/* CTA Section */}
-      <section className="relative z-10 py-12 px-4">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="bg-gradient-to-br from-slate-800 via-slate-900 to-black rounded-3xl p-6 relative overflow-hidden">
-            {/* Background Pattern */}
-            <div className="absolute inset-0 bg-gradient-to-br from-neutral-600/5 to-neutral-800/5"></div>
-            <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:32px_32px]"></div>
+      <section className="relative z-10 py-12 px-4 md:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white/[0.05] backdrop-blur-2xl border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.15)] rounded-3xl p-4 md:p-6 relative">
             
             <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
               {/* Left Content */}
@@ -434,7 +448,7 @@ export default function HomePage() {
                 <div className="grid grid-cols-2 gap-4">
                   {/* Portfolio Items - Left Column */}
                   <div className="space-y-4">
-                    <div className="aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-neutral-600/20 to-neutral-700/20 border border-neutral-700/50">
+                    <div className="aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-neutral-700/20 to-neutral-800/20 border border-neutral-700/50">
                       <Image
                         src="/images/rizzaclassic.png"
                         alt="Rizza Classic"
@@ -457,7 +471,7 @@ export default function HomePage() {
                   </div>
                   {/* Portfolio Items - Right Column */}
                   <div className="space-y-4 pt-8">
-                    <div className="aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-neutral-600/20 to-neutral-700/20 border border-neutral-700/50">
+                    <div className="aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-neutral-700/20 to-neutral-800/20 border border-neutral-700/50">
                       <Image
                         src="/images/CRM.png"
                         alt="CRM Platform"
@@ -487,29 +501,31 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="bg-black border-t border-neutral-800">
-        <div className="max-w-7xl mx-auto px-8 py-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-3">
-              <Image
-                src="/images/logowhite.png"
-                alt="landings.md"
-                width={32}
-                height={32}
-                className="w-8 h-8 object-contain"
-              />
-              <span className="text-white font-semibold">landings.md</span>
-            </div>
-            
-            <div className="flex items-center gap-6 text-sm text-neutral-400">
-              <Link href="/" className="hover:text-white transition-colors">
-                {language === 'en' ? 'Home' : 'Acasă'}
-              </Link>
-              <Link href="/portfolio" className="hover:text-white transition-colors">
-                {language === 'en' ? 'Portfolio' : 'Portofoliu'}
-              </Link>
-              <Link href="/pricing" className="hover:text-white transition-colors">
-                {language === 'en' ? 'Pricing' : 'Prețuri'}
-              </Link>
+        <div className="max-w-7xl mx-auto px-8 py-16 pb-32">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <div className="flex items-center gap-3">
+                <Image
+                  src="/images/logowhite.png"
+                  alt="landings.md"
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 object-contain"
+                />
+                <span className="text-white font-semibold">landings.md</span>
+              </div>
+              
+              <div className="flex items-center gap-6 text-sm text-neutral-400">
+                <Link href="/" className="hover:text-white transition-colors py-2">
+                  {language === 'en' ? 'Home' : 'Acasă'}
+                </Link>
+                <Link href="/portfolio" className="hover:text-white transition-colors py-2">
+                  {language === 'en' ? 'Portfolio' : 'Portofoliu'}
+                </Link>
+                <Link href="/pricing" className="hover:text-white transition-colors py-2">
+                  {language === 'en' ? 'Pricing' : 'Prețuri'}
+                </Link>
+              </div>
             </div>
             
             <div className="flex items-center gap-4">
@@ -532,6 +548,9 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
+      
+      {/* Sticky Contact Pill */}
+      <StickyContactPill language={language as 'en' | 'ro'} />
     </div>
   )
 }
