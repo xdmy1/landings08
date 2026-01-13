@@ -1,0 +1,6 @@
+buttons on hero make them work
+
+make colors of the cta be a lil bit more better for the website design, i think its too blue or idk                                                               │
+│   apply the changes of the cta on home, portfolio, pricing pages   
+
+portofolio cards need more padding, idk they look terrible and does not match the design, they only good because of the 3d effect, change that and make them so much better matching this type of design
