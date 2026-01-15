@@ -24,7 +24,7 @@ export const StickyContactPill = ({ language }: StickyContactPillProps) => {
   return (
     <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 px-4 sm:px-0">
       <Link href="https://wa.me/37368327082" target="_blank" rel="noopener noreferrer">
-        <div className="bg-black/80 backdrop-blur-xl border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.1)] rounded-full px-3 sm:px-5 py-2 sm:py-3 flex items-center justify-between gap-10 hover:bg-black/90 hover:border-white/30 hover:shadow-[0_0_25px_rgba(255,255,255,0.15)] transition-all duration-300 cursor-pointer group min-w-[280px] sm:min-w-0 w-[calc(100vw-2rem)] sm:w-auto max-w-[400px] sm:max-w-none">
+        <div className="bg-black/80 backdrop-blur-xl border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.1)] rounded-full px-3 sm:px-5  sm:py-3 flex items-center justify-between gap-10 hover:bg-black/90 hover:border-white/30 hover:shadow-[0_0_25px_rgba(255,255,255,0.15)] transition-all duration-300 cursor-pointer group min-w-[280px] sm:min-w-0 w-[calc(100vw-2rem)] sm:w-auto max-w-[400px] sm:max-w-none">
           <span className="text-white text-sm font-medium truncate">
             {t.question}
           </span>

@@ -17,10 +17,10 @@ const pricingPlans = [
       ro: "Website de Bază"
     },
     description: {
-      en: "pause or cancel anytime",
-      ro: "oprește sau anulează oricând"
+      en: "one-time payment",
+      ro: "plată unică"
     },
-    price: "€250",
+    price: "€350",
     period: "/one-time",
     subtitle: {
       en: "Perfect for small businesses and personal projects that need a simple, professional online presence.",
@@ -70,10 +70,10 @@ const pricingPlans = [
       ro: "Website de Afaceri"
     },
     description: {
-      en: "pause or cancel anytime",
-      ro: "oprește sau anulează oricând"
+      en: "one-time payment",
+      ro: "plată unică"
     },
-    price: "€450",
+    price: "€550",
     period: "/one-time",
     subtitle: {
       en: "Ideal for growing businesses that need advanced features and professional design with booking systems.",
@@ -127,10 +127,10 @@ const pricingPlans = [
       ro: "Magazin Online"
     },
     description: {
-      en: "pause or cancel anytime",
-      ro: "oprește sau anulează oricând"
+      en: "one-time payment",
+      ro: "plată unică"
     },
-    price: "€750",
+    price: "€850",
     period: "/one-time",
     subtitle: {
       en: "Complete online store solution for businesses ready to sell products with full e-commerce functionality.",
@@ -180,58 +180,58 @@ const pricingPlans = [
   {
     id: 4,
     title: {
-      en: "Custom Solution",
-      ro: "Soluție Personalizată"
+      en: "SEO Backlinks",
+      ro: "Backlinks SEO"
     },
     description: {
-      en: "starts at",
-      ro: "începe de la"
+      en: "from €200 to €1500",
+      ro: "de la €200 la €1500"
     },
-    price: "€1,200",
+    price: "€200-1500",
     period: "",
     subtitle: {
-      en: "Best for complex projects that need custom web applications, advanced features and enterprise solutions.",
-      ro: "Cel mai bun pentru proiecte complexe care au nevoie de aplicații web personalizate, funcții avansate și soluții enterprise."
+      en: "Boost your Google rankings with high-quality backlinks. Price varies based on competition and domain authority requirements.",
+      ro: "Îmbunătățește-ți pozițiile în Google cu backlinks de înaltă calitate. Prețul variază în funcție de competiție și cerințele domeniului."
     },
     features: [
       {
-        en: "Custom web application",
-        ro: "Aplicație web personalizată"
+        en: "High-authority domain backlinks",
+        ro: "Backlinks de la domenii cu autoritate înaltă"
       },
       {
-        en: "Database integration",
-        ro: "Integrare baze de date"
+        en: "Competitor analysis included",
+        ro: "Analiză competitori inclusă"
       },
       {
-        en: "User authentication system",
-        ro: "Sistem autentificare utilizatori"
+        en: "Keyword research & targeting",
+        ro: "Cercetare și țintire cuvinte cheie"
       },
       {
-        en: "API development",
-        ro: "Dezvoltare API"
+        en: "Monthly progress reports",
+        ro: "Rapoarte lunare de progres"
       },
       {
-        en: "Admin panel included",
-        ro: "Panou admin inclus"
+        en: "White-hat SEO techniques only",
+        ro: "Doar tehnici SEO white-hat"
       },
       {
-        en: "Third-party integrations",
-        ro: "Integrări terțe"
+        en: "Google ranking improvements",
+        ro: "Îmbunătățiri poziții Google"
       },
       {
-        en: "Ongoing maintenance",
-        ro: "Întreținere continuă"
+        en: "Organic traffic increase",
+        ro: "Creștere trafic organic"
       },
       {
-        en: "Priority support",
-        ro: "Suport prioritar"
+        en: "3-6 months campaign duration",
+        ro: "Durată campanie 3-6 luni"
       }
     ],
     popular: false,
     color: "yellow",
     buttonText: {
-      en: "Get Custom Quote",
-      ro: "Obține Ofertă Personalizată"
+      en: "Get SEO Quote",
+      ro: "Obține Ofertă SEO"
     }
   }
 ]
@@ -260,16 +260,16 @@ export default function PricingPage() {
   const getWhatsAppURL = (plan: any) => {
     const messages = {
       en: {
-        1: `Hi! I'm interested in the Basic Website package for €250. I'd like to know more about getting started with a professional website for my business.`,
-        2: `Hi! I'm interested in the Business Website package for €450. I'd like to learn more about the advanced features and how it can help grow my business.`,
-        3: `Hi! I'm interested in the E-commerce Store package for €750. I'd like to discuss setting up a complete online store for my business.`,
-        4: `Hi! I'm interested in a Custom Solution starting at €1,200. I have specific requirements and would like to discuss a tailored solution for my project.`
+        1: `Hi! I'm interested in the Basic Website package for €350. I'd like to know more about getting started with a professional website for my business.`,
+        2: `Hi! I'm interested in the Business Website package for €550. I'd like to learn more about the advanced features and how it can help grow my business.`,
+        3: `Hi! I'm interested in the E-commerce Store package for €850. I'd like to discuss setting up a complete online store for my business.`,
+        4: `Hi! I'm interested in your SEO Backlinks service (€200-1500). I'd like to improve my Google rankings and would like to discuss the best approach for my website and industry.`
       },
       ro: {
-        1: `Salut! Sunt interesată de pachetul Website de Bază la €250. Aș vrea să știu mai multe despre cum să încep cu un website profesional pentru afacerea mea.`,
-        2: `Salut! Sunt interesată de pachetul Website Business la €450. Aș vrea să aflu mai multe despre funcționalitățile avansate și cum poate ajuta afacerea mea să crească.`,
-        3: `Salut! Sunt interesată de pachetul Magazin Online la €750. Aș vrea să discutăm despre configurarea unui magazin online complet pentru afacerea mea.`,
-        4: `Salut! Sunt interesată de o Soluție Personalizată începând de la €1,200. Am cerințe specifice și aș vrea să discutăm o soluție adaptată proiectului meu.`
+        1: `Salut! Sunt interesată de pachetul Website de Bază la €350. Aș vrea să știu mai multe despre cum să încep cu un website profesional pentru afacerea mea.`,
+        2: `Salut! Sunt interesată de pachetul Website Business la €550. Aș vrea să aflu mai multe despre funcționalitățile avansate și cum poate ajuta afacerea mea să crească.`,
+        3: `Salut! Sunt interesată de pachetul Magazin Online la €850. Aș vrea să discutăm despre configurarea unui magazin online complet pentru afacerea mea.`,
+        4: `Salut! Sunt interesată de serviciul de Backlinks SEO (€200-1500). Aș vrea să îmi îmbunătățesc pozițiile în Google și să discutăm cea mai bună abordare pentru website-ul și industria mea.`
       }
     }
     
