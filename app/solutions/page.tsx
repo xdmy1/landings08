@@ -8,65 +8,6 @@ import { Button } from '@/components/ui/button'
 import { InteractiveGridBackground } from '@/components/ui/interactive-grid-background'
 import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
 
-const solutions = [
-  {
-    id: 1,
-    icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
-      </svg>
-    ),
-    title: { en: "CRM Systems", ro: "Sisteme CRM" },
-    description: {
-      en: "Custom-built client relationship management platforms tailored for your industry. Track leads, manage clients, automate workflows.",
-      ro: "Platforme personalizate de management al relațiilor cu clienții, adaptate pentru industria ta. Urmărește lead-uri, gestionează clienți, automatizează fluxuri."
-    },
-    color: "cyan"
-  },
-  {
-    id: 2,
-    icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-      </svg>
-    ),
-    title: { en: "Logistics Platforms", ro: "Platforme Logistice" },
-    description: {
-      en: "End-to-end package tracking, route optimization, admin dashboards, and real-time monitoring for transport companies.",
-      ro: "Urmărire pachete end-to-end, optimizare rute, panouri admin și monitorizare în timp real pentru companii de transport."
-    },
-    color: "violet"
-  },
-  {
-    id: 3,
-    icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605" />
-      </svg>
-    ),
-    title: { en: "Business Dashboards", ro: "Panouri de Control" },
-    description: {
-      en: "Real-time analytics, KPI tracking, and interactive data visualization that turns raw numbers into actionable insights.",
-      ro: "Analiză în timp real, urmărire KPI și vizualizare interactivă a datelor care transformă cifrele în informații acționabile."
-    },
-    color: "emerald"
-  },
-  {
-    id: 4,
-    icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
-      </svg>
-    ),
-    title: { en: "Custom Applications", ro: "Aplicații Personalizate" },
-    description: {
-      en: "From family memory albums to inventory systems — if your business runs on paper, we turn it into a seamless digital experience.",
-      ro: "De la albume de amintiri familiale la sisteme de inventar — dacă afacerea ta funcționează pe hârtie, o transformăm într-o experiență digitală."
-    },
-    color: "amber"
-  }
-]
-
 const caseStudies = [
   {
     id: 1,
@@ -314,50 +255,159 @@ export default function SolutionsPage() {
           </div>
         </section>
 
-        {/* What We Build */}
-        <section className="py-16 px-4">
+        {/* Bento Grid Section */}
+        <section className="relative z-10 py-16 px-4 md:px-8">
           <div className="max-w-7xl mx-auto">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center mb-12">
-              <h2 className="text-3xl md:text-5xl font-bold bg-gradient-to-b from-white to-neutral-400 bg-clip-text text-transparent">
-                {t.sections.whatWeBuild}
-              </h2>
-            </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {solutions.map((solution, i) => (
-                <motion.div
-                  key={solution.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className="group relative"
-                >
-                  <div className="relative bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl p-7 hover:bg-white/[0.08] hover:border-white/20 transition-all duration-500 h-full overflow-hidden">
-                    {/* Glow effect on hover */}
-                    <div className={`absolute -top-20 -right-20 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 ${
-                      solution.color === 'cyan' ? 'bg-cyan-500/10' :
-                      solution.color === 'violet' ? 'bg-violet-500/10' :
-                      solution.color === 'emerald' ? 'bg-emerald-500/10' :
-                      'bg-amber-500/10'
-                    }`} />
-
-                    <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl mb-5 ${
-                      solution.color === 'cyan' ? 'bg-cyan-500/10 text-cyan-400' :
-                      solution.color === 'violet' ? 'bg-violet-500/10 text-violet-400' :
-                      solution.color === 'emerald' ? 'bg-emerald-500/10 text-emerald-400' :
-                      'bg-amber-500/10 text-amber-400'
-                    }`}>
-                      {solution.icon}
+              {/* Card 1: CRM (Top Left) */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="bg-white/[0.08] backdrop-blur-xl border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.1)] rounded-3xl p-6 hover:bg-white/[0.12] hover:border-white/30 hover:shadow-[0_0_25px_rgba(255,255,255,0.15)] transition-all duration-500 group lg:row-span-1 relative overflow-hidden min-h-[180px]"
+                style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.05) 100%)' }}
+              >
+                <div className="flex flex-col justify-between h-full">
+                  <div>
+                    <div className="text-cyan-400 text-xs font-medium mb-3 uppercase tracking-wider">
+                      {language === 'en' ? 'CRM Systems' : 'Sisteme CRM'}
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-3">
-                      {solution.title[language as keyof typeof solution.title]}
+                    <h3 className="text-lg lg:text-xl font-bold text-white mb-3 leading-tight">
+                      {language === 'en' ? 'Client Management' : 'Management Clienți'}
                     </h3>
-                    <p className="text-neutral-400 leading-relaxed">
-                      {solution.description[language as keyof typeof solution.description]}
+                    <p className="text-neutral-400 text-sm leading-relaxed">
+                      {language === 'en' ? 'Track leads, manage clients, automate your entire workflow.' : 'Urmărește lead-uri, gestionează clienți, automatizează fluxul.'}
                     </p>
                   </div>
-                </motion.div>
-              ))}
+                </div>
+              </motion.div>
+
+              {/* Card 2: Main Showcase (Center Large) */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="bg-white/[0.08] backdrop-blur-xl border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.1)] rounded-3xl p-6 hover:bg-white/[0.12] hover:border-white/30 hover:shadow-[0_0_25px_rgba(255,255,255,0.15)] transition-all duration-500 group lg:col-span-2 lg:row-span-2 relative overflow-hidden min-h-[360px]"
+                style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.05) 100%)' }}
+              >
+                <div className="flex flex-col h-full">
+                  <div className="text-center mb-6">
+                    <div className="text-violet-400 text-xs font-medium mb-2 uppercase tracking-wider">
+                      {language === 'en' ? 'Enterprise Grade' : 'Nivel Enterprise'}
+                    </div>
+                    <h2 className="text-2xl lg:text-3xl font-bold text-white mb-3">
+                      {language === 'en' ? 'Paper → Digital' : 'Hârtie → Digital'}
+                    </h2>
+                    <p className="text-sm text-neutral-400 max-w-sm mx-auto">
+                      {language === 'en' ? 'We replace notebooks, pens, and boring paperwork with systems that actually work' : 'Înlocuim caietele, pixurile și hârtia plictisitoare cu sisteme care chiar funcționează'}
+                    </p>
+                  </div>
+
+                  <div className="flex-1 relative">
+                    <div className="bg-gradient-to-br from-neutral-800 to-neutral-900 rounded-xl p-4 border border-neutral-700 h-full">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                        <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span className="text-neutral-500 text-xs ml-2">dashboard.app</span>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <div className="h-16 flex-1 bg-gradient-to-r from-cyan-600/40 to-violet-600/40 rounded-lg border border-white/5 flex items-center justify-center">
+                            <span className="text-white/60 font-medium text-xs">{language === 'en' ? 'Live Tracking' : 'Urmărire Live'}</span>
+                          </div>
+                          <div className="h-16 w-20 bg-neutral-700/50 rounded-lg border border-white/5 flex items-center justify-center">
+                            <span className="text-emerald-400 text-lg font-bold">+47%</span>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className="h-10 bg-neutral-700/30 rounded-lg border border-white/5"></div>
+                          <div className="h-10 bg-neutral-700/30 rounded-lg border border-white/5"></div>
+                          <div className="h-10 bg-neutral-700/30 rounded-lg border border-white/5"></div>
+                        </div>
+                        <div className="h-3 bg-neutral-700/30 rounded w-2/3"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Card 3: Logistics (Top Right) */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="bg-white/[0.08] backdrop-blur-xl border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.1)] rounded-3xl p-6 hover:bg-white/[0.12] hover:border-white/30 hover:shadow-[0_0_25px_rgba(255,255,255,0.15)] transition-all duration-500 group lg:row-span-1 relative overflow-hidden min-h-[180px]"
+                style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.05) 100%)' }}
+              >
+                <div className="flex flex-col justify-between h-full">
+                  <div>
+                    <div className="text-violet-400 text-xs font-medium mb-3 uppercase tracking-wider">
+                      {language === 'en' ? 'Logistics' : 'Logistică'}
+                    </div>
+                    <h3 className="text-lg lg:text-xl font-bold text-white mb-3 leading-tight">
+                      {language === 'en' ? 'Package Tracking' : 'Urmărire Colete'}
+                    </h3>
+                    <p className="text-neutral-400 text-sm leading-relaxed">
+                      {language === 'en' ? 'Real-time tracking, route optimization, admin panels.' : 'Urmărire în timp real, optimizare rute, panouri admin.'}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Card 4: Custom Apps (Bottom Left) */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="bg-white/[0.08] backdrop-blur-xl border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.1)] rounded-3xl p-6 hover:bg-white/[0.12] hover:border-white/30 hover:shadow-[0_0_25px_rgba(255,255,255,0.15)] transition-all duration-500 group lg:row-span-1 relative overflow-hidden min-h-[180px]"
+                style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.05) 100%)' }}
+              >
+                <div className="flex flex-col justify-between h-full">
+                  <div>
+                    <div className="text-amber-400 text-sm font-medium mb-4 uppercase tracking-wider">
+                      {language === 'en' ? 'Custom Apps' : 'Aplicații Custom'}
+                    </div>
+                    <h3 className="text-4xl lg:text-5xl font-bold text-white mb-2">{language === 'en' ? 'Any' : 'Orice'}</h3>
+                    <h4 className="text-xl font-semibold text-white mb-4">
+                      {language === 'en' ? 'Business Idea' : 'Idee de Afacere'}
+                    </h4>
+                    <div className="flex items-center gap-2">
+                      <Link href="https://wa.me/37368327082" className="text-amber-400 hover:text-amber-300 transition-colors text-sm font-medium flex items-center gap-1">
+                        {language === 'en' ? 'Talk to us' : 'Vorbește cu noi'}
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Card 5: Dashboards (Bottom Right) */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="bg-white/[0.08] backdrop-blur-xl border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.1)] rounded-3xl p-6 hover:bg-white/[0.12] hover:border-white/30 hover:shadow-[0_0_25px_rgba(255,255,255,0.15)] transition-all duration-500 group lg:row-span-1 relative overflow-hidden min-h-[180px]"
+                style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.05) 100%)' }}
+              >
+                <div className="flex flex-col justify-between h-full">
+                  <div>
+                    <div className="text-emerald-400 text-xs font-medium mb-3 uppercase tracking-wider">
+                      {language === 'en' ? 'Analytics' : 'Analize'}
+                    </div>
+                    <h3 className="text-lg lg:text-xl font-bold text-white mb-3 leading-tight">
+                      {language === 'en' ? 'Business Dashboards' : 'Panouri de Control'}
+                    </h3>
+                    <p className="text-neutral-400 text-sm leading-relaxed">
+                      {language === 'en' ? 'KPIs, reports, and data visualization in real-time.' : 'KPI-uri, rapoarte și vizualizare date în timp real.'}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+
             </div>
           </div>
         </section>
@@ -439,57 +489,51 @@ export default function SolutionsPage() {
           </div>
         </section>
 
-        {/* Before/After - Kill Paperwork */}
-        <section className="py-16 px-4">
-          <div className="max-w-5xl mx-auto">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center mb-12">
-              <h2 className="text-3xl md:text-5xl font-bold bg-gradient-to-b from-white to-neutral-400 bg-clip-text text-transparent mb-4">
-                {t.sections.killPaper}
-              </h2>
-              <p className="text-neutral-500 text-lg max-w-2xl mx-auto">{t.sections.killPaperDescription}</p>
+        {/* Paper → Digital - Full Width Card */}
+        <section className="relative z-10 py-8 px-4 md:px-8">
+          <div className="max-w-7xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="bg-white/[0.08] backdrop-blur-xl border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.1)] rounded-3xl p-8 relative overflow-hidden"
+                style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.05) 100%)' }}
+              >
+                <div className="relative grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                  {/* Left - Old way */}
+                  <div>
+                    <div className="text-neutral-500 text-xs font-medium mb-4 uppercase tracking-wider">
+                      {t.sections.beforeTitle}
+                    </div>
+                    <div className="space-y-3">
+                      {t.sections.before.map((item, i) => (
+                        <div key={i} className="text-neutral-500 text-sm line-through">{item}</div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Center - Arrow */}
+                  <div className="flex items-center justify-center">
+                    <div className="text-5xl lg:text-7xl font-bold bg-gradient-to-r from-neutral-600 via-white to-emerald-400 bg-clip-text text-transparent">
+                      →
+                    </div>
+                  </div>
+
+                  {/* Right - New way */}
+                  <div>
+                    <div className="text-emerald-400 text-xs font-medium mb-4 uppercase tracking-wider">
+                      {t.sections.afterTitle}
+                    </div>
+                    <div className="space-y-3">
+                      {t.sections.after.map((item, i) => (
+                        <div key={i} className="text-white text-sm font-medium">{item}</div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </motion.div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Before */}
-              <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
-                <div className="bg-red-950/20 border border-red-500/20 rounded-2xl p-7">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-3 h-3 rounded-full bg-red-500" />
-                    <span className="text-red-400 font-bold text-sm tracking-wider uppercase">{t.sections.beforeTitle}</span>
-                  </div>
-                  <div className="space-y-4">
-                    {t.sections.before.map((item, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <svg className="w-5 h-5 text-red-500/70 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                        <span className="text-neutral-400 line-through decoration-red-500/30">{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* After */}
-              <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.2 }}>
-                <div className="bg-emerald-950/20 border border-emerald-500/20 rounded-2xl p-7">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                    <span className="text-emerald-400 font-bold text-sm tracking-wider uppercase">{t.sections.afterTitle}</span>
-                  </div>
-                  <div className="space-y-4">
-                    {t.sections.after.map((item, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <svg className="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span className="text-neutral-200">{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            </div>
           </div>
         </section>
 
