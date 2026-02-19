@@ -206,6 +206,7 @@ export default function PortfolioPage() {
         home: "Home",
         portfolio: "Portfolio",
         pricing: "Pricing",
+        solutions: "Solutions",
         contact: "Contact Me"
       },
       hero: {
@@ -229,6 +230,7 @@ export default function PortfolioPage() {
         home: "Acasă",
         portfolio: "Portofoliu",
         pricing: "Prețuri",
+        solutions: "Soluții",
         contact: "Contactează-mă"
       },
       hero: {
@@ -285,6 +287,9 @@ export default function PortfolioPage() {
                 </Link>
                 <Link href="/pricing" className="hover:text-white transition-all duration-300 hover:bg-neutral-800/50 px-4 py-2 rounded-lg border border-transparent hover:border-neutral-700">
                   {t.nav.pricing}
+                </Link>
+                <Link href="/solutions" className="hover:text-white transition-all duration-300 hover:bg-neutral-800/50 px-4 py-2 rounded-lg border border-transparent hover:border-neutral-700">
+                  {t.nav.solutions}
                 </Link>
               </div>
               
@@ -345,14 +350,21 @@ export default function PortfolioPage() {
                 >
                   {t.nav.portfolio}
                 </Link>
-                <Link 
-                  href="/pricing" 
+                <Link
+                  href="/pricing"
                   className="text-neutral-300 hover:text-white transition-all duration-300 p-3 rounded-lg hover:bg-neutral-800/50 text-center border border-transparent hover:border-neutral-700"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t.nav.pricing}
                 </Link>
-                <Link 
+                <Link
+                  href="/solutions"
+                  className="text-neutral-300 hover:text-white transition-all duration-300 p-3 rounded-lg hover:bg-neutral-800/50 text-center border border-transparent hover:border-neutral-700"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t.nav.solutions}
+                </Link>
+                <Link
                   href="https://wa.me/37368327082"
                   className="bg-gradient-to-r from-white to-neutral-200 hover:from-neutral-100 hover:to-neutral-300 text-black font-medium p-3 rounded-full transition-all duration-300 hover:scale-105 text-center mt-4"
                   onClick={() => setMobileMenuOpen(false)}
@@ -661,6 +673,9 @@ export default function PortfolioPage() {
                 </Link>
                 <Link href="/pricing" className="hover:text-white transition-colors py-2">
                   {language === 'en' ? 'Pricing' : 'Prețuri'}
+                </Link>
+                <Link href="/solutions" className="hover:text-white transition-colors py-2">
+                  {language === 'en' ? 'Solutions' : 'Soluții'}
                 </Link>
               </div>
             </div>
