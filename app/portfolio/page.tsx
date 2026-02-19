@@ -13,6 +13,30 @@ import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
 const projects = [
   {
     id: 1,
+    title: "RADX Cooling Solutions",
+    description: {
+      en: "Professional website for cooling solutions company. Presentation of services and industrial cooling products.",
+      ro: "Website profesional pentru companie de soluții de răcire. Prezentarea serviciilor și produselor de răcire industrială."
+    },
+    image: "/images/radx.png",
+    url: "https://radx.solutions",
+    status: "LIVE",
+    category: "services"
+  },
+  {
+    id: 2,
+    title: "Inter-Bus",
+    description: {
+      en: "International platform for authentic bus parts and components. Global shipping to 50+ countries with 2000+ parts catalog.",
+      ro: "Platformă internațională pentru piese autentice de autobuz. Livrare globală în peste 50 de țări cu catalog de 2000+ piese."
+    },
+    image: "/images/inter-bus.png",
+    url: "https://inter-bus.md",
+    status: "LIVE",
+    category: "ecommerce"
+  },
+  {
+    id: 3,
     title: "Rizza Classic",
     description: {
       en: "Italian website for old cars restoration.",
@@ -24,7 +48,7 @@ const projects = [
     category: "automotive"
   },
   {
-    id: 2,
+    id: 4,
     title: "Auto Huse",
     description: {
       en: "Complete website for car covers. Presentation, online orders, gallery.",
@@ -36,7 +60,7 @@ const projects = [
     category: "ecommerce"
   },
   {
-    id: 3,
+    id: 5,
     title: "CRM Platform",
     description: {
       en: "Platform for auto service client management.",
@@ -48,7 +72,7 @@ const projects = [
     category: "automotive"
   },
   {
-    id: 4,
+    id: 6,
     title: "U. Dental Clinic",
     description: {
       en: "Complete website for dental clinic.",
@@ -60,7 +84,7 @@ const projects = [
     category: "healthcare"
   },
   {
-    id: 5,
+    id: 7,
     title: "Auto Marga Service",
     description: {
       en: "Simple landing page - auto service.",
@@ -72,7 +96,7 @@ const projects = [
     category: "automotive"
   },
   {
-    id: 6,
+    id: 8,
     title: "Elena Diacon Salon",
     description: {
       en: "Elegant website for beauty salon with online booking system and interactive photo gallery.",
@@ -84,7 +108,7 @@ const projects = [
     category: "services"
   },
   {
-    id: 7,
+    id: 9,
     title: "RespectAuto",
     description: {
       en: "Car rental platform with advanced SEO and booking system. 300% organic growth.",
@@ -96,7 +120,7 @@ const projects = [
     category: "automotive"
   },
   {
-    id: 8,
+    id: 10,
     title: "CMIEA Platform",
     description: {
       en: "Complex educational platform with authentication system, interactive courses and user dashboard.",
@@ -108,7 +132,7 @@ const projects = [
     category: "education"
   },
   {
-    id: 9,
+    id: 11,
     title: "EuroGard",
     description: {
       en: "High-converting landing page for gardening services with conversion and sales optimization.",
@@ -120,7 +144,7 @@ const projects = [
     category: "services"
   },
   {
-    id: 10,
+    id: 12,
     title: "Green Next.js Demo",
     description: {
       en: "Interactive demo built with Next.js, showcasing modern web development capabilities.",
@@ -132,7 +156,7 @@ const projects = [
     category: "demo"
   },
   {
-    id: 11,
+    id: 13,
     title: "Advanced Green Demo",
     description: {
       en: "Advanced demonstration with complex functionalities, animations and modern interactions.",
