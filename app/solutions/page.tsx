@@ -255,6 +255,48 @@ export default function SolutionsPage() {
           </div>
         </section>
 
+        {/* What We Replace */}
+        <section className="py-20 px-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <h2 className="text-4xl lg:text-6xl font-bold text-white leading-tight mb-6">
+                  {language === 'en' ? 'Your business runs on paper.' : 'Afacerea ta merge pe hârtie.'}
+                  <br />
+                  <span className="text-neutral-500">{language === 'en' ? "It shouldn't." : 'Nu ar trebui.'}</span>
+                </h2>
+                <p className="text-neutral-400 text-lg leading-relaxed max-w-lg">
+                  {language === 'en'
+                    ? "Notebooks get lost. Spreadsheets break. Manual tracking wastes hours every day. We build the system that replaces all of it — custom to your business, accessible from anywhere, running 24/7."
+                    : "Caietele se pierd. Tabelele se strică. Urmărirea manuală pierde ore în fiecare zi. Construim sistemul care le înlocuiește pe toate — custom pentru afacerea ta, accesibil de oriunde, funcțional 24/7."}
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="space-y-6"
+              >
+                {[
+                  { en: "CRM & Client Management", ro: "CRM & Management Clienți", desc: { en: "Track every client, every interaction, every deal — automatically.", ro: "Urmărește fiecare client, fiecare interacțiune, fiecare tranzacție — automat." } },
+                  { en: "Logistics & Package Tracking", ro: "Logistică & Urmărire Colete", desc: { en: "Real-time GPS, admin panels, automated notifications.", ro: "GPS în timp real, panouri admin, notificări automate." } },
+                  { en: "Custom Business Apps", ro: "Aplicații Business Custom", desc: { en: "If it exists on paper, we can digitalize it. Any workflow, any industry.", ro: "Dacă există pe hârtie, o putem digitaliza. Orice flux, orice industrie." } },
+                ].map((item, i) => (
+                  <div key={i} className="border-l-2 border-neutral-800 pl-6 hover:border-white/30 transition-colors duration-300">
+                    <h3 className="text-white font-semibold text-lg mb-1">{item[language as 'en' | 'ro']}</h3>
+                    <p className="text-neutral-500 text-sm">{item.desc[language as 'en' | 'ro']}</p>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
         {/* Case Studies */}
         <section className="py-16 px-4">
           <div className="max-w-7xl mx-auto">

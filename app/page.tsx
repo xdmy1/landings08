@@ -385,6 +385,78 @@ export default function HomePage() {
 
       </div>
 
+      {/* Why Us Section */}
+      <section className="relative z-10 py-20 px-4 md:px-8">
+        <div className="max-w-7xl mx-auto">
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-20">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-4xl lg:text-6xl font-bold text-white leading-tight mb-6">
+                {language === 'en' ? '50+ projects delivered.' : '50+ proiecte livrate.'}
+                <br />
+                <span className="text-neutral-500">{language === 'en' ? 'Zero unsatisfied clients.' : 'Zero clienți nemulțumiți.'}</span>
+              </h2>
+              <p className="text-neutral-400 text-lg leading-relaxed max-w-lg">
+                {language === 'en'
+                  ? "From auto services to dental clinics, from e-commerce to educational platforms — we've built it all. Every project is custom, every line of code is ours."
+                  : "De la service-uri auto la clinici dentare, de la e-commerce la platforme educaționale — le-am construit pe toate. Fiecare proiect e custom, fiecare linie de cod e a noastră."}
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="grid grid-cols-3 gap-8"
+            >
+              <div>
+                <div className="text-4xl font-bold text-white mb-1">5+</div>
+                <div className="text-sm text-neutral-500">{language === 'en' ? 'Years in business' : 'Ani în business'}</div>
+              </div>
+              <div>
+                <div className="text-4xl font-bold text-white mb-1">300%</div>
+                <div className="text-sm text-neutral-500">{language === 'en' ? 'Avg. organic growth' : 'Creștere organică medie'}</div>
+              </div>
+              <div>
+                <div className="text-4xl font-bold text-white mb-1">24/7</div>
+                <div className="text-sm text-neutral-500">{language === 'en' ? 'Support included' : 'Suport inclus'}</div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Project Images Row */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-3"
+          >
+            {[
+              { src: "/images/radx.png", alt: "RADX" },
+              { src: "/images/inter-bus.png", alt: "Inter-Bus" },
+              { src: "/images/elenadiacon (1).png", alt: "Elena Diacon" },
+              { src: "/images/cmiea (1).png", alt: "CMIEA" },
+            ].map((img, i) => (
+              <div key={i} className="aspect-[4/3] rounded-xl overflow-hidden border border-neutral-800/50 bg-neutral-900">
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  width={400}
+                  height={300}
+                  quality={95}
+                  className="w-full h-full object-cover opacity-70 hover:opacity-100 transition-opacity duration-500"
+                />
+              </div>
+            ))}
+          </motion.div>
+
+        </div>
+      </section>
+
       {/* Free Consultation Section */}
       <section className="relative z-10 py-16 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
