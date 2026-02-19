@@ -255,44 +255,150 @@ export default function SolutionsPage() {
           </div>
         </section>
 
-        {/* What We Replace */}
-        <section className="py-20 px-4">
+        {/* What We Build */}
+        <section className="py-24 px-4">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-              >
-                <h2 className="text-4xl lg:text-6xl font-bold text-white leading-tight mb-6">
-                  {language === 'en' ? 'Your business runs on paper.' : 'Afacerea ta merge pe hârtie.'}
-                  <br />
-                  <span className="text-neutral-500">{language === 'en' ? "It shouldn't." : 'Nu ar trebui.'}</span>
-                </h2>
-                <p className="text-neutral-400 text-lg leading-relaxed max-w-lg">
-                  {language === 'en'
-                    ? "Notebooks get lost. Spreadsheets break. Manual tracking wastes hours every day. We build the system that replaces all of it — custom to your business, accessible from anywhere, running 24/7."
-                    : "Caietele se pierd. Tabelele se strică. Urmărirea manuală pierde ore în fiecare zi. Construim sistemul care le înlocuiește pe toate — custom pentru afacerea ta, accesibil de oriunde, funcțional 24/7."}
-                </p>
-              </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="mb-16"
+            >
+              <h2 className="text-4xl lg:text-6xl font-bold text-white leading-tight mb-6">
+                {language === 'en' ? 'Your business runs on paper.' : 'Afacerea ta merge pe hârtie.'}
+                <br />
+                <span className="text-neutral-500">{language === 'en' ? "We fix that." : 'Noi rezolvăm asta.'}</span>
+              </h2>
+            </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="space-y-6"
-              >
-                {[
-                  { en: "CRM & Client Management", ro: "CRM & Management Clienți", desc: { en: "Track every client, every interaction, every deal — automatically.", ro: "Urmărește fiecare client, fiecare interacțiune, fiecare tranzacție — automat." } },
-                  { en: "Logistics & Package Tracking", ro: "Logistică & Urmărire Colete", desc: { en: "Real-time GPS, admin panels, automated notifications.", ro: "GPS în timp real, panouri admin, notificări automate." } },
-                  { en: "Custom Business Apps", ro: "Aplicații Business Custom", desc: { en: "If it exists on paper, we can digitalize it. Any workflow, any industry.", ro: "Dacă există pe hârtie, o putem digitaliza. Orice flux, orice industrie." } },
-                ].map((item, i) => (
-                  <div key={i} className="border-l-2 border-neutral-800 pl-6 hover:border-white/30 transition-colors duration-300">
-                    <h3 className="text-white font-semibold text-lg mb-1">{item[language as 'en' | 'ro']}</h3>
-                    <p className="text-neutral-500 text-sm">{item.desc[language as 'en' | 'ro']}</p>
+            {/* Alternating rows */}
+            <div className="space-y-24">
+              {/* Row 1: CRM Systems */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.7 }}
+                  className="relative group"
+                >
+                  <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900">
+                    <Image src="/images/CRM.png" alt="CRM Platform" width={800} height={600} quality={95} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
                   </div>
-                ))}
-              </motion.div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.7, delay: 0.1 }}
+                >
+                  <div className="text-cyan-400 text-sm font-medium uppercase tracking-widest mb-4">CRM</div>
+                  <h3 className="text-3xl lg:text-4xl font-bold text-white leading-tight mb-5">
+                    {language === 'en' ? 'Client management that actually works' : 'Management clienți care chiar funcționează'}
+                  </h3>
+                  <p className="text-neutral-400 text-lg leading-relaxed mb-6">
+                    {language === 'en'
+                      ? 'Appointments, invoices, service history, inventory — one dashboard instead of 10 notebooks. Built for auto services, clinics, salons, or any business that tracks clients.'
+                      : 'Programări, facturi, istoric servicii, inventar — un singur panou în loc de 10 caiete. Construit pentru service-uri auto, clinici, saloane, sau orice afacere care gestionează clienți.'}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {(language === 'en'
+                      ? ['Scheduling', 'Invoicing', 'Analytics', 'Client portal']
+                      : ['Programări', 'Facturare', 'Analize', 'Portal clienți']
+                    ).map((tag) => (
+                      <span key={tag} className="text-sm px-3 py-1.5 rounded-full border border-neutral-800 text-neutral-400 bg-neutral-900/50">{tag}</span>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Row 2: Logistics (reversed) */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.7 }}
+                  className="order-2 lg:order-1"
+                >
+                  <div className="text-violet-400 text-sm font-medium uppercase tracking-widest mb-4">
+                    {language === 'en' ? 'Logistics' : 'Logistică'}
+                  </div>
+                  <h3 className="text-3xl lg:text-4xl font-bold text-white leading-tight mb-5">
+                    {language === 'en' ? 'Track every package, every step' : 'Urmărește fiecare colet, fiecare pas'}
+                  </h3>
+                  <p className="text-neutral-400 text-lg leading-relaxed mb-6">
+                    {language === 'en'
+                      ? 'GPS tracking, driver assignments, automated customer notifications, admin panels — we built a full logistics platform for the MD-Europe corridor. Your spreadsheets can retire.'
+                      : 'Urmărire GPS, atribuire șoferi, notificări automate clienți, panouri admin — am construit o platformă logistică completă pentru coridorul MD-Europa. Tabelele tale pot ieși la pensie.'}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {(language === 'en'
+                      ? ['GPS tracking', 'Route optimization', 'Notifications', 'Admin panel']
+                      : ['Urmărire GPS', 'Optimizare rute', 'Notificări', 'Panou admin']
+                    ).map((tag) => (
+                      <span key={tag} className="text-sm px-3 py-1.5 rounded-full border border-neutral-800 text-neutral-400 bg-neutral-900/50">{tag}</span>
+                    ))}
+                  </div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.7, delay: 0.1 }}
+                  className="order-1 lg:order-2 relative group"
+                >
+                  <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900 relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 to-transparent" />
+                    <div className="flex items-center justify-center h-full">
+                      <svg className="w-24 h-24 text-violet-400/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                      </svg>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Row 3: Custom Apps */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.7 }}
+                  className="relative group"
+                >
+                  <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900 relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent" />
+                    <div className="flex items-center justify-center h-full">
+                      <svg className="w-24 h-24 text-amber-400/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                      </svg>
+                    </div>
+                  </div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.7, delay: 0.1 }}
+                >
+                  <div className="text-amber-400 text-sm font-medium uppercase tracking-widest mb-4">
+                    {language === 'en' ? 'Custom Apps' : 'Aplicații Custom'}
+                  </div>
+                  <h3 className="text-3xl lg:text-4xl font-bold text-white leading-tight mb-5">
+                    {language === 'en' ? 'If you can dream it, we can build it' : 'Dacă poți visa, noi putem construi'}
+                  </h3>
+                  <p className="text-neutral-400 text-lg leading-relaxed mb-6">
+                    {language === 'en'
+                      ? "A digital family album that locks until the child turns 18. A booking system for a niche business. An internal tool that saves your team 4 hours a day. We don't do templates — we build exactly what you need."
+                      : 'Un album digital familial care se deblochează când copilul împlinește 18 ani. Un sistem de rezervări pentru o nișă specifică. Un tool intern care economisește echipei 4 ore pe zi. Nu facem template-uri — construim exact ce ai nevoie.'}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {(language === 'en'
+                      ? ['Family apps', 'Booking systems', 'Internal tools', 'Custom platforms']
+                      : ['Aplicații familiale', 'Sisteme rezervări', 'Tooluri interne', 'Platforme custom']
+                    ).map((tag) => (
+                      <span key={tag} className="text-sm px-3 py-1.5 rounded-full border border-neutral-800 text-neutral-400 bg-neutral-900/50">{tag}</span>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
             </div>
           </div>
         </section>

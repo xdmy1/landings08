@@ -385,74 +385,108 @@ export default function HomePage() {
 
       </div>
 
-      {/* Why Us Section */}
-      <section className="relative z-10 py-20 px-4 md:px-8">
+      {/* Feature Rows — alternating image/text */}
+      <section className="relative z-10 py-24 px-4 md:px-8 space-y-32">
         <div className="max-w-7xl mx-auto">
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-20">
+          {/* Row 1: Image Left, Text Right */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7 }}
+              className="relative group"
             >
-              <h2 className="text-4xl lg:text-6xl font-bold text-white leading-tight mb-6">
-                {language === 'en' ? '50+ projects delivered.' : '50+ proiecte livrate.'}
-                <br />
-                <span className="text-neutral-500">{language === 'en' ? 'Zero unsatisfied clients.' : 'Zero clienți nemulțumiți.'}</span>
-              </h2>
-              <p className="text-neutral-400 text-lg leading-relaxed max-w-lg">
-                {language === 'en'
-                  ? "From auto services to dental clinics, from e-commerce to educational platforms — we've built it all. Every project is custom, every line of code is ours."
-                  : "De la service-uri auto la clinici dentare, de la e-commerce la platforme educaționale — le-am construit pe toate. Fiecare proiect e custom, fiecare linie de cod e a noastră."}
-              </p>
+              <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900">
+                <Image src="/images/respectauto (1).png" alt="RespectAuto" width={800} height={600} quality={95} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
+              </div>
+              <div className="absolute -bottom-4 -right-4 bg-black border border-neutral-800 rounded-xl px-5 py-3">
+                <span className="text-emerald-400 font-mono text-sm font-semibold">+300% organic</span>
+              </div>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="grid grid-cols-3 gap-8"
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: 0.1 }}
             >
-              <div>
-                <div className="text-4xl font-bold text-white mb-1">5+</div>
-                <div className="text-sm text-neutral-500">{language === 'en' ? 'Years in business' : 'Ani în business'}</div>
+              <div className="text-neutral-500 text-sm font-medium uppercase tracking-widest mb-4">
+                {language === 'en' ? 'Performance' : 'Performanță'}
               </div>
-              <div>
-                <div className="text-4xl font-bold text-white mb-1">300%</div>
-                <div className="text-sm text-neutral-500">{language === 'en' ? 'Avg. organic growth' : 'Creștere organică medie'}</div>
-              </div>
-              <div>
-                <div className="text-4xl font-bold text-white mb-1">24/7</div>
-                <div className="text-sm text-neutral-500">{language === 'en' ? 'Support included' : 'Suport inclus'}</div>
+              <h2 className="text-3xl lg:text-5xl font-bold text-white leading-tight mb-6">
+                {language === 'en' ? 'Websites built for results, not just looks' : 'Website-uri construite pentru rezultate, nu doar aspect'}
+              </h2>
+              <p className="text-neutral-400 text-lg leading-relaxed mb-8">
+                {language === 'en'
+                  ? 'Every project we ship is optimized for speed, SEO, and conversions. RespectAuto saw 300% organic growth within 6 months of launch.'
+                  : 'Fiecare proiect pe care îl livrăm e optimizat pentru viteză, SEO și conversii. RespectAuto a avut o creștere organică de 300% în 6 luni de la lansare.'}
+              </p>
+              <div className="flex gap-8">
+                <div>
+                  <div className="text-2xl font-bold text-white">50+</div>
+                  <div className="text-neutral-500 text-sm">{language === 'en' ? 'Projects shipped' : 'Proiecte livrate'}</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-white">5+</div>
+                  <div className="text-neutral-500 text-sm">{language === 'en' ? 'Years experience' : 'Ani experiență'}</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-white">4.9</div>
+                  <div className="text-neutral-500 text-sm">{language === 'en' ? 'Client rating' : 'Rating clienți'}</div>
+                </div>
               </div>
             </motion.div>
           </div>
 
-          {/* Project Images Row */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-3"
-          >
-            {[
-              { src: "/images/radx.png", alt: "RADX" },
-              { src: "/images/inter-bus.png", alt: "Inter-Bus" },
-              { src: "/images/elenadiacon (1).png", alt: "Elena Diacon" },
-              { src: "/images/cmiea (1).png", alt: "CMIEA" },
-            ].map((img, i) => (
-              <div key={i} className="aspect-[4/3] rounded-xl overflow-hidden border border-neutral-800/50 bg-neutral-900">
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  width={400}
-                  height={300}
-                  quality={95}
-                  className="w-full h-full object-cover opacity-70 hover:opacity-100 transition-opacity duration-500"
-                />
+          {/* Row 2: Text Left, Image Right */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7 }}
+              className="order-2 lg:order-1"
+            >
+              <div className="text-neutral-500 text-sm font-medium uppercase tracking-widest mb-4">
+                {language === 'en' ? 'Custom Solutions' : 'Soluții Custom'}
               </div>
-            ))}
-          </motion.div>
+              <h2 className="text-3xl lg:text-5xl font-bold text-white leading-tight mb-6">
+                {language === 'en' ? 'From CRMs to logistics — we build systems' : 'De la CRM-uri la logistică — construim sisteme'}
+              </h2>
+              <p className="text-neutral-400 text-lg leading-relaxed mb-8">
+                {language === 'en'
+                  ? "Not just websites. We digitalize entire businesses — package tracking platforms, client management systems, booking engines, and custom apps that replace your paper and spreadsheets."
+                  : "Nu doar website-uri. Digitalizăm afaceri întregi — platforme de urmărire colete, sisteme de management clienți, motoare de rezervări și aplicații custom care înlocuiesc hârtia și tabelele."}
+              </p>
+              <Link href="/solutions">
+                <span className="text-white font-medium inline-flex items-center gap-2 border-b border-neutral-700 pb-1 hover:border-white transition-colors">
+                  {language === 'en' ? 'See our solutions' : 'Vezi soluțiile noastre'}
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                </span>
+              </Link>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="order-1 lg:order-2 relative group"
+            >
+              <div className="grid grid-cols-2 gap-3">
+                <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900">
+                  <Image src="/images/radx.png" alt="RADX" width={400} height={300} quality={95} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
+                </div>
+                <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900 mt-8">
+                  <Image src="/images/inter-bus.png" alt="Inter-Bus" width={400} height={300} quality={95} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
+                </div>
+                <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900 -mt-4">
+                  <Image src="/images/CRM.png" alt="CRM" width={400} height={300} quality={95} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
+                </div>
+                <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900 mt-4">
+                  <Image src="/images/cmiea (1).png" alt="CMIEA" width={400} height={300} quality={95} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
+                </div>
+              </div>
+            </motion.div>
+          </div>
 
         </div>
       </section>
