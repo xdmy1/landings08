@@ -1,26 +1,33 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { InteractiveGridBackground } from '@/components/ui/interactive-grid-background'
 import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
+import { useLanguage } from '@/hooks/useLanguage'
 
 const caseStudies = [
   {
     id: 1,
-    badge: { en: "LOGISTICS", ro: "LOGISTICĂ" },
-    title: { en: "Package Tracking Platform", ro: "Platformă Urmărire Colete" },
-    subtitle: { en: "MD — Europe — MD", ro: "MD — Europa — MD" },
+    badge: { en: "LOGISTICS", ro: "LOGISTICĂ", de: "LOGISTIK", fr: "LOGISTIQUE", es: "LOGISTICA" },
+    title: { en: "Package Tracking Platform", ro: "Platformă Urmărire Colete", de: "Paketverfolgungs-Plattform", fr: "Plateforme de Suivi de Colis", es: "Plataforma de Seguimiento de Paquetes" },
+    subtitle: { en: "MD — Europe — MD", ro: "MD — Europa — MD", de: "MD — Europa — MD", fr: "MD — Europe — MD", es: "MD — Europa — MD" },
     description: {
       en: "A highly advanced logistics application managing packages between Moldova and Europe. Real-time package tracking, automated status updates, admin management panel, driver assignments, route optimization, customer notifications, and full delivery history.",
-      ro: "O aplicație logistică avansată pentru gestionarea coletelor între Moldova și Europa. Urmărire colete în timp real, actualizări automate de status, panou admin, atribuire șoferi, optimizare rute, notificări clienți și istoric complet livrări."
+      ro: "O aplicație logistică avansată pentru gestionarea coletelor între Moldova și Europa. Urmărire colete în timp real, actualizări automate de status, panou admin, atribuire șoferi, optimizare rute, notificări clienți și istoric complet livrări.",
+      de: "Eine hochentwickelte Logistikanwendung zur Verwaltung von Paketen zwischen Moldawien und Europa. Echtzeit-Paketverfolgung, automatische Statusaktualisierungen, Admin-Panel, Fahrerzuweisung, Routenoptimierung, Kundenbenachrichtigungen und vollstandiger Lieferverlauf.",
+      fr: "Une application logistique avancee gerant les colis entre la Moldavie et l'Europe. Suivi en temps reel, mises a jour automatiques, panneau d'administration, affectation des chauffeurs, optimisation des itineraires, notifications clients et historique complet des livraisons.",
+      es: "Una aplicacion logistica avanzada que gestiona paquetes entre Moldavia y Europa. Seguimiento en tiempo real, actualizaciones automaticas de estado, panel de administracion, asignacion de conductores, optimizacion de rutas, notificaciones a clientes e historial completo de entregas."
     },
     features: {
       en: ["Real-time GPS tracking", "Admin management panel", "Automated notifications", "Route optimization", "Driver assignments", "Delivery analytics"],
-      ro: ["Urmărire GPS în timp real", "Panou administrare", "Notificări automate", "Optimizare rute", "Atribuire șoferi", "Analiză livrări"]
+      ro: ["Urmărire GPS în timp real", "Panou administrare", "Notificări automate", "Optimizare rute", "Atribuire șoferi", "Analiză livrări"],
+      de: ["Echtzeit-GPS-Verfolgung", "Admin-Panel", "Automatische Benachrichtigungen", "Routenoptimierung", "Fahrerzuweisung", "Lieferanalysen"],
+      fr: ["Suivi GPS en temps reel", "Panneau d'administration", "Notifications automatiques", "Optimisation des itineraires", "Affectation des chauffeurs", "Analyses de livraison"],
+      es: ["Seguimiento GPS en tiempo real", "Panel de administracion", "Notificaciones automaticas", "Optimizacion de rutas", "Asignacion de conductores", "Analisis de entregas"]
     },
     gradient: "from-violet-500/20 via-purple-500/10 to-fuchsia-500/20",
     accentColor: "violet",
@@ -34,16 +41,22 @@ const caseStudies = [
   },
   {
     id: 2,
-    badge: { en: "FAMILY APP", ro: "APLICAȚIE FAMILIALĂ" },
-    title: { en: "Growing Memories Album", ro: "Album Amintiri în Creștere" },
-    subtitle: { en: "Ages 1 — 18", ro: "Vârsta 1 — 18" },
+    badge: { en: "FAMILY APP", ro: "APLICAȚIE FAMILIALĂ", de: "FAMILIEN-APP", fr: "APP FAMILIALE", es: "APP FAMILIAR" },
+    title: { en: "Growing Memories Album", ro: "Album Amintiri în Creștere", de: "Wachsende Erinnerungen Album", fr: "Album de Souvenirs Grandissants", es: "Album de Recuerdos Crecientes" },
+    subtitle: { en: "Ages 1 — 18", ro: "Vârsta 1 — 18", de: "Alter 1 — 18", fr: "Ages 1 — 18", es: "Edades 1 — 18" },
     description: {
       en: "A unique digital family album where parents document their child's journey from age 1 to 18. Photos, milestones, letters, and memories are securely stored. On their 18th birthday, the child receives access to the complete album — a lifetime of love, captured digitally.",
-      ro: "Un album digital unic unde părinții documentează călătoria copilului de la 1 la 18 ani. Poze, momente importante, scrisori și amintiri sunt stocate în siguranță. La 18 ani, copilul primește acces la albumul complet — o viață de dragoste, capturată digital."
+      ro: "Un album digital unic unde părinții documentează călătoria copilului de la 1 la 18 ani. Poze, momente importante, scrisori și amintiri sunt stocate în siguranță. La 18 ani, copilul primește acces la albumul complet — o viață de dragoste, capturată digital.",
+      de: "Ein einzigartiges digitales Familienalbum, in dem Eltern die Reise ihres Kindes von 1 bis 18 dokumentieren. Fotos, Meilensteine, Briefe und Erinnerungen werden sicher gespeichert. Am 18. Geburtstag erhalt das Kind Zugang zum kompletten Album — ein Leben voller Liebe, digital festgehalten.",
+      fr: "Un album familial numerique unique ou les parents documentent le parcours de leur enfant de 1 a 18 ans. Photos, jalons, lettres et souvenirs sont stockes en securite. A ses 18 ans, l'enfant recoit l'acces a l'album complet — une vie d'amour, capturee numeriquement.",
+      es: "Un album digital familiar unico donde los padres documentan el viaje de su hijo desde 1 hasta 18 anos. Fotos, hitos, cartas y recuerdos se almacenan de forma segura. En su 18 cumpleanos, el hijo recibe acceso al album completo — toda una vida de amor, capturada digitalmente."
     },
     features: {
       en: ["Milestone tracking", "Photo & video uploads", "Time-locked reveal at 18", "Parent collaboration", "Secure cloud storage", "Beautiful timeline view"],
-      ro: ["Urmărire momente cheie", "Upload foto & video", "Dezvăluire la 18 ani", "Colaborare părinți", "Stocare cloud securizată", "Vizualizare cronologică"]
+      ro: ["Urmărire momente cheie", "Upload foto & video", "Dezvăluire la 18 ani", "Colaborare părinți", "Stocare cloud securizată", "Vizualizare cronologică"],
+      de: ["Meilenstein-Verfolgung", "Foto- & Video-Uploads", "Zeitgesperrte Enthullung mit 18", "Eltern-Zusammenarbeit", "Sichere Cloud-Speicherung", "Schone Zeitleisten-Ansicht"],
+      fr: ["Suivi des jalons", "Upload photos & videos", "Revelation a 18 ans", "Collaboration parentale", "Stockage cloud securise", "Belle vue chronologique"],
+      es: ["Seguimiento de hitos", "Subida de fotos y videos", "Revelacion a los 18", "Colaboracion de padres", "Almacenamiento cloud seguro", "Vista de linea de tiempo"]
     },
     gradient: "from-amber-500/20 via-orange-500/10 to-rose-500/20",
     accentColor: "amber",
@@ -56,16 +69,22 @@ const caseStudies = [
   },
   {
     id: 3,
-    badge: { en: "CRM SYSTEM", ro: "SISTEM CRM" },
-    title: { en: "Auto Service CRM", ro: "CRM Service Auto" },
-    subtitle: { en: "Complete Business Management", ro: "Management Complet Afacere" },
+    badge: { en: "CRM SYSTEM", ro: "SISTEM CRM", de: "CRM-SYSTEM", fr: "SYSTEME CRM", es: "SISTEMA CRM" },
+    title: { en: "Auto Service CRM", ro: "CRM Service Auto", de: "Auto-Service CRM", fr: "CRM Service Auto", es: "CRM Servicio Automotriz" },
+    subtitle: { en: "Complete Business Management", ro: "Management Complet Afacere", de: "Komplettes Geschaftsmanagement", fr: "Gestion Complete d'Entreprise", es: "Gestion Empresarial Completa" },
     description: {
       en: "A complete client management platform built for auto service businesses. Appointment scheduling, service history tracking, invoice generation, parts inventory, client communication, and performance analytics — all in one dashboard.",
-      ro: "O platformă completă de management clienți construită pentru service-uri auto. Programări, istoric servicii, generare facturi, inventar piese, comunicare clienți și analize performanță — totul într-un singur panou."
+      ro: "O platformă completă de management clienți construită pentru service-uri auto. Programări, istoric servicii, generare facturi, inventar piese, comunicare clienți și analize performanță — totul într-un singur panou.",
+      de: "Eine komplette Kundenmanagement-Plattform fur Autoservice-Unternehmen. Terminplanung, Service-Historie, Rechnungserstellung, Teileinventar, Kundenkommunikation und Leistungsanalysen — alles in einem Dashboard.",
+      fr: "Une plateforme complete de gestion clients construite pour les services automobiles. Planification des rendez-vous, historique des services, generation de factures, inventaire des pieces, communication client et analyses de performance — le tout dans un seul tableau de bord.",
+      es: "Una plataforma completa de gestion de clientes construida para negocios de servicio automotriz. Programacion de citas, historial de servicios, generacion de facturas, inventario de piezas, comunicacion con clientes y analisis de rendimiento — todo en un solo panel."
     },
     features: {
       en: ["Appointment scheduling", "Service history", "Invoice generation", "Parts inventory", "Client portal", "Performance analytics"],
-      ro: ["Programări", "Istoric servicii", "Generare facturi", "Inventar piese", "Portal clienți", "Analize performanță"]
+      ro: ["Programări", "Istoric servicii", "Generare facturi", "Inventar piese", "Portal clienți", "Analize performanță"],
+      de: ["Terminplanung", "Service-Historie", "Rechnungserstellung", "Teileinventar", "Kundenportal", "Leistungsanalysen"],
+      fr: ["Planification des rendez-vous", "Historique des services", "Generation de factures", "Inventaire des pieces", "Portail client", "Analyses de performance"],
+      es: ["Programacion de citas", "Historial de servicios", "Generacion de facturas", "Inventario de piezas", "Portal de clientes", "Analisis de rendimiento"]
     },
     gradient: "from-cyan-500/20 via-blue-500/10 to-indigo-500/20",
     accentColor: "cyan",
@@ -80,29 +99,16 @@ const caseStudies = [
 ]
 
 const stats = [
-  { value: "99.9%", label: { en: "Uptime", ro: "Disponibilitate" } },
-  { value: "3x", label: { en: "Faster Operations", ro: "Operații Mai Rapide" } },
-  { value: "0", label: { en: "Paper Needed", ro: "Hârtie Necesară" } },
-  { value: "24/7", label: { en: "System Access", ro: "Acces Sistem" } },
+  { value: "99.9%", label: { en: "Uptime", ro: "Disponibilitate", de: "Verfugbarkeit", fr: "Disponibilite", es: "Disponibilidad" } },
+  { value: "3x", label: { en: "Faster Operations", ro: "Operații Mai Rapide", de: "Schnellere Ablaufe", fr: "Operations Plus Rapides", es: "Operaciones Mas Rapidas" } },
+  { value: "0", label: { en: "Paper Needed", ro: "Hârtie Necesară", de: "Papier benotigt", fr: "Papier Necessaire", es: "Papel Necesario" } },
+  { value: "24/7", label: { en: "System Access", ro: "Acces Sistem", de: "Systemzugang", fr: "Acces Systeme", es: "Acceso al Sistema" } },
 ]
 
 export default function SolutionsPage() {
-  const [language, setLanguage] = useState('en')
+  const { language, setLanguage: handleLanguageChange } = useLanguage()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem('language')
-    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ro')) {
-      setLanguage(savedLanguage)
-    } else {
-      setLanguage('en')
-    }
-  }, [])
-
-  const handleLanguageChange = (newLanguage: string) => {
-    setLanguage(newLanguage)
-    localStorage.setItem('language', newLanguage)
-  }
+  const [langMenuOpen, setLangMenuOpen] = useState(false)
 
   const text = {
     en: {
@@ -152,6 +158,78 @@ export default function SolutionsPage() {
         ctaDescription: "Spune-ne despre provocările afacerii tale. Vom proiecta o soluție digitală personalizată care elimină hârtia și îți multiplică eficiența.",
         ctaButton: "Începe Transformarea"
       }
+    },
+    de: {
+      nav: { home: "Startseite", portfolio: "Portfolio", pricing: "Preise", solutions: "Losungen", contact: "Kontakt" },
+      hero: {
+        badge: "Enterprise-Losungen",
+        title1: "Wir digitalisieren",
+        title2: "Ihr Unternehmen",
+        description: "Ihr Unternehmen lauft noch auf Papier, Notizbuchern und Stiften? Wir bauen fortschrittliche digitale Systeme — CRMs, Logistikplattformen, individuelle Apps — die langweilige Papierarbeit durch elegante, leistungsstarke Technologie ersetzen.",
+        cta: "Projekt besprechen"
+      },
+      sections: {
+        whatWeBuild: "Was wir bauen",
+        caseStudies: "Fallstudien",
+        caseStudiesSubtitle: "Echte Losungen fur echte Unternehmen",
+        killPaper: "Schluss mit Papierarbeit",
+        killPaperDescription: "Jede Minute mit manueller Papierarbeit ist eine verlorene Minute. Wir verwandeln analoges Chaos in digitale Prazision.",
+        beforeTitle: "Vorher",
+        afterTitle: "Nachher",
+        before: ["Papierformulare & Notizbucher", "Manuelle Dateneingabe", "Verlorene Dokumente", "Keine Echtzeit-Verfolgung", "Tagliche menschliche Fehler"],
+        after: ["Digitale Dashboards", "Automatisierte Workflows", "Cloud-gesicherte Daten", "Live-Verfolgung & Alarme", "99,9% Genauigkeit"],
+        ctaTitle: "Bereit, Ihr Unternehmen zu digitalisieren?",
+        ctaDescription: "Erzahlen Sie uns von Ihren geschaftlichen Herausforderungen. Wir entwerfen eine individuelle digitale Losung, die Papierarbeit eliminiert und Ihre Effizienz vervielfacht.",
+        ctaButton: "Transformation starten"
+      }
+    },
+    fr: {
+      nav: { home: "Accueil", portfolio: "Portfolio", pricing: "Tarifs", solutions: "Solutions", contact: "Contactez-moi" },
+      hero: {
+        badge: "Solutions Enterprise",
+        title1: "Nous numerisons",
+        title2: "votre entreprise",
+        description: "Votre entreprise fonctionne encore sur papier, cahiers et stylos ? Nous construisons des systemes numeriques avances — CRM, plateformes logistiques, applications sur mesure — qui remplacent la paperasse ennuyeuse par une technologie elegante et puissante.",
+        cta: "Discuter de Votre Projet"
+      },
+      sections: {
+        whatWeBuild: "Ce que nous construisons",
+        caseStudies: "Etudes de Cas",
+        caseStudiesSubtitle: "Des solutions reelles construites pour de vraies entreprises",
+        killPaper: "Eliminez la paperasse",
+        killPaperDescription: "Chaque minute passee sur des documents manuels est une minute perdue. Nous transformons le chaos analogique en precision numerique.",
+        beforeTitle: "Avant",
+        afterTitle: "Apres",
+        before: ["Formulaires papier & cahiers", "Saisie manuelle de donnees", "Documents perdus", "Pas de suivi en temps reel", "Erreurs humaines quotidiennes"],
+        after: ["Tableaux de bord numeriques", "Workflows automatises", "Donnees securisees dans le cloud", "Suivi en direct & alertes", "Precision de 99,9%"],
+        ctaTitle: "Pret a numeriser votre entreprise ?",
+        ctaDescription: "Parlez-nous de vos defis commerciaux. Nous concevrons une solution numerique personnalisee qui elimine la paperasse et multiplie votre efficacite.",
+        ctaButton: "Commencer la Transformation"
+      }
+    },
+    es: {
+      nav: { home: "Inicio", portfolio: "Portafolio", pricing: "Precios", solutions: "Soluciones", contact: "Contactame" },
+      hero: {
+        badge: "Soluciones Empresariales",
+        title1: "Digitalizamos",
+        title2: "tu negocio",
+        description: "Tu negocio todavia funciona con papel, cuadernos y boligrafos? Construimos sistemas digitales avanzados — CRMs, plataformas logisticas, aplicaciones personalizadas — que reemplazan el aburrido papeleo con tecnologia elegante y poderosa.",
+        cta: "Discutir Tu Proyecto"
+      },
+      sections: {
+        whatWeBuild: "Lo que construimos",
+        caseStudies: "Casos de Estudio",
+        caseStudiesSubtitle: "Soluciones reales construidas para negocios reales",
+        killPaper: "Elimina el papeleo",
+        killPaperDescription: "Cada minuto gastado en papeleo manual es un minuto perdido. Transformamos el caos analogico en precision digital.",
+        beforeTitle: "Antes",
+        afterTitle: "Despues",
+        before: ["Formularios en papel y cuadernos", "Entrada manual de datos", "Documentos perdidos", "Sin seguimiento en tiempo real", "Errores humanos diarios"],
+        after: ["Paneles digitales", "Flujos de trabajo automatizados", "Datos seguros en la nube", "Seguimiento en vivo y alertas", "99.9% de precision"],
+        ctaTitle: "Listo para digitalizar tu negocio?",
+        ctaDescription: "Cuentanos sobre los desafios de tu negocio. Disenaremos una solucion digital personalizada que elimina el papeleo y multiplica tu eficiencia.",
+        ctaButton: "Iniciar la Transformacion"
+      }
     }
   }
 
@@ -177,9 +255,30 @@ export default function SolutionsPage() {
                 <Link href="/solutions" className="text-white bg-neutral-800/50 px-4 py-2 rounded-lg border border-neutral-700">{t.nav.solutions}</Link>
               </div>
               <div className="flex items-center gap-4">
-                <button onClick={() => handleLanguageChange(language === 'en' ? 'ro' : 'en')} className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50 hover:border-neutral-600 backdrop-blur-sm">
-                  {language.toUpperCase()}
-                </button>
+                <div className="relative">
+                  <button
+                    onClick={() => setLangMenuOpen(!langMenuOpen)}
+                    className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50 hover:border-neutral-600 backdrop-blur-sm"
+                  >
+                    {language.toUpperCase()}
+                  </button>
+                  {langMenuOpen && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
+                      <div className="absolute top-full right-0 mt-2 bg-neutral-900/95 backdrop-blur-md rounded-lg border border-neutral-700/50 overflow-hidden z-50 min-w-[80px]">
+                        {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (
+                          <button
+                            key={lang}
+                            onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false); }}
+                            className={`block w-full text-left px-4 py-2 text-sm transition-colors ${language === lang ? "bg-neutral-800 text-white" : "text-neutral-400 hover:bg-neutral-800/50 hover:text-white"}`}
+                          >
+                            {lang.toUpperCase()}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
                 <Link href="https://wa.me/37368327082">
                   <Button className="bg-gradient-to-r from-white to-neutral-200 hover:from-neutral-100 hover:to-neutral-300 text-black font-medium px-6 py-2 rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">{t.nav.contact}</Button>
                 </Link>
@@ -187,9 +286,27 @@ export default function SolutionsPage() {
             </div>
 
             <div className="md:hidden flex items-center gap-3">
-              <button onClick={() => setLanguage(language === 'en' ? 'ro' : 'en')} className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50">
-                {language.toUpperCase()}
-              </button>
+              <div className="relative">
+                <button onClick={() => setLangMenuOpen(!langMenuOpen)} className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50">
+                  {language.toUpperCase()}
+                </button>
+                {langMenuOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
+                    <div className="absolute top-full right-0 mt-2 bg-neutral-900/95 backdrop-blur-md rounded-lg border border-neutral-700/50 overflow-hidden z-50 min-w-[80px]">
+                      {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (
+                        <button
+                          key={lang}
+                          onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false); }}
+                          className={`block w-full text-left px-4 py-2 text-sm transition-colors ${language === lang ? "bg-neutral-800 text-white" : "text-neutral-400 hover:bg-neutral-800/50 hover:text-white"}`}
+                        >
+                          {lang.toUpperCase()}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
               <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 rounded-lg border border-neutral-700/50 hover:border-neutral-600 hover:bg-neutral-800/50 transition-all duration-300">
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -212,7 +329,7 @@ export default function SolutionsPage() {
         </div>
       </nav>
 
-      <main className="relative z-10 pt-28 md:pt-32">
+      <main className="relative z-10 pt-28 md:pt-10">
 
         {/* Hero Section */}
         <section className="py-12 md:py-20 px-4">
@@ -265,9 +382,9 @@ export default function SolutionsPage() {
               className="mb-16"
             >
               <h2 className="text-4xl lg:text-6xl font-bold text-white leading-tight mb-6">
-                {language === 'en' ? 'Your business runs on paper.' : 'Afacerea ta merge pe hârtie.'}
+                {({ en: 'Your business runs on paper.', ro: 'Afacerea ta merge pe hârtie.', de: 'Ihr Unternehmen lauft auf Papier.', fr: 'Votre entreprise fonctionne sur papier.', es: 'Tu negocio funciona con papel.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                 <br />
-                <span className="text-neutral-500">{language === 'en' ? "We fix that." : 'Noi rezolvăm asta.'}</span>
+                <span className="text-neutral-500">{({ en: "We fix that.", ro: 'Noi rezolvăm asta.', de: 'Wir andern das.', fr: 'Nous changeons cela.', es: 'Nosotros lo solucionamos.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}</span>
               </h2>
             </motion.div>
 
@@ -292,18 +409,13 @@ export default function SolutionsPage() {
                 >
                   <div className="text-cyan-400 text-sm font-medium uppercase tracking-widest mb-4">CRM</div>
                   <h3 className="text-3xl lg:text-4xl font-bold text-white leading-tight mb-5">
-                    {language === 'en' ? 'Client management that actually works' : 'Management clienți care chiar funcționează'}
+                    {({ en: 'Client management that actually works', ro: 'Management clienți care chiar funcționează', de: 'Kundenmanagement, das wirklich funktioniert', fr: 'Gestion client qui fonctionne vraiment', es: 'Gestion de clientes que realmente funciona' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                   </h3>
                   <p className="text-neutral-400 text-lg leading-relaxed mb-6">
-                    {language === 'en'
-                      ? 'Appointments, invoices, service history, inventory — one dashboard instead of 10 notebooks. Built for auto services, clinics, salons, or any business that tracks clients.'
-                      : 'Programări, facturi, istoric servicii, inventar — un singur panou în loc de 10 caiete. Construit pentru service-uri auto, clinici, saloane, sau orice afacere care gestionează clienți.'}
+                    {({ en: 'Appointments, invoices, service history, inventory — one dashboard instead of 10 notebooks. Built for auto services, clinics, salons, or any business that tracks clients.', ro: 'Programări, facturi, istoric servicii, inventar — un singur panou în loc de 10 caiete. Construit pentru service-uri auto, clinici, saloane, sau orice afacere care gestionează clienți.', de: 'Termine, Rechnungen, Service-Historie, Inventar — ein Dashboard statt 10 Notizbuchern. Gebaut fur Autoservices, Kliniken, Salons oder jedes Unternehmen, das Kunden verwaltet.', fr: "Rendez-vous, factures, historique des services, inventaire — un tableau de bord au lieu de 10 cahiers. Concu pour les services auto, cliniques, salons ou toute entreprise gerant des clients.", es: 'Citas, facturas, historial de servicios, inventario — un panel en vez de 10 cuadernos. Construido para servicios automotrices, clinicas, salones o cualquier negocio que gestione clientes.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {(language === 'en'
-                      ? ['Scheduling', 'Invoicing', 'Analytics', 'Client portal']
-                      : ['Programări', 'Facturare', 'Analize', 'Portal clienți']
-                    ).map((tag) => (
+                    {(({ en: ['Scheduling', 'Invoicing', 'Analytics', 'Client portal'], ro: ['Programări', 'Facturare', 'Analize', 'Portal clienți'], de: ['Terminplanung', 'Rechnungsstellung', 'Analysen', 'Kundenportal'], fr: ['Planification', 'Facturation', 'Analyses', 'Portail client'], es: ['Programacion', 'Facturacion', 'Analisis', 'Portal de clientes'] })[language as 'en' | 'ro' | 'de' | 'fr' | 'es'] || []).map((tag) => (
                       <span key={tag} className="text-sm px-3 py-1.5 rounded-full border border-neutral-800 text-neutral-400 bg-neutral-900/50">{tag}</span>
                     ))}
                   </div>
@@ -319,21 +431,16 @@ export default function SolutionsPage() {
                   className="order-2 lg:order-1"
                 >
                   <div className="text-violet-400 text-sm font-medium uppercase tracking-widest mb-4">
-                    {language === 'en' ? 'Logistics' : 'Logistică'}
+                    {({ en: 'Logistics', ro: 'Logistică', de: 'Logistik', fr: 'Logistique', es: 'Logistica' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                   </div>
                   <h3 className="text-3xl lg:text-4xl font-bold text-white leading-tight mb-5">
-                    {language === 'en' ? 'Track every package, every step' : 'Urmărește fiecare colet, fiecare pas'}
+                    {({ en: 'Track every package, every step', ro: 'Urmărește fiecare colet, fiecare pas', de: 'Verfolgen Sie jedes Paket, jeden Schritt', fr: 'Suivez chaque colis, chaque etape', es: 'Rastrea cada paquete, cada paso' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                   </h3>
                   <p className="text-neutral-400 text-lg leading-relaxed mb-6">
-                    {language === 'en'
-                      ? 'GPS tracking, driver assignments, automated customer notifications, admin panels — we built a full logistics platform for the MD-Europe corridor. Your spreadsheets can retire.'
-                      : 'Urmărire GPS, atribuire șoferi, notificări automate clienți, panouri admin — am construit o platformă logistică completă pentru coridorul MD-Europa. Tabelele tale pot ieși la pensie.'}
+                    {({ en: 'GPS tracking, driver assignments, automated customer notifications, admin panels — we built a full logistics platform for the MD-Europe corridor. Your spreadsheets can retire.', ro: 'Urmărire GPS, atribuire șoferi, notificări automate clienți, panouri admin — am construit o platformă logistică completă pentru coridorul MD-Europa. Tabelele tale pot ieși la pensie.', de: 'GPS-Verfolgung, Fahrerzuweisung, automatische Kundenbenachrichtigungen, Admin-Panels — wir haben eine vollstandige Logistikplattform fur den MD-Europa-Korridor gebaut. Ihre Tabellen konnen in Rente gehen.', fr: "Suivi GPS, affectation des chauffeurs, notifications clients automatiques, panneaux d'administration — nous avons construit une plateforme logistique complete pour le corridor MD-Europe. Vos tableurs peuvent prendre leur retraite.", es: 'Seguimiento GPS, asignacion de conductores, notificaciones automaticas a clientes, paneles de administracion — construimos una plataforma logistica completa para el corredor MD-Europa. Tus hojas de calculo pueden jubilarse.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {(language === 'en'
-                      ? ['GPS tracking', 'Route optimization', 'Notifications', 'Admin panel']
-                      : ['Urmărire GPS', 'Optimizare rute', 'Notificări', 'Panou admin']
-                    ).map((tag) => (
+                    {(({ en: ['GPS tracking', 'Route optimization', 'Notifications', 'Admin panel'], ro: ['Urmărire GPS', 'Optimizare rute', 'Notificări', 'Panou admin'], de: ['GPS-Verfolgung', 'Routenoptimierung', 'Benachrichtigungen', 'Admin-Panel'], fr: ['Suivi GPS', 'Optimisation des itineraires', 'Notifications', "Panneau d'admin"], es: ['Seguimiento GPS', 'Optimizacion de rutas', 'Notificaciones', 'Panel de admin'] })[language as 'en' | 'ro' | 'de' | 'fr' | 'es'] || []).map((tag) => (
                       <span key={tag} className="text-sm px-3 py-1.5 rounded-full border border-neutral-800 text-neutral-400 bg-neutral-900/50">{tag}</span>
                     ))}
                   </div>
@@ -379,21 +486,16 @@ export default function SolutionsPage() {
                   transition={{ duration: 0.7, delay: 0.1 }}
                 >
                   <div className="text-amber-400 text-sm font-medium uppercase tracking-widest mb-4">
-                    {language === 'en' ? 'Custom Apps' : 'Aplicații Custom'}
+                    {({ en: 'Custom Apps', ro: 'Aplicații Custom', de: 'Individuelle Apps', fr: 'Applications Sur Mesure', es: 'Apps Personalizadas' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                   </div>
                   <h3 className="text-3xl lg:text-4xl font-bold text-white leading-tight mb-5">
-                    {language === 'en' ? 'If you can dream it, we can build it' : 'Dacă poți visa, noi putem construi'}
+                    {({ en: 'If you can dream it, we can build it', ro: 'Dacă poți visa, noi putem construi', de: 'Wenn Sie es traumen konnen, konnen wir es bauen', fr: 'Si vous pouvez le rever, nous pouvons le construire', es: 'Si puedes sonarlo, podemos construirlo' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                   </h3>
                   <p className="text-neutral-400 text-lg leading-relaxed mb-6">
-                    {language === 'en'
-                      ? "A digital family album that locks until the child turns 18. A booking system for a niche business. An internal tool that saves your team 4 hours a day. We don't do templates — we build exactly what you need."
-                      : 'Un album digital familial care se deblochează când copilul împlinește 18 ani. Un sistem de rezervări pentru o nișă specifică. Un tool intern care economisește echipei 4 ore pe zi. Nu facem template-uri — construim exact ce ai nevoie.'}
+                    {({ en: "A digital family album that locks until the child turns 18. A booking system for a niche business. An internal tool that saves your team 4 hours a day. We don't do templates — we build exactly what you need.", ro: 'Un album digital familial care se deblochează când copilul împlinește 18 ani. Un sistem de rezervări pentru o nișă specifică. Un tool intern care economisește echipei 4 ore pe zi. Nu facem template-uri — construim exact ce ai nevoie.', de: 'Ein digitales Familienalbum, das sich erst mit 18 offnet. Ein Buchungssystem fur ein Nischengeschaft. Ein internes Tool, das Ihrem Team 4 Stunden am Tag spart. Wir machen keine Templates — wir bauen genau das, was Sie brauchen.', fr: "Un album familial numerique qui se deverrouille quand l'enfant a 18 ans. Un systeme de reservation pour un business de niche. Un outil interne qui fait gagner 4 heures par jour a votre equipe. Pas de templates — nous construisons exactement ce dont vous avez besoin.", es: 'Un album familiar digital que se desbloquea cuando el hijo cumple 18. Un sistema de reservas para un negocio de nicho. Una herramienta interna que ahorra 4 horas al dia a tu equipo. No hacemos plantillas — construimos exactamente lo que necesitas.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {(language === 'en'
-                      ? ['Family apps', 'Booking systems', 'Internal tools', 'Custom platforms']
-                      : ['Aplicații familiale', 'Sisteme rezervări', 'Tooluri interne', 'Platforme custom']
-                    ).map((tag) => (
+                    {(({ en: ['Family apps', 'Booking systems', 'Internal tools', 'Custom platforms'], ro: ['Aplicații familiale', 'Sisteme rezervări', 'Tooluri interne', 'Platforme custom'], de: ['Familien-Apps', 'Buchungssysteme', 'Interne Tools', 'Individuelle Plattformen'], fr: ['Apps familiales', 'Systemes de reservation', 'Outils internes', 'Plateformes sur mesure'], es: ['Apps familiares', 'Sistemas de reservas', 'Herramientas internas', 'Plataformas personalizadas'] })[language as 'en' | 'ro' | 'de' | 'fr' | 'es'] || []).map((tag) => (
                       <span key={tag} className="text-sm px-3 py-1.5 rounded-full border border-neutral-800 text-neutral-400 bg-neutral-900/50">{tag}</span>
                     ))}
                   </div>
@@ -518,15 +620,15 @@ export default function SolutionsPage() {
                 <span className="text-white font-semibold">landings.md</span>
               </div>
               <div className="flex items-center gap-6 text-sm text-neutral-400">
-                <Link href="/" className="hover:text-white transition-colors py-2">{language === 'en' ? 'Home' : 'Acasă'}</Link>
-                <Link href="/portfolio" className="hover:text-white transition-colors py-2">{language === 'en' ? 'Portfolio' : 'Portofoliu'}</Link>
-                <Link href="/pricing" className="hover:text-white transition-colors py-2">{language === 'en' ? 'Pricing' : 'Prețuri'}</Link>
-                <Link href="/solutions" className="hover:text-white transition-colors py-2">{language === 'en' ? 'Solutions' : 'Soluții'}</Link>
+                <Link href="/" className="hover:text-white transition-colors py-2">{t.nav.home}</Link>
+                <Link href="/portfolio" className="hover:text-white transition-colors py-2">{t.nav.portfolio}</Link>
+                <Link href="/pricing" className="hover:text-white transition-colors py-2">{t.nav.pricing}</Link>
+                <Link href="/solutions" className="hover:text-white transition-colors py-2">{t.nav.solutions}</Link>
               </div>
             </div>
             <div className="flex items-center gap-4">
               <div className="text-sm text-neutral-500">
-                {language === 'en' ? '© 2026 All rights reserved.' : '© 2026 Toate drepturile rezervate.'}
+                {({ en: '© 2026 All rights reserved.', ro: '© 2026 Toate drepturile rezervate.', de: '© 2026 Alle Rechte vorbehalten.', fr: '© 2026 Tous droits reserves.', es: '© 2026 Todos los derechos reservados.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
               </div>
               <div className="flex items-center gap-3">
                 <Link href="https://instagram.com/landings.md" className="text-neutral-500 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
@@ -541,7 +643,7 @@ export default function SolutionsPage() {
         </div>
       </footer>
 
-      <StickyContactPill language={language as 'en' | 'ro'} />
+      <StickyContactPill language={language as 'en' | 'ro' | 'de' | 'fr' | 'es'} />
     </div>
   )
 }

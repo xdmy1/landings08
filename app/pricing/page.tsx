@@ -8,253 +8,380 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { InteractiveGridBackground } from '@/components/ui/interactive-grid-background'
 import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
+import { useLanguage } from '@/hooks/useLanguage'
 
 const pricingPlans = [
   {
     id: 1,
     title: {
       en: "Basic Website",
-      ro: "Website de Bază"
+      ro: "Website de Bază",
+      de: "Basis-Website",
+      fr: "Site Web Basique",
+      es: "Sitio Web Basico"
     },
     description: {
       en: "one-time payment",
-      ro: "plată unică"
+      ro: "plată unică",
+      de: "einmalige Zahlung",
+      fr: "paiement unique",
+      es: "pago unico"
     },
     price: "€350",
     period: "/one-time",
     subtitle: {
       en: "Perfect for small businesses and personal projects that need a simple, professional online presence.",
-      ro: "Perfect pentru afaceri mici și proiecte personale care au nevoie de o prezență online simplă și profesională."
+      ro: "Perfect pentru afaceri mici și proiecte personale care au nevoie de o prezență online simplă și profesională.",
+      de: "Perfekt fur kleine Unternehmen und personliche Projekte, die eine einfache, professionelle Online-Prasenz benotigen.",
+      fr: "Parfait pour les petites entreprises et projets personnels necessitant une presence en ligne simple et professionnelle.",
+      es: "Perfecto para pequenos negocios y proyectos personales que necesitan una presencia en linea simple y profesional."
     },
     features: [
       {
         en: "Up to 5 pages website",
-        ro: "Website până la 5 pagini"
+        ro: "Website până la 5 pagini",
+        de: "Website bis zu 5 Seiten",
+        fr: "Site web jusqu'a 5 pages",
+        es: "Sitio web hasta 5 paginas"
       },
       {
-        en: "Responsive mobile design", 
-        ro: "Design responsiv mobil"
+        en: "Responsive mobile design",
+        ro: "Design responsiv mobil",
+        de: "Responsives Mobildesign",
+        fr: "Design responsive mobile",
+        es: "Diseno responsive movil"
       },
       {
         en: "Basic SEO optimization",
-        ro: "Optimizare SEO de bază"
+        ro: "Optimizare SEO de bază",
+        de: "Basis-SEO-Optimierung",
+        fr: "Optimisation SEO de base",
+        es: "Optimizacion SEO basica"
       },
       {
         en: "Contact form integration",
-        ro: "Integrare formular contact"
+        ro: "Integrare formular contact",
+        de: "Kontaktformular-Integration",
+        fr: "Integration formulaire de contact",
+        es: "Integracion formulario de contacto"
       },
       {
         en: "Free hosting for 1 year",
-        ro: "Hosting gratuit 1 an"
+        ro: "Hosting gratuit 1 an",
+        de: "Kostenloses Hosting fur 1 Jahr",
+        fr: "Hebergement gratuit pendant 1 an",
+        es: "Hosting gratuito por 1 ano"
       },
       {
         en: "SSL Certificate included",
-        ro: "Certificat SSL inclus"
+        ro: "Certificat SSL inclus",
+        de: "SSL-Zertifikat inklusive",
+        fr: "Certificat SSL inclus",
+        es: "Certificado SSL incluido"
       },
       {
         en: "1 month support",
-        ro: "1 lună suport"
+        ro: "1 lună suport",
+        de: "1 Monat Support",
+        fr: "1 mois de support",
+        es: "1 mes de soporte"
       }
     ],
     popular: false,
     color: "green",
     buttonText: {
       en: "Get Basic Plan",
-      ro: "Obține Planul de Bază"
+      ro: "Obține Planul de Bază",
+      de: "Basis-Plan wahlen",
+      fr: "Choisir le Plan Basique",
+      es: "Obtener Plan Basico"
     }
   },
   {
     id: 2,
     title: {
       en: "Business Website",
-      ro: "Website de Afaceri"
+      ro: "Website de Afaceri",
+      de: "Business-Website",
+      fr: "Site Web Business",
+      es: "Sitio Web Empresarial"
     },
     description: {
       en: "one-time payment",
-      ro: "plată unică"
+      ro: "plată unică",
+      de: "einmalige Zahlung",
+      fr: "paiement unique",
+      es: "pago unico"
     },
     price: "€550",
     period: "/one-time",
     subtitle: {
       en: "Ideal for growing businesses that need advanced features and professional design with booking systems.",
-      ro: "Ideal pentru afaceri în creștere care au nevoie de funcții avansate și design profesional cu sisteme de rezervări."
+      ro: "Ideal pentru afaceri în creștere care au nevoie de funcții avansate și design profesional cu sisteme de rezervări.",
+      de: "Ideal fur wachsende Unternehmen, die erweiterte Funktionen und professionelles Design mit Buchungssystemen benotigen.",
+      fr: "Ideal pour les entreprises en croissance necessitant des fonctionnalites avancees et un design professionnel avec systemes de reservation.",
+      es: "Ideal para negocios en crecimiento que necesitan funciones avanzadas y diseno profesional con sistemas de reservas."
     },
     features: [
       {
         en: "Up to 10 pages website",
-        ro: "Website până la 10 pagini"
+        ro: "Website până la 10 pagini",
+        de: "Website bis zu 10 Seiten",
+        fr: "Site web jusqu'a 10 pages",
+        es: "Sitio web hasta 10 paginas"
       },
       {
         en: "Custom professional design",
-        ro: "Design profesional personalizat"
+        ro: "Design profesional personalizat",
+        de: "Individuelles professionelles Design",
+        fr: "Design professionnel personnalise",
+        es: "Diseno profesional personalizado"
       },
       {
         en: "Advanced SEO optimization",
-        ro: "Optimizare SEO avansată"
+        ro: "Optimizare SEO avansată",
+        de: "Erweiterte SEO-Optimierung",
+        fr: "Optimisation SEO avancee",
+        es: "Optimizacion SEO avanzada"
       },
       {
         en: "Booking system integration",
-        ro: "Integrare sistem rezervări"
+        ro: "Integrare sistem rezervări",
+        de: "Buchungssystem-Integration",
+        fr: "Integration systeme de reservation",
+        es: "Integracion sistema de reservas"
       },
       {
         en: "Social media integration",
-        ro: "Integrare rețele sociale"
+        ro: "Integrare rețele sociale",
+        de: "Social-Media-Integration",
+        fr: "Integration reseaux sociaux",
+        es: "Integracion redes sociales"
       },
       {
         en: "Google Analytics setup",
-        ro: "Configurare Google Analytics"
+        ro: "Configurare Google Analytics",
+        de: "Google Analytics Einrichtung",
+        fr: "Configuration Google Analytics",
+        es: "Configuracion Google Analytics"
       },
       {
         en: "3 months support included",
-        ro: "3 luni suport incluse"
+        ro: "3 luni suport incluse",
+        de: "3 Monate Support inklusive",
+        fr: "3 mois de support inclus",
+        es: "3 meses de soporte incluidos"
       },
       {
         en: "Performance optimization",
-        ro: "Optimizare performanță"
+        ro: "Optimizare performanță",
+        de: "Leistungsoptimierung",
+        fr: "Optimisation des performances",
+        es: "Optimizacion de rendimiento"
       }
     ],
     popular: true,
-    color: "blue", 
+    color: "blue",
     buttonText: {
       en: "Get Business Plan",
-      ro: "Obține Planul Business"
+      ro: "Obține Planul Business",
+      de: "Business-Plan wahlen",
+      fr: "Choisir le Plan Business",
+      es: "Obtener Plan Empresarial"
     }
   },
   {
     id: 3,
     title: {
       en: "E-commerce Store",
-      ro: "Magazin Online"
+      ro: "Magazin Online",
+      de: "E-Commerce-Shop",
+      fr: "Boutique E-commerce",
+      es: "Tienda E-commerce"
     },
     description: {
       en: "one-time payment",
-      ro: "plată unică"
+      ro: "plată unică",
+      de: "einmalige Zahlung",
+      fr: "paiement unique",
+      es: "pago unico"
     },
     price: "€850",
     period: "/one-time",
     subtitle: {
       en: "Complete online store solution for businesses ready to sell products with full e-commerce functionality.",
-      ro: "Soluție completă de magazin online pentru afaceri gata să vândă produse cu funcționalitate e-commerce completă."
+      ro: "Soluție completă de magazin online pentru afaceri gata să vândă produse cu funcționalitate e-commerce completă.",
+      de: "Komplette Online-Shop-Losung fur Unternehmen, die mit voller E-Commerce-Funktionalitat Produkte verkaufen mochten.",
+      fr: "Solution complete de boutique en ligne pour les entreprises pretes a vendre des produits avec toutes les fonctionnalites e-commerce.",
+      es: "Solucion completa de tienda en linea para negocios listos para vender productos con funcionalidad e-commerce completa."
     },
     features: [
       {
         en: "Unlimited pages & products",
-        ro: "Pagini & produse nelimitate"
+        ro: "Pagini & produse nelimitate",
+        de: "Unbegrenzte Seiten & Produkte",
+        fr: "Pages & produits illimites",
+        es: "Paginas y productos ilimitados"
       },
       {
         en: "Custom e-commerce design",
-        ro: "Design e-commerce personalizat"
+        ro: "Design e-commerce personalizat",
+        de: "Individuelles E-Commerce-Design",
+        fr: "Design e-commerce personnalise",
+        es: "Diseno e-commerce personalizado"
       },
       {
         en: "Shopping cart & checkout",
-        ro: "Coș cumpărături & checkout"
+        ro: "Coș cumpărături & checkout",
+        de: "Warenkorb & Checkout",
+        fr: "Panier & paiement",
+        es: "Carrito de compras y pago"
       },
       {
         en: "Payment gateway integration",
-        ro: "Integrare gateway plată"
+        ro: "Integrare gateway plată",
+        de: "Zahlungsgateway-Integration",
+        fr: "Integration passerelle de paiement",
+        es: "Integracion pasarela de pago"
       },
       {
         en: "Inventory management",
-        ro: "Gestionare inventar"
+        ro: "Gestionare inventar",
+        de: "Bestandsverwaltung",
+        fr: "Gestion des stocks",
+        es: "Gestion de inventario"
       },
       {
         en: "Order management system",
-        ro: "Sistem gestionare comenzi"
+        ro: "Sistem gestionare comenzi",
+        de: "Bestellverwaltungssystem",
+        fr: "Systeme de gestion des commandes",
+        es: "Sistema de gestion de pedidos"
       },
       {
         en: "SEO optimization",
-        ro: "Optimizare SEO"
+        ro: "Optimizare SEO",
+        de: "SEO-Optimierung",
+        fr: "Optimisation SEO",
+        es: "Optimizacion SEO"
       },
       {
         en: "6 months support",
-        ro: "6 luni suport"
+        ro: "6 luni suport",
+        de: "6 Monate Support",
+        fr: "6 mois de support",
+        es: "6 meses de soporte"
       }
     ],
     popular: false,
     color: "purple",
     buttonText: {
-      en: "Get E-commerce Plan", 
-      ro: "Obține Planul E-commerce"
+      en: "Get E-commerce Plan",
+      ro: "Obține Planul E-commerce",
+      de: "E-Commerce-Plan wahlen",
+      fr: "Choisir le Plan E-commerce",
+      es: "Obtener Plan E-commerce"
     }
   },
   {
     id: 4,
     title: {
       en: "SEO Backlinks",
-      ro: "Backlinks SEO"
+      ro: "Backlinks SEO",
+      de: "SEO-Backlinks",
+      fr: "Backlinks SEO",
+      es: "Backlinks SEO"
     },
     description: {
       en: "from €200 to €1500",
-      ro: "de la €200 la €1500"
+      ro: "de la €200 la €1500",
+      de: "von 200€ bis 1500€",
+      fr: "de 200€ a 1500€",
+      es: "de 200€ a 1500€"
     },
     price: "€200-1500",
     period: "",
     subtitle: {
       en: "Boost your Google rankings with high-quality backlinks. Price varies based on competition and domain authority requirements.",
-      ro: "Îmbunătățește-ți pozițiile în Google cu backlinks de înaltă calitate. Prețul variază în funcție de competiție și cerințele domeniului."
+      ro: "Îmbunătățește-ți pozițiile în Google cu backlinks de înaltă calitate. Prețul variază în funcție de competiție și cerințele domeniului.",
+      de: "Verbessern Sie Ihre Google-Rankings mit hochwertigen Backlinks. Der Preis variiert je nach Wettbewerb und Domain-Autoritat.",
+      fr: "Ameliorez votre classement Google avec des backlinks de haute qualite. Le prix varie selon la concurrence et les exigences d'autorite de domaine.",
+      es: "Mejora tu posicionamiento en Google con backlinks de alta calidad. El precio varia segun la competencia y los requisitos de autoridad del dominio."
     },
     features: [
       {
         en: "High-authority domain backlinks",
-        ro: "Backlinks de la domenii cu autoritate înaltă"
+        ro: "Backlinks de la domenii cu autoritate înaltă",
+        de: "Backlinks von Domains mit hoher Autoritat",
+        fr: "Backlinks de domaines a haute autorite",
+        es: "Backlinks de dominios de alta autoridad"
       },
       {
         en: "Competitor analysis included",
-        ro: "Analiză competitori inclusă"
+        ro: "Analiză competitori inclusă",
+        de: "Wettbewerbsanalyse inklusive",
+        fr: "Analyse concurrentielle incluse",
+        es: "Analisis de competidores incluido"
       },
       {
         en: "Keyword research & targeting",
-        ro: "Cercetare și țintire cuvinte cheie"
+        ro: "Cercetare și țintire cuvinte cheie",
+        de: "Keyword-Recherche & Targeting",
+        fr: "Recherche et ciblage de mots-cles",
+        es: "Investigacion y segmentacion de palabras clave"
       },
       {
         en: "Monthly progress reports",
-        ro: "Rapoarte lunare de progres"
+        ro: "Rapoarte lunare de progres",
+        de: "Monatliche Fortschrittsberichte",
+        fr: "Rapports de progression mensuels",
+        es: "Informes mensuales de progreso"
       },
       {
         en: "White-hat SEO techniques only",
-        ro: "Doar tehnici SEO white-hat"
+        ro: "Doar tehnici SEO white-hat",
+        de: "Nur White-Hat-SEO-Techniken",
+        fr: "Uniquement techniques SEO white-hat",
+        es: "Solo tecnicas SEO white-hat"
       },
       {
         en: "Google ranking improvements",
-        ro: "Îmbunătățiri poziții Google"
+        ro: "Îmbunătățiri poziții Google",
+        de: "Google-Ranking-Verbesserungen",
+        fr: "Ameliorations du classement Google",
+        es: "Mejoras en el posicionamiento Google"
       },
       {
         en: "Organic traffic increase",
-        ro: "Creștere trafic organic"
+        ro: "Creștere trafic organic",
+        de: "Steigerung des organischen Traffics",
+        fr: "Augmentation du trafic organique",
+        es: "Aumento del trafico organico"
       },
       {
         en: "3-6 months campaign duration",
-        ro: "Durată campanie 3-6 luni"
+        ro: "Durată campanie 3-6 luni",
+        de: "Kampagnendauer 3-6 Monate",
+        fr: "Duree de campagne 3-6 mois",
+        es: "Duracion de campana 3-6 meses"
       }
     ],
     popular: false,
     color: "yellow",
     buttonText: {
       en: "Get SEO Quote",
-      ro: "Obține Ofertă SEO"
+      ro: "Obține Ofertă SEO",
+      de: "SEO-Angebot erhalten",
+      fr: "Obtenir un Devis SEO",
+      es: "Obtener Presupuesto SEO"
     }
   }
 ]
 
 export default function PricingPage() {
-  const [language, setLanguage] = useState('en')
+  const { language, setLanguage: handleLanguageChange } = useLanguage()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
-  // Load language from localStorage on mount, default to English
-  React.useEffect(() => {
-    const savedLanguage = localStorage.getItem('language')
-    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ro')) {
-      setLanguage(savedLanguage)
-    } else {
-      setLanguage('en')
-    }
-  }, [])
-
-  // Save language to localStorage when changed
-  const handleLanguageChange = (newLanguage: string) => {
-    setLanguage(newLanguage)
-    localStorage.setItem('language', newLanguage)
-  }
+  const [langMenuOpen, setLangMenuOpen] = useState(false)
 
   // Generate WhatsApp URL with plan-specific message
   const getWhatsAppURL = (plan: any) => {
@@ -270,6 +397,24 @@ export default function PricingPage() {
         2: `Salut! Sunt interesată de pachetul Website Business la €550. Aș vrea să aflu mai multe despre funcționalitățile avansate și cum poate ajuta afacerea mea să crească.`,
         3: `Salut! Sunt interesată de pachetul Magazin Online la €850. Aș vrea să discutăm despre configurarea unui magazin online complet pentru afacerea mea.`,
         4: `Salut! Sunt interesată de serviciul de Backlinks SEO (€200-1500). Aș vrea să îmi îmbunătățesc pozițiile în Google și să discutăm cea mai bună abordare pentru website-ul și industria mea.`
+      },
+      de: {
+        1: `Hallo! Ich interessiere mich fur das Basis-Website-Paket fur 350€. Ich mochte mehr daruber erfahren, wie ich eine professionelle Website fur mein Unternehmen erstellen kann.`,
+        2: `Hallo! Ich interessiere mich fur das Business-Website-Paket fur 550€. Ich mochte mehr uber die erweiterten Funktionen erfahren und wie es meinem Unternehmen beim Wachstum helfen kann.`,
+        3: `Hallo! Ich interessiere mich fur das E-Commerce-Shop-Paket fur 850€. Ich mochte die Einrichtung eines kompletten Online-Shops fur mein Unternehmen besprechen.`,
+        4: `Hallo! Ich interessiere mich fur Ihren SEO-Backlinks-Service (200-1500€). Ich mochte meine Google-Rankings verbessern und den besten Ansatz fur meine Website und Branche besprechen.`
+      },
+      fr: {
+        1: `Bonjour ! Je suis interesse(e) par le pack Site Web Basique a 350€. J'aimerais en savoir plus sur la creation d'un site web professionnel pour mon entreprise.`,
+        2: `Bonjour ! Je suis interesse(e) par le pack Site Web Business a 550€. J'aimerais en savoir plus sur les fonctionnalites avancees et comment cela peut aider mon entreprise a se developper.`,
+        3: `Bonjour ! Je suis interesse(e) par le pack Boutique E-commerce a 850€. J'aimerais discuter de la mise en place d'une boutique en ligne complete pour mon entreprise.`,
+        4: `Bonjour ! Je suis interesse(e) par votre service de Backlinks SEO (200-1500€). J'aimerais ameliorer mon classement Google et discuter de la meilleure approche pour mon site web et mon secteur.`
+      },
+      es: {
+        1: `Hola! Estoy interesado/a en el paquete de Sitio Web Basico por 350€. Me gustaria saber mas sobre como empezar con un sitio web profesional para mi negocio.`,
+        2: `Hola! Estoy interesado/a en el paquete de Sitio Web Empresarial por 550€. Me gustaria aprender mas sobre las funciones avanzadas y como puede ayudar a crecer mi negocio.`,
+        3: `Hola! Estoy interesado/a en el paquete de Tienda E-commerce por 850€. Me gustaria discutir la configuracion de una tienda en linea completa para mi negocio.`,
+        4: `Hola! Estoy interesado/a en su servicio de Backlinks SEO (200-1500€). Me gustaria mejorar mi posicionamiento en Google y discutir el mejor enfoque para mi sitio web y sector.`
       }
     }
     
@@ -313,6 +458,60 @@ export default function PricingPage() {
         title: "Obține o consultație gratuită!",
         button: "Contactează-mă"
       }
+    },
+    de: {
+      nav: {
+        home: "Startseite",
+        portfolio: "Portfolio",
+        pricing: "Preise",
+        solutions: "Losungen",
+        contact: "Kontakt"
+      },
+      hero: {
+        title: "Unsere Preise",
+        subtitle: "*Jeder Preis ist je nach Projekt verhandelbar"
+      },
+      contact: "Kontaktieren Sie uns fur Details",
+      cta: {
+        title: "Kostenlose Beratung erhalten!",
+        button: "Kontaktieren Sie mich"
+      }
+    },
+    fr: {
+      nav: {
+        home: "Accueil",
+        portfolio: "Portfolio",
+        pricing: "Tarifs",
+        solutions: "Solutions",
+        contact: "Contactez-moi"
+      },
+      hero: {
+        title: "Nos tarifs",
+        subtitle: "*Chaque prix est negociable selon le projet"
+      },
+      contact: "Contactez-nous pour plus de details",
+      cta: {
+        title: "Obtenez une consultation gratuite !",
+        button: "Contactez-moi"
+      }
+    },
+    es: {
+      nav: {
+        home: "Inicio",
+        portfolio: "Portafolio",
+        pricing: "Precios",
+        solutions: "Soluciones",
+        contact: "Contactame"
+      },
+      hero: {
+        title: "Nuestros precios",
+        subtitle: "*Cualquier precio es negociable dependiendo del proyecto"
+      },
+      contact: "Contactanos para mas detalles",
+      cta: {
+        title: "Obtiene una consulta gratuita!",
+        button: "Contactame"
+      }
     }
   }
 
@@ -355,12 +554,30 @@ export default function PricingPage() {
               </div>
               
               <div className="flex items-center gap-4">
-                <button
-                  onClick={() => handleLanguageChange(language === 'en' ? 'ro' : 'en')}
-                  className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50 hover:border-neutral-600 backdrop-blur-sm"
-                >
-                  {language.toUpperCase()}
-                </button>
+                <div className="relative">
+                  <button
+                    onClick={() => setLangMenuOpen(!langMenuOpen)}
+                    className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50 hover:border-neutral-600 backdrop-blur-sm"
+                  >
+                    {language.toUpperCase()}
+                  </button>
+                  {langMenuOpen && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
+                      <div className="absolute top-full right-0 mt-2 bg-neutral-900/95 backdrop-blur-md rounded-lg border border-neutral-700/50 overflow-hidden z-50 min-w-[80px]">
+                        {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (
+                          <button
+                            key={lang}
+                            onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false); }}
+                            className={`block w-full text-left px-4 py-2 text-sm transition-colors ${language === lang ? "bg-neutral-800 text-white" : "text-neutral-400 hover:bg-neutral-800/50 hover:text-white"}`}
+                          >
+                            {lang.toUpperCase()}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
                 <Link href="https://wa.me/37368327082">
                   <Button className="bg-gradient-to-r from-white to-neutral-200 hover:from-neutral-100 hover:to-neutral-300 text-black font-medium px-6 py-2 rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
                     {t.nav.contact}
@@ -371,12 +588,30 @@ export default function PricingPage() {
 
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center gap-3">
-              <button
-                onClick={() => setLanguage(language === 'en' ? 'ro' : 'en')}
-                className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50"
-              >
-                {language.toUpperCase()}
-              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setLangMenuOpen(!langMenuOpen)}
+                  className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50"
+                >
+                  {language.toUpperCase()}
+                </button>
+                {langMenuOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
+                    <div className="absolute top-full right-0 mt-2 bg-neutral-900/95 backdrop-blur-md rounded-lg border border-neutral-700/50 overflow-hidden z-50 min-w-[80px]">
+                      {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (
+                        <button
+                          key={lang}
+                          onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false); }}
+                          className={`block w-full text-left px-4 py-2 text-sm transition-colors ${language === lang ? "bg-neutral-800 text-white" : "text-neutral-400 hover:bg-neutral-800/50 hover:text-white"}`}
+                        >
+                          {lang.toUpperCase()}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="p-2 rounded-lg border border-neutral-700/50 hover:border-neutral-600 hover:bg-neutral-800/50 transition-all duration-300"
@@ -565,7 +800,7 @@ export default function PricingPage() {
                     transition={{ duration: 0.6 }}
                     className="text-4xl lg:text-5xl font-bold text-white leading-tight"
                   >
-                    {language === 'en' ? "Let's talk and make it happen" : "Să vorbim și să facem să se întâmple"}
+                    {({ en: "Let's talk and make it happen", ro: "Să vorbim și să facem să se întâmple", de: 'Lassen Sie uns reden und es verwirklichen', fr: 'Parlons-en et realisons-le', es: 'Hablemos y hagamoslo realidad' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                   </motion.h2>
                   
                   <motion.p
@@ -574,9 +809,7 @@ export default function PricingPage() {
                     transition={{ duration: 0.6, delay: 0.2 }}
                     className="text-xl text-neutral-300 leading-relaxed"
                   >
-                    {language === 'en' 
-                      ? "Reach out to us, and we'll respond as soon as possible." 
-                      : "Contactează-ne și îți vom răspunde cât mai curând posibil."}
+                    {({ en: "Reach out to us, and we'll respond as soon as possible.", ro: "Contactează-ne și îți vom răspunde cât mai curând posibil.", de: 'Kontaktieren Sie uns und wir antworten so schnell wie moglich.', fr: 'Contactez-nous et nous vous repondrons des que possible.', es: 'Contactanos y te responderemos lo antes posible.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                   </motion.p>
 
                   <motion.div
@@ -586,7 +819,7 @@ export default function PricingPage() {
                   >
                     <Link href="https://wa.me/37368327082">
                       <Button className="bg-gradient-to-r from-white to-neutral-100 hover:from-neutral-50 hover:to-neutral-200 text-black font-semibold px-8 py-4 text-lg rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
-                        {language === 'en' ? 'Talk to us' : 'Vorbește cu noi'}
+                        {({ en: 'Talk to us', ro: 'Vorbește cu noi', de: 'Kontaktieren Sie uns', fr: 'Parlez-nous', es: 'Hablanos' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                       </Button>
                     </Link>
                   </motion.div>
@@ -696,23 +929,23 @@ export default function PricingPage() {
               
               <div className="flex items-center gap-6 text-sm text-neutral-400">
                 <Link href="/" className="hover:text-white transition-colors py-2">
-                  {language === 'en' ? 'Home' : 'Acasă'}
+                  {({ en: 'Home', ro: 'Acasă', de: 'Startseite', fr: 'Accueil', es: 'Inicio' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                 </Link>
                 <Link href="/portfolio" className="hover:text-white transition-colors py-2">
-                  {language === 'en' ? 'Portfolio' : 'Portofoliu'}
+                  {({ en: 'Portfolio', ro: 'Portofoliu', de: 'Portfolio', fr: 'Portfolio', es: 'Portafolio' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                 </Link>
                 <Link href="/pricing" className="hover:text-white transition-colors py-2">
-                  {language === 'en' ? 'Pricing' : 'Prețuri'}
+                  {({ en: 'Pricing', ro: 'Prețuri', de: 'Preise', fr: 'Tarifs', es: 'Precios' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                 </Link>
                 <Link href="/solutions" className="hover:text-white transition-colors py-2">
-                  {language === 'en' ? 'Solutions' : 'Soluții'}
+                  {({ en: 'Solutions', ro: 'Soluții', de: 'Losungen', fr: 'Solutions', es: 'Soluciones' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                 </Link>
               </div>
             </div>
             
             <div className="flex items-center gap-4">
               <div className="text-sm text-neutral-500">
-                {language === 'en' ? '© 2026 All rights reserved.' : '© 2026 Toate drepturile rezervate.'}
+                {({ en: '© 2026 All rights reserved.', ro: '© 2026 Toate drepturile rezervate.', de: '© 2026 Alle Rechte vorbehalten.', fr: '© 2026 Tous droits reserves.', es: '© 2026 Todos los derechos reservados.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
               </div>
               <div className="flex items-center gap-3">
                 <Link href="https://instagram.com/landings.md" className="text-neutral-500 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
@@ -732,7 +965,7 @@ export default function PricingPage() {
       </footer>
       
       {/* Sticky Contact Pill */}
-      <StickyContactPill language={language as 'en' | 'ro'} />
+      <StickyContactPill language={language as 'en' | 'ro' | 'de' | 'fr' | 'es'} />
     </div>
   )
 }

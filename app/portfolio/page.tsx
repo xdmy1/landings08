@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card'
 import { InteractiveGridBackground } from '@/components/ui/interactive-grid-background'
 import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
+import { useLanguage } from '@/hooks/useLanguage'
 
 const projects = [
   {
@@ -16,7 +17,10 @@ const projects = [
     title: "RADX Cooling Solutions",
     description: {
       en: "Professional website for cooling solutions company. Presentation of services and industrial cooling products.",
-      ro: "Website profesional pentru companie de soluții de răcire. Prezentarea serviciilor și produselor de răcire industrială."
+      ro: "Website profesional pentru companie de soluții de răcire. Prezentarea serviciilor și produselor de răcire industrială.",
+      de: "Professionelle Website fur ein Kuhllosungsunternehmen. Prasentation von Dienstleistungen und industriellen Kuhlprodukten.",
+      fr: "Site web professionnel pour une entreprise de solutions de refroidissement. Presentation des services et produits de refroidissement industriel.",
+      es: "Sitio web profesional para empresa de soluciones de refrigeracion. Presentacion de servicios y productos de refrigeracion industrial."
     },
     image: "/images/radx.png",
     url: "https://radx.solutions",
@@ -28,7 +32,10 @@ const projects = [
     title: "Inter-Bus",
     description: {
       en: "International platform for authentic bus parts and components. Global shipping to 50+ countries with 2000+ parts catalog.",
-      ro: "Platformă internațională pentru piese autentice de autobuz. Livrare globală în peste 50 de țări cu catalog de 2000+ piese."
+      ro: "Platformă internațională pentru piese autentice de autobuz. Livrare globală în peste 50 de țări cu catalog de 2000+ piese.",
+      de: "Internationale Plattform fur authentische Busteile und Komponenten. Weltweiter Versand in uber 50 Lander mit uber 2000 Teilen.",
+      fr: "Plateforme internationale pour pieces authentiques d'autobus. Livraison mondiale dans plus de 50 pays avec un catalogue de plus de 2000 pieces.",
+      es: "Plataforma internacional para piezas autenticas de autobus. Envio global a mas de 50 paises con catalogo de mas de 2000 piezas."
     },
     image: "/images/inter-bus.png",
     url: "https://inter-bus.md",
@@ -40,7 +47,10 @@ const projects = [
     title: "Rizza Classic",
     description: {
       en: "Italian website for old cars restoration.",
-      ro: "Website italian pentru restaurarea mașinilor vechi."
+      ro: "Website italian pentru restaurarea mașinilor vechi.",
+      de: "Italienische Website fur die Restaurierung alter Autos.",
+      fr: "Site web italien pour la restauration de voitures anciennes.",
+      es: "Sitio web italiano para la restauracion de coches clasicos."
     },
     image: "/images/rizzaclassic.png",
     url: "https://rizzaclassic.com",
@@ -52,7 +62,10 @@ const projects = [
     title: "Auto Huse",
     description: {
       en: "Complete website for car covers. Presentation, online orders, gallery.",
-      ro: "Website complet pentru huse auto. Prezentare, comenzi online, galerie."
+      ro: "Website complet pentru huse auto. Prezentare, comenzi online, galerie.",
+      de: "Komplette Website fur Autobezuge. Prasentation, Online-Bestellungen, Galerie.",
+      fr: "Site web complet pour housses de voiture. Presentation, commandes en ligne, galerie.",
+      es: "Sitio web completo para fundas de coche. Presentacion, pedidos en linea, galeria."
     },
     image: "/images/autohuse.md-min.png",
     url: "https://autohuse.md/",
@@ -64,7 +77,10 @@ const projects = [
     title: "CRM Platform",
     description: {
       en: "Platform for auto service client management.",
-      ro: "Platformă pentru client management service auto."
+      ro: "Platformă pentru client management service auto.",
+      de: "Plattform fur Kundenmanagement im Autoservice.",
+      fr: "Plateforme de gestion clients pour service automobile.",
+      es: "Plataforma de gestion de clientes para servicio automotriz."
     },
     image: "/images/CRM.png",
     url: "#",
@@ -76,7 +92,10 @@ const projects = [
     title: "U. Dental Clinic",
     description: {
       en: "Complete website for dental clinic.",
-      ro: "Website complet pentru clinica stomatologică."
+      ro: "Website complet pentru clinica stomatologică.",
+      de: "Komplette Website fur Zahnklinik.",
+      fr: "Site web complet pour clinique dentaire.",
+      es: "Sitio web completo para clinica dental."
     },
     image: "/images/udc (1).png",
     url: "https://udc.md",
@@ -88,7 +107,10 @@ const projects = [
     title: "Auto Marga Service",
     description: {
       en: "Simple landing page - auto service.",
-      ro: "Landing page simplu - service auto."
+      ro: "Landing page simplu - service auto.",
+      de: "Einfache Landing Page - Autoservice.",
+      fr: "Page d'atterrissage simple - service automobile.",
+      es: "Pagina de aterrizaje simple - servicio automotriz."
     },
     image: "/images/automarga (1).png",
     url: "https://automarga.md/",
@@ -100,7 +122,10 @@ const projects = [
     title: "Elena Diacon Salon",
     description: {
       en: "Elegant website for beauty salon with online booking system and interactive photo gallery.",
-      ro: "Website elegant pentru salon de înfrumusețare cu sistem de programări online și galerie foto interactivă."
+      ro: "Website elegant pentru salon de înfrumusețare cu sistem de programări online și galerie foto interactivă.",
+      de: "Elegante Website fur Schonheitssalon mit Online-Buchungssystem und interaktiver Fotogalerie.",
+      fr: "Site web elegant pour salon de beaute avec systeme de reservation en ligne et galerie photo interactive.",
+      es: "Sitio web elegante para salon de belleza con sistema de reservas en linea y galeria de fotos interactiva."
     },
     image: "/images/elenadiacon (1).png",
     url: "https://elenadiacon.md",
@@ -112,7 +137,10 @@ const projects = [
     title: "RespectAuto",
     description: {
       en: "Car rental platform with advanced SEO and booking system. 300% organic growth.",
-      ro: "Platformă de închiriere auto cu SEO avansat și sistem de rezervări. Creștere organică de 300%."
+      ro: "Platformă de închiriere auto cu SEO avansat și sistem de rezervări. Creștere organică de 300%.",
+      de: "Autovermietungsplattform mit fortschrittlichem SEO und Buchungssystem. 300% organisches Wachstum.",
+      fr: "Plateforme de location de voitures avec SEO avance et systeme de reservation. Croissance organique de 300%.",
+      es: "Plataforma de alquiler de coches con SEO avanzado y sistema de reservas. Crecimiento organico del 300%."
     },
     image: "/images/respectauto (1).png",
     url: "https://respectauto.md",
@@ -124,7 +152,10 @@ const projects = [
     title: "CMIEA Platform",
     description: {
       en: "Complex educational platform with authentication system, interactive courses and user dashboard.",
-      ro: "Platformă educațională complexă cu sistem de autentificare, cursuri interactive și dashboard pentru utilizatori."
+      ro: "Platformă educațională complexă cu sistem de autentificare, cursuri interactive și dashboard pentru utilizatori.",
+      de: "Komplexe Bildungsplattform mit Authentifizierungssystem, interaktiven Kursen und Benutzer-Dashboard.",
+      fr: "Plateforme educative complexe avec systeme d'authentification, cours interactifs et tableau de bord utilisateur.",
+      es: "Plataforma educativa compleja con sistema de autenticacion, cursos interactivos y panel de usuario."
     },
     image: "/images/cmiea (1).png",
     url: "https://cmiea.md",
@@ -136,7 +167,10 @@ const projects = [
     title: "EuroGard",
     description: {
       en: "High-converting landing page for gardening services with conversion and sales optimization.",
-      ro: "Landing page high-converting pentru servicii de grădinărit cu optimizare pentru conversii și vânzări."
+      ro: "Landing page high-converting pentru servicii de grădinărit cu optimizare pentru conversii și vânzări.",
+      de: "Hochkonvertierende Landing Page fur Gartendienstleistungen mit Konversions- und Verkaufsoptimierung.",
+      fr: "Page d'atterrissage a haute conversion pour services de jardinage avec optimisation des conversions et des ventes.",
+      es: "Pagina de aterrizaje de alta conversion para servicios de jardineria con optimizacion de conversiones y ventas."
     },
     image: "/images/eurogard (1).png",
     url: "https://eurogard.md",
@@ -148,7 +182,10 @@ const projects = [
     title: "Green Next.js Demo",
     description: {
       en: "Interactive demo built with Next.js, showcasing modern web development capabilities.",
-      ro: "Demo interactiv construit cu Next.js, prezentând capabilitățile moderne de dezvoltare web."
+      ro: "Demo interactiv construit cu Next.js, prezentând capabilitățile moderne de dezvoltare web.",
+      de: "Interaktive Demo mit Next.js, die moderne Webentwicklungsfahigkeiten zeigt.",
+      fr: "Demo interactive construite avec Next.js, presentant les capacites modernes de developpement web.",
+      es: "Demo interactiva construida con Next.js, mostrando capacidades modernas de desarrollo web."
     },
     image: "/images/img-hero.jpeg",
     url: "https://nextjs-green-eta-60.vercel.app/",
@@ -160,7 +197,10 @@ const projects = [
     title: "Advanced Green Demo",
     description: {
       en: "Advanced demonstration with complex functionalities, animations and modern interactions.",
-      ro: "Demonstrație avansată cu funcționalități complexe, animații și interacțiuni moderne."
+      ro: "Demonstrație avansată cu funcționalități complexe, animații și interacțiuni moderne.",
+      de: "Fortgeschrittene Demonstration mit komplexen Funktionalitaten, Animationen und modernen Interaktionen.",
+      fr: "Demonstration avancee avec des fonctionnalites complexes, des animations et des interactions modernes.",
+      es: "Demostracion avanzada con funcionalidades complejas, animaciones e interacciones modernas."
     },
     image: "/images/img-hero.jpeg",
     url: "https://green-nextjs.vercel.app/",
@@ -170,35 +210,20 @@ const projects = [
 ]
 
 const categories = [
-  { id: 'all', name: { en: 'All Projects', ro: 'Toate Proiectele' } },
-  { id: 'automotive', name: { en: 'Automotive', ro: 'Auto' } },
-  { id: 'ecommerce', name: { en: 'E-commerce', ro: 'E-commerce' } },
-  { id: 'healthcare', name: { en: 'Healthcare', ro: 'Sănătate' } },
-  { id: 'education', name: { en: 'Education', ro: 'Educație' } },
-  { id: 'services', name: { en: 'Services', ro: 'Servicii' } },
-  { id: 'demo', name: { en: 'Demos', ro: 'Demo-uri' } }
+  { id: 'all', name: { en: 'All Projects', ro: 'Toate Proiectele', de: 'Alle Projekte', fr: 'Tous les Projets', es: 'Todos los Proyectos' } },
+  { id: 'automotive', name: { en: 'Automotive', ro: 'Auto', de: 'Automobil', fr: 'Automobile', es: 'Automotriz' } },
+  { id: 'ecommerce', name: { en: 'E-commerce', ro: 'E-commerce', de: 'E-Commerce', fr: 'E-commerce', es: 'E-commerce' } },
+  { id: 'healthcare', name: { en: 'Healthcare', ro: 'Sănătate', de: 'Gesundheit', fr: 'Sante', es: 'Salud' } },
+  { id: 'education', name: { en: 'Education', ro: 'Educație', de: 'Bildung', fr: 'Education', es: 'Educacion' } },
+  { id: 'services', name: { en: 'Services', ro: 'Servicii', de: 'Dienstleistungen', fr: 'Services', es: 'Servicios' } },
+  { id: 'demo', name: { en: 'Demos', ro: 'Demo-uri', de: 'Demos', fr: 'Demos', es: 'Demos' } }
 ]
 
 export default function PortfolioPage() {
-  const [language, setLanguage] = useState('en')
+  const { language, setLanguage: handleLanguageChange } = useLanguage()
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
-  // Load language from localStorage on mount, default to English
-  React.useEffect(() => {
-    const savedLanguage = localStorage.getItem('language')
-    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ro')) {
-      setLanguage(savedLanguage)
-    } else {
-      setLanguage('en')
-    }
-  }, [])
-
-  // Save language to localStorage when changed
-  const handleLanguageChange = (newLanguage: string) => {
-    setLanguage(newLanguage)
-    localStorage.setItem('language', newLanguage)
-  }
+  const [langMenuOpen, setLangMenuOpen] = useState(false)
 
   const text = {
     en: {
@@ -248,6 +273,78 @@ export default function PortfolioPage() {
         title: "Obține o consultație gratuită!",
         button: "Contactează-mă"
       }
+    },
+    de: {
+      nav: {
+        home: "Startseite",
+        portfolio: "Portfolio",
+        pricing: "Preise",
+        solutions: "Losungen",
+        contact: "Kontakt"
+      },
+      hero: {
+        title: "Unser Portfolio",
+        description: "Prasentieren wir unsere besten Arbeiten und erfolgreichen Projekte"
+      },
+      portfolio: {
+        title: "Portfolio",
+        subtitle: "*alle Projekte sind individuell entwickelt, kein WordPress",
+        visitSite: "Website besuchen",
+        viewDemo: "Demo ansehen",
+        private: "Privat"
+      },
+      cta: {
+        title: "Holen Sie sich eine kostenlose Beratung!",
+        button: "Kontaktieren Sie mich"
+      }
+    },
+    fr: {
+      nav: {
+        home: "Accueil",
+        portfolio: "Portfolio",
+        pricing: "Tarifs",
+        solutions: "Solutions",
+        contact: "Contactez-moi"
+      },
+      hero: {
+        title: "Notre Portfolio",
+        description: "Presentation de nos meilleurs travaux et projets reussis"
+      },
+      portfolio: {
+        title: "Portfolio",
+        subtitle: "*tous les projets sont developpes sur mesure, pas de WordPress",
+        visitSite: "Visiter le site",
+        viewDemo: "Voir la Demo",
+        private: "Prive"
+      },
+      cta: {
+        title: "Obtenez une consultation gratuite !",
+        button: "Contactez-moi"
+      }
+    },
+    es: {
+      nav: {
+        home: "Inicio",
+        portfolio: "Portafolio",
+        pricing: "Precios",
+        solutions: "Soluciones",
+        contact: "Contactame"
+      },
+      hero: {
+        title: "Nuestro Portafolio",
+        description: "Mostrando nuestros mejores trabajos y proyectos exitosos"
+      },
+      portfolio: {
+        title: "Portafolio",
+        subtitle: "*todos los proyectos son desarrollados a medida, sin WordPress",
+        visitSite: "Visitar Sitio",
+        viewDemo: "Ver Demo",
+        private: "Privado"
+      },
+      cta: {
+        title: "Obtiene una consulta gratuita!",
+        button: "Contactame"
+      }
     }
   }
 
@@ -294,12 +391,30 @@ export default function PortfolioPage() {
               </div>
               
               <div className="flex items-center gap-4">
-                <button
-                  onClick={() => handleLanguageChange(language === 'en' ? 'ro' : 'en')}
-                  className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50 hover:border-neutral-600 backdrop-blur-sm"
-                >
-                  {language.toUpperCase()}
-                </button>
+                <div className="relative" >
+                  <button
+                    onClick={() => setLangMenuOpen(!langMenuOpen)}
+                    className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50 hover:border-neutral-600 backdrop-blur-sm"
+                  >
+                    {language.toUpperCase()}
+                  </button>
+                  {langMenuOpen && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
+                      <div className="absolute top-full right-0 mt-2 bg-neutral-900/95 backdrop-blur-md rounded-lg border border-neutral-700/50 overflow-hidden z-50 min-w-[80px]">
+                      {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (
+                        <button
+                          key={lang}
+                          onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false); }}
+                          className={`block w-full text-left px-4 py-2 text-sm transition-colors ${language === lang ? "bg-neutral-800 text-white" : "text-neutral-400 hover:bg-neutral-800/50 hover:text-white"}`}
+                        >
+                          {lang.toUpperCase()}
+                        </button>
+                      ))}
+                      </div>
+                    </>
+                  )}
+                </div>
                 <Link href="https://wa.me/37368327082">
                   <Button className="bg-gradient-to-r from-white to-neutral-200 hover:from-neutral-100 hover:to-neutral-300 text-black font-medium px-6 py-2 rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
                     {t.nav.contact}
@@ -310,12 +425,30 @@ export default function PortfolioPage() {
 
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center gap-3">
-              <button
-                onClick={() => setLanguage(language === 'en' ? 'ro' : 'en')}
-                className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50"
-              >
-                {language.toUpperCase()}
-              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setLangMenuOpen(!langMenuOpen)}
+                  className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50"
+                >
+                  {language.toUpperCase()}
+                </button>
+                {langMenuOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
+                    <div className="absolute top-full right-0 mt-2 bg-neutral-900/95 backdrop-blur-md rounded-lg border border-neutral-700/50 overflow-hidden z-50 min-w-[80px]">
+                      {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (
+                        <button
+                          key={lang}
+                          onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false); }}
+                          className={`block w-full text-left px-4 py-2 text-sm transition-colors ${language === lang ? "bg-neutral-800 text-white" : "text-neutral-400 hover:bg-neutral-800/50 hover:text-white"}`}
+                        >
+                          {lang.toUpperCase()}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="p-2 rounded-lg border border-neutral-700/50 hover:border-neutral-600 hover:bg-neutral-800/50 transition-all duration-300"
@@ -541,7 +674,7 @@ export default function PortfolioPage() {
                     transition={{ duration: 0.6 }}
                     className="text-4xl lg:text-5xl font-bold text-white leading-tight"
                   >
-                    {language === 'en' ? "Let's talk and make it happen" : "Să vorbim și să facem să se întâmple"}
+                    {({ en: "Let's talk and make it happen", ro: "Să vorbim și să facem să se întâmple", de: 'Lassen Sie uns reden und es verwirklichen', fr: 'Parlons-en et realisons-le', es: 'Hablemos y hagamoslo realidad' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                   </motion.h2>
                   
                   <motion.p
@@ -550,9 +683,7 @@ export default function PortfolioPage() {
                     transition={{ duration: 0.6, delay: 0.2 }}
                     className="text-xl text-neutral-300 leading-relaxed"
                   >
-                    {language === 'en' 
-                      ? "Reach out to us, and we'll respond as soon as possible." 
-                      : "Contactează-ne și îți vom răspunde cât mai curând posibil."}
+                    {({ en: "Reach out to us, and we'll respond as soon as possible.", ro: "Contactează-ne și îți vom răspunde cât mai curând posibil.", de: 'Kontaktieren Sie uns und wir antworten so schnell wie moglich.', fr: 'Contactez-nous et nous vous repondrons des que possible.', es: 'Contactanos y te responderemos lo antes posible.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                   </motion.p>
 
                   <motion.div
@@ -562,7 +693,7 @@ export default function PortfolioPage() {
                   >
                     <Link href="https://wa.me/37368327082">
                       <Button className="bg-gradient-to-r from-white to-neutral-100 hover:from-neutral-50 hover:to-neutral-200 text-black font-semibold px-8 py-4 text-lg rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
-                        {language === 'en' ? 'Talk to us' : 'Vorbește cu noi'}
+                        {({ en: 'Talk to us', ro: 'Vorbește cu noi', de: 'Kontaktieren Sie uns', fr: 'Parlez-nous', es: 'Hablanos' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                       </Button>
                     </Link>
                   </motion.div>
@@ -666,23 +797,23 @@ export default function PortfolioPage() {
               
               <div className="flex items-center gap-6 text-sm text-neutral-400">
                 <Link href="/" className="hover:text-white transition-colors py-2">
-                  {language === 'en' ? 'Home' : 'Acasă'}
+                  {({ en: 'Home', ro: 'Acasă', de: 'Startseite', fr: 'Accueil', es: 'Inicio' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                 </Link>
                 <Link href="/portfolio" className="hover:text-white transition-colors py-2">
-                  {language === 'en' ? 'Portfolio' : 'Portofoliu'}
+                  {({ en: 'Portfolio', ro: 'Portofoliu', de: 'Portfolio', fr: 'Portfolio', es: 'Portafolio' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                 </Link>
                 <Link href="/pricing" className="hover:text-white transition-colors py-2">
-                  {language === 'en' ? 'Pricing' : 'Prețuri'}
+                  {({ en: 'Pricing', ro: 'Prețuri', de: 'Preise', fr: 'Tarifs', es: 'Precios' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                 </Link>
                 <Link href="/solutions" className="hover:text-white transition-colors py-2">
-                  {language === 'en' ? 'Solutions' : 'Soluții'}
+                  {({ en: 'Solutions', ro: 'Soluții', de: 'Losungen', fr: 'Solutions', es: 'Soluciones' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                 </Link>
               </div>
             </div>
             
             <div className="flex items-center gap-4">
               <div className="text-sm text-neutral-500">
-                {language === 'en' ? '© 2026 All rights reserved.' : '© 2026 Toate drepturile rezervate.'}
+                {({ en: '© 2026 All rights reserved.', ro: '© 2026 Toate drepturile rezervate.', de: '© 2026 Alle Rechte vorbehalten.', fr: '© 2026 Tous droits reserves.', es: '© 2026 Todos los derechos reservados.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
               </div>
               <div className="flex items-center gap-3">
                 <Link href="https://instagram.com/landings.md" className="text-neutral-500 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
@@ -702,7 +833,7 @@ export default function PortfolioPage() {
       </footer>
       
       {/* Sticky Contact Pill */}
-      <StickyContactPill language={language as 'en' | 'ro'} />
+      <StickyContactPill language={language as 'en' | 'ro' | 'de' | 'fr' | 'es'} />
     </div>
   )
 }

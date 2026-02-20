@@ -10,6 +10,7 @@ import { EncryptedText } from '@/components/ui/encrypted-text'
 import { AnimatedTooltip } from '@/components/ui/animated-tooltip'
 import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card'
 import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
+import { useLanguage } from '@/hooks/useLanguage'
 
 const techStack = [
   {
@@ -45,24 +46,9 @@ const techStack = [
 ]
 
 export default function HomePage() {
-  const [language, setLanguage] = useState('en')
+  const { language, setLanguage: handleLanguageChange } = useLanguage()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
-  // Load language from localStorage on mount, default to English
-  React.useEffect(() => {
-    const savedLanguage = localStorage.getItem('language')
-    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ro')) {
-      setLanguage(savedLanguage)
-    } else {
-      setLanguage('en')
-    }
-  }, [])
-
-  // Save language to localStorage when changed
-  const handleLanguageChange = (newLanguage: string) => {
-    setLanguage(newLanguage)
-    localStorage.setItem('language', newLanguage)
-  }
+  const [langMenuOpen, setLangMenuOpen] = useState(false)
 
   const text = {
     en: {
@@ -112,6 +98,78 @@ export default function HomePage() {
         title: "Creează website-uri profesionale care convertesc",
         subtitle: "Website-uri moderne, rapide și optimizate care ajută afacerea ta să crească."
       }
+    },
+    de: {
+      nav: {
+        home: "Startseite",
+        portfolio: "Portfolio",
+        pricing: "Preise",
+        solutions: "Losungen",
+        contact: "Kontakt"
+      },
+      announcement: "Wir erstellen Websites, die verkaufen",
+      hero: {
+        title1: "Uberlegene",
+        title2: "Websites ",
+        title3: "in Europa",
+        title4: "",
+        description: "Wir erstellen moderne, schnelle und SEO-optimierte Websites, die Ihrem Unternehmen helfen, neue Kunden zu erreichen und den Umsatz zu steigern.",
+        cta1: "Portfolio ansehen",
+        cta2: "Individuelles Angebot",
+        encrypted: "professionelle Websites, die Ergebnisse liefern"
+      },
+      portfolio: {
+        title: "Professionelle Websites erstellen, die konvertieren",
+        subtitle: "Moderne, schnelle und optimierte Websites, die Ihrem Unternehmen beim Wachstum helfen."
+      }
+    },
+    fr: {
+      nav: {
+        home: "Accueil",
+        portfolio: "Portfolio",
+        pricing: "Tarifs",
+        solutions: "Solutions",
+        contact: "Contactez-moi"
+      },
+      announcement: "Nous creons des sites web qui vendent",
+      hero: {
+        title1: "Des sites",
+        title2: "web superieurs",
+        title3: "en Europe",
+        title4: "",
+        description: "Nous creons des sites web modernes, rapides et optimises pour le SEO qui aident votre entreprise a atteindre de nouveaux clients et augmenter les ventes.",
+        cta1: "Voir le Portfolio",
+        cta2: "Devis Personnalise",
+        encrypted: "des sites web professionnels qui generent des resultats"
+      },
+      portfolio: {
+        title: "Creer des sites web professionnels qui convertissent",
+        subtitle: "Des sites web modernes, rapides et optimises qui aident votre entreprise a se developper."
+      }
+    },
+    es: {
+      nav: {
+        home: "Inicio",
+        portfolio: "Portafolio",
+        pricing: "Precios",
+        solutions: "Soluciones",
+        contact: "Contactame"
+      },
+      announcement: "Creamos sitios web que venden",
+      hero: {
+        title1: "Sitios web",
+        title2: "superiores",
+        title3: "en Europa",
+        title4: "",
+        description: "Creamos sitios web modernos, rapidos y optimizados para SEO que ayudan a tu negocio a alcanzar nuevos clientes y aumentar las ventas.",
+        cta1: "Ver Portafolio",
+        cta2: "Presupuesto Personalizado",
+        encrypted: "sitios web profesionales que generan resultados"
+      },
+      portfolio: {
+        title: "Crear sitios web profesionales que convierten",
+        subtitle: "Sitios web modernos, rapidos y optimizados que ayudan a tu negocio a crecer."
+      }
     }
   }
 
@@ -154,12 +212,30 @@ export default function HomePage() {
               </div>
               
               <div className="flex items-center gap-4">
-                <button
-                  onClick={() => handleLanguageChange(language === 'en' ? 'ro' : 'en')}
-                  className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50 hover:border-neutral-600 backdrop-blur-sm"
-                >
-                  {language.toUpperCase()}
-                </button>
+                <div className="relative">
+                  <button
+                    onClick={() => setLangMenuOpen(!langMenuOpen)}
+                    className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50 hover:border-neutral-600 backdrop-blur-sm"
+                  >
+                    {language.toUpperCase()}
+                  </button>
+                  {langMenuOpen && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
+                      <div className="absolute top-full right-0 mt-2 bg-neutral-900/95 backdrop-blur-md rounded-lg border border-neutral-700/50 overflow-hidden z-50 min-w-[80px]">
+                        {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (
+                          <button
+                            key={lang}
+                            onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false); }}
+                            className={`block w-full text-left px-4 py-2 text-sm transition-colors ${language === lang ? "bg-neutral-800 text-white" : "text-neutral-400 hover:bg-neutral-800/50 hover:text-white"}`}
+                          >
+                            {lang.toUpperCase()}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
                 <Link href="https://wa.me/37368327082">
                   <Button className="bg-gradient-to-r from-white to-neutral-200 hover:from-neutral-100 hover:to-neutral-300 text-black font-medium px-6 py-2 rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
                     {t.nav.contact}
@@ -170,12 +246,30 @@ export default function HomePage() {
 
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center gap-3">
-              <button
-                onClick={() => setLanguage(language === 'en' ? 'ro' : 'en')}
-                className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50"
-              >
-                {language.toUpperCase()}
-              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setLangMenuOpen(!langMenuOpen)}
+                  className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50"
+                >
+                  {language.toUpperCase()}
+                </button>
+                {langMenuOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
+                    <div className="absolute top-full right-0 mt-2 bg-neutral-900/95 backdrop-blur-md rounded-lg border border-neutral-700/50 overflow-hidden z-50 min-w-[80px]">
+                      {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (
+                        <button
+                          key={lang}
+                          onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false); }}
+                          className={`block w-full text-left px-4 py-2 text-sm transition-colors ${language === lang ? "bg-neutral-800 text-white" : "text-neutral-400 hover:bg-neutral-800/50 hover:text-white"}`}
+                        >
+                          {lang.toUpperCase()}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="p-2 rounded-lg border border-neutral-700/50 hover:border-neutral-600 hover:bg-neutral-800/50 transition-all duration-300"
@@ -238,7 +332,7 @@ export default function HomePage() {
       </nav>
 
       {/* Main Content Container */}
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 px-8 max-w-7xl mx-auto min-h-screen items-center pt-28">
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 px-8 max-w-7xl mx-auto min-h-screen items-center pt-28 md:pt-8">
         
         {/* Left Column - Hero Content */}
         <div className="space-y-8 text-center lg:text-left">
@@ -293,12 +387,16 @@ export default function HomePage() {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
           >
-            <Button size="lg" className="bg-white text-black hover:bg-gray-100 font-medium px-8 py-4 rounded-full text-base">
-              {t.hero.cta1}
-            </Button>
-            <Button size="lg" variant="outline" className="border-neutral-600 text-white hover:bg-neutral-900 px-8 py-4 rounded-full text-base">
-              {t.hero.cta2}
-            </Button>
+            <Link href="https://wa.me/37368327082">
+              <Button size="lg" className="bg-white text-black hover:bg-gray-100 font-medium px-8 py-4 rounded-full text-base">
+                {t.hero.cta1}
+              </Button>
+            </Link>
+            <Link href="/portfolio">
+              <Button size="lg" variant="outline" className="border-neutral-600 text-white hover:bg-neutral-900 px-8 py-4 rounded-full text-base">
+                {t.hero.cta2}
+              </Button>
+            </Link>
           </motion.div>
 
         </div>
@@ -357,18 +455,6 @@ export default function HomePage() {
           </motion.div>
 
           {/* Tech Stack */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-4 pt-6"
-          >
-            <span className="text-sm text-neutral-500">Built with</span>
-            <div className="flex items-center">
-              <AnimatedTooltip items={techStack} />
-            </div>
-          </motion.div>
-
           {/* Encrypted Text */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -411,28 +497,26 @@ export default function HomePage() {
               transition={{ duration: 0.7, delay: 0.1 }}
             >
               <div className="text-neutral-500 text-sm font-medium uppercase tracking-widest mb-4">
-                {language === 'en' ? 'Performance' : 'Performanță'}
+                {({ en: 'Performance', ro: 'Performanta', de: 'Leistung', fr: 'Performance', es: 'Rendimiento' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
               </div>
               <h2 className="text-3xl lg:text-5xl font-bold text-white leading-tight mb-6">
-                {language === 'en' ? 'Websites built for results, not just looks' : 'Website-uri construite pentru rezultate, nu doar aspect'}
+                {({ en: 'Websites built for results, not just looks', ro: 'Website-uri construite pentru rezultate, nu doar aspect', de: 'Websites fur Ergebnisse, nicht nur Aussehen', fr: 'Des sites web conçus pour les resultats, pas seulement l\'apparence', es: 'Sitios web creados para resultados, no solo apariencia' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
               </h2>
               <p className="text-neutral-400 text-lg leading-relaxed mb-8">
-                {language === 'en'
-                  ? 'Every project we ship is optimized for speed, SEO, and conversions. RespectAuto saw 300% organic growth within 6 months of launch.'
-                  : 'Fiecare proiect pe care îl livrăm e optimizat pentru viteză, SEO și conversii. RespectAuto a avut o creștere organică de 300% în 6 luni de la lansare.'}
+                {({ en: 'Every project we ship is optimized for speed, SEO, and conversions. RespectAuto saw 300% organic growth within 6 months of launch.', ro: 'Fiecare proiect pe care îl livrăm e optimizat pentru viteză, SEO și conversii. RespectAuto a avut o creștere organică de 300% în 6 luni de la lansare.', de: 'Jedes Projekt, das wir liefern, ist fur Geschwindigkeit, SEO und Konversionen optimiert. RespectAuto verzeichnete innerhalb von 6 Monaten nach dem Start ein organisches Wachstum von 300%.', fr: 'Chaque projet que nous livrons est optimise pour la vitesse, le SEO et les conversions. RespectAuto a connu une croissance organique de 300% dans les 6 mois suivant le lancement.', es: 'Cada proyecto que entregamos esta optimizado para velocidad, SEO y conversiones. RespectAuto tuvo un crecimiento organico del 300% en 6 meses desde el lanzamiento.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
               </p>
               <div className="flex gap-8">
                 <div>
                   <div className="text-2xl font-bold text-white">50+</div>
-                  <div className="text-neutral-500 text-sm">{language === 'en' ? 'Projects shipped' : 'Proiecte livrate'}</div>
+                  <div className="text-neutral-500 text-sm">{({ en: 'Projects shipped', ro: 'Proiecte livrate', de: 'Projekte geliefert', fr: 'Projets livres', es: 'Proyectos entregados' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-white">5+</div>
-                  <div className="text-neutral-500 text-sm">{language === 'en' ? 'Years experience' : 'Ani experiență'}</div>
+                  <div className="text-neutral-500 text-sm">{({ en: 'Years experience', ro: 'Ani experienta', de: 'Jahre Erfahrung', fr: 'Ans d\'experience', es: 'Anos de experiencia' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-white">4.9</div>
-                  <div className="text-neutral-500 text-sm">{language === 'en' ? 'Client rating' : 'Rating clienți'}</div>
+                  <div className="text-neutral-500 text-sm">{({ en: 'Client rating', ro: 'Rating clienti', de: 'Kundenbewertung', fr: 'Note clients', es: 'Valoracion clientes' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}</div>
                 </div>
               </div>
             </motion.div>
@@ -447,19 +531,17 @@ export default function HomePage() {
               className="order-2 lg:order-1"
             >
               <div className="text-neutral-500 text-sm font-medium uppercase tracking-widest mb-4">
-                {language === 'en' ? 'Custom Solutions' : 'Soluții Custom'}
+                {({ en: 'Custom Solutions', ro: 'Solutii Custom', de: 'Individuelle Losungen', fr: 'Solutions Personnalisees', es: 'Soluciones Personalizadas' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
               </div>
               <h2 className="text-3xl lg:text-5xl font-bold text-white leading-tight mb-6">
-                {language === 'en' ? 'From CRMs to logistics — we build systems' : 'De la CRM-uri la logistică — construim sisteme'}
+                {({ en: 'From CRMs to logistics — we build systems', ro: 'De la CRM-uri la logistica — construim sisteme', de: 'Von CRMs bis Logistik — wir bauen Systeme', fr: 'Des CRM a la logistique — nous construisons des systemes', es: 'De CRMs a logistica — construimos sistemas' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
               </h2>
               <p className="text-neutral-400 text-lg leading-relaxed mb-8">
-                {language === 'en'
-                  ? "Not just websites. We digitalize entire businesses — package tracking platforms, client management systems, booking engines, and custom apps that replace your paper and spreadsheets."
-                  : "Nu doar website-uri. Digitalizăm afaceri întregi — platforme de urmărire colete, sisteme de management clienți, motoare de rezervări și aplicații custom care înlocuiesc hârtia și tabelele."}
+                {({ en: 'Not just websites. We digitalize entire businesses — package tracking platforms, client management systems, booking engines, and custom apps that replace your paper and spreadsheets.', ro: 'Nu doar website-uri. Digitalizăm afaceri întregi — platforme de urmărire colete, sisteme de management clienți, motoare de rezervări și aplicații custom care înlocuiesc hârtia și tabelele.', de: 'Nicht nur Websites. Wir digitalisieren ganze Unternehmen — Paketverfolgungsplattformen, Kundenmanagementsysteme, Buchungsmaschinen und individuelle Apps, die Papier und Tabellen ersetzen.', fr: 'Pas seulement des sites web. Nous numerisons des entreprises entieres — plateformes de suivi de colis, systemes de gestion clients, moteurs de reservation et applications sur mesure qui remplacent le papier et les tableurs.', es: 'No solo sitios web. Digitalizamos negocios completos — plataformas de seguimiento de paquetes, sistemas de gestion de clientes, motores de reservas y aplicaciones personalizadas que reemplazan el papel y las hojas de calculo.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
               </p>
               <Link href="/solutions">
                 <span className="text-white font-medium inline-flex items-center gap-2 border-b border-neutral-700 pb-1 hover:border-white transition-colors">
-                  {language === 'en' ? 'See our solutions' : 'Vezi soluțiile noastre'}
+                  {({ en: 'See our solutions', ro: 'Vezi solutiile noastre', de: 'Unsere Losungen ansehen', fr: 'Voir nos solutions', es: 'Ver nuestras soluciones' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                 </span>
               </Link>
@@ -522,36 +604,32 @@ export default function HomePage() {
               </div>
 
               <div className="text-yellow-400 text-xs font-medium mb-3 uppercase tracking-wider">
-                {language === 'en' ? 'Limited Time Offer' : 'Ofertă Limitată'}
+                {({ en: 'Limited Time Offer', ro: 'Oferta Limitata', de: 'Zeitlich begrenztes Angebot', fr: 'Offre Limitee', es: 'Oferta por Tiempo Limitado' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
               </div>
 
               <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
-                {language === 'en' ? 'Free Consultation' : 'Consultație Gratuită'}
+                {({ en: 'Free Consultation', ro: 'Consultatie Gratuita', de: 'Kostenlose Beratung', fr: 'Consultation Gratuite', es: 'Consulta Gratuita' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
               </h2>
 
               <div className="flex items-center justify-center gap-4 mb-6">
                 <span className="text-2xl text-neutral-400 line-through">€50</span>
                 <span className="text-3xl font-bold text-green-400">
-                  {language === 'en' ? 'FREE' : 'GRATUIT'}
+                  {({ en: 'FREE', ro: 'GRATUIT', de: 'KOSTENLOS', fr: 'GRATUIT', es: 'GRATIS' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                 </span>
               </div>
 
               <p className="text-lg text-neutral-300 mb-8 max-w-2xl mx-auto">
-                {language === 'en' 
-                  ? 'Get expert advice on your website strategy, design improvements, and technical solutions. Usually €50, now completely free for a limited time.'
-                  : 'Primește sfaturi experte pentru strategia website-ului, îmbunătățiri de design și soluții tehnice. În mod normal €50, acum complet gratuit pentru o perioadă limitată.'}
+                {({ en: 'Get expert advice on your website strategy, design improvements, and technical solutions. Usually €50, now completely free for a limited time.', ro: 'Primește sfaturi experte pentru strategia website-ului, îmbunătățiri de design și soluții tehnice. În mod normal €50, acum complet gratuit pentru o perioadă limitată.', de: 'Erhalten Sie Expertenberatung zu Ihrer Website-Strategie, Designverbesserungen und technischen Losungen. Normalerweise 50€, jetzt fur begrenzte Zeit vollig kostenlos.', fr: 'Obtenez des conseils d\'experts sur votre strategie web, ameliorations de design et solutions techniques. Habituellement 50€, maintenant completement gratuit pour une duree limitee.', es: 'Recibe asesoramiento experto sobre tu estrategia web, mejoras de diseno y soluciones tecnicas. Normalmente 50€, ahora completamente gratis por tiempo limitado.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
               </p>
 
               <Link href="https://wa.me/37368327082">
                 <Button className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 text-black font-semibold px-8 py-4 text-lg rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
-                  {language === 'en' ? 'Book Free Consultation' : 'Rezervă Consultația Gratuită'}
+                  {({ en: 'Book Free Consultation', ro: 'Rezerva Consultatia Gratuita', de: 'Kostenlose Beratung buchen', fr: 'Reserver Consultation Gratuite', es: 'Reservar Consulta Gratuita' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                 </Button>
               </Link>
 
               <div className="mt-6 text-sm text-neutral-400">
-                {language === 'en' 
-                  ? '⏰ Limited time offer • No commitment required'
-                  : '⏰ Ofertă limitată • Fără obligații'}
+                {({ en: '⏰ Limited time offer • No commitment required', ro: '⏰ Oferta limitata • Fara obligatii', de: '⏰ Zeitlich begrenztes Angebot - Keine Verpflichtung erforderlich', fr: '⏰ Offre limitee - Sans engagement', es: '⏰ Oferta por tiempo limitado - Sin compromiso' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
               </div>
             </div>
           </motion.div>
@@ -573,7 +651,7 @@ export default function HomePage() {
                   transition={{ duration: 0.6 }}
                   className="text-4xl lg:text-5xl font-bold text-white leading-tight"
                 >
-                  {language === 'en' ? "Let's talk and make it happen" : "Să vorbim și să facem să se întâmple"}
+                  {({ en: "Let's talk and make it happen", ro: "Sa vorbim si sa facem sa se intample", de: 'Lassen Sie uns reden und es verwirklichen', fr: 'Parlons-en et realisons-le', es: 'Hablemos y hagamoslo realidad' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                 </motion.h2>
                 
                 <motion.p
@@ -582,9 +660,7 @@ export default function HomePage() {
                   transition={{ duration: 0.6, delay: 0.2 }}
                   className="text-xl text-neutral-300 leading-relaxed"
                 >
-                  {language === 'en' 
-                    ? "Reach out to us, and we'll respond as soon as possible." 
-                    : "Contactează-ne și îți vom răspunde cât mai curând posibil."}
+                  {({ en: "Reach out to us, and we'll respond as soon as possible.", ro: "Contacteaza-ne si iti vom raspunde cat mai curand posibil.", de: 'Kontaktieren Sie uns und wir antworten so schnell wie moglich.', fr: 'Contactez-nous et nous vous repondrons des que possible.', es: 'Contactanos y te responderemos lo antes posible.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                 </motion.p>
 
                 <motion.div
@@ -594,7 +670,7 @@ export default function HomePage() {
                 >
                   <Link href="https://wa.me/37368327082">
                     <Button className="bg-gradient-to-r from-white to-neutral-100 hover:from-neutral-50 hover:to-neutral-200 text-black font-semibold px-8 py-4 text-lg rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
-                      {language === 'en' ? 'Talk to us' : 'Vorbește cu noi'}
+                      {({ en: 'Talk to us', ro: 'Vorbeste cu noi', de: 'Kontaktieren Sie uns', fr: 'Parlez-nous', es: 'Hablanos' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                     </Button>
                   </Link>
                 </motion.div>
@@ -703,23 +779,23 @@ export default function HomePage() {
               
               <div className="flex items-center gap-6 text-sm text-neutral-400">
                 <Link href="/" className="hover:text-white transition-colors py-2">
-                  {language === 'en' ? 'Home' : 'Acasă'}
+                  {({ en: 'Home', ro: 'Acasa', de: 'Startseite', fr: 'Accueil', es: 'Inicio' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                 </Link>
                 <Link href="/portfolio" className="hover:text-white transition-colors py-2">
-                  {language === 'en' ? 'Portfolio' : 'Portofoliu'}
+                  {({ en: 'Portfolio', ro: 'Portofoliu', de: 'Portfolio', fr: 'Portfolio', es: 'Portafolio' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                 </Link>
                 <Link href="/pricing" className="hover:text-white transition-colors py-2">
-                  {language === 'en' ? 'Pricing' : 'Prețuri'}
+                  {({ en: 'Pricing', ro: 'Preturi', de: 'Preise', fr: 'Tarifs', es: 'Precios' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                 </Link>
                 <Link href="/solutions" className="hover:text-white transition-colors py-2">
-                  {language === 'en' ? 'Solutions' : 'Soluții'}
+                  {({ en: 'Solutions', ro: 'Solutii', de: 'Losungen', fr: 'Solutions', es: 'Soluciones' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
                 </Link>
               </div>
             </div>
             
             <div className="flex items-center gap-4">
               <div className="text-sm text-neutral-500">
-                {language === 'en' ? '© 2026 All rights reserved.' : '© 2026 Toate drepturile rezervate.'}
+                {({ en: '© 2026 All rights reserved.', ro: '© 2026 Toate drepturile rezervate.', de: '© 2026 Alle Rechte vorbehalten.', fr: '© 2026 Tous droits reserves.', es: '© 2026 Todos los derechos reservados.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
               </div>
               <div className="flex items-center gap-3">
                 <Link href="https://instagram.com/landings.md" className="text-neutral-500 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
@@ -739,7 +815,7 @@ export default function HomePage() {
       </footer>
       
       {/* Sticky Contact Pill */}
-      <StickyContactPill language={language as 'en' | 'ro'} />
+      <StickyContactPill language={language as 'en' | 'ro' | 'de' | 'fr' | 'es'} />
     </div>
   )
 }
