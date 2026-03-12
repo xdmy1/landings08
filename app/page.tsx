@@ -1,820 +1,546 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
-import { Button } from '@/components/ui/button'
-import { InteractiveGridBackground } from '@/components/ui/interactive-grid-background'
-import { EncryptedText } from '@/components/ui/encrypted-text'
-import { AnimatedTooltip } from '@/components/ui/animated-tooltip'
-import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card'
 import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
 import { useLanguage } from '@/hooks/useLanguage'
 
-const techStack = [
-  {
-    id: 1,
-    name: "Next.js",
-    designation: "React Framework",
-    image: "/images/nextjs.png",
-  },
-  {
-    id: 2,
-    name: "React",
-    designation: "Frontend Library",
-    image: "/images/react.png",
-  },
-  {
-    id: 3,
-    name: "Tailwind CSS",
-    designation: "CSS Framework", 
-    image: "/images/tailwind.png",
-  },
-  {
-    id: 4,
-    name: "JavaScript",
-    designation: "Programming Language",
-    image: "/images/js.png",
-  },
-  {
-    id: 5,
-    name: "HTML5",
-    designation: "Markup Language",
-    image: "/images/html.png",
-  },
-]
+function useInView(threshold = 0.1) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setVisible(true); observer.disconnect() }
+    }, { threshold })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [threshold])
+  return { ref, visible }
+}
+
+/* Clip-path text reveal — luxury upward wipe */
+function RevealText({ children, className = "", delay = 0, as: Tag = "div" }: { children: React.ReactNode, className?: string, delay?: number, as?: "div" | "h1" | "h2" | "h3" | "p" | "span" }) {
+  const { ref, visible } = useInView(0.15)
+  return (
+    <div ref={ref} className={`overflow-hidden ${className}`}>
+      <Tag
+        className="transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+        style={{
+          transform: visible ? 'translateY(0)' : 'translateY(110%)',
+          opacity: visible ? 1 : 0,
+          transitionDelay: `${delay}ms`,
+        }}
+      >
+        {children}
+      </Tag>
+    </div>
+  )
+}
+
+/* Fade up — standard but with longer, smoother timing */
+function FadeIn({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
+  const { ref, visible } = useInView(0.08)
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${className}`}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0)' : 'translateY(30px)',
+        transitionDelay: `${delay}ms`,
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+/* Scale reveal — image zooms from slightly scaled up while fading in */
+function ImageReveal({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
+  const { ref, visible } = useInView(0.1)
+  return (
+    <div ref={ref} className={`overflow-hidden ${className}`}>
+      <div
+        className="transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+        style={{
+          opacity: visible ? 1 : 0,
+          transform: visible ? 'scale(1)' : 'scale(1.08)',
+          transitionDelay: `${delay}ms`,
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  )
+}
+
+/* Horizontal slide reveal — slides in from left or right */
+function SlideIn({ children, className = "", delay = 0, direction = "left" }: { children: React.ReactNode, className?: string, delay?: number, direction?: "left" | "right" }) {
+  const { ref, visible } = useInView(0.1)
+  const x = direction === "left" ? "-40px" : "40px"
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${className}`}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateX(0)' : `translateX(${x})`,
+        transitionDelay: `${delay}ms`,
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+/* Animated counter for number stats */
+function AnimatedNumber({ value, className = "" }: { value: string, className?: string }) {
+  const { ref, visible } = useInView(0.3)
+  const [display, setDisplay] = useState("0")
+  const numericPart = parseInt(value.replace(/[^0-9]/g, '')) || 0
+  const suffix = value.replace(/[0-9]/g, '')
+
+  useEffect(() => {
+    if (!visible || numericPart === 0) {
+      if (visible) setDisplay(value)
+      return
+    }
+    let start = 0
+    const duration = 2000
+    const startTime = performance.now()
+    const step = (now: number) => {
+      const elapsed = now - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 4)
+      const current = Math.round(eased * numericPart)
+      setDisplay(`${current}${suffix}`)
+      if (progress < 1) requestAnimationFrame(step)
+    }
+    requestAnimationFrame(step)
+  }, [visible, numericPart, suffix, value])
+
+  return (
+    <span ref={ref} className={className}>
+      {visible ? display : `0${suffix}`}
+    </span>
+  )
+}
+
+/* Stagger container — wraps children to cascade animation */
+function StaggerGroup({ children, className = "", stagger = 120 }: { children: React.ReactNode, className?: string, stagger?: number }) {
+  const { ref, visible } = useInView(0.05)
+  return (
+    <div ref={ref} className={className}>
+      {React.Children.map(children, (child, i) => (
+        <div
+          className="transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+          style={{
+            opacity: visible ? 1 : 0,
+            transform: visible ? 'translateY(0)' : 'translateY(24px)',
+            transitionDelay: `${i * stagger}ms`,
+          }}
+        >
+          {child}
+        </div>
+      ))}
+    </div>
+  )
+}
 
 export default function HomePage() {
   const { language, setLanguage: handleLanguageChange } = useLanguage()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [langMenuOpen, setLangMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' })
+  const [formSent, setFormSent] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) setScrolled(true)
+      else setScrolled(false)
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const text = {
     en: {
-      nav: {
-        home: "Home",
-        portfolio: "Portfolio",
-        pricing: "Pricing",
-        solutions: "Solutions",
-        contact: "Contact Me"
+      nav: { portfolio: "Portfolio", pricing: "Pricing", solutions: "Solutions", caseStudies: "Case Studies", contact: "Start a project" },
+      hero: { headline: "Get found on Google. Get more clients.", sub: "We build SEO-optimised websites that rank on the first page, drive real traffic, and turn visitors into paying clients. Custom-coded, no templates.", cta: "Start a project", note: "delivered in 1–4 weeks · reply within 24h" },
+      logos: "Trusted by businesses across Moldova and Europe",
+      work: {
+        label: "SELECTED WORK",
+        viewAll: "All projects",
+        projects: [
+          { name: "RespectAuto", desc: "From invisible on Google to #1 in Moldova for car rental. 300% more organic traffic, 5x more booking requests — all from SEO and a fast, optimised website.", tag: "+300% TRAFFIC", tagColor: "text-green-400", category: "SEO · TRAFFIC · CLIENTS" },
+          { name: "RADX Cooling", desc: "First page on Google for industrial cooling in Moldova. The website now generates qualified leads every week without paid ads.", tag: "PAGE 1", tagColor: "text-amber", category: "SEO · LEAD GEN" },
+          { name: "CMIEA", desc: "Educational platform that ranks for every course keyword. Organic sign-ups doubled in 3 months with zero ad spend.", tag: "2x SIGN-UPS", tagColor: "text-blue-400", category: "SEO · PLATFORM" }
+        ]
       },
-      announcement: "We create websites that sell",
-      hero: {
-        title1: "Superior",
-        title2: "websites ",
-        title3: "in Europe",
-        title4: "",
-        description: "We create modern, fast and SEO-optimized websites that help your business reach new customers and increase sales.",
-        cta1: "View Portfolio", 
-        cta2: "Custom Quote",
-        encrypted: "professional websites that drive results"
+      numbers: [
+        { value: "50+", label: "Websites ranked on Google" },
+        { value: "300%", label: "Average traffic increase" },
+        { value: "1", label: "Page on Google — where you need to be" },
+        { value: "0", label: "Ad spend needed after SEO" }
+      ],
+      statement: "Your competitors are already on Google. If your website doesn't show up when people search for what you sell — you're losing clients every single day.",
+      process: {
+        label: "HOW WE GET YOU CLIENTS",
+        steps: [
+          { num: "01", title: "SEO audit", body: "We analyse your market, competitors, and keywords. We find exactly what your clients are searching for and how to rank for it." },
+          { num: "02", title: "Build & optimise", body: "We build a fast, clean website with SEO baked into every page — structure, meta tags, speed, schema markup. Everything Google rewards." },
+          { num: "03", title: "Launch & grow", body: "Your site goes live, gets indexed, and starts climbing. We monitor rankings, traffic, and conversions — and keep optimising." }
+        ]
       },
-      portfolio: {
-        title: "Create professional websites that convert",
-        subtitle: "Modern, fast, and optimized websites that help your business grow."
-      }
+      contact: { label: "CONTACT", heading: "Ready to get more clients?", sub: "Tell us about your business. We'll show you how to rank on Google and get the traffic you deserve." },
+      form: { name: "Name", email: "Email", message: "Tell us about your business...", send: "Send message", sent: "Sent. We'll reply within 24 hours." },
+      footer: { copy: "© 2026 landings.md · Chisinau, Moldova" }
     },
     ro: {
-      nav: {
-        home: "Acasă",
-        portfolio: "Portofoliu",
-        pricing: "Prețuri",
-        solutions: "Soluții",
-        contact: "Contactează-mă"
+      nav: { portfolio: "Portofoliu", pricing: "Preturi", solutions: "Solutii", caseStudies: "Studii de Caz", contact: "Incepe un proiect" },
+      hero: { headline: "Apari pe Google. Atragi mai multi clienti.", sub: "Construim website-uri optimizate SEO care apar pe prima pagina, aduc trafic real si transforma vizitatorii in clienti. Cod scris manual, fara template-uri.", cta: "Incepe un proiect", note: "livrat in 1–4 saptamani · raspuns in 24h" },
+      logos: "De incredere pentru afaceri din Moldova si Europa",
+      work: {
+        label: "LUCRARI SELECTATE",
+        viewAll: "Toate proiectele",
+        projects: [
+          { name: "RespectAuto", desc: "De la invizibil pe Google la #1 in Moldova pentru inchirieri auto. +300% trafic organic, de 5x mai multe cereri de rezervare — totul din SEO si un site rapid.", tag: "+300% TRAFIC", tagColor: "text-green-400", category: "SEO · TRAFIC · CLIENTI" },
+          { name: "RADX Cooling", desc: "Prima pagina pe Google pentru racire industriala in Moldova. Site-ul genereaza lead-uri calificate saptamanal fara reclame platite.", tag: "PAGINA 1", tagColor: "text-amber", category: "SEO · LEAD GEN" },
+          { name: "CMIEA", desc: "Platforma educationala care se claseaza pentru fiecare cuvant cheie. Inscrierile organice s-au dublat in 3 luni fara cheltuieli pe reclame.", tag: "2x INSCRIERI", tagColor: "text-blue-400", category: "SEO · PLATFORMA" }
+        ]
       },
-      announcement: "Creăm website-uri care vând",
-      hero: {
-        title1: "Website-uri",
-        title2: "superioare",
-        title3: "în Europa",
-        title4: "",
-        description: "Creăm website-uri moderne, rapide și optimizate SEO care ajută afacerea ta să ajungă la clienți noi și să crească vânzările.",
-        cta1: "Vezi Portofoliul",
-        cta2: "Ofertă Personalizată",
-        encrypted: "website-uri profesionale cu rezultate garantate"
+      numbers: [
+        { value: "50+", label: "Website-uri clasate pe Google" },
+        { value: "300%", label: "Crestere medie a traficului" },
+        { value: "1", label: "Pagina pe Google — unde trebuie sa fii" },
+        { value: "0", label: "Cheltuieli pe reclame dupa SEO" }
+      ],
+      statement: "Competitorii tai sunt deja pe Google. Daca site-ul tau nu apare cand oamenii cauta ce vinzi — pierzi clienti in fiecare zi.",
+      process: {
+        label: "CUM ITI ADUCEM CLIENTI",
+        steps: [
+          { num: "01", title: "Audit SEO", body: "Analizam piata, competitorii si cuvintele cheie. Gasim exact ce cauta clientii tai si cum sa apari primul." },
+          { num: "02", title: "Construim si optimizam", body: "Construim un site rapid si curat cu SEO in fiecare pagina — structura, meta tags, viteza, schema markup. Tot ce Google recompenseaza." },
+          { num: "03", title: "Lansam si crestem", body: "Site-ul merge live, se indexeaza si incepe sa urce. Monitorizam pozitiile, traficul si conversiile — si continuam sa optimizam." }
+        ]
       },
-      portfolio: {
-        title: "Creează website-uri profesionale care convertesc",
-        subtitle: "Website-uri moderne, rapide și optimizate care ajută afacerea ta să crească."
-      }
+      contact: { label: "CONTACT", heading: "Pregatit sa atragi mai multi clienti?", sub: "Spune-ne despre afacerea ta. Iti aratam cum sa apari pe Google si sa primesti traficul pe care il meriti." },
+      form: { name: "Nume", email: "Email", message: "Spune-ne despre afacerea ta...", send: "Trimite mesaj", sent: "Trimis. Revenim in 24 de ore." },
+      footer: { copy: "© 2026 landings.md · Chisinau, Moldova" }
     },
     de: {
-      nav: {
-        home: "Startseite",
-        portfolio: "Portfolio",
-        pricing: "Preise",
-        solutions: "Losungen",
-        contact: "Kontakt"
+      nav: { portfolio: "Portfolio", pricing: "Preise", solutions: "Losungen", caseStudies: "Fallstudien", contact: "Projekt starten" },
+      hero: { headline: "Bei Google gefunden werden. Mehr Kunden gewinnen.", sub: "Wir bauen SEO-optimierte Websites, die auf Seite 1 ranken, echten Traffic bringen und Besucher in zahlende Kunden verwandeln. Handgeschriebener Code, keine Templates.", cta: "Projekt starten", note: "Lieferung in 1–4 Wochen · Antwort in 24h" },
+      logos: "Vertraut von Unternehmen in Moldawien und Europa",
+      work: {
+        label: "AUSGEWAHLTE ARBEITEN",
+        viewAll: "Alle Projekte",
+        projects: [
+          { name: "RespectAuto", desc: "Von unsichtbar bei Google zur Nr. 1 in Moldawien fur Autovermietung. 300% mehr organischer Traffic, 5x mehr Buchungsanfragen — alles durch SEO.", tag: "+300% TRAFFIC", tagColor: "text-green-400", category: "SEO · TRAFFIC · KUNDEN" },
+          { name: "RADX Cooling", desc: "Seite 1 bei Google fur industrielle Kuhlung in Moldawien. Die Website generiert jede Woche qualifizierte Leads ohne bezahlte Werbung.", tag: "SEITE 1", tagColor: "text-amber", category: "SEO · LEAD GEN" },
+          { name: "CMIEA", desc: "Bildungsplattform die fur jedes Kurs-Keyword rankt. Organische Anmeldungen verdoppelt in 3 Monaten ohne Werbeausgaben.", tag: "2x ANMELDUNGEN", tagColor: "text-blue-400", category: "SEO · PLATTFORM" }
+        ]
       },
-      announcement: "Wir erstellen Websites, die verkaufen",
-      hero: {
-        title1: "Uberlegene",
-        title2: "Websites ",
-        title3: "in Europa",
-        title4: "",
-        description: "Wir erstellen moderne, schnelle und SEO-optimierte Websites, die Ihrem Unternehmen helfen, neue Kunden zu erreichen und den Umsatz zu steigern.",
-        cta1: "Portfolio ansehen",
-        cta2: "Individuelles Angebot",
-        encrypted: "professionelle Websites, die Ergebnisse liefern"
+      numbers: [
+        { value: "50+", label: "Websites bei Google gerankt" },
+        { value: "300%", label: "Durchschnittliche Traffic-Steigerung" },
+        { value: "1", label: "Seite bei Google — wo Sie sein mussen" },
+        { value: "0", label: "Werbeausgaben nach SEO notig" }
+      ],
+      statement: "Ihre Konkurrenten sind bereits bei Google. Wenn Ihre Website nicht erscheint, wenn Menschen nach Ihrem Angebot suchen — verlieren Sie jeden Tag Kunden.",
+      process: {
+        label: "WIE WIR IHNEN KUNDEN BRINGEN",
+        steps: [
+          { num: "01", title: "SEO-Audit", body: "Wir analysieren Ihren Markt, Wettbewerber und Keywords. Wir finden genau, wonach Ihre Kunden suchen und wie Sie dafur ranken." },
+          { num: "02", title: "Bauen & optimieren", body: "Wir bauen eine schnelle Website mit SEO in jeder Seite — Struktur, Meta-Tags, Geschwindigkeit, Schema-Markup. Alles was Google belohnt." },
+          { num: "03", title: "Launchen & wachsen", body: "Ihre Seite geht live, wird indexiert und steigt. Wir uberwachen Rankings, Traffic und Conversions — und optimieren weiter." }
+        ]
       },
-      portfolio: {
-        title: "Professionelle Websites erstellen, die konvertieren",
-        subtitle: "Moderne, schnelle und optimierte Websites, die Ihrem Unternehmen beim Wachstum helfen."
-      }
+      contact: { label: "KONTAKT", heading: "Bereit fur mehr Kunden?", sub: "Erzahlen Sie uns von Ihrem Geschaft. Wir zeigen Ihnen, wie Sie bei Google ranken und den Traffic bekommen, den Sie verdienen." },
+      form: { name: "Name", email: "E-Mail", message: "Erzahlen Sie uns von Ihrem Geschaft...", send: "Nachricht senden", sent: "Gesendet. Antwort in 24 Stunden." },
+      footer: { copy: "© 2026 landings.md · Chisinau, Moldawien" }
     },
     fr: {
-      nav: {
-        home: "Accueil",
-        portfolio: "Portfolio",
-        pricing: "Tarifs",
-        solutions: "Solutions",
-        contact: "Contactez-moi"
+      nav: { portfolio: "Portfolio", pricing: "Tarifs", solutions: "Solutions", caseStudies: "Etudes de Cas", contact: "Demarrer un projet" },
+      hero: { headline: "Apparaissez sur Google. Attirez plus de clients.", sub: "Nous construisons des sites optimises SEO qui apparaissent en premiere page, generent du vrai trafic et transforment les visiteurs en clients. Code sur mesure, pas de templates.", cta: "Demarrer un projet", note: "livre en 1–4 semaines · reponse en 24h" },
+      logos: "Des entreprises en Moldavie et en Europe nous font confiance",
+      work: {
+        label: "TRAVAUX SELECTIONNES",
+        viewAll: "Tous les projets",
+        projects: [
+          { name: "RespectAuto", desc: "D'invisible sur Google au n°1 en Moldavie pour la location auto. +300% de trafic organique, 5x plus de reservations — tout grace au SEO.", tag: "+300% TRAFIC", tagColor: "text-green-400", category: "SEO · TRAFIC · CLIENTS" },
+          { name: "RADX Cooling", desc: "Premiere page Google pour le refroidissement industriel en Moldavie. Le site genere des leads qualifies chaque semaine sans publicite.", tag: "PAGE 1", tagColor: "text-amber", category: "SEO · LEAD GEN" },
+          { name: "CMIEA", desc: "Plateforme educative classee pour chaque mot-cle de cours. Les inscriptions organiques ont double en 3 mois sans depenses publicitaires.", tag: "2x INSCRIPTIONS", tagColor: "text-blue-400", category: "SEO · PLATEFORME" }
+        ]
       },
-      announcement: "Nous creons des sites web qui vendent",
-      hero: {
-        title1: "Des sites",
-        title2: "web superieurs",
-        title3: "en Europe",
-        title4: "",
-        description: "Nous creons des sites web modernes, rapides et optimises pour le SEO qui aident votre entreprise a atteindre de nouveaux clients et augmenter les ventes.",
-        cta1: "Voir le Portfolio",
-        cta2: "Devis Personnalise",
-        encrypted: "des sites web professionnels qui generent des resultats"
+      numbers: [
+        { value: "50+", label: "Sites classes sur Google" },
+        { value: "300%", label: "Augmentation moyenne du trafic" },
+        { value: "1", label: "Page sur Google — la ou il faut etre" },
+        { value: "0", label: "Depenses pub necessaires apres SEO" }
+      ],
+      statement: "Vos concurrents sont deja sur Google. Si votre site n'apparait pas quand les gens cherchent ce que vous vendez — vous perdez des clients chaque jour.",
+      process: {
+        label: "COMMENT ON VOUS AMENE DES CLIENTS",
+        steps: [
+          { num: "01", title: "Audit SEO", body: "On analyse votre marche, vos concurrents et vos mots-cles. On trouve exactement ce que vos clients cherchent et comment vous positionner." },
+          { num: "02", title: "On construit et optimise", body: "On cree un site rapide avec le SEO integre dans chaque page — structure, meta tags, vitesse, schema markup. Tout ce que Google recompense." },
+          { num: "03", title: "On lance et on croit", body: "Votre site est en ligne, indexe et commence a monter. On surveille les positions, le trafic et les conversions — et on continue d'optimiser." }
+        ]
       },
-      portfolio: {
-        title: "Creer des sites web professionnels qui convertissent",
-        subtitle: "Des sites web modernes, rapides et optimises qui aident votre entreprise a se developper."
-      }
+      contact: { label: "CONTACT", heading: "Pret a attirer plus de clients ?", sub: "Parlez-nous de votre activite. On vous montre comment apparaitre sur Google et obtenir le trafic que vous meritez." },
+      form: { name: "Nom", email: "Email", message: "Parlez-nous de votre activite...", send: "Envoyer", sent: "Envoye. Reponse sous 24 heures." },
+      footer: { copy: "© 2026 landings.md · Chisinau, Moldavie" }
     },
     es: {
-      nav: {
-        home: "Inicio",
-        portfolio: "Portafolio",
-        pricing: "Precios",
-        solutions: "Soluciones",
-        contact: "Contactame"
+      nav: { portfolio: "Portafolio", pricing: "Precios", solutions: "Soluciones", caseStudies: "Casos de Estudio", contact: "Iniciar proyecto" },
+      hero: { headline: "Aparece en Google. Consigue mas clientes.", sub: "Creamos sitios web optimizados para SEO que aparecen en la primera pagina, generan trafico real y convierten visitantes en clientes. Codigo a medida, sin plantillas.", cta: "Iniciar proyecto", note: "entregado en 1–4 semanas · respuesta en 24h" },
+      logos: "Confianza de empresas en Moldavia y Europa",
+      work: {
+        label: "TRABAJOS SELECCIONADOS",
+        viewAll: "Todos los proyectos",
+        projects: [
+          { name: "RespectAuto", desc: "De invisible en Google al #1 en Moldavia para alquiler de autos. +300% trafico organico, 5x mas solicitudes de reserva — todo con SEO y un sitio rapido.", tag: "+300% TRAFICO", tagColor: "text-green-400", category: "SEO · TRAFICO · CLIENTES" },
+          { name: "RADX Cooling", desc: "Primera pagina en Google para refrigeracion industrial en Moldavia. El sitio genera leads calificados cada semana sin publicidad pagada.", tag: "PAGINA 1", tagColor: "text-amber", category: "SEO · LEAD GEN" },
+          { name: "CMIEA", desc: "Plataforma educativa que posiciona para cada palabra clave de curso. Las inscripciones organicas se duplicaron en 3 meses sin gasto en publicidad.", tag: "2x INSCRIPCIONES", tagColor: "text-blue-400", category: "SEO · PLATAFORMA" }
+        ]
       },
-      announcement: "Creamos sitios web que venden",
-      hero: {
-        title1: "Sitios web",
-        title2: "superiores",
-        title3: "en Europa",
-        title4: "",
-        description: "Creamos sitios web modernos, rapidos y optimizados para SEO que ayudan a tu negocio a alcanzar nuevos clientes y aumentar las ventas.",
-        cta1: "Ver Portafolio",
-        cta2: "Presupuesto Personalizado",
-        encrypted: "sitios web profesionales que generan resultados"
+      numbers: [
+        { value: "50+", label: "Sitios posicionados en Google" },
+        { value: "300%", label: "Aumento promedio de trafico" },
+        { value: "1", label: "Pagina en Google — donde debes estar" },
+        { value: "0", label: "Gasto en publicidad tras SEO" }
+      ],
+      statement: "Tus competidores ya estan en Google. Si tu sitio no aparece cuando la gente busca lo que vendes — estas perdiendo clientes cada dia.",
+      process: {
+        label: "COMO TE CONSEGUIMOS CLIENTES",
+        steps: [
+          { num: "01", title: "Auditoria SEO", body: "Analizamos tu mercado, competidores y palabras clave. Encontramos exactamente lo que buscan tus clientes y como posicionarte." },
+          { num: "02", title: "Construimos y optimizamos", body: "Creamos un sitio rapido con SEO en cada pagina — estructura, meta tags, velocidad, schema markup. Todo lo que Google premia." },
+          { num: "03", title: "Lanzamos y crecemos", body: "Tu sitio se publica, se indexa y comienza a subir. Monitoreamos rankings, trafico y conversiones — y seguimos optimizando." }
+        ]
       },
-      portfolio: {
-        title: "Crear sitios web profesionales que convierten",
-        subtitle: "Sitios web modernos, rapidos y optimizados que ayudan a tu negocio a crecer."
-      }
+      contact: { label: "CONTACTO", heading: "Listo para mas clientes?", sub: "Cuentanos sobre tu negocio. Te mostramos como posicionarte en Google y conseguir el trafico que mereces." },
+      form: { name: "Nombre", email: "Email", message: "Cuentanos sobre tu negocio...", send: "Enviar mensaje", sent: "Enviado. Respuesta en 24 horas." },
+      footer: { copy: "© 2026 landings.md · Chisinau, Moldavia" }
     }
   }
 
   const t = text[language as keyof typeof text]
 
-  return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      <InteractiveGridBackground />
-      
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-neutral-800/50">
-        <div className="max-w-7xl mx-auto px-8 py-4">
-          <div className="flex items-center justify-between min-h-[48px]">
-            {/* Logo */}
-            <Link href="/">
-              <Image
-                src="/images/logowhite.png"
-                alt="landings.md"
-                width={48}
-                height={48}
-                className="w-12 h-12 object-contain"
-              />
-            </Link>
+  const projects = [
+    { ...t.work.projects[0], src: "/images/respectauto (1).png", href: "https://respectauto.md" },
+    { ...t.work.projects[1], src: "/images/radx.png", href: "https://radx.solutions" },
+    { ...t.work.projects[2], src: "/images/cmiea (1).png", href: "https://cmiea.md" },
+  ]
 
-            {/* Desktop Navigation */}
+  return (
+    <div className="min-h-screen text-ink grain" style={{ background: '#2A2118' }}>
+
+      {/* ── NAV ── */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-smooth ${scrolled ? 'backdrop-blur-md' : 'bg-transparent'}`} style={scrolled ? { backgroundColor: 'rgba(42,33,24,0.88)' } : {}}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10">
+          <div className="flex items-center justify-between h-[68px]">
+            <Link href="/" className="flex items-center">
+              <Image src="/images/logowhite.png" alt="landings.md — affordable website design for small business" width={22} height={36} className="w-[22px] h-auto" priority />
+            </Link>
             <div className="hidden md:flex items-center gap-8">
-              <div className="flex items-center gap-8 text-neutral-400">
-                <Link href="/" className="hover:text-white transition-all duration-300 hover:bg-neutral-800/50 px-4 py-2 rounded-lg border border-transparent hover:border-neutral-700">
-                  {t.nav.home}
-                </Link>
-                <Link href="/portfolio" className="hover:text-white transition-all duration-300 hover:bg-neutral-800/50 px-4 py-2 rounded-lg border border-transparent hover:border-neutral-700">
-                  {t.nav.portfolio}
-                </Link>
-                <Link href="/pricing" className="hover:text-white transition-all duration-300 hover:bg-neutral-800/50 px-4 py-2 rounded-lg border border-transparent hover:border-neutral-700">
-                  {t.nav.pricing}
-                </Link>
-                <Link href="/solutions" className="hover:text-white transition-all duration-300 hover:bg-neutral-800/50 px-4 py-2 rounded-lg border border-transparent hover:border-neutral-700">
-                  {t.nav.solutions}
-                </Link>
+              <div className="flex items-center gap-6 text-[13px] text-ink-muted">
+                <Link href="/portfolio" className="hover:text-ink transition-colors">{t.nav.portfolio}</Link>
+                <Link href="/pricing" className="hover:text-ink transition-colors">{t.nav.pricing}</Link>
+                <Link href="/solutions" className="hover:text-ink transition-colors">{t.nav.solutions}</Link>
+                <Link href="/case-studies" className="hover:text-ink transition-colors">{t.nav.caseStudies}</Link>
               </div>
-              
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <div className="relative">
-                  <button
-                    onClick={() => setLangMenuOpen(!langMenuOpen)}
-                    className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50 hover:border-neutral-600 backdrop-blur-sm"
-                  >
-                    {language.toUpperCase()}
-                  </button>
-                  {langMenuOpen && (
-                    <>
-                      <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
-                      <div className="absolute top-full right-0 mt-2 bg-neutral-900/95 backdrop-blur-md rounded-lg border border-neutral-700/50 overflow-hidden z-50 min-w-[80px]">
-                        {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (
-                          <button
-                            key={lang}
-                            onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false); }}
-                            className={`block w-full text-left px-4 py-2 text-sm transition-colors ${language === lang ? "bg-neutral-800 text-white" : "text-neutral-400 hover:bg-neutral-800/50 hover:text-white"}`}
-                          >
-                            {lang.toUpperCase()}
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  )}
+                  <button onClick={() => setLangMenuOpen(!langMenuOpen)} className="text-ink-light hover:text-ink-muted text-[11px] tracking-widest uppercase transition-colors">{language}</button>
+                  {langMenuOpen && (<><div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} /><div className="absolute top-full right-0 mt-2 bg-surface border border-divider z-50 min-w-[56px] py-1">{(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (<button key={lang} onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false) }} className={`block w-full text-left px-4 py-1.5 text-[11px] tracking-widest uppercase transition-colors ${language === lang ? "text-amber" : "text-ink-muted hover:text-ink"}`}>{lang}</button>))}</div></>)}
                 </div>
-                <Link href="https://wa.me/37368327082">
-                  <Button className="bg-gradient-to-r from-white to-neutral-200 hover:from-neutral-100 hover:to-neutral-300 text-black font-medium px-6 py-2 rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
-                    {t.nav.contact}
-                  </Button>
-                </Link>
+                <Link href="#contact" className="text-[13px] text-[#1A1410] bg-amber hover:bg-amber-light px-5 py-2 transition-colors duration-300">{t.nav.contact}</Link>
               </div>
             </div>
-
-            {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center gap-3">
-              <div className="relative">
-                <button
-                  onClick={() => setLangMenuOpen(!langMenuOpen)}
-                  className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50"
-                >
-                  {language.toUpperCase()}
-                </button>
-                {langMenuOpen && (
-                  <>
-                    <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
-                    <div className="absolute top-full right-0 mt-2 bg-neutral-900/95 backdrop-blur-md rounded-lg border border-neutral-700/50 overflow-hidden z-50 min-w-[80px]">
-                      {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (
-                        <button
-                          key={lang}
-                          onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false); }}
-                          className={`block w-full text-left px-4 py-2 text-sm transition-colors ${language === lang ? "bg-neutral-800 text-white" : "text-neutral-400 hover:bg-neutral-800/50 hover:text-white"}`}
-                        >
-                          {lang.toUpperCase()}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-lg border border-neutral-700/50 hover:border-neutral-600 hover:bg-neutral-800/50 transition-all duration-300"
-              >
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
+              <button onClick={() => setLangMenuOpen(!langMenuOpen)} className="text-ink-light text-[11px] tracking-widest uppercase">{language}</button>
+              {langMenuOpen && (<><div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} /><div className="absolute top-16 right-6 bg-surface border border-divider z-50 min-w-[56px] py-1">{(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (<button key={lang} onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false) }} className={`block w-full text-left px-4 py-1.5 text-[11px] tracking-widest uppercase ${language === lang ? "text-amber" : "text-ink-muted"}`}>{lang}</button>))}</div></>)}
+              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-ink-muted hover:text-ink transition-colors"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">{mobileMenuOpen ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" /> : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 8h16M4 16h16" />}</svg></button>
             </div>
           </div>
-
-          {/* Mobile Menu */}
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="md:hidden absolute top-full left-8 right-8 mt-4 p-4 bg-neutral-900/95 backdrop-blur-md rounded-xl border border-neutral-700/50 z-50"
-            >
-              <div className="flex flex-col space-y-3">
-                <Link 
-                  href="/" 
-                  className="text-neutral-300 hover:text-white transition-all duration-300 p-3 rounded-lg hover:bg-neutral-800/50 text-center border border-transparent hover:border-neutral-700"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {t.nav.home}
-                </Link>
-                <Link 
-                  href="/portfolio" 
-                  className="text-neutral-300 hover:text-white transition-all duration-300 p-3 rounded-lg hover:bg-neutral-800/50 text-center border border-transparent hover:border-neutral-700"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {t.nav.portfolio}
-                </Link>
-                <Link
-                  href="/pricing"
-                  className="text-neutral-300 hover:text-white transition-all duration-300 p-3 rounded-lg hover:bg-neutral-800/50 text-center border border-transparent hover:border-neutral-700"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {t.nav.pricing}
-                </Link>
-                <Link
-                  href="/solutions"
-                  className="text-neutral-300 hover:text-white transition-all duration-300 p-3 rounded-lg hover:bg-neutral-800/50 text-center border border-transparent hover:border-neutral-700"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {t.nav.solutions}
-                </Link>
-                <Link
-                  href="https://wa.me/37368327082"
-                  className="bg-gradient-to-r from-white to-neutral-200 hover:from-neutral-100 hover:to-neutral-300 text-black font-medium p-3 rounded-full transition-all duration-300 hover:scale-105 text-center mt-4"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {t.nav.contact}
-                </Link>
-              </div>
-            </motion.div>
-          )}
+          {mobileMenuOpen && (<div className="md:hidden border-t border-divider py-6 space-y-4"><Link href="/portfolio" className="block text-ink text-sm" onClick={() => setMobileMenuOpen(false)}>{t.nav.portfolio}</Link><Link href="/pricing" className="block text-ink text-sm" onClick={() => setMobileMenuOpen(false)}>{t.nav.pricing}</Link><Link href="/solutions" className="block text-ink text-sm" onClick={() => setMobileMenuOpen(false)}>{t.nav.solutions}</Link><Link href="/case-studies" className="block text-ink text-sm" onClick={() => setMobileMenuOpen(false)}>{t.nav.caseStudies}</Link><div className="pt-3"><Link href="#contact" className="text-amber text-sm" onClick={() => setMobileMenuOpen(false)}>{t.nav.contact}</Link></div></div>)}
         </div>
       </nav>
 
-      {/* Main Content Container */}
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 px-8 max-w-7xl mx-auto min-h-screen items-center pt-28 md:pt-8">
-        
-        {/* Left Column - Hero Content */}
-        <div className="space-y-8 text-center lg:text-left">
-          
-          {/* Announcement Bar */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 bg-neutral-900/50 border border-neutral-700/50 rounded-full px-4 py-2 text-sm mx-auto lg:mx-0"
-          >
-            <span className="text-neutral-300">{t.announcement}</span>
-            <svg className="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </motion.div>
+      {/* ── BORDERED CONTAINER ── */}
+      <div className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 border-x border-divider/40">
 
-          {/* Hero Title */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="space-y-4"
-          >
-            <h1 className="text-6xl lg:text-7xl xl:text-8xl font-bold leading-none tracking-tight">
-              <div className="space-y-2">
-                <div>{t.hero.title1}</div>
-                <div>{t.hero.title2}</div>
-                <div className="relative inline-block">
-                  <span className="relative z-10 text-white px-6 py-2">{t.hero.title3}</span>
-                  <div className="absolute inset-0 bg-neutral-800 rounded-2xl transform rotate-1"></div>
-                </div>
-
+        {/* ── HERO ── */}
+        <section className="pt-32 md:pt-44 pb-16 md:pb-24 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'linear-gradient(180deg, #302620 0%, #2A2118 100%)' }}>
+          <div className="text-center max-w-3xl mx-auto">
+            <RevealText delay={200}>
+              <h1 className="font-serif text-[clamp(2rem,4.5vw,3.75rem)] text-ink leading-[1.1] tracking-[-0.02em] text-balance">
+                {t.hero.headline}
+              </h1>
+            </RevealText>
+            <FadeIn delay={500}>
+              <p className="mt-6 text-ink-muted text-[15px] md:text-base leading-relaxed max-w-xl mx-auto">
+                {t.hero.sub}
+              </p>
+            </FadeIn>
+            <FadeIn delay={700}>
+              <div className="mt-8 flex flex-col items-center gap-3">
+                <Link href="#contact" className="inline-flex items-center gap-2 bg-amber hover:bg-amber-light text-[#1A1410] px-7 py-3 text-sm transition-colors duration-300 group">
+                  {t.hero.cta}
+                  <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                </Link>
+                <span className="text-ink-light text-[11px] tracking-wide font-mono">{t.hero.note}</span>
               </div>
-            </h1>
-          </motion.div>
+            </FadeIn>
+          </div>
+        </section>
 
-          {/* Description */}
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-lg text-neutral-400 leading-relaxed max-w-lg"
-          >
-            {t.hero.description}
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
-          >
-            <Link href="https://wa.me/37368327082">
-              <Button size="lg" className="bg-white text-black hover:bg-gray-100 font-medium px-8 py-4 rounded-full text-base">
-                {t.hero.cta1}
-              </Button>
+        {/* ── FEATURED IMAGE ── */}
+        <section className="border-t border-divider/40 px-6 md:px-12 lg:px-16 py-10 md:py-14" style={{ background: 'linear-gradient(180deg, #2A2118 0%, #342A20 100%)' }}>
+          <ImageReveal>
+            <Link href="https://respectauto.md" target="_blank" rel="noopener noreferrer" className="group block">
+              <div className="overflow-hidden rounded-sm">
+                <Image src="/images/respectauto (1).png" alt="RespectAuto car rental website — professional web design for local business, ranked #1 on Google" width={1400} height={788} quality={95} className="w-full h-auto group-hover:scale-[1.015] transition-transform duration-[900ms] ease-smooth" priority />
+              </div>
             </Link>
-            <Link href="/portfolio">
-              <Button size="lg" variant="outline" className="border-neutral-600 text-white hover:bg-neutral-900 px-8 py-4 rounded-full text-base">
-                {t.hero.cta2}
-              </Button>
-            </Link>
-          </motion.div>
+          </ImageReveal>
+        </section>
 
-        </div>
+        {/* ── NUMBERS ── */}
+        <section className="border-t border-divider/40" style={{ background: '#342A20' }}>
+          <StaggerGroup className="grid grid-cols-2 md:grid-cols-4" stagger={150}>
+            {t.numbers.map((n, i) => (
+              <div key={i} className={`px-6 md:px-8 py-8 md:py-10 ${i < t.numbers.length - 1 ? 'border-r border-divider/40' : ''} ${i < 2 ? 'border-b md:border-b-0 border-divider/40' : ''}`}>
+                <p className="font-serif text-[clamp(1.75rem,3vw,2.5rem)] text-ink leading-none">
+                  <AnimatedNumber value={n.value} />
+                </p>
+                <p className="text-ink-muted text-[12px] mt-2 font-mono tracking-wide uppercase">{n.label}</p>
+              </div>
+            ))}
+          </StaggerGroup>
+        </section>
 
-        {/* Right Column - Simple Preview */}
-        <div className="space-y-6 relative text-center lg:text-left">
-          
-          {/* Simple Portfolio Preview */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="bg-white/[0.05] backdrop-blur-2xl border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.15)] rounded-2xl p-6"
-          >
-            <h3 className="text-xl font-semibold text-white mb-2">
-              {t.portfolio.title}
-            </h3>
-            <p className="text-neutral-400 text-sm mb-6 leading-relaxed">
-              {t.portfolio.subtitle}
+        {/* ── WORK ── */}
+        <section className="border-t border-divider/40 px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: 'linear-gradient(180deg, #342A20 0%, #2A2118 100%)' }}>
+          <FadeIn>
+            <div className="flex items-center justify-between mb-10 md:mb-14">
+              <span className="text-ink-light text-[11px] font-mono tracking-[0.15em] uppercase">{t.work.label}</span>
+              <Link href="/portfolio" className="text-ink-muted hover:text-ink text-[12px] font-mono transition-colors group inline-flex items-center gap-1">{t.work.viewAll} <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">&rarr;</span></Link>
+            </div>
+          </FadeIn>
+
+          <div className="space-y-0">
+            {projects.map((project, i) => (
+              <div key={i}>
+                <Link href={project.href} target="_blank" rel="noopener noreferrer" className="group block">
+                  <div className={`grid grid-cols-1 md:grid-cols-[1fr_1.5fr] gap-6 md:gap-10 py-8 md:py-10 ${i < projects.length - 1 ? 'border-b border-divider/30' : ''}`}>
+                    <SlideIn direction="left" delay={i * 150} className="order-2 md:order-1">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="text-[10px] font-mono tracking-[0.1em] uppercase text-ink-light">{project.category}</span>
+                        <span className="text-[9px] px-1.5 py-0.5 bg-divider/30 rounded-sm font-mono">·</span>
+                        <span className={`text-[10px] font-mono tracking-[0.1em] uppercase ${project.tagColor}`}>{project.tag}</span>
+                      </div>
+                      <h3 className="font-serif text-xl md:text-2xl text-ink group-hover:text-amber transition-colors duration-300 mb-2">{project.name}</h3>
+                      <p className="text-ink-muted text-[13px] leading-relaxed">{project.desc}</p>
+                    </SlideIn>
+                    <ImageReveal delay={i * 150 + 100} className="order-1 md:order-2 rounded-sm aspect-[16/10]">
+                      <Image src={project.src} alt={`${project.name} — small business website design by landings.md`} width={800} height={500} quality={90} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-smooth" />
+                    </ImageReveal>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── STATEMENT ── */}
+        <section className="border-t border-divider/40 px-6 md:px-12 lg:px-16 py-16 md:py-24 relative glow-amber" style={{ background: 'linear-gradient(180deg, #2A2118 0%, #3E3229 100%)' }}>
+          <RevealText>
+            <p className="font-serif text-[clamp(1.3rem,2.4vw,2rem)] text-ink leading-[1.4] tracking-[-0.01em] max-w-2xl">
+              {t.statement}
             </p>
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              <div className="aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-purple-500/20 to-blue-500/20 border border-neutral-800/50">
-                <Image
-                  src="/images/elenadiacon (1).png"
-                  alt="Elena Diacon Project"
-                  width={400}
-                  height={300}
-                  quality={95}
-                  priority
-                  className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity"
-                  onError={(e) => {
-                    console.log('Image failed to load:', e);
-                  }}
-                />
-              </div>
-              <div className="aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-green-500/20 to-teal-500/20 border border-neutral-800/50">
-                <Image
-                  src="/images/respectauto (1).png"
-                  alt="Respect Auto Project" 
-                  width={400}
-                  height={300}
-                  quality={95}
-                  priority
-                  className="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity"
-                  onError={(e) => {
-                    console.log('Image failed to load:', e);
-                  }}
-                />
-              </div>
-            </div>
-            <Link href="/portfolio">
-              <button className="px-4 py-2 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-white text-sm font-medium transition-colors">
-                View Portfolio →
-              </button>
-            </Link>
-          </motion.div>
+          </RevealText>
+        </section>
 
-          {/* Tech Stack */}
-          {/* Encrypted Text */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1 }}
-            className="pt-4 text-center sm:text-left overflow-hidden"
-          >
-            <div className="w-full max-w-full h-[55px]">
-              <EncryptedText text={t.hero.encrypted} className="text-lg font-mono text-neutral-400" />
-            </div>
-          </motion.div>
+        {/* ── PROCESS ── */}
+        <section className="border-t border-divider/40 px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: 'linear-gradient(180deg, #3E3229 0%, #2A2118 100%)' }}>
+          <FadeIn>
+            <span className="text-ink-light text-[11px] font-mono tracking-[0.15em] uppercase block mb-10 md:mb-14">{t.process.label}</span>
+          </FadeIn>
+          <StaggerGroup className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10" stagger={200}>
+            {t.process.steps.map((step, i) => (
+              <div key={i} className="relative">
+                <span className="text-ink-light/30 font-mono text-[11px] tracking-widest absolute -top-0.5 right-0">{step.num}</span>
+                <h3 className="font-serif text-lg text-ink mb-3">{step.title}</h3>
+                <p className="text-ink-muted text-[13px] leading-relaxed">{step.body}</p>
+              </div>
+            ))}
+          </StaggerGroup>
+        </section>
 
-        </div>
+        {/* ── CONTACT ── */}
+        <section id="contact" className="border-t border-divider/40 px-6 md:px-12 lg:px-16 py-14 md:py-24 relative grid-animated" style={{ background: 'linear-gradient(180deg, #2A2118 0%, #342A20 100%)' }}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+            <SlideIn direction="left">
+              <span className="text-ink-light text-[11px] font-mono tracking-[0.15em] uppercase block mb-4">{t.contact.label}</span>
+              <h2 className="font-serif text-[clamp(1.8rem,3vw,2.75rem)] text-ink leading-[1.1] mb-4">{t.contact.heading}</h2>
+              <p className="text-ink-muted text-[14px] leading-relaxed">{t.contact.sub}</p>
+              <p className="mt-6 text-ink-light text-[12px] font-mono">contact@landings.md</p>
+            </SlideIn>
+            <SlideIn direction="right" delay={200}>
+              {formSent ? (
+                <div className="flex items-center h-full"><p className="text-ink font-serif text-lg">{t.form.sent}</p></div>
+              ) : (
+                <form onSubmit={(e) => { e.preventDefault(); const s = encodeURIComponent(`New project from ${formData.name}`); const b = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`); window.location.href = `mailto:contact@landings.md?subject=${s}&body=${b}`; setFormSent(true) }}>
+                  <input type="text" required placeholder={t.form.name} value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full bg-transparent border-b border-divider/50 px-0 py-4 text-[14px] text-ink placeholder:text-ink-light/40 focus:outline-none focus:border-amber/40 transition-colors duration-500 font-mono" />
+                  <input type="email" required placeholder={t.form.email} value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full bg-transparent border-b border-divider/50 px-0 py-4 text-[14px] text-ink placeholder:text-ink-light/40 focus:outline-none focus:border-amber/40 transition-colors duration-500 font-mono" />
+                  <textarea required rows={3} placeholder={t.form.message} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} className="w-full bg-transparent border-b border-divider/50 px-0 py-4 text-[14px] text-ink placeholder:text-ink-light/40 focus:outline-none focus:border-amber/40 transition-colors duration-500 resize-none font-mono" />
+                  <div className="pt-6">
+                    <button type="submit" className="bg-amber hover:bg-amber-light text-[#1A1410] px-7 py-3 text-[13px] transition-colors duration-300">{t.form.send}</button>
+                  </div>
+                </form>
+              )}
+            </SlideIn>
+          </div>
+        </section>
 
       </div>
+      {/* ── END BORDERED CONTAINER ── */}
 
-      {/* Feature Rows — alternating image/text */}
-      <section className="relative z-10 py-24 px-4 md:px-8 space-y-32">
-        <div className="max-w-7xl mx-auto">
-
-          {/* Row 1: Image Left, Text Right */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7 }}
-              className="relative group"
-            >
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900">
-                <Image src="/images/respectauto (1).png" alt="RespectAuto" width={800} height={600} quality={95} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
-              </div>
-              <div className="absolute -bottom-4 -right-4 bg-black border border-neutral-800 rounded-xl px-5 py-3">
-                <span className="text-emerald-400 font-mono text-sm font-semibold">+300% organic</span>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-            >
-              <div className="text-neutral-500 text-sm font-medium uppercase tracking-widest mb-4">
-                {({ en: 'Performance', ro: 'Performanta', de: 'Leistung', fr: 'Performance', es: 'Rendimiento' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-              </div>
-              <h2 className="text-3xl lg:text-5xl font-bold text-white leading-tight mb-6">
-                {({ en: 'Websites built for results, not just looks', ro: 'Website-uri construite pentru rezultate, nu doar aspect', de: 'Websites fur Ergebnisse, nicht nur Aussehen', fr: 'Des sites web conçus pour les resultats, pas seulement l\'apparence', es: 'Sitios web creados para resultados, no solo apariencia' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-              </h2>
-              <p className="text-neutral-400 text-lg leading-relaxed mb-8">
-                {({ en: 'Every project we ship is optimized for speed, SEO, and conversions. RespectAuto saw 300% organic growth within 6 months of launch.', ro: 'Fiecare proiect pe care îl livrăm e optimizat pentru viteză, SEO și conversii. RespectAuto a avut o creștere organică de 300% în 6 luni de la lansare.', de: 'Jedes Projekt, das wir liefern, ist fur Geschwindigkeit, SEO und Konversionen optimiert. RespectAuto verzeichnete innerhalb von 6 Monaten nach dem Start ein organisches Wachstum von 300%.', fr: 'Chaque projet que nous livrons est optimise pour la vitesse, le SEO et les conversions. RespectAuto a connu une croissance organique de 300% dans les 6 mois suivant le lancement.', es: 'Cada proyecto que entregamos esta optimizado para velocidad, SEO y conversiones. RespectAuto tuvo un crecimiento organico del 300% en 6 meses desde el lanzamiento.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-              </p>
-              <div className="flex gap-8">
-                <div>
-                  <div className="text-2xl font-bold text-white">50+</div>
-                  <div className="text-neutral-500 text-sm">{({ en: 'Projects shipped', ro: 'Proiecte livrate', de: 'Projekte geliefert', fr: 'Projets livres', es: 'Proyectos entregados' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-white">5+</div>
-                  <div className="text-neutral-500 text-sm">{({ en: 'Years experience', ro: 'Ani experienta', de: 'Jahre Erfahrung', fr: 'Ans d\'experience', es: 'Anos de experiencia' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-white">4.9</div>
-                  <div className="text-neutral-500 text-sm">{({ en: 'Client rating', ro: 'Rating clienti', de: 'Kundenbewertung', fr: 'Note clients', es: 'Valoracion clientes' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}</div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Row 2: Text Left, Image Right */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7 }}
-              className="order-2 lg:order-1"
-            >
-              <div className="text-neutral-500 text-sm font-medium uppercase tracking-widest mb-4">
-                {({ en: 'Custom Solutions', ro: 'Solutii Custom', de: 'Individuelle Losungen', fr: 'Solutions Personnalisees', es: 'Soluciones Personalizadas' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-              </div>
-              <h2 className="text-3xl lg:text-5xl font-bold text-white leading-tight mb-6">
-                {({ en: 'From CRMs to logistics — we build systems', ro: 'De la CRM-uri la logistica — construim sisteme', de: 'Von CRMs bis Logistik — wir bauen Systeme', fr: 'Des CRM a la logistique — nous construisons des systemes', es: 'De CRMs a logistica — construimos sistemas' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-              </h2>
-              <p className="text-neutral-400 text-lg leading-relaxed mb-8">
-                {({ en: 'Not just websites. We digitalize entire businesses — package tracking platforms, client management systems, booking engines, and custom apps that replace your paper and spreadsheets.', ro: 'Nu doar website-uri. Digitalizăm afaceri întregi — platforme de urmărire colete, sisteme de management clienți, motoare de rezervări și aplicații custom care înlocuiesc hârtia și tabelele.', de: 'Nicht nur Websites. Wir digitalisieren ganze Unternehmen — Paketverfolgungsplattformen, Kundenmanagementsysteme, Buchungsmaschinen und individuelle Apps, die Papier und Tabellen ersetzen.', fr: 'Pas seulement des sites web. Nous numerisons des entreprises entieres — plateformes de suivi de colis, systemes de gestion clients, moteurs de reservation et applications sur mesure qui remplacent le papier et les tableurs.', es: 'No solo sitios web. Digitalizamos negocios completos — plataformas de seguimiento de paquetes, sistemas de gestion de clientes, motores de reservas y aplicaciones personalizadas que reemplazan el papel y las hojas de calculo.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-              </p>
-              <Link href="/solutions">
-                <span className="text-white font-medium inline-flex items-center gap-2 border-b border-neutral-700 pb-1 hover:border-white transition-colors">
-                  {({ en: 'See our solutions', ro: 'Vezi solutiile noastre', de: 'Unsere Losungen ansehen', fr: 'Voir nos solutions', es: 'Ver nuestras soluciones' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                </span>
+      {/* ── FOOTER ── */}
+      <FadeIn>
+        <footer className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 border-x border-t border-divider/40 px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: '#241E18' }}>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
+            <div className="flex items-center gap-6">
+              <Link href="/" className="flex items-center">
+                <Image src="/images/logowhite.png" alt="landings.md — website design agency" width={16} height={26} className="w-4 h-auto opacity-50" />
               </Link>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-              className="order-1 lg:order-2 relative group"
-            >
-              <div className="grid grid-cols-2 gap-3">
-                <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900">
-                  <Image src="/images/radx.png" alt="RADX" width={400} height={300} quality={95} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
-                </div>
-                <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900 mt-8">
-                  <Image src="/images/inter-bus.png" alt="Inter-Bus" width={400} height={300} quality={95} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
-                </div>
-                <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900 -mt-4">
-                  <Image src="/images/CRM.png" alt="CRM" width={400} height={300} quality={95} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
-                </div>
-                <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-neutral-800 bg-neutral-900 mt-4">
-                  <Image src="/images/cmiea (1).png" alt="CMIEA" width={400} height={300} quality={95} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700" />
-                </div>
-              </div>
-            </motion.div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* Free Consultation Section */}
-      <section className="relative z-10 py-16 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="bg-white/[0.08] backdrop-blur-xl border border-white/20 shadow-[0_0_20px_rgba(255,255,255,0.1)] rounded-3xl p-8 text-center relative overflow-hidden"
-              style={{
-                background: 'linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.05) 100%)'
-              }}
-            >
-              {/* Signature SVG */}
-              <div className="absolute top-4 right-6 opacity-20">
-                <svg width="120" height="40" viewBox="0 0 234.23 67.13" className="text-white fill-current">
-                  <path className="cls-1" d="M95.24,24.43c-10.77,11.2-22.4,21.58-34.76,30.99-3.61,2.75-7.29,5.42-11.02,8-.68.47-.1.64.47.57,12.75-1.43,25.39-3.82,37.77-7.17,6.12-1.66,12.18-3.55,18.16-5.67s11.53-4.13,17-6.78c3.94-1.91,8.47-4.76,9.09-9.5.7-5.39-4.22-9.4-8.89-10.72-2.73-.77-5.61-.91-8.43-.93-3.07-.02-6.14.09-9.2.3-6.05.41-12.07,1.27-17.99,2.54-13.42,2.88-26.35,7.84-38.2,14.77-.27.16-.53.45-.09.56,4.38,1.16,8.92.75,13.35.19,4.98-.63,9.96-1.29,14.93-1.93,9.92-1.28,19.84-2.57,29.76-3.85.51-.07,1.64-.19,1.94-.68s-.25-.48-.67-.43c-9.59,1.24-19.18,2.48-28.78,3.73-4.76.62-9.51,1.23-14.27,1.85s-9.3,1.26-13.89.04l-.09.56c9.83-5.74,20.44-10.09,31.48-12.87,5.51-1.39,11.13-2.38,16.79-2.97s11.49-1.04,17.13-.48c5,.5,10.51,2.8,11.98,8.09,1.36,4.88-2.4,8.56-6.31,10.73-2.26,1.25-4.71,2.19-7.1,3.17-2.76,1.13-5.55,2.2-8.35,3.23-5.49,2-11.05,3.81-16.67,5.41-12.83,3.65-25.94,6.22-39.19,7.71l.47.57c12.98-8.98,25.26-18.93,36.69-29.81,3.24-3.08,6.41-6.24,9.51-9.47.44-.45-.39-.45-.67-.43-.58.04-1.52.24-1.94.68h-.01Z"/>
-                  <path className="cls-1" d="M135.23,30.66c-1.38-.11-2.73.24-3.85,1.06-.72.53-1.31,1.35-1.39,2.26s.2,1.74.8,2.41c.74.83,1.9,1.1,2.97,1.11,2.11,0,4.74-.92,5.8-2.88.79-1.46.42-3.47-1.16-4.23-1.18-.57-2.73-.22-3.83.36-.91.48-1.62,1.27-1.61,2.34,0,.22.42.33.55.35.34.06.75,0,1.08-.08.49-.14,1.28-.43,1.27-1.05,0,.09,0-.07,0-.09,0-.06.02-.13.04-.19,0-.05.04-.1.05-.14.07-.22-.05.07.02-.04.06-.1.13-.19.21-.28-.17.19-.02.05,0,0,.03-.03.06-.05.09-.07-.16.1-.18.12-.06.05.14-.09.05.05-.11.05.02,0,.12-.05.15-.06l-.22.08c.12-.03.1-.03-.04,0l-.12.02c.15-.02.11-.02-.12,0,0,0,.16,0,.16,0,0-.04-.3,0-.04,0,.08,0,.21.09,0,0,.07.03.15.06.22.1.15.07.07.04.03.01.07.05.14.1.2.16.08.07.16.16.23.24.17.2.26.38.35.65.18.55.19,1.06.02,1.61-.09.27-.16.4-.32.63-.04.05-.08.1-.12.16,0,0-.23.25-.07.1-.12.12-.25.22-.37.32-.25.2.15-.08-.02.02-.07.04-.14.08-.21.13-.1.06-.18.03.06-.02-.06,0-.13.06-.18.08-.02,0-.27.12-.28.11,0,0,.38-.11.09-.04-.06.02-.13.03-.19.05-.29.08.34-.05-.06,0-.1,0-.19.03-.29.03.06,0,.27,0,0,0,.02,0-.36-.02-.19,0s-.2-.03-.18-.03c-.22-.04-.58-.18-.74-.3-.46-.35-.76-.81-.9-1.37-.08-.31-.11-.61-.05-.92.06-.36.16-.59.35-.84.04-.05.08-.1.12-.15.14-.18-.09.05.08-.08.06-.05.13-.1.19-.15.07-.05.05-.04-.07.05.05-.03.11-.07.17-.1-.02,0-.3.16-.07.04.28-.15-.32.08-.02,0-.4.09-.17.04-.06.02.1,0,.06,0-.13,0.14,0,.13,0-.03,0,.69.05,1.52-.07,2.05-.55.16-.14.36-.34.3-.58-.06-.22-.35-.34-.55-.35h-.03Z"/>
-                  <path className="cls-1" d="M139.5,31.18c-.54.15-1.09.39-1.53.75-.31.26-.52.54-.7.9-.24.47-.31,1.07-.16,1.58.17.58.64,1.04,1.21,1.22.96.31,2.04.17,2.96-.21.8-.32,1.66-.91,1.88-1.8.06-.22-.09-.37-.28-.46-.27-.12-.67-.11-.95-.06-.38.06-.77.16-1.1.36-.21.13-.5.3-.56.56-.03.11-.07.22-.12.33l.1-.19c-.07.13-.16.24-.26.35l.19-.19c-.05.05-.11.1-.16.15-.05.04-.19.13.03-.02s.08-.05.03-.02c-.03.02-.06.03-.08.05.28-.13.36-.17.24-.12-.02,0-.04.02-.06.03-.03,0-.06.02-.09.03.55-.21.37-.12.24-.08s-.33.05.25-.05c-.03,0-.06,0-.09.02h-.06c-.13,0-.04,0,.27-.02h-.2c.27.02.34.03.23.02h-.06c-.07,0-.14-.02-.22-.04l.26.07c-.13-.04-.26-.09-.37-.16l.19.11c-.18-.11-.33-.26-.45-.44l.1.16c-.17-.28-.24-.6-.23-.93v.19c0-.3.09-.59.23-.86l-.1.19c.08-.15.18-.28.3-.4l-.19.19s.08-.07.12-.1c.02-.02.05-.04.07-.06,0,0-.33.2-.17.12.02,0,.05-.03.07-.04.15-.08-.37.16-.23.11.02,0,.05-.02.07-.03,0,0-.48.15-.26.09.33-.09.71-.24.97-.46.13-.11.38-.36.3-.57-.08-.22-.33-.31-.55-.34-.36-.05-.73,0-1.08.09h0v-.02Z"/>
-                  <path className="cls-1" d="M143.62,30.51c-.98,1.1-2.26,3.84-.21,4.57,1.62.58,3.45-.38,4.6-1.49.97-.93,1.71-2.03,2.19-3.29l-2.89.4c-.32,1-.64,2-.96,3-.11.35.3.48.54.54,2.84.67,6.37-.82,7.55-3.55l-2.79.75c.06.09.07.25.06.36-.02.24-.23.31.09.12-.21.13-.86.62-.47.92.79.6,1.75.74,2.71.58.51-.08,1.52-.33,1.66-.94s-.9-.59-1.23-.54c-.23.03-.2.04.08.02-.06,0-.11,0-.17-.03-.14-.07-.23-.1-.35-.19l-.47.92c.85-.52,1.38-1.4.78-2.32-.24-.37-1.21-.2-1.53-.11-.48.14-1.06.37-1.27.86-.16.37-.39.72-.67,1.02-.28.3-.46.41-.79.59-.09.05-.16.07-.03,0-.04.02-.44.15-.12.06-.08.02-.17.05-.25.07-.38.1.16,0-.06,0-.09,0-.29.02-.09.02h-.33s-.34-.05-.52-.1l.54.54c.32-1,.64-2,.96-3,.19-.6-.91-.59-1.23-.54-.57.09-1.43.33-1.66.94-.32.83-.77,1.57-1.35,2.24-.25.29-.54.56-.85.79s-.13.06-.11.07c.08.09.59-.24.69-.09-.06-.1-.18-.08-.24-.15-.71-.81.26-2.41.86-3.08.46-.52-.39-.76-.76-.76-.68,0-1.46.25-1.92.77h0v.02Z"/>
-                  <path className="cls-1" d="M158.65,29.26c-.32.24-.57.48-.79.82-.14.22-.24.48-.3.73s-.06.51-.04.77c0,.19.05.38.13.56.21.48.55.9,1.04,1.12.37.17.7.25,1.1.3.43.05.86,0,1.28-.1s.85-.27,1.23-.5.63-.5.89-.83c.15-.19.12-.51-.03-.69-.17-.22-.54-.31-.8-.32-.38-.02-.79.05-1.14.21l-.32.18c-.18.11-.33.26-.44.44l-.02.02.18-.23c-.06.08-.14.15-.22.22l.26-.21c-.07.06-.15.11-.23.15l.32-.18c-.08.04-.16.08-.25.11l.38-.13c-.09.03-.18.05-.27.07l.39-.07c-.09.02-.18.02-.28.03h.37c-.11,0-.23-.01-.34-.03l.33.05c-.12-.02-.24-.05-.35-.1l.27.11c-.13-.06-.25-.13-.37-.22l.2.16c-.15-.12-.27-.27-.37-.45l.11.21c-.11-.22-.17-.46-.18-.71v.24c0-.24.04-.47.12-.69l-.09.24c.06-.15.14-.29.24-.42l-.18.23c.06-.08.13-.15.21-.22l-.26.21s.03-.03.05-.04c.22-.17.48-.39.53-.68.04-.25-.1-.49-.32-.61-.29-.16-.65-.2-.97-.15-.37.05-.79.15-1.09.38h0l.02.02Z"/>
-                  <path className="cls-1" d="M163.22,24h-.59c-.2,0-.4.06-.58.14-.18.05-.35.14-.51.26-.14.1-.26.22-.34.37-.1.12-.15.26-.17.41l.02.28c.06.19.17.34.33.46l.28.14c.23.08.47.11.71.09h.59c.2,0,.4-.06.58-.14.18-.05.35-.14.51-.26.14-.1.26-.22.34-.37.1-.12.15-.26.17-.41l-.02-.28c-.06-.19-.17-.34-.33-.46l-.28-.14c-.23-.08-.47-.11-.71-.09h0Z"/>
-                  <path className="cls-1" d="M171.05,27.67c0-.35-.28-.62-.6-.74-.62-.23-1.32-.15-1.95,0-.49.12-1,.33-1.42.61-.47.32-.85.72-1.23,1.14-.61.66-1.08,1.46-1.05,2.38.02.75.45,1.5,1.16,1.79s1.58.23,2.32.02c.69-.2,1.33-.53,1.89-.98.65-.52,1.17-1.25,1.42-2.05.21-.67.21-1.46-.14-2.09-.21-.38-.44-.63-.81-.85-.28-.17-.62-.27-.94-.31-1.1-.14-2.32.1-3.26.71-.71.47-1.32,1.17-1.12,2.08.05.23.37.34.55.37.33.07.76.02,1.08-.07s.71-.23.97-.48c.17-.16.35-.35.29-.6-.02-.1-.03-.19-.03-.29v.2c0-.17.04-.33.12-.48l-.1.2c.05-.09.13-.17.17-.25-.13.23-.16.16-.05.06.1-.09.25-.14-.1.06.05-.03.09-.06.14-.09.24-.15-.33.14-.14.07.03-.01.05-.02.08-.03.14-.05.05-.02-.26.08.06-.02.11-.03.17-.05.22-.06-.48.08-.18.04.13-.02.35,0-.15,0h.17c.19,0-.37-.05-.11,0,.06,0,.11.02.17.03.16.03-.28-.11-.06-.02.1.05.2.09.3.15l-.19-.13c.2.14.34.31.47.51l-.1-.17c.2.35.29.74.28,1.15v-.2c0,.44-.13.85-.32,1.25l.1-.2c-.11.23-.25.44-.4.64-.04.05-.08.09-.11.13-.13.16.19-.19,0-.01-.09.09-.19.17-.28.25-.17.14.27-.17.08-.05-.06.04-.12.07-.19.11-.22.14.33-.14.03-.02s.34-.08.07-.02l.25-.05c-.14.02-.09.02.15,0-.25,0,.29.06.04,0-.23-.05.19.09.03,0-.06-.03-.12-.06-.18-.1l.19.13c-.18-.12-.31-.26-.43-.44l.1.17c-.18-.3-.26-.63-.26-.98v.2c0-.35.1-.67.25-.99l-.1.2c.16-.31.37-.59.6-.86.03-.04.06-.07.09-.11-.11.11-.12.13-.04.05.07-.07.13-.13.2-.2.11-.11.22-.22.34-.32.18-.16-.27.17-.09.06.06-.03.11-.06.17-.1-.43.24-.22.11-.1.06.22-.09-.44.13-.17.06s-.41.07-.19.04c.21-.03-.43,0-.15.01-.25-.03-.32-.03-.2-.02.1.02.05,0-.16-.05.03.03.08.04.12.06l-.19-.13s.08.07.11.12l-.1-.17c.04.08.06.16.06.26,0,.22.41.35.55.37.33.07.76.02,1.08-.07s.71-.23.97-.48c.19-.18.3-.33.29-.6h0l.03.03Z"/>
-                  <path className="cls-1" d="M171.81,27.74c-1.03.24-2.16.86-1.98,2.07.16,1.12,1.16,1.58,2.19,1.55,1.51-.05,3.04-.76,3.97-1.96.83-1.07,1.17-2.63,2.32-3.41l-2.56.13c-.21,1.21-.03,2.34.66,3.37.42.62,1.8.14,2.3-.13,1.45-.78,2.75-1.77,3.82-3.02l-2.77.46c.15,1.17.69,2.19,1.55,2.99.57.54,2.23-.1,2.68-.58,1.07-1.15,2.38-2.08,3.9-2.53.31-.09,1.44-.42,1.31-.92s-1.33-.22-1.59-.14c-2.39.69-4.56,1.9-6.26,3.72l2.68-.58c-.79-.75-1.23-1.66-1.37-2.74-.1-.82-2.49.13-2.77.46-.83.96-1.77,1.76-2.89,2.36l2.3-.13c-.61-.92-.88-1.97-.69-3.06.17-.95-2.26-.07-2.56.13-1.43.97-1.75,2.57-2.79,3.84-.1.13-.21.25-.33.36-.07.07-.14.13-.23.19-.29.18-.05.14.72-.12-.03-.09-.38-.26-.47-.39-.14-.2-.22-.47-.24-.71,0-.11.03-.23.02-.33l.04-.12c.14-.28-.09-.18-.69.3.31-.07,1.44-.43,1.31-.92s-1.32-.2-1.59-.14h0Z"/>
-                  <path className="cls-1" d="M187.64,27.34c1.67,0,2.21-2.17.24-2.17-1.67,0-2.21,2.17-.24,2.17h0Z"/>
-                  <path className="cls-1" d="M184.24,29.91c.55,0,1.63-.21,1.92-.75s-.25-.7-.74-.7c-.55,0-1.63.21-1.92.75s.25.7.74.7h0Z"/>
-                  <path className="cls-1" d="M185.47,30.08c8.25-2.33,16.32-5.3,24.09-8.92,4.13-1.93,15.2-6.23,10.11-12.58-2.08-2.6-5.6-3.73-8.64-4.72-3.92-1.27-7.95-2.14-12.03-2.73C190.7-.07,182.27-.09,173.9.07c-17.86.34-35.69,1.9-53.33,4.65-17.64,2.75-34.7,6.61-51.62,11.64-15.72,4.67-31.36,10.28-45.37,18.94-6.72,4.15-13.17,8.97-18.47,14.86C3,52.5-.4,55.79.04,59.25c.37,2.86,3.26,4.4,5.73,5.2,3.81,1.23,8.02,1.64,11.98,2.04,4.42.44,8.86.62,13.29.64,8.97.04,17.95-.46,26.9-.92,18.24-.95,36.45-2.3,54.63-4.05s36.32-3.88,54.41-6.4,36.28-5.47,54.32-8.79c4.22-.78,8.44-1.58,12.65-2.4.45-.09.33-.51-.11-.43-17.33,3.37-34.73,6.38-52.19,9.03-17.33,2.62-34.71,4.89-52.13,6.79-17.34,1.9-34.72,3.43-52.12,4.61-8.74.59-17.49,1.09-26.24,1.5-8.79.41-17.59.82-26.39.42-4.41-.2-8.82-.61-13.18-1.34-3.23-.54-7.29-1.04-9.63-3.6-3.03-3.32.37-7.32,2.61-9.96,2.54-3,5.39-5.72,8.42-8.22,12.48-10.27,27.52-17.08,42.69-22.33s32.05-9.69,48.42-12.96,33.93-5.63,51.08-6.77c8.57-.57,17.17-.89,25.76-.86s16.58.5,24.63,2.42c3.65.87,7.62,1.88,10.85,3.83s5.17,5.36,2.36,8.52c-1.22,1.38-2.89,2.28-4.51,3.11-1.8.92-3.61,1.8-5.45,2.65-3.81,1.76-7.68,3.37-11.61,4.82s-7.86,2.71-11.87,3.84c-.44.12-.33.55.11.43h.02Z"/>
-                </svg>
-              </div>
-
-              <div className="text-yellow-400 text-xs font-medium mb-3 uppercase tracking-wider">
-                {({ en: 'Limited Time Offer', ro: 'Oferta Limitata', de: 'Zeitlich begrenztes Angebot', fr: 'Offre Limitee', es: 'Oferta por Tiempo Limitado' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-              </div>
-
-              <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
-                {({ en: 'Free Consultation', ro: 'Consultatie Gratuita', de: 'Kostenlose Beratung', fr: 'Consultation Gratuite', es: 'Consulta Gratuita' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-              </h2>
-
-              <div className="flex items-center justify-center gap-4 mb-6">
-                <span className="text-2xl text-neutral-400 line-through">€50</span>
-                <span className="text-3xl font-bold text-green-400">
-                  {({ en: 'FREE', ro: 'GRATUIT', de: 'KOSTENLOS', fr: 'GRATUIT', es: 'GRATIS' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-                </span>
-              </div>
-
-              <p className="text-lg text-neutral-300 mb-8 max-w-2xl mx-auto">
-                {({ en: 'Get expert advice on your website strategy, design improvements, and technical solutions. Usually €50, now completely free for a limited time.', ro: 'Primește sfaturi experte pentru strategia website-ului, îmbunătățiri de design și soluții tehnice. În mod normal €50, acum complet gratuit pentru o perioadă limitată.', de: 'Erhalten Sie Expertenberatung zu Ihrer Website-Strategie, Designverbesserungen und technischen Losungen. Normalerweise 50€, jetzt fur begrenzte Zeit vollig kostenlos.', fr: 'Obtenez des conseils d\'experts sur votre strategie web, ameliorations de design et solutions techniques. Habituellement 50€, maintenant completement gratuit pour une duree limitee.', es: 'Recibe asesoramiento experto sobre tu estrategia web, mejoras de diseno y soluciones tecnicas. Normalmente 50€, ahora completamente gratis por tiempo limitado.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-              </p>
-
-              <Link href="https://wa.me/37368327082">
-                <Button className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 text-black font-semibold px-8 py-4 text-lg rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
-                  {({ en: 'Book Free Consultation', ro: 'Rezerva Consultatia Gratuita', de: 'Kostenlose Beratung buchen', fr: 'Reserver Consultation Gratuite', es: 'Reservar Consulta Gratuita' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-                </Button>
-              </Link>
-
-              <div className="mt-6 text-sm text-neutral-400">
-                {({ en: '⏰ Limited time offer • No commitment required', ro: '⏰ Oferta limitata • Fara obligatii', de: '⏰ Zeitlich begrenztes Angebot - Keine Verpflichtung erforderlich', fr: '⏰ Offre limitee - Sans engagement', es: '⏰ Oferta por tiempo limitado - Sin compromiso' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
+              <div className="hidden md:flex items-center gap-4 text-[11px] text-ink-light/40 font-mono">
+                <Link href="/portfolio" className="hover:text-ink-muted transition-colors">{t.nav.portfolio}</Link>
+                <Link href="/pricing" className="hover:text-ink-muted transition-colors">{t.nav.pricing}</Link>
+                <Link href="/solutions" className="hover:text-ink-muted transition-colors">{t.nav.solutions}</Link>
+                <Link href="/case-studies" className="hover:text-ink-muted transition-colors">{t.nav.caseStudies}</Link>
               </div>
             </div>
-          </motion.div>
-
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="relative z-10 py-12 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-white/[0.05] backdrop-blur-2xl border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.15)] rounded-3xl p-4 md:p-6 relative">
-            
-            <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-              {/* Left Content */}
-              <div className="space-y-6">
-                <motion.h2
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                  className="text-4xl lg:text-5xl font-bold text-white leading-tight"
-                >
-                  {({ en: "Let's talk and make it happen", ro: "Sa vorbim si sa facem sa se intample", de: 'Lassen Sie uns reden und es verwirklichen', fr: 'Parlons-en et realisons-le', es: 'Hablemos y hagamoslo realidad' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-                </motion.h2>
-                
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                  className="text-xl text-neutral-300 leading-relaxed"
-                >
-                  {({ en: "Reach out to us, and we'll respond as soon as possible.", ro: "Contacteaza-ne si iti vom raspunde cat mai curand posibil.", de: 'Kontaktieren Sie uns und wir antworten so schnell wie moglich.', fr: 'Contactez-nous et nous vous repondrons des que possible.', es: 'Contactanos y te responderemos lo antes posible.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-                </motion.p>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
-                >
-                  <Link href="https://wa.me/37368327082">
-                    <Button className="bg-gradient-to-r from-white to-neutral-100 hover:from-neutral-50 hover:to-neutral-200 text-black font-semibold px-8 py-4 text-lg rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
-                      {({ en: 'Talk to us', ro: 'Vorbeste cu noi', de: 'Kontaktieren Sie uns', fr: 'Parlez-nous', es: 'Hablanos' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-                    </Button>
-                  </Link>
-                </motion.div>
-
-                {/* Rating */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.6 }}
-                  className="flex items-center gap-4"
-                >
-                  {/* Stars */}
-                  <div className="flex items-center gap-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <svg
-                        key={star}
-                        className="w-5 h-5 text-yellow-400 fill-current"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                      </svg>
-                    ))}
-                  </div>
-                  
-                  {/* Rating Text */}
-                  <span className="text-neutral-300 font-medium">4.9/5</span>
-                </motion.div>
-              </div>
-
-              {/* Right Content - Portfolio Preview */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="relative"
-              >
-                <div className="grid grid-cols-2 gap-4">
-                  {/* Portfolio Items - Left Column */}
-                  <div className="space-y-4">
-                    <div className="aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-neutral-700/20 to-neutral-800/20 border border-neutral-700/50">
-                      <Image
-                        src="/images/rizzaclassic.png"
-                        alt="Rizza Classic"
-                        width={400}
-                        height={300}
-                        quality={95}
-                        className="w-full h-full object-cover opacity-90"
-                      />
-                    </div>
-                    <div className="aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-neutral-700/20 to-neutral-800/20 border border-neutral-700/50">
-                      <Image
-                        src="/images/autohuse.md-min.png"
-                        alt="Auto Huse"
-                        width={400}
-                        height={300}
-                        quality={95}
-                        className="w-full h-full object-cover opacity-90"
-                      />
-                    </div>
-                  </div>
-                  {/* Portfolio Items - Right Column */}
-                  <div className="space-y-4 pt-8">
-                    <div className="aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-neutral-700/20 to-neutral-800/20 border border-neutral-700/50">
-                      <Image
-                        src="/images/CRM.png"
-                        alt="CRM Platform"
-                        width={400}
-                        height={300}
-                        quality={95}
-                        className="w-full h-full object-cover opacity-90"
-                      />
-                    </div>
-                    <div className="aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-neutral-700/20 to-neutral-800/20 border border-neutral-700/50">
-                      <Image
-                        src="/images/eurogard.png"
-                        alt="Eurogard Project"
-                        width={400}
-                        height={300}
-                        quality={95}
-                        className="w-full h-full object-cover opacity-90"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-black border-t border-neutral-800">
-        <div className="max-w-7xl mx-auto px-8 py-16 pb-32">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="flex items-center gap-3">
-                <Image
-                  src="/images/logowhite.png"
-                  alt="landings.md"
-                  width={32}
-                  height={32}
-                  className="w-8 h-8 object-contain"
-                />
-                <span className="text-white font-semibold">landings.md</span>
-              </div>
-              
-              <div className="flex items-center gap-6 text-sm text-neutral-400">
-                <Link href="/" className="hover:text-white transition-colors py-2">
-                  {({ en: 'Home', ro: 'Acasa', de: 'Startseite', fr: 'Accueil', es: 'Inicio' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-                </Link>
-                <Link href="/portfolio" className="hover:text-white transition-colors py-2">
-                  {({ en: 'Portfolio', ro: 'Portofoliu', de: 'Portfolio', fr: 'Portfolio', es: 'Portafolio' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-                </Link>
-                <Link href="/pricing" className="hover:text-white transition-colors py-2">
-                  {({ en: 'Pricing', ro: 'Preturi', de: 'Preise', fr: 'Tarifs', es: 'Precios' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-                </Link>
-                <Link href="/solutions" className="hover:text-white transition-colors py-2">
-                  {({ en: 'Solutions', ro: 'Solutii', de: 'Losungen', fr: 'Solutions', es: 'Soluciones' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-                </Link>
-              </div>
-            </div>
-            
             <div className="flex items-center gap-4">
-              <div className="text-sm text-neutral-500">
-                {({ en: '© 2026 All rights reserved.', ro: '© 2026 Toate drepturile rezervate.', de: '© 2026 Alle Rechte vorbehalten.', fr: '© 2026 Tous droits reserves.', es: '© 2026 Todos los derechos reservados.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-              </div>
-              <div className="flex items-center gap-3">
-                <Link href="https://instagram.com/landings.md" className="text-neutral-500 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                  </svg>
-                </Link>
-                <Link href="https://wa.me/37368327082" className="text-neutral-500 hover:text-green-400 transition-colors" target="_blank" rel="noopener noreferrer">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.89 3.485"/>
-                  </svg>
-                </Link>
-              </div>
+              <span className="text-ink-light/30 text-[10px] font-mono">{t.footer.copy}</span>
+              <Link href="https://instagram.com/landings.md" className="text-ink-light/30 hover:text-ink-light transition-colors" target="_blank" rel="noopener noreferrer">
+                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              </Link>
             </div>
           </div>
-        </div>
-      </footer>
-      
-      {/* Sticky Contact Pill */}
+          <p className="mt-4 text-ink-light/20 text-[9px] font-mono tracking-wide leading-relaxed max-w-2xl">
+            Affordable website design for small businesses across Europe. Custom websites from €350 — responsive, SEO-optimised, no templates. Web design services in English, Romanian, German, French, and Spanish. Chisinau, Moldova.
+          </p>
+        </footer>
+      </FadeIn>
+
       <StickyContactPill language={language as 'en' | 'ro' | 'de' | 'fr' | 'es'} />
     </div>
   )

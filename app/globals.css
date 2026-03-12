@@ -2,12 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
-
-.dark {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
+@layer base {
+  :root {
+    --background: 24 22% 18%;
+    --foreground: 28 28% 90%;
+    --card: 24 20% 22%;
+    --card-foreground: 28 28% 90%;
+    --popover: 24 20% 22%;
+    --popover-foreground: 28 28% 90%;
+    --primary: 28 28% 90%;
+    --primary-foreground: 24 22% 18%;
+    --secondary: 24 18% 30%;
+    --secondary-foreground: 28 28% 90%;
+    --muted: 24 18% 30%;
+    --muted-foreground: 28 16% 68%;
+    --accent: 16 52% 59%;
+    --accent-foreground: 24 22% 18%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 28 28% 90%;
+    --border: 24 16% 28%;
+    --input: 24 16% 28%;
+    --ring: 16 52% 59%;
+    --radius: 0px;
+  }
 }
 
 * {
@@ -16,20 +33,18 @@
 
 body {
   color: hsl(var(--foreground));
-  background: hsl(var(--background));
-  font-family: 'Bricolage Grotesque', sans-serif;
+  background: #2A2118;
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.font-bricolage {
-  font-family: 'Bricolage Grotesque', sans-serif;
+.font-serif {
+  font-family: 'Fraunces', Georgia, serif;
 }
 
-.bg-grid-white\/\[0\.02\] {
-  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.02) 1px, transparent 0);
-}
-
-.bg-grid-white {
-  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.15) 1px, transparent 0);
+.font-sans {
+  font-family: 'DM Sans', sans-serif;
 }
 
 @layer utilities {
@@ -38,77 +53,108 @@ body {
   }
 }
 
-.gradient-text {
-  background: linear-gradient(90deg, #000000 0%, #666666 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Animated warm gradient for hero sections */
+@keyframes warmShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-.dark .gradient-text {
-  background: linear-gradient(90deg, #ffffff 0%, #999999 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.gradient-warm {
+  background: linear-gradient(135deg, #2A2118 0%, #3E3229 25%, #2A2118 50%, #342A20 75%, #2A2118 100%);
+  background-size: 300% 300%;
+  animation: warmShift 12s ease infinite;
 }
 
-
-
-@layer base {
-  :root {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --radius: 0.5rem;
-  }
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-  }
+/* Soft radial glow accent */
+.glow-amber {
+  position: relative;
+}
+.glow-amber::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60%;
+  height: 70%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse, rgba(212, 120, 90, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
 }
 
+/* Animated grid that builds up */
+@keyframes gridFadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 0.04; }
+}
 
+@keyframes gridLineGrow {
+  0% { transform: scaleY(0); }
+  100% { transform: scaleY(1); }
+}
 
+.grid-animated {
+  position: relative;
+}
+.grid-animated::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(212, 120, 90, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 120, 90, 0.06) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridFadeIn 2s ease-out forwards;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 20%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 20%, transparent 70%);
+}
+
+/* Floating particles effect */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.6; }
+  50% { transform: translateY(-30px) rotate(180deg); }
+}
+
+/* Shimmer line animation */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.shimmer-line {
+  overflow: hidden;
+  position: relative;
+}
+.shimmer-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(212, 120, 90, 0.15), transparent);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+::selection {
+  background: rgba(212, 120, 90, 0.35);
+  color: #F0E6DA;
+}
+
+/* Film grain overlay for texture */
+.grain::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url('/images/grain.avif');
+  background-size: 200px;
+  background-repeat: repeat;
+  mix-blend-mode: screen;
+}

@@ -1,221 +1,103 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
-import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
-import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card'
-import { InteractiveGridBackground } from '@/components/ui/interactive-grid-background'
 import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
 import { useLanguage } from '@/hooks/useLanguage'
 
+function FadeIn({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setVisible(true); observer.disconnect() }
+    }, { threshold: 0.1 })
+    if (ref.current) observer.observe(ref.current)
+    return () => observer.disconnect()
+  }, [])
+  return (
+    <div ref={ref} className={`transition-all duration-700 ease-smooth ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'} ${className}`} style={{ transitionDelay: `${delay}ms` }}>
+      {children}
+    </div>
+  )
+}
+
 const projects = [
   {
-    id: 1,
-    title: "RADX Cooling Solutions",
-    description: {
-      en: "Professional website for cooling solutions company. Presentation of services and industrial cooling products.",
-      ro: "Website profesional pentru companie de soluții de răcire. Prezentarea serviciilor și produselor de răcire industrială.",
-      de: "Professionelle Website fur ein Kuhllosungsunternehmen. Prasentation von Dienstleistungen und industriellen Kuhlprodukten.",
-      fr: "Site web professionnel pour une entreprise de solutions de refroidissement. Presentation des services et produits de refroidissement industriel.",
-      es: "Sitio web profesional para empresa de soluciones de refrigeracion. Presentacion de servicios y productos de refrigeracion industrial."
-    },
-    image: "/images/radx.png",
-    url: "https://radx.solutions",
-    status: "LIVE",
-    category: "services"
+    id: 1, title: "RADX Cooling Solutions",
+    description: { en: "Professional website for cooling solutions company. Presentation of services and industrial cooling products.", ro: "Website profesional pentru companie de solutii de racire. Prezentarea serviciilor si produselor de racire industriala.", de: "Professionelle Website fur ein Kuhllosungsunternehmen.", fr: "Site web professionnel pour une entreprise de solutions de refroidissement.", es: "Sitio web profesional para empresa de soluciones de refrigeracion." },
+    image: "/images/radx.png", url: "https://radx.solutions", status: "LIVE", category: "services"
   },
   {
-    id: 2,
-    title: "Inter-Bus",
-    description: {
-      en: "International platform for authentic bus parts and components. Global shipping to 50+ countries with 2000+ parts catalog.",
-      ro: "Platformă internațională pentru piese autentice de autobuz. Livrare globală în peste 50 de țări cu catalog de 2000+ piese.",
-      de: "Internationale Plattform fur authentische Busteile und Komponenten. Weltweiter Versand in uber 50 Lander mit uber 2000 Teilen.",
-      fr: "Plateforme internationale pour pieces authentiques d'autobus. Livraison mondiale dans plus de 50 pays avec un catalogue de plus de 2000 pieces.",
-      es: "Plataforma internacional para piezas autenticas de autobus. Envio global a mas de 50 paises con catalogo de mas de 2000 piezas."
-    },
-    image: "/images/inter-bus.png",
-    url: "https://inter-bus.md",
-    status: "LIVE",
-    category: "ecommerce"
+    id: 2, title: "Inter-Bus",
+    description: { en: "International platform for authentic bus parts and components. Global shipping to 50+ countries.", ro: "Platforma internationala pentru piese autentice de autobuz. Livrare globala in peste 50 de tari.", de: "Internationale Plattform fur authentische Busteile und Komponenten.", fr: "Plateforme internationale pour pieces authentiques d'autobus.", es: "Plataforma internacional para piezas autenticas de autobus." },
+    image: "/images/inter-bus.png", url: "https://inter-bus.md", status: "LIVE", category: "ecommerce"
   },
   {
-    id: 3,
-    title: "Rizza Classic",
-    description: {
-      en: "Italian website for old cars restoration.",
-      ro: "Website italian pentru restaurarea mașinilor vechi.",
-      de: "Italienische Website fur die Restaurierung alter Autos.",
-      fr: "Site web italien pour la restauration de voitures anciennes.",
-      es: "Sitio web italiano para la restauracion de coches clasicos."
-    },
-    image: "/images/rizzaclassic.png",
-    url: "https://rizzaclassic.com",
-    status: "LIVE",
-    category: "automotive"
+    id: 3, title: "Rizza Classic",
+    description: { en: "Italian website for old cars restoration.", ro: "Website italian pentru restaurarea masinilor vechi.", de: "Italienische Website fur die Restaurierung alter Autos.", fr: "Site web italien pour la restauration de voitures anciennes.", es: "Sitio web italiano para la restauracion de coches clasicos." },
+    image: "/images/rizzaclassic.png", url: "https://rizzaclassic.com", status: "LIVE", category: "automotive"
   },
   {
-    id: 4,
-    title: "Auto Huse",
-    description: {
-      en: "Complete website for car covers. Presentation, online orders, gallery.",
-      ro: "Website complet pentru huse auto. Prezentare, comenzi online, galerie.",
-      de: "Komplette Website fur Autobezuge. Prasentation, Online-Bestellungen, Galerie.",
-      fr: "Site web complet pour housses de voiture. Presentation, commandes en ligne, galerie.",
-      es: "Sitio web completo para fundas de coche. Presentacion, pedidos en linea, galeria."
-    },
-    image: "/images/autohuse.md-min.png",
-    url: "https://autohuse.md/",
-    status: "LIVE",
-    category: "ecommerce"
+    id: 4, title: "Auto Huse",
+    description: { en: "Complete website for car covers. Presentation, online orders, gallery.", ro: "Website complet pentru huse auto. Prezentare, comenzi online, galerie.", de: "Komplette Website fur Autobezuge.", fr: "Site web complet pour housses de voiture.", es: "Sitio web completo para fundas de coche." },
+    image: "/images/autohuse.md-min.png", url: "https://autohuse.md/", status: "LIVE", category: "ecommerce"
   },
   {
-    id: 5,
-    title: "CRM Platform",
-    description: {
-      en: "Platform for auto service client management.",
-      ro: "Platformă pentru client management service auto.",
-      de: "Plattform fur Kundenmanagement im Autoservice.",
-      fr: "Plateforme de gestion clients pour service automobile.",
-      es: "Plataforma de gestion de clientes para servicio automotriz."
-    },
-    image: "/images/CRM.png",
-    url: "#",
-    status: "PRIVATE",
-    category: "automotive"
+    id: 5, title: "CRM Platform",
+    description: { en: "Platform for auto service client management.", ro: "Platforma pentru client management service auto.", de: "Plattform fur Kundenmanagement im Autoservice.", fr: "Plateforme de gestion clients pour service automobile.", es: "Plataforma de gestion de clientes para servicio automotriz." },
+    image: "/images/CRM.png", url: "#", status: "PRIVATE", category: "automotive"
   },
   {
-    id: 6,
-    title: "U. Dental Clinic",
-    description: {
-      en: "Complete website for dental clinic.",
-      ro: "Website complet pentru clinica stomatologică.",
-      de: "Komplette Website fur Zahnklinik.",
-      fr: "Site web complet pour clinique dentaire.",
-      es: "Sitio web completo para clinica dental."
-    },
-    image: "/images/udc (1).png",
-    url: "https://udc.md",
-    status: "LIVE",
-    category: "healthcare"
+    id: 6, title: "U. Dental Clinic",
+    description: { en: "Complete website for dental clinic.", ro: "Website complet pentru clinica stomatologica.", de: "Komplette Website fur Zahnklinik.", fr: "Site web complet pour clinique dentaire.", es: "Sitio web completo para clinica dental." },
+    image: "/images/udc (1).png", url: "https://udc.md", status: "LIVE", category: "healthcare"
   },
   {
-    id: 7,
-    title: "Auto Marga Service",
-    description: {
-      en: "Simple landing page - auto service.",
-      ro: "Landing page simplu - service auto.",
-      de: "Einfache Landing Page - Autoservice.",
-      fr: "Page d'atterrissage simple - service automobile.",
-      es: "Pagina de aterrizaje simple - servicio automotriz."
-    },
-    image: "/images/automarga (1).png",
-    url: "https://automarga.md/",
-    status: "LIVE",
-    category: "automotive"
+    id: 7, title: "Auto Marga Service",
+    description: { en: "Simple landing page — auto service.", ro: "Landing page simplu — service auto.", de: "Einfache Landing Page — Autoservice.", fr: "Page d'atterrissage simple — service automobile.", es: "Pagina de aterrizaje simple — servicio automotriz." },
+    image: "/images/automarga (1).png", url: "https://automarga.md/", status: "LIVE", category: "automotive"
   },
   {
-    id: 8,
-    title: "Elena Diacon Salon",
-    description: {
-      en: "Elegant website for beauty salon with online booking system and interactive photo gallery.",
-      ro: "Website elegant pentru salon de înfrumusețare cu sistem de programări online și galerie foto interactivă.",
-      de: "Elegante Website fur Schonheitssalon mit Online-Buchungssystem und interaktiver Fotogalerie.",
-      fr: "Site web elegant pour salon de beaute avec systeme de reservation en ligne et galerie photo interactive.",
-      es: "Sitio web elegante para salon de belleza con sistema de reservas en linea y galeria de fotos interactiva."
-    },
-    image: "/images/elenadiacon (1).png",
-    url: "https://elenadiacon.md",
-    status: "LIVE",
-    category: "services"
+    id: 8, title: "Elena Diacon Salon",
+    description: { en: "Elegant website for beauty salon with online booking system.", ro: "Website elegant pentru salon de infrumusetare cu sistem de programari online.", de: "Elegante Website fur Schonheitssalon mit Online-Buchungssystem.", fr: "Site web elegant pour salon de beaute avec systeme de reservation en ligne.", es: "Sitio web elegante para salon de belleza con sistema de reservas en linea." },
+    image: "/images/elenadiacon (1).png", url: "https://elenadiacon.md", status: "LIVE", category: "services"
   },
   {
-    id: 9,
-    title: "RespectAuto",
-    description: {
-      en: "Car rental platform with advanced SEO and booking system. 300% organic growth.",
-      ro: "Platformă de închiriere auto cu SEO avansat și sistem de rezervări. Creștere organică de 300%.",
-      de: "Autovermietungsplattform mit fortschrittlichem SEO und Buchungssystem. 300% organisches Wachstum.",
-      fr: "Plateforme de location de voitures avec SEO avance et systeme de reservation. Croissance organique de 300%.",
-      es: "Plataforma de alquiler de coches con SEO avanzado y sistema de reservas. Crecimiento organico del 300%."
-    },
-    image: "/images/respectauto (1).png",
-    url: "https://respectauto.md",
-    status: "LIVE",
-    category: "automotive"
+    id: 9, title: "RespectAuto",
+    description: { en: "Car rental platform with advanced SEO and booking system. 300% organic growth.", ro: "Platforma de inchiriere auto cu SEO avansat si sistem de rezervari. Crestere organica de 300%.", de: "Autovermietungsplattform mit fortschrittlichem SEO. 300% organisches Wachstum.", fr: "Plateforme de location avec SEO avance. Croissance organique de 300%.", es: "Plataforma de alquiler con SEO avanzado. Crecimiento organico del 300%." },
+    image: "/images/respectauto (1).png", url: "https://respectauto.md", status: "LIVE", category: "automotive"
   },
   {
-    id: 10,
-    title: "CMIEA Platform",
-    description: {
-      en: "Complex educational platform with authentication system, interactive courses and user dashboard.",
-      ro: "Platformă educațională complexă cu sistem de autentificare, cursuri interactive și dashboard pentru utilizatori.",
-      de: "Komplexe Bildungsplattform mit Authentifizierungssystem, interaktiven Kursen und Benutzer-Dashboard.",
-      fr: "Plateforme educative complexe avec systeme d'authentification, cours interactifs et tableau de bord utilisateur.",
-      es: "Plataforma educativa compleja con sistema de autenticacion, cursos interactivos y panel de usuario."
-    },
-    image: "/images/cmiea (1).png",
-    url: "https://cmiea.md",
-    status: "LIVE",
-    category: "education"
+    id: 10, title: "CMIEA Platform",
+    description: { en: "Complex educational platform with authentication, interactive courses and dashboard.", ro: "Platforma educationala complexa cu autentificare, cursuri interactive si dashboard.", de: "Komplexe Bildungsplattform mit Authentifizierung und interaktiven Kursen.", fr: "Plateforme educative complexe avec authentification et cours interactifs.", es: "Plataforma educativa compleja con autenticacion y cursos interactivos." },
+    image: "/images/cmiea (1).png", url: "https://cmiea.md", status: "LIVE", category: "education"
   },
   {
-    id: 11,
-    title: "EuroGard",
-    description: {
-      en: "High-converting landing page for gardening services with conversion and sales optimization.",
-      ro: "Landing page high-converting pentru servicii de grădinărit cu optimizare pentru conversii și vânzări.",
-      de: "Hochkonvertierende Landing Page fur Gartendienstleistungen mit Konversions- und Verkaufsoptimierung.",
-      fr: "Page d'atterrissage a haute conversion pour services de jardinage avec optimisation des conversions et des ventes.",
-      es: "Pagina de aterrizaje de alta conversion para servicios de jardineria con optimizacion de conversiones y ventas."
-    },
-    image: "/images/eurogard (1).png",
-    url: "https://eurogard.md",
-    status: "LIVE",
-    category: "services"
+    id: 11, title: "EuroGard",
+    description: { en: "High-converting landing page for gardening services.", ro: "Landing page high-converting pentru servicii de gradinarit.", de: "Hochkonvertierende Landing Page fur Gartendienstleistungen.", fr: "Page d'atterrissage a haute conversion pour services de jardinage.", es: "Pagina de aterrizaje de alta conversion para servicios de jardineria." },
+    image: "/images/eurogard (1).png", url: "https://eurogard.md", status: "LIVE", category: "services"
   },
   {
-    id: 12,
-    title: "Green Next.js Demo",
-    description: {
-      en: "Interactive demo built with Next.js, showcasing modern web development capabilities.",
-      ro: "Demo interactiv construit cu Next.js, prezentând capabilitățile moderne de dezvoltare web.",
-      de: "Interaktive Demo mit Next.js, die moderne Webentwicklungsfahigkeiten zeigt.",
-      fr: "Demo interactive construite avec Next.js, presentant les capacites modernes de developpement web.",
-      es: "Demo interactiva construida con Next.js, mostrando capacidades modernas de desarrollo web."
-    },
-    image: "/images/img-hero.jpeg",
-    url: "https://nextjs-green-eta-60.vercel.app/",
-    status: "DEMO",
-    category: "demo"
+    id: 12, title: "Green Next.js Demo",
+    description: { en: "Interactive demo built with Next.js, showcasing modern web capabilities.", ro: "Demo interactiv construit cu Next.js.", de: "Interaktive Demo mit Next.js.", fr: "Demo interactive construite avec Next.js.", es: "Demo interactiva construida con Next.js." },
+    image: "/images/img-hero.jpeg", url: "https://nextjs-green-eta-60.vercel.app/", status: "DEMO", category: "demo"
   },
   {
-    id: 13,
-    title: "Advanced Green Demo",
-    description: {
-      en: "Advanced demonstration with complex functionalities, animations and modern interactions.",
-      ro: "Demonstrație avansată cu funcționalități complexe, animații și interacțiuni moderne.",
-      de: "Fortgeschrittene Demonstration mit komplexen Funktionalitaten, Animationen und modernen Interaktionen.",
-      fr: "Demonstration avancee avec des fonctionnalites complexes, des animations et des interactions modernes.",
-      es: "Demostracion avanzada con funcionalidades complejas, animaciones e interacciones modernas."
-    },
-    image: "/images/img-hero.jpeg",
-    url: "https://green-nextjs.vercel.app/",
-    status: "DEMO",
-    category: "demo"
+    id: 13, title: "Advanced Green Demo",
+    description: { en: "Advanced demonstration with complex functionalities and animations.", ro: "Demonstratie avansata cu functionalitati complexe si animatii.", de: "Fortgeschrittene Demonstration mit komplexen Funktionalitaten.", fr: "Demonstration avancee avec des fonctionnalites complexes.", es: "Demostracion avanzada con funcionalidades complejas." },
+    image: "/images/img-hero.jpeg", url: "https://green-nextjs.vercel.app/", status: "DEMO", category: "demo"
   }
 ]
 
 const categories = [
-  { id: 'all', name: { en: 'All Projects', ro: 'Toate Proiectele', de: 'Alle Projekte', fr: 'Tous les Projets', es: 'Todos los Proyectos' } },
+  { id: 'all', name: { en: 'All', ro: 'Toate', de: 'Alle', fr: 'Tous', es: 'Todos' } },
   { id: 'automotive', name: { en: 'Automotive', ro: 'Auto', de: 'Automobil', fr: 'Automobile', es: 'Automotriz' } },
   { id: 'ecommerce', name: { en: 'E-commerce', ro: 'E-commerce', de: 'E-Commerce', fr: 'E-commerce', es: 'E-commerce' } },
-  { id: 'healthcare', name: { en: 'Healthcare', ro: 'Sănătate', de: 'Gesundheit', fr: 'Sante', es: 'Salud' } },
-  { id: 'education', name: { en: 'Education', ro: 'Educație', de: 'Bildung', fr: 'Education', es: 'Educacion' } },
-  { id: 'services', name: { en: 'Services', ro: 'Servicii', de: 'Dienstleistungen', fr: 'Services', es: 'Servicios' } },
+  { id: 'healthcare', name: { en: 'Healthcare', ro: 'Sanatate', de: 'Gesundheit', fr: 'Sante', es: 'Salud' } },
+  { id: 'education', name: { en: 'Education', ro: 'Educatie', de: 'Bildung', fr: 'Education', es: 'Educacion' } },
+  { id: 'services', name: { en: 'Services', ro: 'Servicii', de: 'Dienste', fr: 'Services', es: 'Servicios' } },
   { id: 'demo', name: { en: 'Demos', ro: 'Demo-uri', de: 'Demos', fr: 'Demos', es: 'Demos' } }
 ]
 
@@ -227,612 +109,234 @@ export default function PortfolioPage() {
 
   const text = {
     en: {
-      nav: {
-        home: "Home",
-        portfolio: "Portfolio",
-        pricing: "Pricing",
-        solutions: "Solutions",
-        contact: "Contact Me"
-      },
-      hero: {
-        title: "Our Portfolio",
-        description: "Showcasing our best work and successful projects"
-      },
-      portfolio: {
-        title: "Portfolio",
-        subtitle: "*all projects are custom developed, no wordpress",
-        visitSite: "Visit Site",
-        viewDemo: "View Demo",
-        private: "Private"
-      },
-      cta: {
-        title: "Get a free consultation!",
-        button: "Contact Me"
-      }
+      nav: { portfolio: "Portfolio", pricing: "Pricing", solutions: "Solutions", caseStudies: "Case Studies", contact: "Contact" },
+      title: "Portfolio.",
+      subtitle: "All projects are custom developed. No WordPress.",
+      visitSite: "Visit site", viewDemo: "View demo", private: "Private",
+      cta: { title: "Have a project in mind?", body: "Reach out and we'll respond within hours.", button: "Let's talk" },
+      footer: { copy: "© 2026 All rights reserved." }
     },
     ro: {
-      nav: {
-        home: "Acasă",
-        portfolio: "Portofoliu",
-        pricing: "Prețuri",
-        solutions: "Soluții",
-        contact: "Contactează-mă"
-      },
-      hero: {
-        title: "Portofoliul Nostru",
-        description: "Prezentând cele mai bune lucrări și proiecte de succes"
-      },
-      portfolio: {
-        title: "Portofoliu",
-        subtitle: "*toate proiectele sunt custom dezvoltate, fără wordpress",
-        visitSite: "Accesează site-ul",
-        viewDemo: "Vezi Demo",
-        private: "Privat"
-      },
-      cta: {
-        title: "Obține o consultație gratuită!",
-        button: "Contactează-mă"
-      }
+      nav: { portfolio: "Portofoliu", pricing: "Preturi", solutions: "Solutii", caseStudies: "Studii de Caz", contact: "Contact" },
+      title: "Portofoliu.",
+      subtitle: "Toate proiectele sunt custom dezvoltate. Fara WordPress.",
+      visitSite: "Acceseaza site-ul", viewDemo: "Vezi demo", private: "Privat",
+      cta: { title: "Ai un proiect in minte?", body: "Contacteaza-ne si iti vom raspunde in cateva ore.", button: "Hai sa vorbim" },
+      footer: { copy: "© 2026 Toate drepturile rezervate." }
     },
     de: {
-      nav: {
-        home: "Startseite",
-        portfolio: "Portfolio",
-        pricing: "Preise",
-        solutions: "Losungen",
-        contact: "Kontakt"
-      },
-      hero: {
-        title: "Unser Portfolio",
-        description: "Prasentieren wir unsere besten Arbeiten und erfolgreichen Projekte"
-      },
-      portfolio: {
-        title: "Portfolio",
-        subtitle: "*alle Projekte sind individuell entwickelt, kein WordPress",
-        visitSite: "Website besuchen",
-        viewDemo: "Demo ansehen",
-        private: "Privat"
-      },
-      cta: {
-        title: "Holen Sie sich eine kostenlose Beratung!",
-        button: "Kontaktieren Sie mich"
-      }
+      nav: { portfolio: "Portfolio", pricing: "Preise", solutions: "Losungen", caseStudies: "Fallstudien", contact: "Kontakt" },
+      title: "Portfolio.",
+      subtitle: "Alle Projekte sind individuell entwickelt. Kein WordPress.",
+      visitSite: "Website besuchen", viewDemo: "Demo ansehen", private: "Privat",
+      cta: { title: "Haben Sie ein Projekt?", body: "Kontaktieren Sie uns, wir antworten innerhalb von Stunden.", button: "Kontaktieren Sie uns" },
+      footer: { copy: "© 2026 Alle Rechte vorbehalten." }
     },
     fr: {
-      nav: {
-        home: "Accueil",
-        portfolio: "Portfolio",
-        pricing: "Tarifs",
-        solutions: "Solutions",
-        contact: "Contactez-moi"
-      },
-      hero: {
-        title: "Notre Portfolio",
-        description: "Presentation de nos meilleurs travaux et projets reussis"
-      },
-      portfolio: {
-        title: "Portfolio",
-        subtitle: "*tous les projets sont developpes sur mesure, pas de WordPress",
-        visitSite: "Visiter le site",
-        viewDemo: "Voir la Demo",
-        private: "Prive"
-      },
-      cta: {
-        title: "Obtenez une consultation gratuite !",
-        button: "Contactez-moi"
-      }
+      nav: { portfolio: "Portfolio", pricing: "Tarifs", solutions: "Solutions", caseStudies: "Etudes de Cas", contact: "Contact" },
+      title: "Portfolio.",
+      subtitle: "Tous les projets sont developpes sur mesure. Pas de WordPress.",
+      visitSite: "Visiter le site", viewDemo: "Voir la demo", private: "Prive",
+      cta: { title: "Vous avez un projet ?", body: "Contactez-nous et nous repondrons en quelques heures.", button: "Parlons-en" },
+      footer: { copy: "© 2026 Tous droits reserves." }
     },
     es: {
-      nav: {
-        home: "Inicio",
-        portfolio: "Portafolio",
-        pricing: "Precios",
-        solutions: "Soluciones",
-        contact: "Contactame"
-      },
-      hero: {
-        title: "Nuestro Portafolio",
-        description: "Mostrando nuestros mejores trabajos y proyectos exitosos"
-      },
-      portfolio: {
-        title: "Portafolio",
-        subtitle: "*todos los proyectos son desarrollados a medida, sin WordPress",
-        visitSite: "Visitar Sitio",
-        viewDemo: "Ver Demo",
-        private: "Privado"
-      },
-      cta: {
-        title: "Obtiene una consulta gratuita!",
-        button: "Contactame"
-      }
+      nav: { portfolio: "Portafolio", pricing: "Precios", solutions: "Soluciones", caseStudies: "Casos de Estudio", contact: "Contacto" },
+      title: "Portafolio.",
+      subtitle: "Todos los proyectos son desarrollados a medida. Sin WordPress.",
+      visitSite: "Visitar sitio", viewDemo: "Ver demo", private: "Privado",
+      cta: { title: "Tienes un proyecto?", body: "Contactanos y te responderemos en horas.", button: "Hablemos" },
+      footer: { copy: "© 2026 Todos los derechos reservados." }
     }
   }
 
   const t = text[language as keyof typeof text]
-
-  const filteredProjects = selectedCategory === 'all' 
-    ? projects 
-    : projects.filter(project => project.category === selectedCategory)
+  const filteredProjects = selectedCategory === 'all' ? projects : projects.filter(p => p.category === selectedCategory)
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      <InteractiveGridBackground />
+    <div className="min-h-screen text-ink grain" style={{ background: '#2A2118' }}>
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-neutral-800/50">
-        <div className="max-w-7xl mx-auto px-8 py-4">
-          <div className="flex items-center justify-between min-h-[48px]">
-            {/* Logo */}
-            <Link href="/">
-              <Image
-                src="/images/logowhite.png"
-                alt="landings.md"
-                width={48}
-                height={48}
-                className="w-12 h-12 object-contain"
-              />
-            </Link>
-
-            {/* Desktop Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-divider" style={{ backgroundColor: 'rgba(42,33,24,0.88)' }}>
+        <div className="max-w-6xl mx-auto px-6 md:px-8">
+          <div className="flex items-center justify-between h-16">
+            <Link href="/" className="flex items-center"><Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="w-[22px] h-auto" /></Link>
             <div className="hidden md:flex items-center gap-8">
-              <div className="flex items-center gap-8 text-neutral-400">
-                <Link href="/" className="hover:text-white transition-all duration-300 hover:bg-neutral-800/50 px-4 py-2 rounded-lg border border-transparent hover:border-neutral-700">
-                  {t.nav.home}
-                </Link>
-                <Link href="/portfolio" className="text-white bg-neutral-800/50 px-4 py-2 rounded-lg border border-neutral-700">
-                  {t.nav.portfolio}
-                </Link>
-                <Link href="/pricing" className="hover:text-white transition-all duration-300 hover:bg-neutral-800/50 px-4 py-2 rounded-lg border border-transparent hover:border-neutral-700">
-                  {t.nav.pricing}
-                </Link>
-                <Link href="/solutions" className="hover:text-white transition-all duration-300 hover:bg-neutral-800/50 px-4 py-2 rounded-lg border border-transparent hover:border-neutral-700">
-                  {t.nav.solutions}
-                </Link>
+              <div className="flex items-center gap-6 text-sm text-ink-muted">
+                <Link href="/portfolio" className="text-ink">{t.nav.portfolio}</Link>
+                <Link href="/pricing" className="hover:text-ink transition-colors">{t.nav.pricing}</Link>
+                <Link href="/solutions" className="hover:text-ink transition-colors">{t.nav.solutions}</Link>
+                <Link href="/case-studies" className="hover:text-ink transition-colors">{t.nav.caseStudies}</Link>
               </div>
-              
-              <div className="flex items-center gap-4">
-                <div className="relative" >
-                  <button
-                    onClick={() => setLangMenuOpen(!langMenuOpen)}
-                    className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50 hover:border-neutral-600 backdrop-blur-sm"
-                  >
-                    {language.toUpperCase()}
-                  </button>
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <button onClick={() => setLangMenuOpen(!langMenuOpen)} className="text-ink-muted hover:text-ink text-xs tracking-widest uppercase transition-colors">{language}</button>
                   {langMenuOpen && (
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
-                      <div className="absolute top-full right-0 mt-2 bg-neutral-900/95 backdrop-blur-md rounded-lg border border-neutral-700/50 overflow-hidden z-50 min-w-[80px]">
-                      {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (
-                        <button
-                          key={lang}
-                          onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false); }}
-                          className={`block w-full text-left px-4 py-2 text-sm transition-colors ${language === lang ? "bg-neutral-800 text-white" : "text-neutral-400 hover:bg-neutral-800/50 hover:text-white"}`}
-                        >
-                          {lang.toUpperCase()}
-                        </button>
-                      ))}
+                      <div className="absolute top-full right-0 mt-3 bg-surface border border-divider shadow-card z-50 min-w-[64px]">
+                        {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (
+                          <button key={lang} onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false); }} className={`block w-full text-left px-4 py-2 text-xs tracking-widest uppercase transition-colors ${language === lang ? "text-amber bg-surface" : "text-ink-muted hover:text-ink"}`}>{lang}</button>
+                        ))}
                       </div>
                     </>
                   )}
                 </div>
-                <Link href="https://wa.me/37368327082">
-                  <Button className="bg-gradient-to-r from-white to-neutral-200 hover:from-neutral-100 hover:to-neutral-300 text-black font-medium px-6 py-2 rounded-full transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
-                    {t.nav.contact}
-                  </Button>
-                </Link>
+                <Link href="mailto:contact@landings.md" className="text-amber text-sm hover:text-amber-light transition-colors">{t.nav.contact}</Link>
               </div>
             </div>
-
-            {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center gap-3">
-              <div className="relative">
-                <button
-                  onClick={() => setLangMenuOpen(!langMenuOpen)}
-                  className="text-neutral-400 hover:text-white transition-all duration-300 text-sm font-medium px-3 py-2 rounded-md hover:bg-neutral-800/80 border border-neutral-700/50"
-                >
-                  {language.toUpperCase()}
-                </button>
-                {langMenuOpen && (
-                  <>
-                    <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
-                    <div className="absolute top-full right-0 mt-2 bg-neutral-900/95 backdrop-blur-md rounded-lg border border-neutral-700/50 overflow-hidden z-50 min-w-[80px]">
-                      {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (
-                        <button
-                          key={lang}
-                          onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false); }}
-                          className={`block w-full text-left px-4 py-2 text-sm transition-colors ${language === lang ? "bg-neutral-800 text-white" : "text-neutral-400 hover:bg-neutral-800/50 hover:text-white"}`}
-                        >
-                          {lang.toUpperCase()}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-lg border border-neutral-700/50 hover:border-neutral-600 hover:bg-neutral-800/50 transition-all duration-300"
-              >
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              <button onClick={() => setLangMenuOpen(!langMenuOpen)} className="text-ink-muted text-xs tracking-widest uppercase">{language}</button>
+              {langMenuOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
+                  <div className="absolute top-20 right-6 bg-surface border border-divider shadow-card z-50 min-w-[64px]">
+                    {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (
+                      <button key={lang} onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false); }} className={`block w-full text-left px-4 py-2 text-xs tracking-widest uppercase ${language === lang ? "text-amber bg-surface" : "text-ink-muted"}`}>{lang}</button>
+                    ))}
+                  </div>
+                </>
+              )}
+              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-ink-muted">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {mobileMenuOpen ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" /> : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />}
                 </svg>
               </button>
             </div>
           </div>
-
-          {/* Mobile Menu */}
           {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="md:hidden absolute top-full left-8 right-8 mt-4 p-4 bg-neutral-900/95 backdrop-blur-md rounded-xl border border-neutral-700/50 z-50"
-            >
-              <div className="flex flex-col space-y-3">
-                <Link 
-                  href="/" 
-                  className="text-neutral-300 hover:text-white transition-all duration-300 p-3 rounded-lg hover:bg-neutral-800/50 text-center border border-transparent hover:border-neutral-700"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {t.nav.home}
-                </Link>
-                <Link 
-                  href="/portfolio" 
-                  className="text-white bg-neutral-800/50 p-3 rounded-lg text-center border border-neutral-700"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {t.nav.portfolio}
-                </Link>
-                <Link
-                  href="/pricing"
-                  className="text-neutral-300 hover:text-white transition-all duration-300 p-3 rounded-lg hover:bg-neutral-800/50 text-center border border-transparent hover:border-neutral-700"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {t.nav.pricing}
-                </Link>
-                <Link
-                  href="/solutions"
-                  className="text-neutral-300 hover:text-white transition-all duration-300 p-3 rounded-lg hover:bg-neutral-800/50 text-center border border-transparent hover:border-neutral-700"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {t.nav.solutions}
-                </Link>
-                <Link
-                  href="https://wa.me/37368327082"
-                  className="bg-gradient-to-r from-white to-neutral-200 hover:from-neutral-100 hover:to-neutral-300 text-black font-medium p-3 rounded-full transition-all duration-300 hover:scale-105 text-center mt-4"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {t.nav.contact}
-                </Link>
+            <div className="md:hidden border-t border-divider py-6 space-y-4">
+              <Link href="/portfolio" className="block text-ink text-sm py-1" onClick={() => setMobileMenuOpen(false)}>{t.nav.portfolio}</Link>
+              <Link href="/pricing" className="block text-ink-muted text-sm py-1" onClick={() => setMobileMenuOpen(false)}>{t.nav.pricing}</Link>
+              <Link href="/solutions" className="block text-ink-muted text-sm py-1" onClick={() => setMobileMenuOpen(false)}>{t.nav.solutions}</Link>
+              <Link href="/case-studies" className="block text-ink-muted text-sm py-1" onClick={() => setMobileMenuOpen(false)}>{t.nav.caseStudies}</Link>
+              <div className="pt-2 border-t border-divider">
+                <Link href="mailto:contact@landings.md" className="text-amber text-sm" onClick={() => setMobileMenuOpen(false)}>{t.nav.contact} &rarr;</Link>
               </div>
-            </motion.div>
+            </div>
           )}
         </div>
       </nav>
 
-      <main className="relative z-10 pt-28 md:pt-32">
-        {/* Hero Section */}
-        <section className="py-8 px-4">
-          <div className="max-w-7xl mx-auto text-center">
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-4 bg-gradient-to-b from-white to-neutral-400 bg-clip-text text-transparent"
-            >
-              {t.portfolio.title}
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-xl text-neutral-400 max-w-2xl mx-auto"
-            >
-              {t.hero.description}
-            </motion.p>
-          </div>
-        </section>
+      {/* Hero */}
+      <section className="pt-32 md:pt-40 pb-8 px-6 md:px-8">
+        <div className="max-w-6xl mx-auto">
+          <FadeIn>
+            <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl text-ink">{t.title}</h1>
+          </FadeIn>
+          <FadeIn delay={100}>
+            <p className="mt-4 text-ink-muted text-sm tracking-wide">{t.subtitle}</p>
+          </FadeIn>
+        </div>
+      </section>
 
-        {/* Category Filter */}
-        <section className="px-4 mb-8">
-          <div className="max-w-7xl mx-auto">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex flex-wrap justify-center gap-4 mb-8"
-            >
-              {categories.map((category) => (
+      {/* Category Filter */}
+      <section className="px-6 md:px-8 pb-12">
+        <div className="max-w-6xl mx-auto">
+          <FadeIn delay={150}>
+            <div className="flex flex-wrap gap-3">
+              {categories.map((cat) => (
                 <button
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
-                  className={cn(
-                    "px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 backdrop-blur-xl border",
-                    selectedCategory === category.id
-                      ? "bg-neutral-200/25 text-white border-neutral-300/40 shadow-[0_0_15px_rgba(255,255,255,0.1)]"
-                      : "bg-neutral-400/15 text-neutral-200 border-neutral-400/25 hover:bg-neutral-300/20 hover:border-neutral-300/35"
-                  )}
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`text-xs tracking-[0.15em] uppercase px-3 py-1.5 transition-all duration-200 ${selectedCategory === cat.id ? 'text-ink border-b border-ink' : 'text-ink-muted hover:text-ink'}`}
                 >
-                  {category.name[language as keyof typeof category.name]}
+                  {cat.name[language as keyof typeof cat.name]}
                 </button>
               ))}
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Projects Grid with 3D Cards */}
-        <section className="px-4 py-6">
-          <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-              {filteredProjects.map((project, index) => (
-                <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, y: 0 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="h-full"
-                >
-                  <CardContainer className="inter-var w-full h-full">
-                    <CardBody className="bg-neutral-800/40 relative group/card hover:bg-neutral-700/50 border border-white/15 backdrop-blur-md w-full rounded-3xl overflow-hidden h-fit hover:border-white/25 transition-all duration-500">
-                      
-                      {/* Project Image - Larger, full width */}
-                      <CardItem translateZ="100" className="w-full">
-                        <div className="relative overflow-hidden h-56">
-                          <Image
-                            src={project.image}
-                            alt={project.title}
-                            width={400}
-                            height={300}
-                            className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700"
-                          />
-                          {/* Status Badge - Over the image */}
-                          <div className="absolute top-4 right-4 z-10">
-                            <span className={cn(
-                              "px-3 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm",
-                              project.status === "LIVE" ? "bg-green-500/90 text-white" :
-                              project.status === "DEMO" ? "bg-yellow-500/90 text-black" :
-                              "bg-gray-500/90 text-white"
-                            )}>
-                              {project.status}
-                            </span>
-                          </div>
-                          
-                          {/* Category overlay */}
-                          <div className="absolute bottom-4 left-4">
-                            <span className="px-3 py-1 bg-black/70 text-white text-xs rounded-full border border-white/20 font-medium backdrop-blur-sm uppercase tracking-wider">
-                              {categories.find(cat => cat.id === project.category)?.name[language as keyof typeof categories[0]['name']]}
-                            </span>
-                          </div>
-                        </div>
-                      </CardItem>
-
-                      {/* Compact Info Section */}
-                      <div className="px-6 pt-6 pb-4 flex flex-col h-[224px]">
-                        <div className="space-y-3">
-                          <CardItem translateZ="50">
-                            <h3 className="text-xl font-bold text-white group-hover/card:text-neutral-100 transition-all duration-300 line-clamp-1">
-                              {project.title}
-                            </h3>
-                          </CardItem>
-                          
-                          <CardItem as="p" translateZ="60">
-                            <p className="text-neutral-400 text-sm leading-relaxed line-clamp-2">
-                              {project.description[language as keyof typeof project.description]}
-                            </p>
-                          </CardItem>
-                        </div>
-
-                        {/* Action Button - At Very Bottom */}
-                        <CardItem translateZ={20} className="mt-auto mb-2">
-                          {project.status !== "PRIVATE" ? (
-                            <Link href={project.url} target="_blank" rel="noopener noreferrer">
-                              <Button className="w-full bg-white text-black hover:bg-neutral-100 font-bold py-3 px-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-xl">
-                                {project.status === "DEMO" ? t.portfolio.viewDemo : t.portfolio.visitSite}
-                              </Button>
-                            </Link>
-                          ) : (
-                            <Button 
-                              disabled 
-                              className="w-full bg-gray-500 text-black cursor-not-allowed py-3 px-4 rounded-2xl"
-                            >
-                              {t.portfolio.private}
-                            </Button>
-                          )}
-                        </CardItem>
-                      </div>
-
-                    </CardBody>
-                  </CardContainer>
-                </motion.div>
-              ))}
             </div>
+          </FadeIn>
+        </div>
+      </section>
 
-            {/* Subtitle */}
-            <motion.p 
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              viewport={{ once: true }}
-              className="text-neutral-400 mt-12 text-center text-lg"
-            >
-              {t.portfolio.subtitle}
-            </motion.p>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="relative z-10 py-12 px-4 md:px-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="bg-white/[0.05] backdrop-blur-2xl border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.15)] rounded-3xl p-4 md:p-6 relative">
-              
-              <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                {/* Left Content */}
-                <div className="space-y-6">
-                  <motion.h2
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    className="text-4xl lg:text-5xl font-bold text-white leading-tight"
-                  >
-                    {({ en: "Let's talk and make it happen", ro: "Să vorbim și să facem să se întâmple", de: 'Lassen Sie uns reden und es verwirklichen', fr: 'Parlons-en et realisons-le', es: 'Hablemos y hagamoslo realidad' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-                  </motion.h2>
-                  
-                  <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.2 }}
-                    className="text-xl text-neutral-300 leading-relaxed"
-                  >
-                    {({ en: "Reach out to us, and we'll respond as soon as possible.", ro: "Contactează-ne și îți vom răspunde cât mai curând posibil.", de: 'Kontaktieren Sie uns und wir antworten so schnell wie moglich.', fr: 'Contactez-nous et nous vous repondrons des que possible.', es: 'Contactanos y te responderemos lo antes posible.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-                  </motion.p>
-
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
-                  >
-                    <Link href="https://wa.me/37368327082">
-                      <Button className="bg-gradient-to-r from-white to-neutral-100 hover:from-neutral-50 hover:to-neutral-200 text-black font-semibold px-8 py-4 text-lg rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
-                        {({ en: 'Talk to us', ro: 'Vorbește cu noi', de: 'Kontaktieren Sie uns', fr: 'Parlez-nous', es: 'Hablanos' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-                      </Button>
-                    </Link>
-                  </motion.div>
-
-                  {/* Rating */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.6 }}
-                    className="flex items-center gap-4"
-                  >
-                    {/* Stars */}
-                    <div className="flex items-center gap-1">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <svg
-                          key={star}
-                          className="w-5 h-5 text-yellow-400 fill-current"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                      ))}
-                    </div>
-                    
-                    {/* Rating Text */}
-                    <span className="text-neutral-300 font-medium">4.9/5</span>
-                  </motion.div>
-                </div>
-
-                {/* Right Content - Portfolio Preview */}
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: 0.3 }}
-                  className="relative"
-                >
-                  <div className="grid grid-cols-2 gap-4">
-                    {/* Portfolio Items - Left Column */}
-                    <div className="space-y-4">
-                      <div className="aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-neutral-700/20 to-neutral-800/20 border border-neutral-700/50">
-                        <Image
-                          src="/images/rizzaclassic.png"
-                          alt="Rizza Classic"
-                          width={400}
-                          height={300}
-                          quality={95}
-                          className="w-full h-full object-cover opacity-90"
-                        />
-                      </div>
-                      <div className="aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-neutral-700/20 to-neutral-800/20 border border-neutral-700/50">
-                        <Image
-                          src="/images/autohuse.md-min.png"
-                          alt="Auto Huse"
-                          width={400}
-                          height={300}
-                          quality={95}
-                          className="w-full h-full object-cover opacity-90"
-                        />
-                      </div>
-                    </div>
-                    {/* Portfolio Items - Right Column */}
-                    <div className="space-y-4 pt-8">
-                      <div className="aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-neutral-700/20 to-neutral-800/20 border border-neutral-700/50">
-                        <Image
-                          src="/images/CRM.png"
-                          alt="CRM Platform"
-                          width={400}
-                          height={300}
-                          quality={95}
-                          className="w-full h-full object-cover opacity-90"
-                        />
-                      </div>
-                      <div className="aspect-[4/3] rounded-xl overflow-hidden bg-gradient-to-br from-neutral-700/20 to-neutral-800/20 border border-neutral-700/50">
-                        <Image
-                          src="/images/eurogard.png"
-                          alt="Eurogard Project"
-                          width={400}
-                          height={300}
-                          quality={95}
-                          className="w-full h-full object-cover opacity-90"
-                        />
-                      </div>
-                    </div>
+      {/* Projects Grid */}
+      <section className="px-6 md:px-8 pb-20 md:pb-32">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProjects.map((project, index) => (
+              <FadeIn key={project.id} delay={index * 60} className="h-full">
+                <div className="h-full flex flex-col bg-surface border border-divider shadow-card group hover:border-amber transition-colors duration-300">
+                  {/* Image */}
+                  <div className="aspect-[4/3] overflow-hidden flex-shrink-0">
+                    <Image
+                      src={project.image}
+                      alt={`${project.title} — ${project.description.en}`}
+                      width={600}
+                      height={450}
+                      className="w-full h-full object-cover group-hover:scale-[1.02] group-hover:-translate-y-[2px] transition-all duration-300 ease-smooth"
+                    />
                   </div>
-                </motion.div>
-              </div>
-            </div>
+                  {/* Info */}
+                  <div className="p-5 flex flex-col flex-1">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-amber text-[10px] tracking-[0.2em] uppercase">
+                        {categories.find(c => c.id === project.category)?.name[language as keyof typeof categories[0]['name']]}
+                      </span>
+                      <span className={`text-[10px] tracking-[0.15em] uppercase ${project.status === 'LIVE' ? 'text-ink-muted' : project.status === 'DEMO' ? 'text-ink-light' : 'text-ink-light'}`}>
+                        {project.status}
+                      </span>
+                    </div>
+                    <h3 className="text-ink font-serif text-lg mb-1">{project.title}</h3>
+                    <p className="text-ink-muted text-sm leading-relaxed mb-4 line-clamp-2 flex-1">
+                      {project.description[language as keyof typeof project.description]}
+                    </p>
+                    {project.status !== "PRIVATE" ? (
+                      <Link href={project.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-amber hover:text-amber-light text-xs tracking-wide transition-colors mt-auto">
+                        {project.status === "DEMO" ? t.viewDemo : t.visitSite}
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                      </Link>
+                    ) : (
+                      <span className="text-ink-light text-xs tracking-wide mt-auto">{t.private}</span>
+                    )}
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="max-w-6xl mx-auto px-6 md:px-8"><div className="border-t border-divider" /></div>
+
+      {/* CTA */}
+      <section className="py-20 md:py-28 px-6 md:px-8 relative glow-amber" style={{ background: 'linear-gradient(180deg, #3E3229 0%, #2A2118 100%)' }}>
+        <div className="max-w-4xl mx-auto text-center">
+          <FadeIn>
+            <h2 className="font-serif italic text-3xl md:text-4xl text-ink mb-4">{t.cta.title}</h2>
+            <p className="text-ink-muted mb-8">{t.cta.body}</p>
+            <Link href="mailto:contact@landings.md" className="inline-flex items-center gap-3 text-amber hover:text-amber-light text-sm tracking-wide transition-colors group">
+              {t.cta.button}
+              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            </Link>
+          </FadeIn>
+        </div>
+      </section>
 
       {/* Footer */}
-      <footer className="bg-black border-t border-neutral-800">
-        <div className="max-w-7xl mx-auto px-8 py-16 pb-32">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="flex items-center gap-3">
-                <Image src="/images/logowhite.png" alt="landings.md" width={32} height={32} className="w-8 h-8 object-contain" />
-                <span className="text-white font-semibold">landings.md</span>
-              </div>
-              
-              <div className="flex items-center gap-6 text-sm text-neutral-400">
-                <Link href="/" className="hover:text-white transition-colors py-2">
-                  {({ en: 'Home', ro: 'Acasă', de: 'Startseite', fr: 'Accueil', es: 'Inicio' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-                </Link>
-                <Link href="/portfolio" className="hover:text-white transition-colors py-2">
-                  {({ en: 'Portfolio', ro: 'Portofoliu', de: 'Portfolio', fr: 'Portfolio', es: 'Portafolio' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-                </Link>
-                <Link href="/pricing" className="hover:text-white transition-colors py-2">
-                  {({ en: 'Pricing', ro: 'Prețuri', de: 'Preise', fr: 'Tarifs', es: 'Precios' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-                </Link>
-                <Link href="/solutions" className="hover:text-white transition-colors py-2">
-                  {({ en: 'Solutions', ro: 'Soluții', de: 'Losungen', fr: 'Solutions', es: 'Soluciones' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-                </Link>
+      <footer className="border-t border-divider" style={{ background: '#241E18' }}>
+        <div className="max-w-6xl mx-auto px-6 md:px-8 py-12 pb-28">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+              <Link href="/" className="flex items-center"><Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="w-[22px] h-auto" /></Link>
+              <div className="flex items-center gap-6 text-sm text-ink-muted">
+                <Link href="/portfolio" className="hover:text-ink transition-colors">{t.nav.portfolio}</Link>
+                <Link href="/pricing" className="hover:text-ink transition-colors">{t.nav.pricing}</Link>
+                <Link href="/solutions" className="hover:text-ink transition-colors">{t.nav.solutions}</Link>
+                <Link href="/case-studies" className="hover:text-ink transition-colors">{t.nav.caseStudies}</Link>
               </div>
             </div>
-            
             <div className="flex items-center gap-4">
-              <div className="text-sm text-neutral-500">
-                {({ en: '© 2026 All rights reserved.', ro: '© 2026 Toate drepturile rezervate.', de: '© 2026 Alle Rechte vorbehalten.', fr: '© 2026 Tous droits reserves.', es: '© 2026 Todos los derechos reservados.' })[language as 'en' | 'ro' | 'de' | 'fr' | 'es']}
-              </div>
+              <span className="text-ink-light text-xs tracking-wide">{t.footer.copy}</span>
               <div className="flex items-center gap-3">
-                <Link href="https://instagram.com/landings.md" className="text-neutral-500 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                  </svg>
-                </Link>
-                <Link href="https://wa.me/37368327082" className="text-neutral-500 hover:text-green-400 transition-colors" target="_blank" rel="noopener noreferrer">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.520-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.89 3.485"/>
-                  </svg>
-                </Link>
+                <Link href="https://instagram.com/landings.md" className="text-ink-light hover:text-ink-muted transition-colors" target="_blank" rel="noopener noreferrer"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></Link>
+                <Link href="mailto:contact@landings.md" className="text-ink-light hover:text-ink-muted transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0l-9.75 6.093L2.25 6.75" /></svg></Link>
               </div>
             </div>
           </div>
         </div>
       </footer>
-      
-      {/* Sticky Contact Pill */}
+
       <StickyContactPill language={language as 'en' | 'ro' | 'de' | 'fr' | 'es'} />
     </div>
   )
