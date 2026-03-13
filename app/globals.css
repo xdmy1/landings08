@@ -34,17 +34,17 @@
 body {
   color: hsl(var(--foreground));
   background: #2A2118;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Onest', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 .font-serif {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'Lora', Georgia, serif;
 }
 
 .font-sans {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Onest', sans-serif;
 }
 
 @layer utilities {
@@ -83,15 +83,11 @@ body {
   z-index: 0;
 }
 
+
 /* Animated grid that builds up */
 @keyframes gridFadeIn {
   0% { opacity: 0; }
   100% { opacity: 0.04; }
-}
-
-@keyframes gridLineGrow {
-  0% { transform: scaleY(0); }
-  100% { transform: scaleY(1); }
 }
 
 .grid-animated {
@@ -143,6 +139,25 @@ body {
 ::selection {
   background: rgba(212, 120, 90, 0.35);
   color: #F0E6DA;
+}
+
+/* Mobile nav overlay animations */
+@keyframes mobileNavIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes mobileNavLinkIn {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.mobile-nav-overlay {
+  animation: mobileNavIn 0.25s ease-out forwards;
+}
+
+.mobile-nav-link {
+  animation: mobileNavLinkIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* Film grain overlay for texture */

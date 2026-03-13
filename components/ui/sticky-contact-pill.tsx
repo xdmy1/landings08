@@ -19,9 +19,9 @@ export const StickyContactPill = ({ language }: StickyContactPillProps) => {
   const t = text[language];
 
   return (
-    <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 px-4 sm:px-0">
+    <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 w-[calc(100%-5rem)] sm:w-auto">
       <Link href="mailto:contact@landings.md" target="_blank" rel="noopener noreferrer">
-        <div className="bg-surface/90 backdrop-blur-sm border border-divider shadow-card px-5 py-3 flex items-center gap-6 hover:border-amber/40 transition-all duration-300 cursor-pointer group">
+        <div className="bg-surface/90 backdrop-blur-sm border border-divider shadow-card px-5 py-3 flex items-center justify-between sm:justify-start sm:gap-6 hover:border-amber/40 transition-all duration-300 cursor-pointer group">
           <span className="text-ink-muted text-sm tracking-wide">
             {t.question}
           </span>

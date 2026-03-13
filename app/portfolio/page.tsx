@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
 import { useLanguage } from '@/hooks/useLanguage'
+import { SiteNav } from '@/components/ui/site-nav'
 
 function FadeIn({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -27,7 +28,7 @@ const projects = [
   {
     id: 1, title: "RADX Cooling Solutions",
     description: { en: "Professional website for cooling solutions company. Presentation of services and industrial cooling products.", ro: "Website profesional pentru companie de solutii de racire. Prezentarea serviciilor si produselor de racire industriala.", de: "Professionelle Website fur ein Kuhllosungsunternehmen.", fr: "Site web professionnel pour une entreprise de solutions de refroidissement.", es: "Sitio web profesional para empresa de soluciones de refrigeracion." },
-    image: "/images/radx.png", url: "https://radx.solutions", status: "LIVE", category: "services"
+    image: "/images/radx-mockup.png", url: "https://radx.solutions", status: "LIVE", category: "services"
   },
   {
     id: 2, title: "Inter-Bus",
@@ -67,12 +68,12 @@ const projects = [
   {
     id: 9, title: "RespectAuto",
     description: { en: "Car rental platform with advanced SEO and booking system. 300% organic growth.", ro: "Platforma de inchiriere auto cu SEO avansat si sistem de rezervari. Crestere organica de 300%.", de: "Autovermietungsplattform mit fortschrittlichem SEO. 300% organisches Wachstum.", fr: "Plateforme de location avec SEO avance. Croissance organique de 300%.", es: "Plataforma de alquiler con SEO avanzado. Crecimiento organico del 300%." },
-    image: "/images/respectauto (1).png", url: "https://respectauto.md", status: "LIVE", category: "automotive"
+    image: "/images/respectauto-mockup.png", url: "https://respectauto.md", status: "LIVE", category: "automotive"
   },
   {
     id: 10, title: "CMIEA Platform",
     description: { en: "Complex educational platform with authentication, interactive courses and dashboard.", ro: "Platforma educationala complexa cu autentificare, cursuri interactive si dashboard.", de: "Komplexe Bildungsplattform mit Authentifizierung und interaktiven Kursen.", fr: "Plateforme educative complexe avec authentification et cours interactifs.", es: "Plataforma educativa compleja con autenticacion y cursos interactivos." },
-    image: "/images/cmiea (1).png", url: "https://cmiea.md", status: "LIVE", category: "education"
+    image: "/images/cmiea-mockup.png", url: "https://cmiea.md", status: "LIVE", category: "education"
   },
   {
     id: 11, title: "EuroGard",
@@ -257,13 +258,13 @@ export default function PortfolioPage() {
               <FadeIn key={project.id} delay={index * 60} className="h-full">
                 <div className="h-full flex flex-col bg-surface border border-divider shadow-card group hover:border-amber transition-colors duration-300">
                   {/* Image */}
-                  <div className="aspect-[4/3] overflow-hidden flex-shrink-0">
+                  <div className="flex-shrink-0 flex items-center justify-center p-3 bg-surface/50">
                     <Image
                       src={project.image}
                       alt={`${project.title} — ${project.description.en}`}
-                      width={600}
-                      height={450}
-                      className="w-full h-full object-cover group-hover:scale-[1.02] group-hover:-translate-y-[2px] transition-all duration-300 ease-smooth"
+                      width={500}
+                      height={350}
+                      className="w-full h-auto max-h-[150px] object-contain group-hover:scale-[1.02] transition-all duration-300 ease-smooth"
                     />
                   </div>
                   {/* Info */}
@@ -327,10 +328,10 @@ export default function PortfolioPage() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-ink-light text-xs tracking-wide">{t.footer.copy}</span>
+              <span className="text-ink-muted text-xs tracking-wide">{t.footer.copy}</span>
               <div className="flex items-center gap-3">
-                <Link href="https://instagram.com/landings.md" className="text-ink-light hover:text-ink-muted transition-colors" target="_blank" rel="noopener noreferrer"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></Link>
-                <Link href="mailto:contact@landings.md" className="text-ink-light hover:text-ink-muted transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0l-9.75 6.093L2.25 6.75" /></svg></Link>
+                <Link href="https://instagram.com/landings.md" className="text-ink-muted hover:text-ink transition-colors" target="_blank" rel="noopener noreferrer"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></Link>
+                <Link href="mailto:contact@landings.md" className="text-ink-muted hover:text-ink transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0l-9.75 6.093L2.25 6.75" /></svg></Link>
               </div>
             </div>
           </div>

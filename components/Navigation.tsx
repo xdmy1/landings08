@@ -41,6 +41,12 @@ export function Navigation() {
                 Docs
               </Link>
               <Link
+                href="/solutions"
+                className="text-neutral-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                Solutions
+              </Link>
+              <Link
                 href="#pricing"
                 className="text-neutral-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
               >
@@ -101,6 +107,12 @@ export function Navigation() {
               className="text-neutral-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
             >
               Docs
+            </Link>
+            <Link
+              href="/solutions"
+              className="text-neutral-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >
+              Solutions
             </Link>
             <Link
               href="#pricing"

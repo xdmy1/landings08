@@ -321,33 +321,46 @@ export default function PricingPage() {
       </nav>
 
       {/* Quiz */}
-      <div className="min-h-screen flex items-center justify-center pt-16 px-6 md:px-8">
+      <div className="min-h-[110vh] flex items-center justify-center pt-24 pb-24 px-6 md:px-8">
         <div className="max-w-2xl w-full">
 
           {/* Progress */}
           <div className="mb-12">
             <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                {Array.from({ length: TOTAL_STEPS }).map((_, i) => {
-                  const isCompleted = answers[i] !== null && (i < step || showResult)
-                  const isCurrent = i === step && !showResult
-                  return (
-                    <button
-                      key={i}
-                      onClick={() => isCompleted ? goToStep(i) : undefined}
-                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                        showResult
-                          ? 'bg-amber'
-                          : isCompleted
-                            ? 'bg-amber cursor-pointer hover:bg-amber-light'
-                            : isCurrent
-                              ? 'bg-ink'
-                              : 'bg-divider'
-                      }`}
-                      aria-label={`Step ${i + 1}`}
-                    />
-                  )
-                })}
+              <div className="flex items-center gap-3">
+                {(step > 0 || showResult) && (
+                  <button
+                    onClick={() => showResult ? goToStep(TOTAL_STEPS - 1) : goToStep(step - 1)}
+                    className="text-ink-muted hover:text-ink transition-colors mr-1"
+                    aria-label="Go back"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 12H5M12 5l-7 7 7 7" />
+                    </svg>
+                  </button>
+                )}
+                <div className="flex items-center gap-2">
+                  {Array.from({ length: TOTAL_STEPS }).map((_, i) => {
+                    const isCompleted = answers[i] !== null && (i < step || showResult)
+                    const isCurrent = i === step && !showResult
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => isCompleted ? goToStep(i) : undefined}
+                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                          showResult
+                            ? 'bg-amber'
+                            : isCompleted
+                              ? 'bg-amber cursor-pointer hover:bg-amber-light'
+                              : isCurrent
+                                ? 'bg-ink'
+                                : 'bg-divider'
+                        }`}
+                        aria-label={`Step ${i + 1}`}
+                      />
+                    )
+                  })}
+                </div>
               </div>
               <span className="text-ink-light text-sm font-mono tracking-wide">
                 {showResult ? String(TOTAL_STEPS).padStart(2, '0') : String(step + 1).padStart(2, '0')} / {String(TOTAL_STEPS).padStart(2, '0')}

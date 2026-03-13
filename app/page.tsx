@@ -4,6 +4,10 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
+import { SiteNav } from '@/components/ui/site-nav'
+import { PageLines } from '@/components/ui/page-lines'
+import { AnimatedStatGrid } from '@/components/ui/animated-stat-grid'
+import { AnimatedRowLines } from '@/components/ui/animated-row-lines'
 import { useLanguage } from '@/hooks/useLanguage'
 
 function useInView(threshold = 0.1) {
@@ -151,21 +155,9 @@ function StaggerGroup({ children, className = "", stagger = 120 }: { children: R
 }
 
 export default function HomePage() {
-  const { language, setLanguage: handleLanguageChange } = useLanguage()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [langMenuOpen, setLangMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
+  const { language } = useLanguage()
   const [formData, setFormData] = useState({ name: '', email: '', message: '' })
   const [formSent, setFormSent] = useState(false)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 10) setScrolled(true)
-      else setScrolled(false)
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
 
   const text = {
     en: {
@@ -333,52 +325,23 @@ export default function HomePage() {
   const t = text[language as keyof typeof text]
 
   const projects = [
-    { ...t.work.projects[0], src: "/images/respectauto (1).png", href: "https://respectauto.md" },
-    { ...t.work.projects[1], src: "/images/radx.png", href: "https://radx.solutions" },
-    { ...t.work.projects[2], src: "/images/cmiea (1).png", href: "https://cmiea.md" },
+    { ...t.work.projects[0], src: "/images/respectauto-mockup.png", href: "https://respectauto.md" },
+    { ...t.work.projects[1], src: "/images/radx-mockup.png", href: "https://radx.solutions" },
+    { ...t.work.projects[2], src: "/images/cmiea-mockup.png", href: "https://cmiea.md" },
   ]
 
   return (
     <div className="min-h-screen text-ink grain" style={{ background: '#2A2118' }}>
 
-      {/* ── NAV ── */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-smooth ${scrolled ? 'backdrop-blur-md' : 'bg-transparent'}`} style={scrolled ? { backgroundColor: 'rgba(42,33,24,0.88)' } : {}}>
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-10">
-          <div className="flex items-center justify-between h-[68px]">
-            <Link href="/" className="flex items-center">
-              <Image src="/images/logowhite.png" alt="landings.md — affordable website design for small business" width={22} height={36} className="w-[22px] h-auto" priority />
-            </Link>
-            <div className="hidden md:flex items-center gap-8">
-              <div className="flex items-center gap-6 text-[13px] text-ink-muted">
-                <Link href="/portfolio" className="hover:text-ink transition-colors">{t.nav.portfolio}</Link>
-                <Link href="/pricing" className="hover:text-ink transition-colors">{t.nav.pricing}</Link>
-                <Link href="/solutions" className="hover:text-ink transition-colors">{t.nav.solutions}</Link>
-                <Link href="/case-studies" className="hover:text-ink transition-colors">{t.nav.caseStudies}</Link>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <button onClick={() => setLangMenuOpen(!langMenuOpen)} className="text-ink-light hover:text-ink-muted text-[11px] tracking-widest uppercase transition-colors">{language}</button>
-                  {langMenuOpen && (<><div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} /><div className="absolute top-full right-0 mt-2 bg-surface border border-divider z-50 min-w-[56px] py-1">{(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (<button key={lang} onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false) }} className={`block w-full text-left px-4 py-1.5 text-[11px] tracking-widest uppercase transition-colors ${language === lang ? "text-amber" : "text-ink-muted hover:text-ink"}`}>{lang}</button>))}</div></>)}
-                </div>
-                <Link href="#contact" className="text-[13px] text-[#1A1410] bg-amber hover:bg-amber-light px-5 py-2 transition-colors duration-300">{t.nav.contact}</Link>
-              </div>
-            </div>
-            <div className="md:hidden flex items-center gap-3">
-              <button onClick={() => setLangMenuOpen(!langMenuOpen)} className="text-ink-light text-[11px] tracking-widest uppercase">{language}</button>
-              {langMenuOpen && (<><div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} /><div className="absolute top-16 right-6 bg-surface border border-divider z-50 min-w-[56px] py-1">{(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (<button key={lang} onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false) }} className={`block w-full text-left px-4 py-1.5 text-[11px] tracking-widest uppercase ${language === lang ? "text-amber" : "text-ink-muted"}`}>{lang}</button>))}</div></>)}
-              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-ink-muted hover:text-ink transition-colors"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">{mobileMenuOpen ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" /> : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 8h16M4 16h16" />}</svg></button>
-            </div>
-          </div>
-          {mobileMenuOpen && (<div className="md:hidden border-t border-divider py-6 space-y-4"><Link href="/portfolio" className="block text-ink text-sm" onClick={() => setMobileMenuOpen(false)}>{t.nav.portfolio}</Link><Link href="/pricing" className="block text-ink text-sm" onClick={() => setMobileMenuOpen(false)}>{t.nav.pricing}</Link><Link href="/solutions" className="block text-ink text-sm" onClick={() => setMobileMenuOpen(false)}>{t.nav.solutions}</Link><Link href="/case-studies" className="block text-ink text-sm" onClick={() => setMobileMenuOpen(false)}>{t.nav.caseStudies}</Link><div className="pt-3"><Link href="#contact" className="text-amber text-sm" onClick={() => setMobileMenuOpen(false)}>{t.nav.contact}</Link></div></div>)}
-        </div>
-      </nav>
+      <SiteNav contactHref="#contact" />
 
       {/* ── BORDERED CONTAINER ── */}
-      <div className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 border-x border-divider/40">
+      <div id="layout-container" className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 relative">
+        <PageLines containerId="layout-container" />
 
         {/* ── HERO ── */}
-        <section className="pt-32 md:pt-44 pb-16 md:pb-24 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'linear-gradient(180deg, #302620 0%, #2A2118 100%)' }}>
-          <div className="text-center max-w-3xl mx-auto">
+        <section className="pt-32 md:pt-44 pb-16 md:pb-24 px-6 md:px-12 lg:px-16 relative glow-amber overflow-hidden" style={{ background: 'radial-gradient(ellipse 110% 80% at 50% -5%, #4A3020 0%, #382820 35%, #2A2118 75%)' }}>
+          <div className="text-center max-w-3xl mx-auto relative z-10">
             <RevealText delay={200}>
               <h1 className="font-serif text-[clamp(2rem,4.5vw,3.75rem)] text-ink leading-[1.1] tracking-[-0.02em] text-balance">
                 {t.hero.headline}
@@ -401,33 +364,22 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── FEATURED IMAGE ── */}
-        <section className="border-t border-divider/40 px-6 md:px-12 lg:px-16 py-10 md:py-14" style={{ background: 'linear-gradient(180deg, #2A2118 0%, #342A20 100%)' }}>
-          <ImageReveal>
-            <Link href="https://respectauto.md" target="_blank" rel="noopener noreferrer" className="group block">
-              <div className="overflow-hidden rounded-sm">
-                <Image src="/images/respectauto (1).png" alt="RespectAuto car rental website — professional web design for local business, ranked #1 on Google" width={1400} height={788} quality={95} className="w-full h-auto group-hover:scale-[1.015] transition-transform duration-[900ms] ease-smooth" priority />
-              </div>
-            </Link>
-          </ImageReveal>
-        </section>
-
         {/* ── NUMBERS ── */}
-        <section className="border-t border-divider/40" style={{ background: '#342A20' }}>
-          <StaggerGroup className="grid grid-cols-2 md:grid-cols-4" stagger={150}>
+        <section data-hline className="" style={{ background: 'linear-gradient(90deg, #2E2419 0%, #3C2E20 35%, #3A2C1E 65%, #2E2419 100%)' }}>
+          <AnimatedStatGrid className="grid grid-cols-2 md:grid-cols-4" stagger={150}>
             {t.numbers.map((n, i) => (
-              <div key={i} className={`px-6 md:px-8 py-8 md:py-10 ${i < t.numbers.length - 1 ? 'border-r border-divider/40' : ''} ${i < 2 ? 'border-b md:border-b-0 border-divider/40' : ''}`}>
+              <div key={i} className="px-6 md:px-8 py-8 md:py-10">
                 <p className="font-serif text-[clamp(1.75rem,3vw,2.5rem)] text-ink leading-none">
                   <AnimatedNumber value={n.value} />
                 </p>
                 <p className="text-ink-muted text-[12px] mt-2 font-mono tracking-wide uppercase">{n.label}</p>
               </div>
             ))}
-          </StaggerGroup>
+          </AnimatedStatGrid>
         </section>
 
         {/* ── WORK ── */}
-        <section className="border-t border-divider/40 px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: 'linear-gradient(180deg, #342A20 0%, #2A2118 100%)' }}>
+        <section data-hline className="px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: 'linear-gradient(160deg, #342A20 0%, #3A2C1E 25%, #2C2218 65%, #2A2118 100%)' }}>
           <FadeIn>
             <div className="flex items-center justify-between mb-10 md:mb-14">
               <span className="text-ink-light text-[11px] font-mono tracking-[0.15em] uppercase">{t.work.label}</span>
@@ -435,11 +387,11 @@ export default function HomePage() {
             </div>
           </FadeIn>
 
-          <div className="space-y-0">
+          <AnimatedRowLines className="space-y-0">
             {projects.map((project, i) => (
               <div key={i}>
                 <Link href={project.href} target="_blank" rel="noopener noreferrer" className="group block">
-                  <div className={`grid grid-cols-1 md:grid-cols-[1fr_1.5fr] gap-6 md:gap-10 py-8 md:py-10 ${i < projects.length - 1 ? 'border-b border-divider/30' : ''}`}>
+                  <div className="grid grid-cols-1 md:grid-cols-[1fr_1.5fr] gap-6 md:gap-10 py-8 md:py-10">
                     <SlideIn direction="left" delay={i * 150} className="order-2 md:order-1">
                       <div className="flex items-center gap-2 mb-3">
                         <span className="text-[10px] font-mono tracking-[0.1em] uppercase text-ink-light">{project.category}</span>
@@ -449,18 +401,18 @@ export default function HomePage() {
                       <h3 className="font-serif text-xl md:text-2xl text-ink group-hover:text-amber transition-colors duration-300 mb-2">{project.name}</h3>
                       <p className="text-ink-muted text-[13px] leading-relaxed">{project.desc}</p>
                     </SlideIn>
-                    <ImageReveal delay={i * 150 + 100} className="order-1 md:order-2 rounded-sm aspect-[16/10]">
-                      <Image src={project.src} alt={`${project.name} — small business website design by landings.md`} width={800} height={500} quality={90} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700 ease-smooth" />
+                    <ImageReveal delay={i * 150 + 100} className="order-1 md:order-2 rounded-sm">
+                      <Image src={project.src} alt={`${project.name} — small business website design by landings.md`} width={600} height={400} quality={90} className="w-full h-auto max-w-[320px] mx-auto block group-hover:scale-[1.03] transition-transform duration-700 ease-smooth" />
                     </ImageReveal>
                   </div>
                 </Link>
               </div>
             ))}
-          </div>
+          </AnimatedRowLines>
         </section>
 
         {/* ── STATEMENT ── */}
-        <section className="border-t border-divider/40 px-6 md:px-12 lg:px-16 py-16 md:py-24 relative glow-amber" style={{ background: 'linear-gradient(180deg, #2A2118 0%, #3E3229 100%)' }}>
+        <section data-hline className="px-6 md:px-12 lg:px-16 py-16 md:py-24 relative glow-amber" style={{ background: 'radial-gradient(ellipse 90% 130% at 85% 50%, #3E3229 0%, #342A20 40%, #2A2118 80%)' }}>
           <RevealText>
             <p className="font-serif text-[clamp(1.3rem,2.4vw,2rem)] text-ink leading-[1.4] tracking-[-0.01em] max-w-2xl">
               {t.statement}
@@ -469,7 +421,7 @@ export default function HomePage() {
         </section>
 
         {/* ── PROCESS ── */}
-        <section className="border-t border-divider/40 px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: 'linear-gradient(180deg, #3E3229 0%, #2A2118 100%)' }}>
+        <section data-hline className="px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: 'linear-gradient(145deg, #3E3229 0%, #362C20 30%, #2C2218 65%, #2A2118 100%)' }}>
           <FadeIn>
             <span className="text-ink-light text-[11px] font-mono tracking-[0.15em] uppercase block mb-10 md:mb-14">{t.process.label}</span>
           </FadeIn>
@@ -485,7 +437,7 @@ export default function HomePage() {
         </section>
 
         {/* ── CONTACT ── */}
-        <section id="contact" className="border-t border-divider/40 px-6 md:px-12 lg:px-16 py-14 md:py-24 relative grid-animated" style={{ background: 'linear-gradient(180deg, #2A2118 0%, #342A20 100%)' }}>
+        <section id="contact" data-hline className="px-6 md:px-12 lg:px-16 py-14 md:py-24 relative grid-animated" style={{ background: 'radial-gradient(ellipse 80% 100% at 15% 85%, #3E3229 0%, #302620 40%, #2A2118 85%)' }}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
             <SlideIn direction="left">
               <span className="text-ink-light text-[11px] font-mono tracking-[0.15em] uppercase block mb-4">{t.contact.label}</span>
@@ -498,9 +450,9 @@ export default function HomePage() {
                 <div className="flex items-center h-full"><p className="text-ink font-serif text-lg">{t.form.sent}</p></div>
               ) : (
                 <form onSubmit={(e) => { e.preventDefault(); const s = encodeURIComponent(`New project from ${formData.name}`); const b = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`); window.location.href = `mailto:contact@landings.md?subject=${s}&body=${b}`; setFormSent(true) }}>
-                  <input type="text" required placeholder={t.form.name} value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full bg-transparent border-b border-divider/50 px-0 py-4 text-[14px] text-ink placeholder:text-ink-light/40 focus:outline-none focus:border-amber/40 transition-colors duration-500 font-mono" />
-                  <input type="email" required placeholder={t.form.email} value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full bg-transparent border-b border-divider/50 px-0 py-4 text-[14px] text-ink placeholder:text-ink-light/40 focus:outline-none focus:border-amber/40 transition-colors duration-500 font-mono" />
-                  <textarea required rows={3} placeholder={t.form.message} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} className="w-full bg-transparent border-b border-divider/50 px-0 py-4 text-[14px] text-ink placeholder:text-ink-light/40 focus:outline-none focus:border-amber/40 transition-colors duration-500 resize-none font-mono" />
+                  <input type="text" required placeholder={t.form.name} value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full bg-transparent border-b border-divider/50 px-0 py-4 text-[14px] text-ink placeholder:text-ink-muted focus:outline-none focus:border-amber/40 transition-colors duration-500 font-mono" />
+                  <input type="email" required placeholder={t.form.email} value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full bg-transparent border-b border-divider/50 px-0 py-4 text-[14px] text-ink placeholder:text-ink-muted focus:outline-none focus:border-amber/40 transition-colors duration-500 font-mono" />
+                  <textarea required rows={3} placeholder={t.form.message} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} className="w-full bg-transparent border-b border-divider/50 px-0 py-4 text-[14px] text-ink placeholder:text-ink-muted focus:outline-none focus:border-amber/40 transition-colors duration-500 resize-none font-mono" />
                   <div className="pt-6">
                     <button type="submit" className="bg-amber hover:bg-amber-light text-[#1A1410] px-7 py-3 text-[13px] transition-colors duration-300">{t.form.send}</button>
                   </div>
@@ -510,36 +462,35 @@ export default function HomePage() {
           </div>
         </section>
 
-      </div>
-      {/* ── END BORDERED CONTAINER ── */}
-
-      {/* ── FOOTER ── */}
-      <FadeIn>
-        <footer className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 border-x border-t border-divider/40 px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: '#241E18' }}>
+        {/* ── FOOTER ── */}
+        <footer data-hline className="px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: 'linear-gradient(180deg, #241E18 0%, #1C1710 100%)' }}>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
             <div className="flex items-center gap-6">
               <Link href="/" className="flex items-center">
-                <Image src="/images/logowhite.png" alt="landings.md — website design agency" width={16} height={26} className="w-4 h-auto opacity-50" />
+                <Image src="/images/logowhite.png" alt="landings.md — website design agency" width={16} height={26} className="w-4 h-auto opacity-70" />
               </Link>
-              <div className="hidden md:flex items-center gap-4 text-[11px] text-ink-light/40 font-mono">
-                <Link href="/portfolio" className="hover:text-ink-muted transition-colors">{t.nav.portfolio}</Link>
-                <Link href="/pricing" className="hover:text-ink-muted transition-colors">{t.nav.pricing}</Link>
-                <Link href="/solutions" className="hover:text-ink-muted transition-colors">{t.nav.solutions}</Link>
-                <Link href="/case-studies" className="hover:text-ink-muted transition-colors">{t.nav.caseStudies}</Link>
+              <div className="hidden md:flex items-center gap-4 text-[11px] text-ink-muted font-mono">
+                <Link href="/portfolio" className="hover:text-ink transition-colors">{t.nav.portfolio}</Link>
+                <Link href="/pricing" className="hover:text-ink transition-colors">{t.nav.pricing}</Link>
+                <Link href="/solutions" className="hover:text-ink transition-colors">{t.nav.solutions}</Link>
+                <Link href="/case-studies" className="hover:text-ink transition-colors">{t.nav.caseStudies}</Link>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="text-ink-light/30 text-[10px] font-mono">{t.footer.copy}</span>
-              <Link href="https://instagram.com/landings.md" className="text-ink-light/30 hover:text-ink-light transition-colors" target="_blank" rel="noopener noreferrer">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <Link href="mailto:contact@landings.md" className="text-ink-muted hover:text-ink text-[11px] font-mono transition-colors">contact@landings.md</Link>
+              <span className="text-ink-muted text-[10px] font-mono">{t.footer.copy}</span>
+              <Link href="https://instagram.com/landings.md" className="text-ink-muted hover:text-ink transition-colors" target="_blank" rel="noopener noreferrer">
                 <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
               </Link>
             </div>
           </div>
-          <p className="mt-4 text-ink-light/20 text-[9px] font-mono tracking-wide leading-relaxed max-w-2xl">
+          <p className="mt-4 text-ink-light text-[9px] font-mono tracking-wide leading-relaxed max-w-2xl">
             Affordable website design for small businesses across Europe. Custom websites from €350 — responsive, SEO-optimised, no templates. Web design services in English, Romanian, German, French, and Spanish. Chisinau, Moldova.
           </p>
         </footer>
-      </FadeIn>
+
+      </div>
+      {/* ── END BORDERED CONTAINER ── */}
 
       <StickyContactPill language={language as 'en' | 'ro' | 'de' | 'fr' | 'es'} />
     </div>
