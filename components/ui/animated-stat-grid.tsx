@@ -2,22 +2,24 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 
-type Seg = { x1: number; y1: number; x2: number; y2: number; len: number }
-
-const DIVIDER_COLOR = 'rgba(120, 100, 78, 0.55)'
+const COLOR = 'rgba(120, 100, 78, 0.55)'
+const ANIM  = 'statDivDraw 900ms cubic-bezier(0.16,1,0.3,1) 150ms forwards'
 
 export function AnimatedStatGrid({
   children,
   className = '',
   stagger = 150,
+  mobileCols = 2,
+  desktopCols = 4,
 }: {
   children: React.ReactNode
   className?: string
   stagger?: number
+  mobileCols?: number
+  desktopCols?: number
 }) {
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
-  const [lines, setLines] = useState<{ segs: Seg[]; w: number; h: number } | null>(null)
 
   useEffect(() => {
     const el = ref.current
@@ -30,87 +32,63 @@ export function AnimatedStatGrid({
     return () => obs.disconnect()
   }, [])
 
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const t = setTimeout(() => {
-      const cells = Array.from(el.querySelectorAll('[data-stat-cell]')) as HTMLElement[]
-      if (!cells.length) return
+  const items = React.Children.toArray(children)
+  const count = items.length
+  const mobileRows  = Math.ceil(count / mobileCols)
+  const desktopRows = Math.ceil(count / desktopCols)
 
-      // Use offsetWidth/offsetHeight — NOT getBoundingClientRect — so CSS transforms
-      // (stagger translateY) don't corrupt the measurements.
-      const w = el.offsetWidth
-      const h = el.offsetHeight
-      const segs: Seg[] = []
-      const seenV = new Set<number>()
-      const seenH = new Set<number>()
-
-      cells.forEach((cell) => {
-        const right  = cell.offsetLeft + cell.offsetWidth
-        const bottom = cell.offsetTop  + cell.offsetHeight
-
-        // Vertical divider: cell whose right edge is not the container right
-        if (right < w - 2 && !seenV.has(right)) {
-          seenV.add(right)
-          const ymid = h / 2
-          segs.push({ x1: right, y1: ymid, x2: right, y2: 0,   len: ymid })
-          segs.push({ x1: right, y1: ymid, x2: right, y2: h,   len: h - ymid })
-        }
-
-        // Horizontal divider: cell whose bottom edge is not the container bottom
-        if (bottom < h - 2 && !seenH.has(bottom)) {
-          seenH.add(bottom)
-          const xmid = w / 2
-          segs.push({ x1: xmid, y1: bottom, x2: 0, y2: bottom, len: xmid })
-          segs.push({ x1: xmid, y1: bottom, x2: w, y2: bottom, len: w - xmid })
-        }
-      })
-
-      setLines({ segs, w, h })
-    }, 50)
-    return () => clearTimeout(t)
-  }, [])
+  // Divider style: invisible + no animation until intersection fires
+  const lineStyle = visible
+    ? { background: COLOR, transformOrigin: 'center', animation: ANIM }
+    : { background: COLOR, transformOrigin: 'center', transform: 'scale(0)' }
 
   return (
     <div ref={ref} className={`relative ${className}`}>
-      {React.Children.map(children, (child, i) => (
-        <div
-          data-stat-cell
-          className="transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-          style={{
-            opacity: visible ? 1 : 0,
-            transform: visible ? 'none' : 'translateY(12px)',
-            transitionDelay: `${i * stagger}ms`,
-          }}
-        >
-          {child}
-        </div>
-      ))}
+      {items.map((child, i) => {
+        const mc = i % mobileCols,  mr = Math.floor(i / mobileCols)
+        const dc = i % desktopCols, dr = Math.floor(i / desktopCols)
 
-      {lines && (
-        <svg
-          className="absolute inset-0 pointer-events-none"
-          viewBox={`0 0 ${lines.w} ${lines.h}`}
-          preserveAspectRatio="none"
-          style={{ width: '100%', height: '100%', zIndex: 5 }}
-          aria-hidden
-        >
-          {lines.segs.map((s, i) => (
-            <line
-              key={i}
-              x1={s.x1} y1={s.y1}
-              x2={s.x2} y2={s.y2}
-              stroke={DIVIDER_COLOR}
-              strokeWidth={1}
-              vectorEffect="non-scaling-stroke"
-              strokeDasharray={s.len}
-              strokeDashoffset={s.len}
-              style={{ animation: `statLineDraw 900ms cubic-bezier(0.16,1,0.3,1) 150ms forwards` }}
-            />
-          ))}
-          <style>{`@keyframes statLineDraw { to { stroke-dashoffset: 0; } }`}</style>
-        </svg>
-      )}
+        const showRM = mc < mobileCols  - 1
+        const showRD = dc < desktopCols - 1
+        const showBM = mr < mobileRows  - 1
+        const showBD = dr < desktopRows - 1
+
+        // null = don't render; '' = always show; 'md:hidden' / 'hidden md:block' = responsive
+        const rightClass  = showRM && showRD ? '' : showRM ? 'md:hidden' : showRD ? 'hidden md:block' : null
+        const bottomClass = showBM && showBD ? '' : showBM ? 'md:hidden' : showBD ? 'hidden md:block' : null
+
+        return (
+          <div
+            key={i}
+            className="relative transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+            style={{
+              opacity: visible ? 1 : 0,
+              transform: visible ? 'none' : 'translateY(12px)',
+              transitionDelay: `${i * stagger}ms`,
+            }}
+          >
+            {child}
+
+            {/* Right divider */}
+            {rightClass !== null && (
+              <div
+                className={`absolute right-0 top-0 bottom-0 w-px pointer-events-none ${rightClass}`}
+                style={lineStyle}
+              />
+            )}
+
+            {/* Bottom divider */}
+            {bottomClass !== null && (
+              <div
+                className={`absolute bottom-0 left-0 right-0 h-px pointer-events-none ${bottomClass}`}
+                style={lineStyle}
+              />
+            )}
+          </div>
+        )
+      })}
+
+      <style>{`@keyframes statDivDraw { from { transform: scale(0); } to { transform: scale(1); } }`}</style>
     </div>
   )
 }

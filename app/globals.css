@@ -152,6 +152,49 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes sectionLineDraw {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* Horizontal border that draws from center — add to any section */
+.line-top {
+  position: relative;
+}
+.line-top::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: rgba(120, 100, 78, 0.65);
+  transform: scaleX(0);
+  transform-origin: center;
+  animation: sectionLineDraw 900ms cubic-bezier(0.16, 1, 0.3, 1) 100ms forwards;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Vertical side rails — add to the layout container */
+@keyframes vertLineDraw {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+.line-sides::before,
+.line-sides::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: rgba(120, 100, 78, 0.65);
+  transform: scaleY(0);
+  transform-origin: center;
+  animation: vertLineDraw 900ms cubic-bezier(0.16, 1, 0.3, 1) 100ms forwards;
+  z-index: 2;
+  pointer-events: none;
+}
+.line-sides::before { left: 0; }
+.line-sides::after  { right: 0; }
+
 .mobile-nav-overlay {
   animation: mobileNavIn 0.25s ease-out forwards;
 }
