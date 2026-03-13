@@ -5,20 +5,90 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
 import { useLanguage } from '@/hooks/useLanguage'
+import { SiteNav } from '@/components/ui/site-nav'
 
-function FadeIn({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
+function useInView(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
   useEffect(() => {
+    const el = ref.current
+    if (!el) return
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) { setVisible(true); observer.disconnect() }
-    }, { threshold: 0.1 })
-    if (ref.current) observer.observe(ref.current)
+    }, { threshold })
+    observer.observe(el)
     return () => observer.disconnect()
-  }, [])
+  }, [threshold])
+  return { ref, visible }
+}
+
+function RevealText({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
+  const { ref, visible } = useInView(0.15)
   return (
-    <div ref={ref} className={`transition-all duration-700 ease-smooth ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'} ${className}`} style={{ transitionDelay: `${delay}ms` }}>
+    <div ref={ref} className={`overflow-hidden ${className}`}>
+      <div
+        className="transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+        style={{
+          transform: visible ? 'translateY(0)' : 'translateY(110%)',
+          opacity: visible ? 1 : 0,
+          transitionDelay: `${delay}ms`,
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  )
+}
+
+function FadeIn({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
+  const { ref, visible } = useInView(0.08)
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${className}`}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0)' : 'translateY(30px)',
+        transitionDelay: `${delay}ms`,
+      }}
+    >
       {children}
+    </div>
+  )
+}
+
+function SlideIn({ children, className = "", delay = 0, direction = "left" }: { children: React.ReactNode, className?: string, delay?: number, direction?: "left" | "right" }) {
+  const { ref, visible } = useInView(0.1)
+  const x = direction === "left" ? "-40px" : "40px"
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${className}`}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateX(0)' : `translateX(${x})`,
+        transitionDelay: `${delay}ms`,
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+function ImageReveal({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
+  const { ref, visible } = useInView(0.1)
+  return (
+    <div ref={ref} className={`overflow-hidden ${className}`}>
+      <div
+        className="transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+        style={{
+          opacity: visible ? 1 : 0,
+          transform: visible ? 'scale(1)' : 'scale(1.08)',
+          transitionDelay: `${delay}ms`,
+        }}
+      >
+        {children}
+      </div>
     </div>
   )
 }
@@ -94,9 +164,12 @@ const stats = [
 ]
 
 export default function SolutionsPage() {
-  const { language, setLanguage: handleLanguageChange } = useLanguage()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [langMenuOpen, setLangMenuOpen] = useState(false)
+  const { language } = useLanguage()
+
+  useEffect(() => {
+    history.scrollRestoration = 'manual'
+    window.scrollTo(0, 0)
+  }, [])
 
   const text = {
     en: {
@@ -206,243 +279,172 @@ export default function SolutionsPage() {
   return (
     <div className="min-h-screen text-ink grain" style={{ background: '#2A2118' }}>
 
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-divider" style={{ backgroundColor: 'rgba(42,33,24,0.88)' }}>
-        <div className="max-w-6xl mx-auto px-6 md:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center"><Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="w-[22px] h-auto" /></Link>
-            <div className="hidden md:flex items-center gap-8">
-              <div className="flex items-center gap-6 text-sm text-ink-muted">
-                <Link href="/portfolio" className="hover:text-ink transition-colors">{t.nav.portfolio}</Link>
-                <Link href="/pricing" className="hover:text-ink transition-colors">{t.nav.pricing}</Link>
-                <Link href="/solutions" className="text-ink">{t.nav.solutions}</Link>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <button onClick={() => setLangMenuOpen(!langMenuOpen)} className="text-ink-muted hover:text-ink text-xs tracking-widest uppercase transition-colors">{language}</button>
-                  {langMenuOpen && (
-                    <>
-                      <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
-                      <div className="absolute top-full right-0 mt-3 bg-surface border border-divider shadow-card z-50 min-w-[64px]">
-                        {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (
-                          <button key={lang} onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false); }} className={`block w-full text-left px-4 py-2 text-xs tracking-widest uppercase transition-colors ${language === lang ? "text-amber bg-surface" : "text-ink-muted hover:text-ink"}`}>{lang}</button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-                <Link href="mailto:contact@landings.md" className="text-amber text-sm hover:text-amber-light transition-colors">{t.nav.contact}</Link>
-              </div>
-            </div>
-            <div className="md:hidden flex items-center gap-3">
-              <button onClick={() => setLangMenuOpen(!langMenuOpen)} className="text-ink-muted text-xs tracking-widest uppercase">{language}</button>
-              {langMenuOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
-                  <div className="absolute top-20 right-6 bg-surface border border-divider shadow-card z-50 min-w-[64px]">
-                    {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (
-                      <button key={lang} onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false); }} className={`block w-full text-left px-4 py-2 text-xs tracking-widest uppercase ${language === lang ? "text-amber bg-surface" : "text-ink-muted"}`}>{lang}</button>
-                    ))}
-                  </div>
-                </>
-              )}
-              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-ink-muted">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  {mobileMenuOpen ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" /> : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />}
-                </svg>
-              </button>
-            </div>
-          </div>
-          {mobileMenuOpen && (
-            <div className="md:hidden border-t border-divider py-6 space-y-4">
-              <Link href="/portfolio" className="block text-ink-muted text-sm py-1" onClick={() => setMobileMenuOpen(false)}>{t.nav.portfolio}</Link>
-              <Link href="/pricing" className="block text-ink-muted text-sm py-1" onClick={() => setMobileMenuOpen(false)}>{t.nav.pricing}</Link>
-              <Link href="/solutions" className="block text-ink text-sm py-1" onClick={() => setMobileMenuOpen(false)}>{t.nav.solutions}</Link>
-              <div className="pt-2 border-t border-divider">
-                <Link href="mailto:contact@landings.md" className="text-amber text-sm" onClick={() => setMobileMenuOpen(false)}>{t.nav.contact} &rarr;</Link>
-              </div>
-            </div>
-          )}
-        </div>
-      </nav>
+      <SiteNav contactHref="/#contact" />
 
-      <main className="pt-28 md:pt-10">
+      <div className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 relative line-sides">
 
         {/* Hero */}
-        <section className="py-16 md:py-28 px-6 md:px-8 relative glow-amber" style={{ background: 'linear-gradient(180deg, #302620 0%, #2A2118 100%)' }}>
-          <div className="max-w-6xl mx-auto">
-            <FadeIn>
-              <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-ink leading-[1.1]">
-                {t.hero.title1}<br />{t.hero.title2}
-              </h1>
-            </FadeIn>
-            <FadeIn delay={100}>
-              <p className="mt-6 text-ink-muted text-lg md:text-xl leading-relaxed max-w-3xl">
-                {t.hero.description}
-              </p>
-            </FadeIn>
-            <FadeIn delay={200}>
-              <div className="mt-10">
-                <Link href="mailto:contact@landings.md" className="inline-flex items-center gap-3 text-amber hover:text-amber-light text-sm tracking-wide transition-colors group">
-                  {t.hero.cta}
-                  <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                </Link>
-              </div>
-            </FadeIn>
+        <section className="pt-36 md:pt-48 pb-16 md:pb-28 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'linear-gradient(160deg, #302620 0%, #3C2E20 35%, #2A2118 100%)' }}>
+          <RevealText>
+            <h1 className="font-serif text-[clamp(2.5rem,6vw,6rem)] text-ink leading-[1.05]">
+              {t.hero.title1}<br />{t.hero.title2}
+            </h1>
+          </RevealText>
+          <FadeIn delay={200}>
+            <p className="mt-6 text-ink-muted text-lg md:text-xl leading-relaxed max-w-3xl">
+              {t.hero.description}
+            </p>
+          </FadeIn>
+          <FadeIn delay={350}>
+            <div className="mt-10">
+              <Link href="mailto:contact@landings.md" className="inline-flex items-center gap-3 text-amber hover:text-amber-light text-sm tracking-wide transition-colors group">
+                {t.hero.cta}
+                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+              </Link>
+            </div>
+          </FadeIn>
 
-            {/* Stats */}
-            <FadeIn delay={300}>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 pt-10 border-t border-divider">
-                {stats.map((stat, i) => (
-                  <div key={i}>
-                    <div className="text-2xl md:text-3xl font-serif text-ink">{stat.value}</div>
-                    <div className="text-ink-muted text-xs tracking-wide mt-1">{stat.label[language as keyof typeof stat.label]}</div>
-                  </div>
-                ))}
-              </div>
-            </FadeIn>
-          </div>
+          {/* Stats */}
+          <FadeIn delay={500}>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 pt-10 border-t border-divider">
+              {stats.map((stat, i) => (
+                <div key={i}>
+                  <div className="text-2xl md:text-3xl font-serif text-ink">{stat.value}</div>
+                  <div className="text-ink-muted text-xs tracking-wide mt-1">{stat.label[language as keyof typeof stat.label]}</div>
+                </div>
+              ))}
+            </div>
+          </FadeIn>
         </section>
-
-        {/* Divider */}
-        <div className="max-w-6xl mx-auto px-6 md:px-8"><div className="border-t border-divider" /></div>
 
         {/* What We Build */}
-        <section className="py-20 md:py-32 px-6 md:px-8" style={{ background: 'linear-gradient(180deg, #2A2118 0%, #342A20 100%)' }}>
-          <div className="max-w-6xl mx-auto">
-            <FadeIn>
-              <h2 className="font-serif text-3xl lg:text-5xl text-ink leading-tight mb-2">{t.whatWeBuild.heading}</h2>
-              <p className="text-ink-muted text-xl mb-16">{t.whatWeBuild.subheading}</p>
-            </FadeIn>
+        <section className="line-top py-20 md:py-32 px-6 md:px-12 lg:px-16" style={{ background: 'linear-gradient(145deg, #2A2118 0%, #342A20 40%, #3A2C1E 70%, #2C2218 100%)' }}>
+          <SlideIn direction="left">
+            <h2 className="font-serif text-3xl lg:text-5xl text-ink leading-tight mb-2">{t.whatWeBuild.heading}</h2>
+            <p className="text-ink-muted text-xl mb-16">{t.whatWeBuild.subheading}</p>
+          </SlideIn>
 
-            <div className="space-y-24">
-              {/* CRM Row */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-                <FadeIn>
-                  <div className="aspect-[4/3] overflow-hidden border border-divider shadow-card">
-                    <Image src="/images/CRM.png" alt="Custom CRM platform for small business — client management and booking system by landings.md" width={800} height={600} quality={95} className="w-full h-full object-cover" />
+          <div className="space-y-24">
+            {/* CRM Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+              <ImageReveal>
+                <div className="aspect-[4/3] overflow-hidden border border-divider shadow-card">
+                  <Image src="/images/CRM.png" alt="Custom CRM platform for small business — client management and booking system by landings.md" width={800} height={600} quality={95} className="w-full h-full object-cover" />
+                </div>
+              </ImageReveal>
+              <SlideIn direction="right" delay={100}>
+                <div>
+                  <span className="text-amber text-xs tracking-[0.2em] uppercase">{t.whatWeBuild.crm.label}</span>
+                  <h3 className="font-serif text-2xl lg:text-3xl text-ink leading-tight mt-3 mb-5">{t.whatWeBuild.crm.title}</h3>
+                  <p className="text-ink-muted leading-relaxed mb-6">{t.whatWeBuild.crm.body}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {t.whatWeBuild.crm.tags.map((tag) => (
+                      <span key={tag} className="text-xs px-3 py-1.5 border border-divider text-ink-muted">{tag}</span>
+                    ))}
                   </div>
-                </FadeIn>
-                <FadeIn delay={100}>
-                  <div>
-                    <span className="text-amber text-xs tracking-[0.2em] uppercase">{t.whatWeBuild.crm.label}</span>
-                    <h3 className="font-serif text-2xl lg:text-3xl text-ink leading-tight mt-3 mb-5">{t.whatWeBuild.crm.title}</h3>
-                    <p className="text-ink-muted leading-relaxed mb-6">{t.whatWeBuild.crm.body}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {t.whatWeBuild.crm.tags.map((tag) => (
-                        <span key={tag} className="text-xs px-3 py-1.5 border border-divider text-ink-muted">{tag}</span>
-                      ))}
-                    </div>
-                  </div>
-                </FadeIn>
-              </div>
+                </div>
+              </SlideIn>
+            </div>
 
-              {/* Logistics Row (reversed) */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-                <FadeIn className="order-2 lg:order-1">
-                  <div>
-                    <span className="text-amber text-xs tracking-[0.2em] uppercase">{t.whatWeBuild.logistics.label}</span>
-                    <h3 className="font-serif text-2xl lg:text-3xl text-ink leading-tight mt-3 mb-5">{t.whatWeBuild.logistics.title}</h3>
-                    <p className="text-ink-muted leading-relaxed mb-6">{t.whatWeBuild.logistics.body}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {t.whatWeBuild.logistics.tags.map((tag) => (
-                        <span key={tag} className="text-xs px-3 py-1.5 border border-divider text-ink-muted">{tag}</span>
-                      ))}
-                    </div>
+            {/* Logistics Row (reversed) */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+              <SlideIn direction="left" className="order-2 lg:order-1">
+                <div>
+                  <span className="text-amber text-xs tracking-[0.2em] uppercase">{t.whatWeBuild.logistics.label}</span>
+                  <h3 className="font-serif text-2xl lg:text-3xl text-ink leading-tight mt-3 mb-5">{t.whatWeBuild.logistics.title}</h3>
+                  <p className="text-ink-muted leading-relaxed mb-6">{t.whatWeBuild.logistics.body}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {t.whatWeBuild.logistics.tags.map((tag) => (
+                      <span key={tag} className="text-xs px-3 py-1.5 border border-divider text-ink-muted">{tag}</span>
+                    ))}
                   </div>
-                </FadeIn>
-                <FadeIn delay={100} className="order-1 lg:order-2">
-                  <div className="aspect-[4/3] border border-divider shadow-card bg-surface flex items-center justify-center">
-                    <svg className="w-20 h-20 text-ink-light" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={0.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                    </svg>
-                  </div>
-                </FadeIn>
-              </div>
+                </div>
+              </SlideIn>
+              <FadeIn delay={100} className="order-1 lg:order-2">
+                <div className="aspect-[4/3] border border-divider shadow-card bg-surface flex items-center justify-center">
+                  <svg className="w-20 h-20 text-ink-light" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={0.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                  </svg>
+                </div>
+              </FadeIn>
+            </div>
 
-              {/* Custom Apps Row */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-                <FadeIn>
-                  <div className="aspect-[4/3] border border-divider shadow-card bg-surface flex items-center justify-center">
-                    <svg className="w-20 h-20 text-ink-light" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={0.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                    </svg>
+            {/* Custom Apps Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+              <FadeIn>
+                <div className="aspect-[4/3] border border-divider shadow-card bg-surface flex items-center justify-center">
+                  <svg className="w-20 h-20 text-ink-light" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={0.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                  </svg>
+                </div>
+              </FadeIn>
+              <SlideIn direction="right" delay={100}>
+                <div>
+                  <span className="text-amber text-xs tracking-[0.2em] uppercase">{t.whatWeBuild.custom.label}</span>
+                  <h3 className="font-serif text-2xl lg:text-3xl text-ink leading-tight mt-3 mb-5">{t.whatWeBuild.custom.title}</h3>
+                  <p className="text-ink-muted leading-relaxed mb-6">{t.whatWeBuild.custom.body}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {t.whatWeBuild.custom.tags.map((tag) => (
+                      <span key={tag} className="text-xs px-3 py-1.5 border border-divider text-ink-muted">{tag}</span>
+                    ))}
                   </div>
-                </FadeIn>
-                <FadeIn delay={100}>
-                  <div>
-                    <span className="text-amber text-xs tracking-[0.2em] uppercase">{t.whatWeBuild.custom.label}</span>
-                    <h3 className="font-serif text-2xl lg:text-3xl text-ink leading-tight mt-3 mb-5">{t.whatWeBuild.custom.title}</h3>
-                    <p className="text-ink-muted leading-relaxed mb-6">{t.whatWeBuild.custom.body}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {t.whatWeBuild.custom.tags.map((tag) => (
-                        <span key={tag} className="text-xs px-3 py-1.5 border border-divider text-ink-muted">{tag}</span>
-                      ))}
-                    </div>
-                  </div>
-                </FadeIn>
-              </div>
+                </div>
+              </SlideIn>
             </div>
           </div>
         </section>
 
-        {/* Divider */}
-        <div className="max-w-6xl mx-auto px-6 md:px-8"><div className="border-t border-divider" /></div>
-
         {/* Case Studies */}
-        <section className="py-20 md:py-32 px-6 md:px-8" style={{ background: 'linear-gradient(180deg, #342A20 0%, #3E3229 100%)' }}>
-          <div className="max-w-6xl mx-auto">
-            <FadeIn>
-              <h2 className="font-serif text-3xl md:text-4xl text-ink mb-2">{t.caseStudies}</h2>
-              <p className="text-ink-muted mb-16">{t.caseStudiesSubtitle}</p>
-            </FadeIn>
+        <section className="line-top py-20 md:py-32 px-6 md:px-12 lg:px-16" style={{ background: 'linear-gradient(160deg, #342A20 0%, #3E3229 40%, #3A2C1E 70%, #2A2118 100%)' }}>
+          <FadeIn>
+            <h2 className="font-serif text-3xl md:text-4xl text-ink mb-2">{t.caseStudies}</h2>
+            <p className="text-ink-muted mb-16">{t.caseStudiesSubtitle}</p>
+          </FadeIn>
 
-            <div className="space-y-0">
-              {caseStudies.map((study, i) => (
-                <FadeIn key={study.id} delay={i * 100}>
-                  <div className="border-t border-divider py-10 md:py-12">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                      {/* Left: Badge + Title */}
-                      <div className="lg:col-span-4">
-                        <span className="text-ink-light text-[10px] tracking-[0.25em] uppercase">{study.badge[language as keyof typeof study.badge]}</span>
-                        <h3 className="font-serif text-xl md:text-2xl text-ink mt-2 mb-1">{study.title[language as keyof typeof study.title]}</h3>
-                        <span className="text-amber text-xs tracking-wide">{study.subtitle[language as keyof typeof study.subtitle]}</span>
-                      </div>
-
-                      {/* Center: Description */}
-                      <div className="lg:col-span-4">
-                        <p className="text-ink-muted text-sm leading-relaxed">
-                          {study.description[language as keyof typeof study.description]}
-                        </p>
-                      </div>
-
-                      {/* Right: Features */}
-                      <div className="lg:col-span-4">
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                          {(study.features[language as keyof typeof study.features] as string[]).map((feature: string, fi: number) => (
-                            <div key={fi} className="flex items-center gap-2">
-                              <span className="text-ink-light text-[8px]">&#9642;</span>
-                              <span className="text-ink-muted text-xs">{feature}</span>
-                            </div>
-                          ))}
-                        </div>
+          <div className="space-y-0">
+            {caseStudies.map((study, i) => (
+              <FadeIn key={study.id} delay={i * 100}>
+                <div className="border-t border-divider py-10 md:py-12">
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div className="lg:col-span-4">
+                      <span className="text-ink-light text-[10px] tracking-[0.25em] uppercase">{study.badge[language as keyof typeof study.badge]}</span>
+                      <h3 className="font-serif text-xl md:text-2xl text-ink mt-2 mb-1">{study.title[language as keyof typeof study.title]}</h3>
+                      <span className="text-amber text-xs tracking-wide">{study.subtitle[language as keyof typeof study.subtitle]}</span>
+                    </div>
+                    <div className="lg:col-span-4">
+                      <p className="text-ink-muted text-sm leading-relaxed">
+                        {study.description[language as keyof typeof study.description]}
+                      </p>
+                    </div>
+                    <div className="lg:col-span-4">
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                        {(study.features[language as keyof typeof study.features] as string[]).map((feature: string, fi: number) => (
+                          <div key={fi} className="flex items-center gap-2">
+                            <span className="text-ink-light text-[8px]">&#9642;</span>
+                            <span className="text-ink-muted text-xs">{feature}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
-                </FadeIn>
-              ))}
-              <div className="border-t border-divider" />
-            </div>
+                </div>
+              </FadeIn>
+            ))}
+            <div className="border-t border-divider" />
           </div>
         </section>
 
         {/* CTA */}
-        <section className="py-20 md:py-28 px-6 md:px-8 relative glow-amber" style={{ background: 'linear-gradient(180deg, #3E3229 0%, #2A2118 100%)' }}>
-          <div className="max-w-4xl mx-auto text-center">
-            <FadeIn>
-              <h2 className="font-serif italic text-3xl md:text-4xl text-ink mb-6">{t.cta.title}</h2>
+        <section className="line-top py-20 md:py-28 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'radial-gradient(ellipse 80% 100% at 15% 85%, #3E3229 0%, #302620 40%, #2A2118 85%)' }}>
+          <div className="max-w-2xl mx-auto text-center">
+            <RevealText>
+              <h2 className="font-serif italic text-[clamp(1.8rem,3.5vw,3rem)] text-ink mb-6">{t.cta.title}</h2>
+            </RevealText>
+            <FadeIn delay={200}>
               <p className="text-ink-muted leading-relaxed mb-10">{t.cta.body}</p>
+            </FadeIn>
+            <FadeIn delay={350}>
               <Link href="mailto:contact@landings.md" className="inline-flex items-center gap-3 text-amber hover:text-amber-light text-sm tracking-wide transition-colors group">
                 {t.cta.button}
                 <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
@@ -450,11 +452,9 @@ export default function SolutionsPage() {
             </FadeIn>
           </div>
         </section>
-      </main>
 
-      {/* Footer */}
-      <footer className="border-t border-divider" style={{ background: '#241E18' }}>
-        <div className="max-w-6xl mx-auto px-6 md:px-8 py-12 pb-28">
+        {/* Footer */}
+        <footer className="line-top px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: 'linear-gradient(180deg, #241E18 0%, #1C1710 100%)' }}>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
             <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
               <Link href="/" className="flex items-center"><Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="w-[22px] h-auto" /></Link>
@@ -467,13 +467,13 @@ export default function SolutionsPage() {
             <div className="flex items-center gap-4">
               <span className="text-ink-muted text-xs tracking-wide">{t.footer.copy}</span>
               <div className="flex items-center gap-3">
-                <Link href="https://instagram.com/landings.md" className="text-ink-muted hover:text-ink transition-colors" target="_blank" rel="noopener noreferrer"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></Link>
                 <Link href="mailto:contact@landings.md" className="text-ink-muted hover:text-ink transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0l-9.75 6.093L2.25 6.75" /></svg></Link>
               </div>
             </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+
+      </div>
 
       <StickyContactPill language={language as 'en' | 'ro' | 'de' | 'fr' | 'es'} />
     </div>

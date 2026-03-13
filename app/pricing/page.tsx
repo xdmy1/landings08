@@ -2,9 +2,8 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
-
 import { useLanguage } from '@/hooks/useLanguage'
+import { SiteNav } from '@/components/ui/site-nav'
 
 type Lang = 'en' | 'ro' | 'de' | 'fr' | 'es'
 type Tier = 'starter' | 'business' | 'ecommerce'
@@ -162,9 +161,7 @@ function getLangAddon(langAnswer: number | null): { extraCount: number, addon: n
 }
 
 export default function PricingPage() {
-  const { language, setLanguage: handleLanguageChange } = useLanguage()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [langMenuOpen, setLangMenuOpen] = useState(false)
+  const { language } = useLanguage()
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<(number | null)[]>(Array(TOTAL_STEPS).fill(null))
   const [showResult, setShowResult] = useState(false)
@@ -229,6 +226,11 @@ export default function PricingPage() {
   }, [])
 
   useEffect(() => {
+    history.scrollRestoration = 'manual'
+    window.scrollTo(0, 0)
+  }, [])
+
+  useEffect(() => {
     return () => {
       if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current)
     }
@@ -244,15 +246,6 @@ export default function PricingPage() {
     return `mailto:contact@landings.md?subject=${encodeURIComponent(subject)}`
   }
 
-  const navText = {
-    en: { portfolio: "Portfolio", pricing: "Pricing", solutions: "Solutions", contact: "Contact" },
-    ro: { portfolio: "Portofoliu", pricing: "Preturi", solutions: "Solutii", contact: "Contact" },
-    de: { portfolio: "Portfolio", pricing: "Preise", solutions: "Losungen", contact: "Kontakt" },
-    fr: { portfolio: "Portfolio", pricing: "Tarifs", solutions: "Solutions", contact: "Contact" },
-    es: { portfolio: "Portafolio", pricing: "Precios", solutions: "Soluciones", contact: "Contacto" }
-  }
-
-  const nt = navText[lang]
   const startOverText: Record<Lang, string> = { en: "Start over", ro: "Reincepe", de: "Neu starten", fr: "Recommencer", es: "Empezar de nuevo" }
 
   const progressPercent = showResult ? 100 : (step / TOTAL_STEPS) * 100
@@ -260,65 +253,9 @@ export default function PricingPage() {
   return (
     <div className="min-h-screen text-ink grain" style={{ background: 'linear-gradient(180deg, #302620 0%, #2A2118 30%, #342A20 70%, #2A2118 100%)' }}>
 
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-divider" style={{ backgroundColor: 'rgba(42,33,24,0.88)' }}>
-        <div className="max-w-6xl mx-auto px-6 md:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center"><Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="w-[22px] h-auto" /></Link>
-            <div className="hidden md:flex items-center gap-8">
-              <div className="flex items-center gap-6 text-sm text-ink-muted">
-                <Link href="/portfolio" className="hover:text-ink transition-colors">{nt.portfolio}</Link>
-                <Link href="/pricing" className="text-ink">{nt.pricing}</Link>
-                <Link href="/solutions" className="hover:text-ink transition-colors">{nt.solutions}</Link>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <button onClick={() => setLangMenuOpen(!langMenuOpen)} className="text-ink-muted hover:text-ink text-xs tracking-widest uppercase transition-colors">{language}</button>
-                  {langMenuOpen && (
-                    <>
-                      <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
-                      <div className="absolute top-full right-0 mt-3 bg-surface border border-divider shadow-card z-50 min-w-[64px]">
-                        {(['en', 'ro', 'de', 'fr', 'es'] as const).map((l) => (
-                          <button key={l} onClick={() => { handleLanguageChange(l); setLangMenuOpen(false); }} className={`block w-full text-left px-4 py-2 text-xs tracking-widest uppercase transition-colors ${language === l ? "text-amber bg-surface" : "text-ink-muted hover:text-ink"}`}>{l}</button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-                <Link href="mailto:contact@landings.md" className="text-amber text-sm hover:text-amber-light transition-colors">{nt.contact}</Link>
-              </div>
-            </div>
-            <div className="md:hidden flex items-center gap-3">
-              <button onClick={() => setLangMenuOpen(!langMenuOpen)} className="text-ink-muted text-xs tracking-widest uppercase">{language}</button>
-              {langMenuOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
-                  <div className="absolute top-20 right-6 bg-surface border border-divider shadow-card z-50 min-w-[64px]">
-                    {(['en', 'ro', 'de', 'fr', 'es'] as const).map((l) => (
-                      <button key={l} onClick={() => { handleLanguageChange(l); setLangMenuOpen(false); }} className={`block w-full text-left px-4 py-2 text-xs tracking-widest uppercase ${language === l ? "text-amber bg-surface" : "text-ink-muted"}`}>{l}</button>
-                    ))}
-                  </div>
-                </>
-              )}
-              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-ink-muted">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  {mobileMenuOpen ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" /> : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />}
-                </svg>
-              </button>
-            </div>
-          </div>
-          {mobileMenuOpen && (
-            <div className="md:hidden border-t border-divider py-6 space-y-4">
-              <Link href="/portfolio" className="block text-ink-muted text-sm py-1" onClick={() => setMobileMenuOpen(false)}>{nt.portfolio}</Link>
-              <Link href="/pricing" className="block text-ink text-sm py-1" onClick={() => setMobileMenuOpen(false)}>{nt.pricing}</Link>
-              <Link href="/solutions" className="block text-ink-muted text-sm py-1" onClick={() => setMobileMenuOpen(false)}>{nt.solutions}</Link>
-              <div className="pt-2 border-t border-divider">
-                <Link href="mailto:contact@landings.md" className="text-amber text-sm" onClick={() => setMobileMenuOpen(false)}>{nt.contact} &rarr;</Link>
-              </div>
-            </div>
-          )}
-        </div>
-      </nav>
+      <SiteNav contactHref="/#contact" />
+
+      <div className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 relative line-sides">
 
       {/* Quiz */}
       <div className="min-h-[110vh] flex items-center justify-center pt-24 pb-24 px-6 md:px-8">
@@ -461,6 +398,8 @@ export default function PricingPage() {
             )}
           </div>
         </div>
+      </div>
+
       </div>
 
       <style jsx>{`

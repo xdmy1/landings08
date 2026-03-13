@@ -5,7 +5,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
 import { SiteNav } from '@/components/ui/site-nav'
-import { PageLines } from '@/components/ui/page-lines'
 import { AnimatedStatGrid } from '@/components/ui/animated-stat-grid'
 import { AnimatedRowLines } from '@/components/ui/animated-row-lines'
 import { useLanguage } from '@/hooks/useLanguage'
@@ -154,10 +153,16 @@ function StaggerGroup({ children, className = "", stagger = 120 }: { children: R
   )
 }
 
+
 export default function HomePage() {
   const { language } = useLanguage()
   const [formData, setFormData] = useState({ name: '', email: '', message: '' })
   const [formSent, setFormSent] = useState(false)
+
+  useEffect(() => {
+    history.scrollRestoration = 'manual'
+    window.scrollTo(0, 0)
+  }, [])
 
   const text = {
     en: {
@@ -336,8 +341,7 @@ export default function HomePage() {
       <SiteNav contactHref="#contact" />
 
       {/* ── BORDERED CONTAINER ── */}
-      <div id="layout-container" className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 relative">
-        <PageLines containerId="layout-container" />
+      <div id="layout-container" className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 relative line-sides">
 
         {/* ── HERO ── */}
         <section className="pt-32 md:pt-44 pb-16 md:pb-24 px-6 md:px-12 lg:px-16 relative glow-amber overflow-hidden" style={{ background: 'radial-gradient(ellipse 110% 80% at 50% -5%, #4A3020 0%, #382820 35%, #2A2118 75%)' }}>
@@ -365,7 +369,7 @@ export default function HomePage() {
         </section>
 
         {/* ── NUMBERS ── */}
-        <section data-hline className="" style={{ background: 'linear-gradient(90deg, #2E2419 0%, #3C2E20 35%, #3A2C1E 65%, #2E2419 100%)' }}>
+        <section className="line-top" style={{ background: 'linear-gradient(90deg, #2E2419 0%, #3C2E20 35%, #3A2C1E 65%, #2E2419 100%)' }}>
           <AnimatedStatGrid className="grid grid-cols-2 md:grid-cols-4" stagger={150}>
             {t.numbers.map((n, i) => (
               <div key={i} className="px-6 md:px-8 py-8 md:py-10">
@@ -379,7 +383,7 @@ export default function HomePage() {
         </section>
 
         {/* ── WORK ── */}
-        <section data-hline className="px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: 'linear-gradient(160deg, #342A20 0%, #3A2C1E 25%, #2C2218 65%, #2A2118 100%)' }}>
+        <section className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: 'linear-gradient(160deg, #342A20 0%, #3A2C1E 25%, #2C2218 65%, #2A2118 100%)' }}>
           <FadeIn>
             <div className="flex items-center justify-between mb-10 md:mb-14">
               <span className="text-ink-light text-[11px] font-mono tracking-[0.15em] uppercase">{t.work.label}</span>
@@ -412,7 +416,7 @@ export default function HomePage() {
         </section>
 
         {/* ── STATEMENT ── */}
-        <section data-hline className="px-6 md:px-12 lg:px-16 py-16 md:py-24 relative glow-amber" style={{ background: 'radial-gradient(ellipse 90% 130% at 85% 50%, #3E3229 0%, #342A20 40%, #2A2118 80%)' }}>
+        <section className="line-top px-6 md:px-12 lg:px-16 py-16 md:py-24 relative glow-amber" style={{ background: 'radial-gradient(ellipse 90% 130% at 85% 50%, #3E3229 0%, #342A20 40%, #2A2118 80%)' }}>
           <RevealText>
             <p className="font-serif text-[clamp(1.3rem,2.4vw,2rem)] text-ink leading-[1.4] tracking-[-0.01em] max-w-2xl">
               {t.statement}
@@ -421,7 +425,7 @@ export default function HomePage() {
         </section>
 
         {/* ── PROCESS ── */}
-        <section data-hline className="px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: 'linear-gradient(145deg, #3E3229 0%, #362C20 30%, #2C2218 65%, #2A2118 100%)' }}>
+        <section className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: 'linear-gradient(145deg, #3E3229 0%, #362C20 30%, #2C2218 65%, #2A2118 100%)' }}>
           <FadeIn>
             <span className="text-ink-light text-[11px] font-mono tracking-[0.15em] uppercase block mb-10 md:mb-14">{t.process.label}</span>
           </FadeIn>
@@ -437,7 +441,7 @@ export default function HomePage() {
         </section>
 
         {/* ── CONTACT ── */}
-        <section id="contact" data-hline className="px-6 md:px-12 lg:px-16 py-14 md:py-24 relative grid-animated" style={{ background: 'radial-gradient(ellipse 80% 100% at 15% 85%, #3E3229 0%, #302620 40%, #2A2118 85%)' }}>
+        <section id="contact" className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-24 relative grid-animated" style={{ background: 'radial-gradient(ellipse 80% 100% at 15% 85%, #3E3229 0%, #302620 40%, #2A2118 85%)' }}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
             <SlideIn direction="left">
               <span className="text-ink-light text-[11px] font-mono tracking-[0.15em] uppercase block mb-4">{t.contact.label}</span>
@@ -463,7 +467,7 @@ export default function HomePage() {
         </section>
 
         {/* ── FOOTER ── */}
-        <footer data-hline className="px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: 'linear-gradient(180deg, #241E18 0%, #1C1710 100%)' }}>
+        <footer className="line-top px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: 'linear-gradient(180deg, #241E18 0%, #1C1710 100%)' }}>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
             <div className="flex items-center gap-6">
               <Link href="/" className="flex items-center">
@@ -479,9 +483,6 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
               <Link href="mailto:contact@landings.md" className="text-ink-muted hover:text-ink text-[11px] font-mono transition-colors">contact@landings.md</Link>
               <span className="text-ink-muted text-[10px] font-mono">{t.footer.copy}</span>
-              <Link href="https://instagram.com/landings.md" className="text-ink-muted hover:text-ink transition-colors" target="_blank" rel="noopener noreferrer">
-                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-              </Link>
             </div>
           </div>
           <p className="mt-4 text-ink-light text-[9px] font-mono tracking-wide leading-relaxed max-w-2xl">

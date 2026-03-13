@@ -7,18 +7,69 @@ import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
 import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
 
-function FadeIn({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
+function useInView(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
   useEffect(() => {
+    const el = ref.current
+    if (!el) return
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) { setVisible(true); observer.disconnect() }
-    }, { threshold: 0.1 })
-    if (ref.current) observer.observe(ref.current)
+    }, { threshold })
+    observer.observe(el)
     return () => observer.disconnect()
-  }, [])
+  }, [threshold])
+  return { ref, visible }
+}
+
+function RevealText({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
+  const { ref, visible } = useInView(0.15)
   return (
-    <div ref={ref} className={`transition-all duration-700 ease-smooth ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'} ${className}`} style={{ transitionDelay: `${delay}ms` }}>
+    <div ref={ref} className={`overflow-hidden ${className}`}>
+      <div
+        className="transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+        style={{
+          transform: visible ? 'translateY(0)' : 'translateY(110%)',
+          opacity: visible ? 1 : 0,
+          transitionDelay: `${delay}ms`,
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  )
+}
+
+function FadeIn({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
+  const { ref, visible } = useInView(0.08)
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${className}`}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0)' : 'translateY(30px)',
+        transitionDelay: `${delay}ms`,
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+function SlideIn({ children, className = "", delay = 0, direction = "left" }: { children: React.ReactNode, className?: string, delay?: number, direction?: "left" | "right" }) {
+  const { ref, visible } = useInView(0.1)
+  const x = direction === "left" ? "-40px" : "40px"
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${className}`}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateX(0)' : `translateX(${x})`,
+        transitionDelay: `${delay}ms`,
+      }}
+    >
       {children}
     </div>
   )
@@ -103,10 +154,13 @@ const categories = [
 ]
 
 export default function PortfolioPage() {
-  const { language, setLanguage: handleLanguageChange } = useLanguage()
+  const { language } = useLanguage()
   const [selectedCategory, setSelectedCategory] = useState('all')
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [langMenuOpen, setLangMenuOpen] = useState(false)
+
+  useEffect(() => {
+    history.scrollRestoration = 'manual'
+    window.scrollTo(0, 0)
+  }, [])
 
   const text = {
     en: {
@@ -157,84 +211,23 @@ export default function PortfolioPage() {
   return (
     <div className="min-h-screen text-ink grain" style={{ background: '#2A2118' }}>
 
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b border-divider" style={{ backgroundColor: 'rgba(42,33,24,0.88)' }}>
-        <div className="max-w-6xl mx-auto px-6 md:px-8">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center"><Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="w-[22px] h-auto" /></Link>
-            <div className="hidden md:flex items-center gap-8">
-              <div className="flex items-center gap-6 text-sm text-ink-muted">
-                <Link href="/portfolio" className="text-ink">{t.nav.portfolio}</Link>
-                <Link href="/pricing" className="hover:text-ink transition-colors">{t.nav.pricing}</Link>
-                <Link href="/solutions" className="hover:text-ink transition-colors">{t.nav.solutions}</Link>
-                <Link href="/case-studies" className="hover:text-ink transition-colors">{t.nav.caseStudies}</Link>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <button onClick={() => setLangMenuOpen(!langMenuOpen)} className="text-ink-muted hover:text-ink text-xs tracking-widest uppercase transition-colors">{language}</button>
-                  {langMenuOpen && (
-                    <>
-                      <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
-                      <div className="absolute top-full right-0 mt-3 bg-surface border border-divider shadow-card z-50 min-w-[64px]">
-                        {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (
-                          <button key={lang} onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false); }} className={`block w-full text-left px-4 py-2 text-xs tracking-widest uppercase transition-colors ${language === lang ? "text-amber bg-surface" : "text-ink-muted hover:text-ink"}`}>{lang}</button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-                <Link href="mailto:contact@landings.md" className="text-amber text-sm hover:text-amber-light transition-colors">{t.nav.contact}</Link>
-              </div>
-            </div>
-            <div className="md:hidden flex items-center gap-3">
-              <button onClick={() => setLangMenuOpen(!langMenuOpen)} className="text-ink-muted text-xs tracking-widest uppercase">{language}</button>
-              {langMenuOpen && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setLangMenuOpen(false)} />
-                  <div className="absolute top-20 right-6 bg-surface border border-divider shadow-card z-50 min-w-[64px]">
-                    {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang) => (
-                      <button key={lang} onClick={() => { handleLanguageChange(lang); setLangMenuOpen(false); }} className={`block w-full text-left px-4 py-2 text-xs tracking-widest uppercase ${language === lang ? "text-amber bg-surface" : "text-ink-muted"}`}>{lang}</button>
-                    ))}
-                  </div>
-                </>
-              )}
-              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-ink-muted">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  {mobileMenuOpen ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" /> : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />}
-                </svg>
-              </button>
-            </div>
-          </div>
-          {mobileMenuOpen && (
-            <div className="md:hidden border-t border-divider py-6 space-y-4">
-              <Link href="/portfolio" className="block text-ink text-sm py-1" onClick={() => setMobileMenuOpen(false)}>{t.nav.portfolio}</Link>
-              <Link href="/pricing" className="block text-ink-muted text-sm py-1" onClick={() => setMobileMenuOpen(false)}>{t.nav.pricing}</Link>
-              <Link href="/solutions" className="block text-ink-muted text-sm py-1" onClick={() => setMobileMenuOpen(false)}>{t.nav.solutions}</Link>
-              <Link href="/case-studies" className="block text-ink-muted text-sm py-1" onClick={() => setMobileMenuOpen(false)}>{t.nav.caseStudies}</Link>
-              <div className="pt-2 border-t border-divider">
-                <Link href="mailto:contact@landings.md" className="text-amber text-sm" onClick={() => setMobileMenuOpen(false)}>{t.nav.contact} &rarr;</Link>
-              </div>
-            </div>
-          )}
-        </div>
-      </nav>
+      <SiteNav contactHref="/#contact" />
 
-      {/* Hero */}
-      <section className="pt-32 md:pt-40 pb-8 px-6 md:px-8">
-        <div className="max-w-6xl mx-auto">
-          <FadeIn>
-            <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl text-ink">{t.title}</h1>
-          </FadeIn>
-          <FadeIn delay={100}>
+      <div className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 relative line-sides">
+
+        {/* Hero */}
+        <section className="pt-36 md:pt-48 pb-12 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'linear-gradient(160deg, #302620 0%, #3A2C1E 35%, #2A2118 100%)' }}>
+          <RevealText>
+            <h1 className="font-serif text-[clamp(2.5rem,6vw,5.5rem)] text-ink">{t.title}</h1>
+          </RevealText>
+          <FadeIn delay={200}>
             <p className="mt-4 text-ink-muted text-sm tracking-wide">{t.subtitle}</p>
           </FadeIn>
-        </div>
-      </section>
+        </section>
 
-      {/* Category Filter */}
-      <section className="px-6 md:px-8 pb-12">
-        <div className="max-w-6xl mx-auto">
-          <FadeIn delay={150}>
+        {/* Category Filter */}
+        <section className="line-top px-6 md:px-12 lg:px-16 py-6 md:py-8" style={{ background: 'linear-gradient(90deg, #2A2118 0%, #302620 50%, #2A2118 100%)' }}>
+          <FadeIn>
             <div className="flex flex-wrap gap-3">
               {categories.map((cat) => (
                 <button
@@ -247,12 +240,10 @@ export default function PortfolioPage() {
               ))}
             </div>
           </FadeIn>
-        </div>
-      </section>
+        </section>
 
-      {/* Projects Grid */}
-      <section className="px-6 md:px-8 pb-20 md:pb-32">
-        <div className="max-w-6xl mx-auto">
+        {/* Projects Grid */}
+        <section className="line-top px-6 md:px-12 lg:px-16 pt-10 pb-20 md:pb-32" style={{ background: 'linear-gradient(180deg, #2A2118 0%, #342A20 50%, #2C2218 100%)' }}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProjects.map((project, index) => (
               <FadeIn key={project.id} delay={index * 60} className="h-full">
@@ -273,7 +264,7 @@ export default function PortfolioPage() {
                       <span className="text-amber text-[10px] tracking-[0.2em] uppercase">
                         {categories.find(c => c.id === project.category)?.name[language as keyof typeof categories[0]['name']]}
                       </span>
-                      <span className={`text-[10px] tracking-[0.15em] uppercase ${project.status === 'LIVE' ? 'text-ink-muted' : project.status === 'DEMO' ? 'text-ink-light' : 'text-ink-light'}`}>
+                      <span className={`text-[10px] tracking-[0.15em] uppercase ${project.status === 'LIVE' ? 'text-ink-muted' : 'text-ink-light'}`}>
                         {project.status}
                       </span>
                     </div>
@@ -294,29 +285,28 @@ export default function PortfolioPage() {
               </FadeIn>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Divider */}
-      <div className="max-w-6xl mx-auto px-6 md:px-8"><div className="border-t border-divider" /></div>
+        {/* CTA */}
+        <section className="line-top px-6 md:px-12 lg:px-16 py-20 md:py-28 relative glow-amber" style={{ background: 'radial-gradient(ellipse 90% 130% at 50% 100%, #3E3229 0%, #302620 40%, #2A2118 85%)' }}>
+          <div className="max-w-2xl mx-auto text-center">
+            <RevealText>
+              <h2 className="font-serif italic text-[clamp(1.8rem,3.5vw,3rem)] text-ink mb-4">{t.cta.title}</h2>
+            </RevealText>
+            <FadeIn delay={200}>
+              <p className="text-ink-muted mb-8">{t.cta.body}</p>
+            </FadeIn>
+            <FadeIn delay={350}>
+              <Link href="mailto:contact@landings.md" className="inline-flex items-center gap-3 text-amber hover:text-amber-light text-sm tracking-wide transition-colors group">
+                {t.cta.button}
+                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+              </Link>
+            </FadeIn>
+          </div>
+        </section>
 
-      {/* CTA */}
-      <section className="py-20 md:py-28 px-6 md:px-8 relative glow-amber" style={{ background: 'linear-gradient(180deg, #3E3229 0%, #2A2118 100%)' }}>
-        <div className="max-w-4xl mx-auto text-center">
-          <FadeIn>
-            <h2 className="font-serif italic text-3xl md:text-4xl text-ink mb-4">{t.cta.title}</h2>
-            <p className="text-ink-muted mb-8">{t.cta.body}</p>
-            <Link href="mailto:contact@landings.md" className="inline-flex items-center gap-3 text-amber hover:text-amber-light text-sm tracking-wide transition-colors group">
-              {t.cta.button}
-              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-            </Link>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-divider" style={{ background: '#241E18' }}>
-        <div className="max-w-6xl mx-auto px-6 md:px-8 py-12 pb-28">
+        {/* Footer */}
+        <footer className="line-top px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: 'linear-gradient(180deg, #241E18 0%, #1C1710 100%)' }}>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
             <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
               <Link href="/" className="flex items-center"><Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="w-[22px] h-auto" /></Link>
@@ -330,13 +320,13 @@ export default function PortfolioPage() {
             <div className="flex items-center gap-4">
               <span className="text-ink-muted text-xs tracking-wide">{t.footer.copy}</span>
               <div className="flex items-center gap-3">
-                <Link href="https://instagram.com/landings.md" className="text-ink-muted hover:text-ink transition-colors" target="_blank" rel="noopener noreferrer"><svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></Link>
                 <Link href="mailto:contact@landings.md" className="text-ink-muted hover:text-ink transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0l-9.75 6.093L2.25 6.75" /></svg></Link>
               </div>
             </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+
+      </div>
 
       <StickyContactPill language={language as 'en' | 'ro' | 'de' | 'fr' | 'es'} />
     </div>
