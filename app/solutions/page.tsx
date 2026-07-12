@@ -6,6 +6,8 @@ import Image from 'next/image'
 import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
 import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
+import { BrowserFrame } from '@/components/ui/browser-frame'
+import { SeatPickerMock, ErpDashboardMock, ScheduleCalendarMock } from '@/components/ui/system-mocks'
 
 function useInView(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
@@ -75,36 +77,19 @@ function SlideIn({ children, className = "", delay = 0, direction = "left" }: { 
   )
 }
 
-function ImageReveal({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
-  const { ref, visible } = useInView(0.1)
-  return (
-    <div ref={ref} className={`overflow-hidden ${className}`}>
-      <div
-        className="transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-        style={{
-          opacity: visible ? 1 : 0,
-          transform: visible ? 'scale(1)' : 'scale(1.08)',
-          transitionDelay: `${delay}ms`,
-        }}
-      >
-        {children}
-      </div>
-    </div>
-  )
-}
-
-const caseStudies = [
+/* Other systems we shipped — compact rows */
+const otherSystems = [
   {
     id: 1,
     badge: { en: "LOGISTICS", ro: "LOGISTICA", de: "LOGISTIK", fr: "LOGISTIQUE", es: "LOGISTICA" },
     title: { en: "Package Tracking Platform", ro: "Platforma Urmarire Colete", de: "Paketverfolgungs-Plattform", fr: "Plateforme de Suivi de Colis", es: "Plataforma de Seguimiento de Paquetes" },
     subtitle: { en: "MD — Europe — MD", ro: "MD — Europa — MD", de: "MD — Europa — MD", fr: "MD — Europe — MD", es: "MD — Europa — MD" },
     description: {
-      en: "A highly advanced logistics application managing packages between Moldova and Europe. Real-time package tracking, automated status updates, admin management panel, driver assignments, route optimization, customer notifications, and full delivery history.",
-      ro: "O aplicatie logistica avansata pentru gestionarea coletelor intre Moldova si Europa. Urmarire colete in timp real, actualizari automate de status, panou admin, atribuire soferi, optimizare rute, notificari clienti si istoric complet livrari.",
-      de: "Eine hochentwickelte Logistikanwendung zur Verwaltung von Paketen zwischen Moldawien und Europa. Echtzeit-Paketverfolgung, automatische Statusaktualisierungen, Admin-Panel, Fahrerzuweisung, Routenoptimierung und vollstandiger Lieferverlauf.",
-      fr: "Une application logistique avancee gerant les colis entre la Moldavie et l'Europe. Suivi en temps reel, mises a jour automatiques, panneau d'administration, affectation des chauffeurs, optimisation des itineraires et historique complet.",
-      es: "Una aplicacion logistica avanzada que gestiona paquetes entre Moldavia y Europa. Seguimiento en tiempo real, actualizaciones automaticas, panel de administracion, asignacion de conductores, optimizacion de rutas e historial completo."
+      en: "A logistics application managing packages between Moldova and Europe. Real-time tracking, automated status updates, admin panel, driver assignments and full delivery history.",
+      ro: "O aplicatie logistica pentru gestionarea coletelor intre Moldova si Europa. Urmarire in timp real, statusuri automate, panou admin, atribuire soferi si istoric complet al livrarilor.",
+      de: "Eine Logistikanwendung fur Pakete zwischen Moldawien und Europa. Echtzeit-Verfolgung, automatische Statusaktualisierungen, Admin-Panel, Fahrerzuweisung und vollstandiger Lieferverlauf.",
+      fr: "Une application logistique gerant les colis entre la Moldavie et l'Europe. Suivi en temps reel, statuts automatiques, panneau d'administration, affectation des chauffeurs et historique complet.",
+      es: "Una aplicacion logistica que gestiona paquetes entre Moldavia y Europa. Seguimiento en tiempo real, estados automaticos, panel de administracion, asignacion de conductores e historial completo."
     },
     features: {
       en: ["Real-time GPS tracking", "Admin management panel", "Automated notifications", "Route optimization", "Driver assignments", "Delivery analytics"],
@@ -120,11 +105,11 @@ const caseStudies = [
     title: { en: "Growing Memories Album", ro: "Album Amintiri in Crestere", de: "Wachsende Erinnerungen Album", fr: "Album de Souvenirs Grandissants", es: "Album de Recuerdos Crecientes" },
     subtitle: { en: "Ages 1 — 18", ro: "Varsta 1 — 18", de: "Alter 1 — 18", fr: "Ages 1 — 18", es: "Edades 1 — 18" },
     description: {
-      en: "A unique digital family album where parents document their child's journey from age 1 to 18. Photos, milestones, letters, and memories are securely stored. On their 18th birthday, the child receives access to the complete album.",
-      ro: "Un album digital unic unde parintii documenteaza calatoria copilului de la 1 la 18 ani. Poze, momente importante, scrisori si amintiri sunt stocate in siguranta. La 18 ani, copilul primeste acces la albumul complet.",
-      de: "Ein einzigartiges digitales Familienalbum, in dem Eltern die Reise ihres Kindes von 1 bis 18 dokumentieren. Fotos, Meilensteine, Briefe und Erinnerungen werden sicher gespeichert.",
-      fr: "Un album familial numerique unique ou les parents documentent le parcours de leur enfant de 1 a 18 ans. Photos, jalons, lettres et souvenirs sont stockes en securite.",
-      es: "Un album digital familiar unico donde los padres documentan el viaje de su hijo desde 1 hasta 18 anos. Fotos, hitos, cartas y recuerdos se almacenan de forma segura."
+      en: "A unique digital family album where parents document their child's journey from age 1 to 18. On their 18th birthday, the child receives access to the complete album.",
+      ro: "Un album digital unic unde parintii documenteaza calatoria copilului de la 1 la 18 ani. La 18 ani, copilul primeste acces la albumul complet.",
+      de: "Ein einzigartiges digitales Familienalbum, in dem Eltern die Reise ihres Kindes von 1 bis 18 dokumentieren. Mit 18 erhalt das Kind Zugang zum kompletten Album.",
+      fr: "Un album familial numerique unique ou les parents documentent le parcours de leur enfant de 1 a 18 ans. A 18 ans, l'enfant recoit l'acces a l'album complet.",
+      es: "Un album digital familiar unico donde los padres documentan el viaje de su hijo desde 1 hasta 18 anos. A los 18, el hijo recibe acceso al album completo."
     },
     features: {
       en: ["Milestone tracking", "Photo & video uploads", "Time-locked reveal at 18", "Parent collaboration", "Secure cloud storage", "Beautiful timeline view"],
@@ -140,11 +125,11 @@ const caseStudies = [
     title: { en: "Auto Service CRM", ro: "CRM Service Auto", de: "Auto-Service CRM", fr: "CRM Service Auto", es: "CRM Servicio Automotriz" },
     subtitle: { en: "Complete Business Management", ro: "Management Complet Afacere", de: "Komplettes Geschaftsmanagement", fr: "Gestion Complete d'Entreprise", es: "Gestion Empresarial Completa" },
     description: {
-      en: "A complete client management platform built for auto service businesses. Appointment scheduling, service history tracking, invoice generation, parts inventory, client communication, and performance analytics — all in one dashboard.",
-      ro: "O platforma completa de management clienti construita pentru service-uri auto. Programari, istoric servicii, generare facturi, inventar piese, comunicare clienti si analize performanta — totul intr-un singur panou.",
-      de: "Eine komplette Kundenmanagement-Plattform fur Autoservice-Unternehmen. Terminplanung, Service-Historie, Rechnungserstellung, Teileinventar, Kundenkommunikation und Leistungsanalysen.",
-      fr: "Une plateforme complete de gestion clients pour les services automobiles. Planification, historique, facturation, inventaire, communication et analyses — le tout dans un seul tableau de bord.",
-      es: "Una plataforma completa de gestion de clientes para negocios de servicio automotriz. Citas, historial, facturas, inventario, comunicacion y analisis — todo en un solo panel."
+      en: "A complete client management platform built for auto services. Appointments, service history, invoicing, parts inventory, client communication and analytics — in one dashboard.",
+      ro: "O platforma completa de management clienti pentru service-uri auto. Programari, istoric servicii, facturare, inventar piese, comunicare clienti si analize — intr-un singur panou.",
+      de: "Eine komplette Kundenmanagement-Plattform fur Autoservices. Termine, Historie, Rechnungen, Inventar, Kommunikation und Analysen — in einem Dashboard.",
+      fr: "Une plateforme complete de gestion clients pour services auto. Rendez-vous, historique, facturation, inventaire, communication et analyses — dans un seul tableau de bord.",
+      es: "Una plataforma completa de gestion de clientes para servicios automotrices. Citas, historial, facturas, inventario, comunicacion y analisis — en un solo panel."
     },
     features: {
       en: ["Appointment scheduling", "Service history", "Invoice generation", "Parts inventory", "Client portal", "Performance analytics"],
@@ -173,108 +158,214 @@ export default function SolutionsPage() {
 
   const text = {
     en: {
-      nav: { portfolio: "Portfolio", pricing: "Pricing", solutions: "Solutions", contact: "Contact" },
+      nav: { portfolio: "Portfolio", pricing: "Pricing", solutions: "Solutions", caseStudies: "Case Studies", contact: "Contact" },
       hero: {
-        title1: "We digitalize",
-        title2: "your business.",
-        description: "Your business still runs on paper, notebooks, and pens? We build advanced digital systems — CRMs, logistics platforms, custom apps — that replace the boring, tiring paperwork with sleek, powerful technology.",
+        title1: "We free your business",
+        title2: "from paper.",
+        description: "Driving school scheduling, seat-selection bookings, operator panels, invoicing, stock, profit tracking and automated accounting — we build real systems for real businesses. Some of them are below.",
         cta: "Discuss your project"
       },
-      whatWeBuild: {
-        heading: "Your business runs on paper.",
-        subheading: "We fix that.",
-        crm: { label: "CRM", title: "Client management that actually works.", body: "Appointments, invoices, service history, inventory — one dashboard instead of 10 notebooks. Built for auto services, clinics, salons, or any business that tracks clients.", tags: ["Scheduling", "Invoicing", "Analytics", "Client portal"] },
-        logistics: { label: "Logistics", title: "Track every package, every step.", body: "GPS tracking, driver assignments, automated customer notifications, admin panels — we built a full logistics platform for the MD-Europe corridor. Your spreadsheets can retire.", tags: ["GPS tracking", "Route optimization", "Notifications", "Admin panel"] },
-        custom: { label: "Custom Apps", title: "If you can dream it, we can build it.", body: "A digital family album that locks until the child turns 18. A booking system for a niche business. An internal tool that saves your team 4 hours a day. We don't do templates — we build exactly what you need.", tags: ["Family apps", "Booking systems", "Internal tools", "Custom platforms"] }
+      built: {
+        heading: "Already built. In production.",
+        subheading: "Three real systems our clients use every single day.",
+        visit: "Visit site",
+        systems: [
+          {
+            client: "DAVO.MD — INTERNATIONAL TRANSPORT",
+            title: "Bookings with seat selection, like a flight.",
+            body: "Passengers pick their seat on the coach map, exactly like at an airline check-in. Operators get their own panel: they see the routes, book clients over the phone and track every seat — no notebooks, no double-bookings.",
+            tags: ["Seat map", "Operator panel", "Online bookings", "Payments & tickets"],
+            url: "https://davo.md"
+          },
+          {
+            client: "INTER-BUS.MD — PARTS & E-COMMERCE",
+            title: "Invoicing, stock and accounting on autopilot.",
+            body: "An international online store plus the back office that runs the business: invoices generated automatically, stock updated in real time, profit calculated per product and accounting that does itself.",
+            tags: ["Automated invoicing", "Stock tracking", "Profit per product", "Accounting"],
+            url: "https://inter-bus.md"
+          },
+          {
+            client: "GLG DRIVING SCHOOL — EDUCATION",
+            title: "Practical lesson scheduling, without the phone calls.",
+            body: "Students book their own practical lessons, instructors see their day at a glance, and the office stops juggling calls and notebooks. The schedule fills itself.",
+            tags: ["Online scheduling", "Instructor calendar", "Notifications", "Zero phone calls"],
+            url: null
+          },
+        ]
       },
-      caseStudies: "Case Studies",
-      caseStudiesSubtitle: "Real solutions we built for real businesses.",
-      cta: { title: "Ready to digitalize your business?", body: "Tell us about your business challenges. We'll design a custom digital solution that eliminates paperwork and multiplies your efficiency.", button: "Start your transformation" },
+      others: { heading: "Other systems we've built", subheading: "From logistics to personal apps — if it runs on paper, we can automate it." },
+      cta: { title: "Ready to get rid of the paperwork?", body: "Tell us how your business runs today. We'll design a custom system that eliminates the notebooks and multiplies your efficiency.", button: "Start your transformation" },
       footer: { copy: "© 2026 All rights reserved." }
     },
     ro: {
-      nav: { portfolio: "Portofoliu", pricing: "Preturi", solutions: "Solutii", contact: "Contact" },
+      nav: { portfolio: "Portofoliu", pricing: "Preturi", solutions: "Solutii", caseStudies: "Studii de Caz", contact: "Contact" },
       hero: {
-        title1: "Digitalizam",
-        title2: "afacerea ta.",
-        description: "Afacerea ta inca functioneaza pe hartie, caiete si pixuri? Construim sisteme digitale avansate — CRM-uri, platforme logistice, aplicatii custom — care inlocuiesc munca plictisitoare pe hartie cu tehnologie eleganta si puternica.",
+        title1: "Iti scapam afacerea",
+        title2: "de foi.",
+        description: "Programari la scoala auto, rezervari cu alegerea locului, panouri pentru operatori, facturare, stoc, calcul de profit si contabilitate automata — construim sisteme reale pentru afaceri reale. Cateva dintre ele, mai jos.",
         cta: "Discuta proiectul tau"
       },
-      whatWeBuild: {
-        heading: "Afacerea ta merge pe hartie.",
-        subheading: "Noi rezolvam asta.",
-        crm: { label: "CRM", title: "Management clienti care chiar functioneaza.", body: "Programari, facturi, istoric servicii, inventar — un singur panou in loc de 10 caiete. Construit pentru service-uri auto, clinici, saloane.", tags: ["Programari", "Facturare", "Analize", "Portal clienti"] },
-        logistics: { label: "Logistica", title: "Urmareste fiecare colet, fiecare pas.", body: "Urmarire GPS, atribuire soferi, notificari automate clienti, panouri admin — am construit o platforma logistica completa pentru coridorul MD-Europa.", tags: ["Urmarire GPS", "Optimizare rute", "Notificari", "Panou admin"] },
-        custom: { label: "Aplicatii Custom", title: "Daca poti visa, noi putem construi.", body: "Un album digital familial care se deblocheaza cand copilul implineste 18 ani. Un sistem de rezervari pentru o nisa specifica. Nu facem template-uri.", tags: ["Aplicatii familiale", "Sisteme rezervari", "Tooluri interne", "Platforme custom"] }
+      built: {
+        heading: "Construite deja. In productie.",
+        subheading: "Trei sisteme reale, folosite zilnic de clientii nostri.",
+        visit: "Acceseaza site-ul",
+        systems: [
+          {
+            client: "DAVO.MD — TRANSPORT INTERNATIONAL",
+            title: "Rezervari cu alegerea locului, ca la avion.",
+            body: "Pasagerii isi aleg locul pe harta autocarului, exact ca la check-in-ul unui zbor. Operatorii au panoul lor: vad cursele, rezerva pentru clientii de la telefon si tin evidenta fiecarui loc — fara caiete, fara suprapuneri.",
+            tags: ["Harta locurilor", "Panou operatori", "Rezervari online", "Plati & bilete"],
+            url: "https://davo.md"
+          },
+          {
+            client: "INTER-BUS.MD — PIESE & E-COMMERCE",
+            title: "Facturare, stoc si contabilitate pe autopilot.",
+            body: "Magazin online international plus panoul din spate care conduce afacerea: facturi generate automat, stoc actualizat in timp real, profit calculat pe fiecare produs si contabilitate care se face singura.",
+            tags: ["Facturare automata", "Evidenta stoc", "Profit pe produs", "Contabilitate"],
+            url: "https://inter-bus.md"
+          },
+          {
+            client: "SCOALA AUTO GLG — EDUCATIE",
+            title: "Programari la lectii practice, fara telefoane.",
+            body: "Elevii isi programeaza singuri lectiile practice, instructorii isi vad ziua dintr-o privire, iar administratia nu mai jongleaza cu apeluri si caiete. Orarul se umple singur.",
+            tags: ["Programari online", "Orar instructori", "Notificari", "Zero apeluri"],
+            url: null
+          },
+        ]
       },
-      caseStudies: "Studii de Caz",
-      caseStudiesSubtitle: "Solutii reale construite pentru afaceri reale.",
-      cta: { title: "Gata sa-ti digitalizezi afacerea?", body: "Spune-ne despre provocarile afacerii tale. Vom proiecta o solutie digitala personalizata care elimina hartia si iti multiplica eficienta.", button: "Incepe transformarea" },
+      others: { heading: "Alte sisteme construite", subheading: "De la logistica la aplicatii personale — daca merge pe hartie, putem automatiza." },
+      cta: { title: "Gata sa scapi de hartii?", body: "Spune-ne cum functioneaza afacerea ta azi. Proiectam un sistem custom care elimina caietele si iti multiplica eficienta.", button: "Incepe transformarea" },
       footer: { copy: "© 2026 Toate drepturile rezervate." }
     },
     de: {
-      nav: { portfolio: "Portfolio", pricing: "Preise", solutions: "Losungen", contact: "Kontakt" },
+      nav: { portfolio: "Portfolio", pricing: "Preise", solutions: "Losungen", caseStudies: "Fallstudien", contact: "Kontakt" },
       hero: {
-        title1: "Wir digitalisieren",
-        title2: "Ihr Unternehmen.",
-        description: "Ihr Unternehmen lauft noch auf Papier? Wir bauen fortschrittliche digitale Systeme — CRMs, Logistikplattformen, individuelle Apps — die Papierarbeit durch elegante Technologie ersetzen.",
+        title1: "Wir befreien Ihr Geschaft",
+        title2: "vom Papier.",
+        description: "Fahrschul-Terminplanung, Buchungen mit Sitzplatzwahl, Operator-Panels, Rechnungen, Lager, Gewinnberechnung und automatische Buchhaltung — wir bauen echte Systeme fur echte Unternehmen. Einige davon unten.",
         cta: "Projekt besprechen"
       },
-      whatWeBuild: {
-        heading: "Ihr Unternehmen lauft auf Papier.",
-        subheading: "Wir andern das.",
-        crm: { label: "CRM", title: "Kundenmanagement, das funktioniert.", body: "Termine, Rechnungen, Service-Historie, Inventar — ein Dashboard statt 10 Notizbuchern.", tags: ["Terminplanung", "Rechnungsstellung", "Analysen", "Kundenportal"] },
-        logistics: { label: "Logistik", title: "Verfolgen Sie jedes Paket.", body: "GPS-Verfolgung, Fahrerzuweisung, automatische Benachrichtigungen, Admin-Panels — eine vollstandige Logistikplattform.", tags: ["GPS-Verfolgung", "Routenoptimierung", "Benachrichtigungen", "Admin-Panel"] },
-        custom: { label: "Individuelle Apps", title: "Wenn Sie es traumen konnen, bauen wir es.", body: "Ein digitales Familienalbum. Ein Buchungssystem. Ein internes Tool. Wir bauen genau das, was Sie brauchen.", tags: ["Familien-Apps", "Buchungssysteme", "Interne Tools", "Plattformen"] }
+      built: {
+        heading: "Bereits gebaut. Im Einsatz.",
+        subheading: "Drei echte Systeme, die unsere Kunden taglich nutzen.",
+        visit: "Website besuchen",
+        systems: [
+          {
+            client: "DAVO.MD — INTERNATIONALER TRANSPORT",
+            title: "Buchungen mit Sitzplatzwahl, wie im Flugzeug.",
+            body: "Passagiere wahlen ihren Sitz auf der Buskarte, genau wie beim Airline-Check-in. Operatoren haben ihr eigenes Panel: Routen sehen, telefonisch buchen, jeden Platz verfolgen — ohne Hefte, ohne Doppelbuchungen.",
+            tags: ["Sitzplan", "Operator-Panel", "Online-Buchungen", "Zahlungen & Tickets"],
+            url: "https://davo.md"
+          },
+          {
+            client: "INTER-BUS.MD — TEILE & E-COMMERCE",
+            title: "Rechnungen, Lager und Buchhaltung auf Autopilot.",
+            body: "Ein internationaler Online-Shop plus das Backoffice, das das Geschaft steuert: automatische Rechnungen, Live-Lager, Gewinn pro Produkt und Buchhaltung, die sich selbst erledigt.",
+            tags: ["Automatische Rechnungen", "Lagerverwaltung", "Gewinn pro Produkt", "Buchhaltung"],
+            url: "https://inter-bus.md"
+          },
+          {
+            client: "FAHRSCHULE GLG — BILDUNG",
+            title: "Fahrstunden-Planung ohne Telefonate.",
+            body: "Schuler buchen ihre Fahrstunden selbst, Fahrlehrer sehen ihren Tag auf einen Blick, und das Buro jongliert nicht mehr mit Anrufen und Heften. Der Stundenplan fullt sich von selbst.",
+            tags: ["Online-Terminplanung", "Fahrlehrer-Kalender", "Benachrichtigungen", "Null Anrufe"],
+            url: null
+          },
+        ]
       },
-      caseStudies: "Fallstudien",
-      caseStudiesSubtitle: "Echte Losungen fur echte Unternehmen.",
-      cta: { title: "Bereit zu digitalisieren?", body: "Erzahlen Sie uns von Ihren Herausforderungen. Wir entwerfen eine individuelle digitale Losung.", button: "Transformation starten" },
+      others: { heading: "Weitere gebaute Systeme", subheading: "Von Logistik bis zu personlichen Apps — was auf Papier lauft, konnen wir automatisieren." },
+      cta: { title: "Bereit, den Papierkram loszuwerden?", body: "Erzahlen Sie uns, wie Ihr Geschaft heute lauft. Wir entwerfen ein System, das die Hefte eliminiert und Ihre Effizienz vervielfacht.", button: "Transformation starten" },
       footer: { copy: "© 2026 Alle Rechte vorbehalten." }
     },
     fr: {
-      nav: { portfolio: "Portfolio", pricing: "Tarifs", solutions: "Solutions", contact: "Contact" },
+      nav: { portfolio: "Portfolio", pricing: "Tarifs", solutions: "Solutions", caseStudies: "Etudes de Cas", contact: "Contact" },
       hero: {
-        title1: "Nous numerisons",
-        title2: "votre entreprise.",
-        description: "Votre entreprise fonctionne encore sur papier ? Nous construisons des systemes numeriques avances — CRM, plateformes logistiques, applications sur mesure.",
+        title1: "On libere votre entreprise",
+        title2: "du papier.",
+        description: "Planning d'auto-ecole, reservations avec choix du siege, panneaux operateurs, facturation, stock, calcul de profit et comptabilite automatique — on construit de vrais systemes pour de vraies entreprises. En voici quelques-uns.",
         cta: "Discuter de votre projet"
       },
-      whatWeBuild: {
-        heading: "Votre entreprise fonctionne sur papier.",
-        subheading: "Nous changeons cela.",
-        crm: { label: "CRM", title: "Gestion client qui fonctionne.", body: "Rendez-vous, factures, historique, inventaire — un tableau de bord au lieu de 10 cahiers.", tags: ["Planification", "Facturation", "Analyses", "Portail client"] },
-        logistics: { label: "Logistique", title: "Suivez chaque colis.", body: "Suivi GPS, affectation des chauffeurs, notifications automatiques — une plateforme logistique complete.", tags: ["Suivi GPS", "Optimisation", "Notifications", "Panneau d'admin"] },
-        custom: { label: "Applications Sur Mesure", title: "Si vous pouvez le rever, nous le construisons.", body: "Un album familial numerique. Un systeme de reservation. Un outil interne. Pas de templates.", tags: ["Apps familiales", "Reservations", "Outils internes", "Plateformes"] }
+      built: {
+        heading: "Deja construits. En production.",
+        subheading: "Trois systemes reels, utilises chaque jour par nos clients.",
+        visit: "Visiter le site",
+        systems: [
+          {
+            client: "DAVO.MD — TRANSPORT INTERNATIONAL",
+            title: "Reservations avec choix du siege, comme en avion.",
+            body: "Les passagers choisissent leur siege sur le plan du car, exactement comme a l'enregistrement d'un vol. Les operateurs ont leur panneau : ils voient les trajets, reservent par telephone et suivent chaque place — sans cahiers, sans doublons.",
+            tags: ["Plan des sieges", "Panneau operateurs", "Reservations en ligne", "Paiements & billets"],
+            url: "https://davo.md"
+          },
+          {
+            client: "INTER-BUS.MD — PIECES & E-COMMERCE",
+            title: "Facturation, stock et comptabilite en pilote automatique.",
+            body: "Une boutique en ligne internationale plus le back-office qui gere l'entreprise : factures automatiques, stock en temps reel, profit par produit et comptabilite qui se fait toute seule.",
+            tags: ["Facturation automatique", "Suivi du stock", "Profit par produit", "Comptabilite"],
+            url: "https://inter-bus.md"
+          },
+          {
+            client: "AUTO-ECOLE GLG — EDUCATION",
+            title: "Planning des lecons pratiques, sans coups de fil.",
+            body: "Les eleves reservent eux-memes leurs lecons, les instructeurs voient leur journee d'un coup d'oeil, et le bureau ne jongle plus avec les appels et les cahiers. Le planning se remplit tout seul.",
+            tags: ["Reservation en ligne", "Calendrier instructeurs", "Notifications", "Zero appels"],
+            url: null
+          },
+        ]
       },
-      caseStudies: "Etudes de Cas",
-      caseStudiesSubtitle: "Des solutions reelles pour de vraies entreprises.",
-      cta: { title: "Pret a numeriser ?", body: "Parlez-nous de vos defis. Nous concevrons une solution numerique personnalisee.", button: "Commencer la transformation" },
+      others: { heading: "D'autres systemes construits", subheading: "De la logistique aux apps personnelles — si ca tourne sur papier, on peut l'automatiser." },
+      cta: { title: "Pret a vous debarrasser de la paperasse ?", body: "Dites-nous comment votre entreprise fonctionne aujourd'hui. On concoit un systeme sur mesure qui elimine les cahiers et multiplie votre efficacite.", button: "Commencer la transformation" },
       footer: { copy: "© 2026 Tous droits reserves." }
     },
     es: {
-      nav: { portfolio: "Portafolio", pricing: "Precios", solutions: "Soluciones", contact: "Contacto" },
+      nav: { portfolio: "Portafolio", pricing: "Precios", solutions: "Soluciones", caseStudies: "Casos de Estudio", contact: "Contacto" },
       hero: {
-        title1: "Digitalizamos",
-        title2: "tu negocio.",
-        description: "Tu negocio todavia funciona con papel? Construimos sistemas digitales avanzados — CRMs, plataformas logisticas, aplicaciones personalizadas.",
+        title1: "Liberamos tu negocio",
+        title2: "del papel.",
+        description: "Agenda de autoescuela, reservas con eleccion de asiento, paneles de operadores, facturacion, stock, calculo de beneficios y contabilidad automatica — construimos sistemas reales para negocios reales. Aqui van algunos.",
         cta: "Discutir tu proyecto"
       },
-      whatWeBuild: {
-        heading: "Tu negocio funciona con papel.",
-        subheading: "Nosotros lo solucionamos.",
-        crm: { label: "CRM", title: "Gestion de clientes que funciona.", body: "Citas, facturas, historial, inventario — un panel en vez de 10 cuadernos.", tags: ["Programacion", "Facturacion", "Analisis", "Portal de clientes"] },
-        logistics: { label: "Logistica", title: "Rastrea cada paquete.", body: "Seguimiento GPS, asignacion de conductores, notificaciones automaticas — una plataforma logistica completa.", tags: ["Seguimiento GPS", "Optimizacion", "Notificaciones", "Panel admin"] },
-        custom: { label: "Apps Personalizadas", title: "Si puedes sonarlo, podemos construirlo.", body: "Un album familiar digital. Un sistema de reservas. Una herramienta interna. No hacemos plantillas.", tags: ["Apps familiares", "Reservas", "Herramientas", "Plataformas"] }
+      built: {
+        heading: "Ya construidos. En produccion.",
+        subheading: "Tres sistemas reales que nuestros clientes usan cada dia.",
+        visit: "Visitar sitio",
+        systems: [
+          {
+            client: "DAVO.MD — TRANSPORTE INTERNACIONAL",
+            title: "Reservas con eleccion de asiento, como en un vuelo.",
+            body: "Los pasajeros eligen su asiento en el mapa del autobus, igual que en el check-in de un vuelo. Los operadores tienen su panel: ven las rutas, reservan por telefono y controlan cada asiento — sin cuadernos, sin duplicados.",
+            tags: ["Mapa de asientos", "Panel de operadores", "Reservas online", "Pagos & billetes"],
+            url: "https://davo.md"
+          },
+          {
+            client: "INTER-BUS.MD — PIEZAS & E-COMMERCE",
+            title: "Facturacion, stock y contabilidad en piloto automatico.",
+            body: "Una tienda online internacional mas el back office que dirige el negocio: facturas automaticas, stock en tiempo real, beneficio por producto y contabilidad que se hace sola.",
+            tags: ["Facturacion automatica", "Control de stock", "Beneficio por producto", "Contabilidad"],
+            url: "https://inter-bus.md"
+          },
+          {
+            client: "AUTOESCUELA GLG — EDUCACION",
+            title: "Agenda de clases practicas, sin llamadas.",
+            body: "Los alumnos reservan sus clases practicas, los instructores ven su dia de un vistazo, y la oficina deja de hacer malabares con llamadas y cuadernos. El horario se llena solo.",
+            tags: ["Reservas online", "Calendario instructores", "Notificaciones", "Cero llamadas"],
+            url: null
+          },
+        ]
       },
-      caseStudies: "Casos de Estudio",
-      caseStudiesSubtitle: "Soluciones reales para negocios reales.",
-      cta: { title: "Listo para digitalizar?", body: "Cuentanos sobre tus desafios. Disenaremos una solucion digital personalizada.", button: "Iniciar la transformacion" },
+      others: { heading: "Otros sistemas construidos", subheading: "De la logistica a las apps personales — si funciona en papel, podemos automatizarlo." },
+      cta: { title: "Listo para deshacerte del papeleo?", body: "Cuentanos como funciona tu negocio hoy. Disenamos un sistema a medida que elimina los cuadernos y multiplica tu eficiencia.", button: "Iniciar la transformacion" },
       footer: { copy: "© 2026 Todos los derechos reservados." }
     }
   }
 
   const t = text[language as keyof typeof text]
+
+  const systemFrames = [
+    { domain: "davo.md — rezervare bilet", mock: <SeatPickerMock /> },
+    { domain: "inter-bus.md — panou administrare", mock: <ErpDashboardMock /> },
+    { domain: "Scoala Auto GLG — programari", mock: <ScheduleCalendarMock /> },
+  ]
 
   return (
     <div className="min-h-screen text-ink grain" style={{ background: '#2A2118' }}>
@@ -317,93 +408,56 @@ export default function SolutionsPage() {
           </FadeIn>
         </section>
 
-        {/* What We Build */}
+        {/* Real systems, in production */}
         <section className="line-top py-20 md:py-32 px-6 md:px-12 lg:px-16" style={{ background: 'linear-gradient(145deg, #2A2118 0%, #342A20 40%, #3A2C1E 70%, #2C2218 100%)' }}>
           <SlideIn direction="left">
-            <h2 className="font-serif text-3xl lg:text-5xl text-ink leading-tight mb-2">{t.whatWeBuild.heading}</h2>
-            <p className="text-ink-muted text-xl mb-16">{t.whatWeBuild.subheading}</p>
+            <h2 className="font-serif text-3xl lg:text-5xl text-ink leading-tight mb-2">{t.built.heading}</h2>
+            <p className="text-ink-muted text-xl mb-16">{t.built.subheading}</p>
           </SlideIn>
 
           <div className="space-y-24">
-            {/* CRM Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-              <ImageReveal>
-                <div className="aspect-[4/3] overflow-hidden border border-divider shadow-card">
-                  <Image src="/images/CRM.png" alt="Custom CRM platform for small business — client management and booking system by landings.md" width={800} height={600} quality={95} className="w-full h-full object-cover" />
+            {t.built.systems.map((sys, i) => {
+              const reversed = i % 2 === 1
+              return (
+                <div key={i} className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                  <FadeIn delay={100} className={`order-1 ${reversed ? 'lg:order-2' : 'lg:order-1'}`}>
+                    <BrowserFrame domain={systemFrames[i].domain}>
+                      {systemFrames[i].mock}
+                    </BrowserFrame>
+                  </FadeIn>
+                  <SlideIn direction={reversed ? "left" : "right"} delay={150} className={`order-2 ${reversed ? 'lg:order-1' : 'lg:order-2'}`}>
+                    <div>
+                      <span className="text-amber text-xs tracking-[0.2em] uppercase">{sys.client}</span>
+                      <h3 className="font-serif text-2xl lg:text-3xl text-ink leading-tight mt-3 mb-5">{sys.title}</h3>
+                      <p className="text-ink-muted leading-relaxed mb-6">{sys.body}</p>
+                      <div className="flex flex-wrap gap-2 mb-6">
+                        {sys.tags.map((tag) => (
+                          <span key={tag} className="text-xs px-3 py-1.5 border border-divider text-ink-muted">{tag}</span>
+                        ))}
+                      </div>
+                      {sys.url && (
+                        <Link href={sys.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-amber hover:text-amber-light text-xs tracking-wide transition-colors group">
+                          {t.built.visit}
+                          <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                        </Link>
+                      )}
+                    </div>
+                  </SlideIn>
                 </div>
-              </ImageReveal>
-              <SlideIn direction="right" delay={100}>
-                <div>
-                  <span className="text-amber text-xs tracking-[0.2em] uppercase">{t.whatWeBuild.crm.label}</span>
-                  <h3 className="font-serif text-2xl lg:text-3xl text-ink leading-tight mt-3 mb-5">{t.whatWeBuild.crm.title}</h3>
-                  <p className="text-ink-muted leading-relaxed mb-6">{t.whatWeBuild.crm.body}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {t.whatWeBuild.crm.tags.map((tag) => (
-                      <span key={tag} className="text-xs px-3 py-1.5 border border-divider text-ink-muted">{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              </SlideIn>
-            </div>
-
-            {/* Logistics Row (reversed) */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-              <SlideIn direction="left" className="order-2 lg:order-1">
-                <div>
-                  <span className="text-amber text-xs tracking-[0.2em] uppercase">{t.whatWeBuild.logistics.label}</span>
-                  <h3 className="font-serif text-2xl lg:text-3xl text-ink leading-tight mt-3 mb-5">{t.whatWeBuild.logistics.title}</h3>
-                  <p className="text-ink-muted leading-relaxed mb-6">{t.whatWeBuild.logistics.body}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {t.whatWeBuild.logistics.tags.map((tag) => (
-                      <span key={tag} className="text-xs px-3 py-1.5 border border-divider text-ink-muted">{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              </SlideIn>
-              <FadeIn delay={100} className="order-1 lg:order-2">
-                <div className="aspect-[4/3] border border-divider shadow-card bg-surface flex items-center justify-center">
-                  <svg className="w-20 h-20 text-ink-light" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={0.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                  </svg>
-                </div>
-              </FadeIn>
-            </div>
-
-            {/* Custom Apps Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-              <FadeIn>
-                <div className="aspect-[4/3] border border-divider shadow-card bg-surface flex items-center justify-center">
-                  <svg className="w-20 h-20 text-ink-light" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={0.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                  </svg>
-                </div>
-              </FadeIn>
-              <SlideIn direction="right" delay={100}>
-                <div>
-                  <span className="text-amber text-xs tracking-[0.2em] uppercase">{t.whatWeBuild.custom.label}</span>
-                  <h3 className="font-serif text-2xl lg:text-3xl text-ink leading-tight mt-3 mb-5">{t.whatWeBuild.custom.title}</h3>
-                  <p className="text-ink-muted leading-relaxed mb-6">{t.whatWeBuild.custom.body}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {t.whatWeBuild.custom.tags.map((tag) => (
-                      <span key={tag} className="text-xs px-3 py-1.5 border border-divider text-ink-muted">{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              </SlideIn>
-            </div>
+              )
+            })}
           </div>
         </section>
 
-        {/* Case Studies */}
+        {/* Other systems */}
         <section className="line-top py-20 md:py-32 px-6 md:px-12 lg:px-16" style={{ background: 'linear-gradient(160deg, #342A20 0%, #3E3229 40%, #3A2C1E 70%, #2A2118 100%)' }}>
           <FadeIn>
-            <h2 className="font-serif text-3xl md:text-4xl text-ink mb-2">{t.caseStudies}</h2>
-            <p className="text-ink-muted mb-16">{t.caseStudiesSubtitle}</p>
+            <h2 className="font-serif text-3xl md:text-4xl text-ink mb-2">{t.others.heading}</h2>
+            <p className="text-ink-muted mb-16">{t.others.subheading}</p>
           </FadeIn>
 
           <div className="space-y-0">
-            {caseStudies.map((study, i) => (
+            {otherSystems.map((study, i) => (
               <FadeIn key={study.id} delay={i * 100}>
                 <div className="border-t border-divider py-10 md:py-12">
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -462,9 +516,11 @@ export default function SolutionsPage() {
                 <Link href="/portfolio" className="hover:text-ink transition-colors">{t.nav.portfolio}</Link>
                 <Link href="/pricing" className="hover:text-ink transition-colors">{t.nav.pricing}</Link>
                 <Link href="/solutions" className="hover:text-ink transition-colors">{t.nav.solutions}</Link>
+                <Link href="/case-studies" className="hover:text-ink transition-colors">{t.nav.caseStudies}</Link>
               </div>
             </div>
             <div className="flex items-center gap-4">
+              <Link href="tel:+37368327082" className="text-ink-muted hover:text-ink text-xs tracking-wide transition-colors">+373 683 27 082</Link>
               <span className="text-ink-muted text-xs tracking-wide">{t.footer.copy}</span>
               <div className="flex items-center gap-3">
                 <Link href="mailto:contact@landings.md" className="text-ink-muted hover:text-ink transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0l-9.75 6.093L2.25 6.75" /></svg></Link>

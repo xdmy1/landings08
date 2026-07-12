@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
 import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
+import { BrowserFrame } from '@/components/ui/browser-frame'
 
 function useInView(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
@@ -57,105 +58,165 @@ function FadeIn({ children, className = "", delay = 0 }: { children: React.React
   )
 }
 
-function SlideIn({ children, className = "", delay = 0, direction = "left" }: { children: React.ReactNode, className?: string, delay?: number, direction?: "left" | "right" }) {
-  const { ref, visible } = useInView(0.1)
-  const x = direction === "left" ? "-40px" : "40px"
-  return (
-    <div
-      ref={ref}
-      className={`transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${className}`}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'translateX(0)' : `translateX(${x})`,
-        transitionDelay: `${delay}ms`,
-      }}
-    >
-      {children}
-    </div>
-  )
-}
-
+/* Curated selection — fewer projects, heavier work.
+   chips use universal tech terms readable in all 5 languages. */
 const projects = [
   {
-    id: 1, title: "RADX Cooling Solutions",
-    description: { en: "Professional website for cooling solutions company. Presentation of services and industrial cooling products.", ro: "Website profesional pentru companie de solutii de racire. Prezentarea serviciilor si produselor de racire industriala.", de: "Professionelle Website fur ein Kuhllosungsunternehmen.", fr: "Site web professionnel pour une entreprise de solutions de refroidissement.", es: "Sitio web profesional para empresa de soluciones de refrigeracion." },
-    image: "/images/radx-mockup.png", url: "https://radx.solutions", status: "LIVE", category: "services"
+    id: 1, title: "Davo.md", domain: "davo.md",
+    chips: ["SITE", "BOOKING", "SEO", "META ADS"],
+    description: {
+      en: "International passenger & parcel transport. Website, booking system with airline-style seat selection, operator panel — plus SEO, backlinks and Meta Ads.",
+      ro: "Transport international de pasageri si colete. Site, sistem de rezervari cu alegerea locului ca la avion, panou pentru operatori — plus SEO, backlinkuri si Meta Ads.",
+      de: "Internationaler Personen- und Pakettransport. Website, Buchungssystem mit Sitzplatzwahl, Operator-Panel — plus SEO, Backlinks und Meta Ads.",
+      fr: "Transport international de passagers et colis. Site, reservations avec choix du siege, panneau operateurs — plus SEO, backlinks et Meta Ads.",
+      es: "Transporte internacional de pasajeros y paquetes. Web, reservas con eleccion de asiento, panel de operadores — mas SEO, backlinks y Meta Ads."
+    },
+    highlight: {
+      en: "Site + system + marketing — everything from one team",
+      ro: "Site + sistem + promovare — totul de la o singura echipa",
+      de: "Site + System + Marketing — alles aus einer Hand",
+      fr: "Site + systeme + marketing — tout par une seule equipe",
+      es: "Web + sistema + marketing — todo de un solo equipo"
+    },
+    image: "/images/shot-davo.jpg", url: "https://davo.md", status: "LIVE"
   },
   {
-    id: 2, title: "Inter-Bus",
-    description: { en: "International platform for authentic bus parts and components. Global shipping to 50+ countries.", ro: "Platforma internationala pentru piese autentice de autobuz. Livrare globala in peste 50 de tari.", de: "Internationale Plattform fur authentische Busteile und Komponenten.", fr: "Plateforme internationale pour pieces authentiques d'autobus.", es: "Plataforma internacional para piezas autenticas de autobus." },
-    image: "/images/inter-bus.png", url: "https://inter-bus.md", status: "LIVE", category: "ecommerce"
+    id: 2, title: "Inter-Bus", domain: "inter-bus.md",
+    chips: ["E-COMMERCE", "ERP", "FACTURI", "STOC"],
+    description: {
+      en: "International bus parts store with a full back office: automated invoicing, live stock tracking, profit per product and hands-free accounting.",
+      ro: "Magazin international de piese cu panou complet in spate: facturare automata, evidenta stocului in timp real, profit pe produs si contabilitate automata.",
+      de: "Internationaler Teileshop mit komplettem Backoffice: automatische Rechnungen, Live-Lager, Gewinn pro Produkt und automatische Buchhaltung.",
+      fr: "Boutique internationale de pieces avec back-office complet : facturation automatique, stock en direct, profit par produit et comptabilite automatique.",
+      es: "Tienda internacional de piezas con back office completo: facturacion automatica, stock en vivo, beneficio por producto y contabilidad automatica."
+    },
+    highlight: {
+      en: "Invoicing, stock & accounting — 100% automated",
+      ro: "Facturare, stoc si contabilitate — 100% automate",
+      de: "Rechnungen, Lager & Buchhaltung — 100% automatisch",
+      fr: "Facturation, stock & comptabilite — 100% automatises",
+      es: "Facturacion, stock y contabilidad — 100% automatizados"
+    },
+    image: "/images/shot-interbus.jpg", url: "https://inter-bus.md", status: "LIVE"
   },
   {
-    id: 3, title: "Rizza Classic",
-    description: { en: "Italian website for old cars restoration.", ro: "Website italian pentru restaurarea masinilor vechi.", de: "Italienische Website fur die Restaurierung alter Autos.", fr: "Site web italien pour la restauration de voitures anciennes.", es: "Sitio web italiano para la restauracion de coches clasicos." },
-    image: "/images/rizzaclassic.png", url: "https://rizzaclassic.com", status: "LIVE", category: "automotive"
+    id: 3, title: "Elite Protocol", domain: "eliteprotocol.md",
+    chips: ["SITE", "BRANDING", "3 LIMBI"],
+    description: {
+      en: "Private institute of etiquette, image & presence. A dark-gold premium website that matches the brand's positioning down to the last pixel.",
+      ro: "Institut privat de eticheta, imagine si prezenta. Un site premium in negru si auriu, aliniat pozitionarii brandului pana la ultimul pixel.",
+      de: "Privates Institut fur Etikette, Image & Prasenz. Eine Premium-Website in Schwarz-Gold, exakt auf die Marke abgestimmt.",
+      fr: "Institut prive d'etiquette, image & presence. Un site premium noir et or, aligne sur le positionnement de la marque au pixel pres.",
+      es: "Instituto privado de etiqueta, imagen y presencia. Una web premium en negro y dorado, alineada con la marca hasta el ultimo pixel."
+    },
+    highlight: {
+      en: "Premium design for a premium brand",
+      ro: "Design premium pentru un brand premium",
+      de: "Premium-Design fur eine Premium-Marke",
+      fr: "Design premium pour une marque premium",
+      es: "Diseno premium para una marca premium"
+    },
+    image: "/images/shot-eliteprotocol.jpg", url: "https://eliteprotocol.md", status: "LIVE"
   },
   {
-    id: 4, title: "Auto Huse",
-    description: { en: "Complete website for car covers. Presentation, online orders, gallery.", ro: "Website complet pentru huse auto. Prezentare, comenzi online, galerie.", de: "Komplette Website fur Autobezuge.", fr: "Site web complet pour housses de voiture.", es: "Sitio web completo para fundas de coche." },
-    image: "/images/autohuse.md-min.png", url: "https://autohuse.md/", status: "LIVE", category: "ecommerce"
+    id: 4, title: "RespectAuto", domain: "respectauto.md",
+    chips: ["SITE", "SEO", "BOOKING"],
+    description: {
+      en: "Car rental platform with advanced SEO and booking system. From invisible on Google to #1 in Moldova for car rental keywords.",
+      ro: "Platforma de inchirieri auto cu SEO avansat si sistem de rezervari. De la invizibil pe Google la #1 in Moldova pentru inchirieri auto.",
+      de: "Autovermietungsplattform mit fortschrittlichem SEO und Buchungssystem. Von unsichtbar zur Nr. 1 in Moldawien.",
+      fr: "Plateforme de location auto avec SEO avance et reservations. D'invisible sur Google au n°1 en Moldavie.",
+      es: "Plataforma de alquiler de autos con SEO avanzado y reservas. De invisible en Google al #1 en Moldavia."
+    },
+    highlight: {
+      en: "+300% organic traffic, #1 on Google",
+      ro: "+300% trafic organic, #1 pe Google",
+      de: "+300% organischer Traffic, Nr. 1 bei Google",
+      fr: "+300% de trafic organique, n°1 sur Google",
+      es: "+300% trafico organico, #1 en Google"
+    },
+    image: "/images/shot-respectauto.jpg", url: "https://respectauto.md", status: "LIVE"
   },
   {
-    id: 5, title: "CRM Platform",
-    description: { en: "Platform for auto service client management.", ro: "Platforma pentru client management service auto.", de: "Plattform fur Kundenmanagement im Autoservice.", fr: "Plateforme de gestion clients pour service automobile.", es: "Plataforma de gestion de clientes para servicio automotriz." },
-    image: "/images/CRM.png", url: "#", status: "PRIVATE", category: "automotive"
+    id: 5, title: "RADX Cooling", domain: "radx.solutions",
+    chips: ["SITE", "SEO", "LEAD GEN"],
+    description: {
+      en: "Professional website for an industrial cooling company. First page on Google — the site generates qualified leads every week without paid ads.",
+      ro: "Website profesional pentru o companie de racire industriala. Prima pagina pe Google — site-ul genereaza lead-uri calificate saptamanal, fara reclame.",
+      de: "Professionelle Website fur industrielle Kuhlung. Seite 1 bei Google — qualifizierte Leads jede Woche, ohne Werbung.",
+      fr: "Site professionnel pour le refroidissement industriel. Premiere page Google — des leads qualifies chaque semaine, sans publicite.",
+      es: "Web profesional para refrigeracion industrial. Primera pagina en Google — leads calificados cada semana, sin publicidad."
+    },
+    highlight: {
+      en: "Page 1 on Google for industrial cooling",
+      ro: "Prima pagina Google pentru racire industriala",
+      de: "Seite 1 bei Google fur industrielle Kuhlung",
+      fr: "Page 1 sur Google pour le refroidissement industriel",
+      es: "Pagina 1 en Google para refrigeracion industrial"
+    },
+    image: "/images/shot-radx.jpg", url: "https://radx.solutions", status: "LIVE"
   },
   {
-    id: 6, title: "U. Dental Clinic",
-    description: { en: "Complete website for dental clinic.", ro: "Website complet pentru clinica stomatologica.", de: "Komplette Website fur Zahnklinik.", fr: "Site web complet pour clinique dentaire.", es: "Sitio web completo para clinica dental." },
-    image: "/images/udc (1).png", url: "https://udc.md", status: "LIVE", category: "healthcare"
+    id: 6, title: "Rizza Classic", domain: "rizzaclassic.com",
+    chips: ["SITE", "GALERIE", "IT / EN"],
+    description: {
+      en: "Italian workshop restoring classic cars. An elegant website for an international clientele that values craft.",
+      ro: "Atelier italian de restaurare a masinilor clasice. Un site elegant pentru o clientela internationala care apreciaza mestesugul.",
+      de: "Italienische Werkstatt fur die Restaurierung klassischer Autos. Eine elegante Website fur internationale Kundschaft.",
+      fr: "Atelier italien de restauration de voitures classiques. Un site elegant pour une clientele internationale.",
+      es: "Taller italiano de restauracion de coches clasicos. Una web elegante para una clientela internacional."
+    },
+    highlight: {
+      en: "Italian brand, international clients",
+      ro: "Brand italian, clienti internationali",
+      de: "Italienische Marke, internationale Kunden",
+      fr: "Marque italienne, clients internationaux",
+      es: "Marca italiana, clientes internacionales"
+    },
+    image: "/images/shot-rizzaclassic.jpg", url: "https://rizzaclassic.com", status: "LIVE"
   },
   {
-    id: 7, title: "Auto Marga Service",
-    description: { en: "Simple landing page — auto service.", ro: "Landing page simplu — service auto.", de: "Einfache Landing Page — Autoservice.", fr: "Page d'atterrissage simple — service automobile.", es: "Pagina de aterrizaje simple — servicio automotriz." },
-    image: "/images/automarga (1).png", url: "https://automarga.md/", status: "LIVE", category: "automotive"
+    id: 7, title: "Auto Huse", domain: "autohuse.md",
+    chips: ["SITE", "COMENZI", "STOC LIVE"],
+    description: {
+      en: "Custom car seat covers made to order. Website with online orders, gallery of finished work and live stock.",
+      ro: "Huse auto la comanda. Website cu comenzi online, galerie de lucrari finalizate si stoc live.",
+      de: "Autositzbezuge nach Mass. Website mit Online-Bestellungen, Galerie und Live-Lagerbestand.",
+      fr: "Housses de sieges auto sur mesure. Site avec commandes en ligne, galerie et stock en direct.",
+      es: "Fundas de asientos a medida. Web con pedidos online, galeria y stock en vivo."
+    },
+    highlight: {
+      en: "Online orders for made-to-order covers",
+      ro: "Comenzi online pentru huse la comanda",
+      de: "Online-Bestellungen fur Massanfertigungen",
+      fr: "Commandes en ligne sur mesure",
+      es: "Pedidos online a medida"
+    },
+    image: "/images/shot-autohuse.jpg", url: "https://autohuse.md/", status: "LIVE"
   },
   {
-    id: 8, title: "Elena Diacon Salon",
-    description: { en: "Elegant website for beauty salon with online booking system.", ro: "Website elegant pentru salon de infrumusetare cu sistem de programari online.", de: "Elegante Website fur Schonheitssalon mit Online-Buchungssystem.", fr: "Site web elegant pour salon de beaute avec systeme de reservation en ligne.", es: "Sitio web elegante para salon de belleza con sistema de reservas en linea." },
-    image: "/images/elenadiacon (1).png", url: "https://elenadiacon.md", status: "LIVE", category: "services"
+    id: 8, title: "CRM Service Auto", domain: "crm · panou privat",
+    chips: ["CRM", "PROGRAMARI", "FACTURI"],
+    description: {
+      en: "Complete client management platform for an auto service: appointments, service history, invoicing, parts inventory and performance analytics.",
+      ro: "Platforma completa de management clienti pentru un service auto: programari, istoric servicii, facturare, inventar piese si analize de performanta.",
+      de: "Komplette Kundenmanagement-Plattform fur einen Autoservice: Termine, Historie, Rechnungen, Inventar und Analysen.",
+      fr: "Plateforme complete de gestion clients pour un service auto : rendez-vous, historique, factures, inventaire et analyses.",
+      es: "Plataforma completa de gestion de clientes para un servicio automotriz: citas, historial, facturas, inventario y analisis."
+    },
+    highlight: {
+      en: "Appointments, invoices & history in one panel",
+      ro: "Programari, facturi si istoric intr-un singur panou",
+      de: "Termine, Rechnungen & Historie in einem Panel",
+      fr: "Rendez-vous, factures & historique dans un panneau",
+      es: "Citas, facturas e historial en un panel"
+    },
+    image: "/images/CRM.png", url: "#", status: "PRIVATE"
   },
-  {
-    id: 9, title: "RespectAuto",
-    description: { en: "Car rental platform with advanced SEO and booking system. 300% organic growth.", ro: "Platforma de inchiriere auto cu SEO avansat si sistem de rezervari. Crestere organica de 300%.", de: "Autovermietungsplattform mit fortschrittlichem SEO. 300% organisches Wachstum.", fr: "Plateforme de location avec SEO avance. Croissance organique de 300%.", es: "Plataforma de alquiler con SEO avanzado. Crecimiento organico del 300%." },
-    image: "/images/respectauto-mockup.png", url: "https://respectauto.md", status: "LIVE", category: "automotive"
-  },
-  {
-    id: 10, title: "CMIEA Platform",
-    description: { en: "Complex educational platform with authentication, interactive courses and dashboard.", ro: "Platforma educationala complexa cu autentificare, cursuri interactive si dashboard.", de: "Komplexe Bildungsplattform mit Authentifizierung und interaktiven Kursen.", fr: "Plateforme educative complexe avec authentification et cours interactifs.", es: "Plataforma educativa compleja con autenticacion y cursos interactivos." },
-    image: "/images/cmiea-mockup.png", url: "https://cmiea.md", status: "LIVE", category: "education"
-  },
-  {
-    id: 11, title: "EuroGard",
-    description: { en: "High-converting landing page for gardening services.", ro: "Landing page high-converting pentru servicii de gradinarit.", de: "Hochkonvertierende Landing Page fur Gartendienstleistungen.", fr: "Page d'atterrissage a haute conversion pour services de jardinage.", es: "Pagina de aterrizaje de alta conversion para servicios de jardineria." },
-    image: "/images/eurogard (1).png", url: "https://eurogard.md", status: "LIVE", category: "services"
-  },
-  {
-    id: 12, title: "Green Next.js Demo",
-    description: { en: "Interactive demo built with Next.js, showcasing modern web capabilities.", ro: "Demo interactiv construit cu Next.js.", de: "Interaktive Demo mit Next.js.", fr: "Demo interactive construite avec Next.js.", es: "Demo interactiva construida con Next.js." },
-    image: "/images/img-hero.jpeg", url: "https://nextjs-green-eta-60.vercel.app/", status: "DEMO", category: "demo"
-  },
-  {
-    id: 13, title: "Advanced Green Demo",
-    description: { en: "Advanced demonstration with complex functionalities and animations.", ro: "Demonstratie avansata cu functionalitati complexe si animatii.", de: "Fortgeschrittene Demonstration mit komplexen Funktionalitaten.", fr: "Demonstration avancee avec des fonctionnalites complexes.", es: "Demostracion avanzada con funcionalidades complejas." },
-    image: "/images/img-hero.jpeg", url: "https://green-nextjs.vercel.app/", status: "DEMO", category: "demo"
-  }
-]
-
-const categories = [
-  { id: 'all', name: { en: 'All', ro: 'Toate', de: 'Alle', fr: 'Tous', es: 'Todos' } },
-  { id: 'automotive', name: { en: 'Automotive', ro: 'Auto', de: 'Automobil', fr: 'Automobile', es: 'Automotriz' } },
-  { id: 'ecommerce', name: { en: 'E-commerce', ro: 'E-commerce', de: 'E-Commerce', fr: 'E-commerce', es: 'E-commerce' } },
-  { id: 'healthcare', name: { en: 'Healthcare', ro: 'Sanatate', de: 'Gesundheit', fr: 'Sante', es: 'Salud' } },
-  { id: 'education', name: { en: 'Education', ro: 'Educatie', de: 'Bildung', fr: 'Education', es: 'Educacion' } },
-  { id: 'services', name: { en: 'Services', ro: 'Servicii', de: 'Dienste', fr: 'Services', es: 'Servicios' } },
-  { id: 'demo', name: { en: 'Demos', ro: 'Demo-uri', de: 'Demos', fr: 'Demos', es: 'Demos' } }
 ]
 
 export default function PortfolioPage() {
   const { language } = useLanguage()
-  const [selectedCategory, setSelectedCategory] = useState('all')
 
   useEffect(() => {
     history.scrollRestoration = 'manual'
@@ -166,47 +227,47 @@ export default function PortfolioPage() {
     en: {
       nav: { portfolio: "Portfolio", pricing: "Pricing", solutions: "Solutions", caseStudies: "Case Studies", contact: "Contact" },
       title: "Portfolio.",
-      subtitle: "All projects are custom developed. No WordPress.",
-      visitSite: "Visit site", viewDemo: "View demo", private: "Private",
+      subtitle: "Fewer projects, heavier work. Websites, stores and business systems — all custom coded, no WordPress, no templates.",
+      visitSite: "Visit site", private: "Private system",
       cta: { title: "Have a project in mind?", body: "Reach out and we'll respond within hours.", button: "Let's talk" },
       footer: { copy: "© 2026 All rights reserved." }
     },
     ro: {
       nav: { portfolio: "Portofoliu", pricing: "Preturi", solutions: "Solutii", caseStudies: "Studii de Caz", contact: "Contact" },
       title: "Portofoliu.",
-      subtitle: "Toate proiectele sunt custom dezvoltate. Fara WordPress.",
-      visitSite: "Acceseaza site-ul", viewDemo: "Vezi demo", private: "Privat",
+      subtitle: "Mai putine proiecte, lucrari mai grele. Site-uri, magazine si sisteme pentru afaceri — toate scrise manual, fara WordPress, fara template-uri.",
+      visitSite: "Acceseaza site-ul", private: "Sistem privat",
       cta: { title: "Ai un proiect in minte?", body: "Contacteaza-ne si iti vom raspunde in cateva ore.", button: "Hai sa vorbim" },
       footer: { copy: "© 2026 Toate drepturile rezervate." }
     },
     de: {
       nav: { portfolio: "Portfolio", pricing: "Preise", solutions: "Losungen", caseStudies: "Fallstudien", contact: "Kontakt" },
       title: "Portfolio.",
-      subtitle: "Alle Projekte sind individuell entwickelt. Kein WordPress.",
-      visitSite: "Website besuchen", viewDemo: "Demo ansehen", private: "Privat",
+      subtitle: "Weniger Projekte, gewichtigere Arbeit. Websites, Shops und Business-Systeme — alle individuell entwickelt, kein WordPress, keine Templates.",
+      visitSite: "Website besuchen", private: "Privates System",
       cta: { title: "Haben Sie ein Projekt?", body: "Kontaktieren Sie uns, wir antworten innerhalb von Stunden.", button: "Kontaktieren Sie uns" },
       footer: { copy: "© 2026 Alle Rechte vorbehalten." }
     },
     fr: {
       nav: { portfolio: "Portfolio", pricing: "Tarifs", solutions: "Solutions", caseStudies: "Etudes de Cas", contact: "Contact" },
       title: "Portfolio.",
-      subtitle: "Tous les projets sont developpes sur mesure. Pas de WordPress.",
-      visitSite: "Visiter le site", viewDemo: "Voir la demo", private: "Prive",
+      subtitle: "Moins de projets, plus de poids. Sites, boutiques et systemes metier — tous codes sur mesure, pas de WordPress, pas de templates.",
+      visitSite: "Visiter le site", private: "Systeme prive",
       cta: { title: "Vous avez un projet ?", body: "Contactez-nous et nous repondrons en quelques heures.", button: "Parlons-en" },
       footer: { copy: "© 2026 Tous droits reserves." }
     },
     es: {
       nav: { portfolio: "Portafolio", pricing: "Precios", solutions: "Soluciones", caseStudies: "Casos de Estudio", contact: "Contacto" },
       title: "Portafolio.",
-      subtitle: "Todos los proyectos son desarrollados a medida. Sin WordPress.",
-      visitSite: "Visitar sitio", viewDemo: "Ver demo", private: "Privado",
+      subtitle: "Menos proyectos, mas peso. Webs, tiendas y sistemas de negocio — todos codificados a medida, sin WordPress, sin plantillas.",
+      visitSite: "Visitar sitio", private: "Sistema privado",
       cta: { title: "Tienes un proyecto?", body: "Contactanos y te responderemos en horas.", button: "Hablemos" },
       footer: { copy: "© 2026 Todos los derechos reservados." }
     }
   }
 
   const t = text[language as keyof typeof text]
-  const filteredProjects = selectedCategory === 'all' ? projects : projects.filter(p => p.category === selectedCategory)
+  const lang = language as keyof typeof projects[0]['description']
 
   return (
     <div className="min-h-screen text-ink grain" style={{ background: '#2A2118' }}>
@@ -216,74 +277,67 @@ export default function PortfolioPage() {
       <div className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 relative line-sides">
 
         {/* Hero */}
-        <section className="pt-36 md:pt-48 pb-12 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'linear-gradient(160deg, #302620 0%, #3A2C1E 35%, #2A2118 100%)' }}>
+        <section className="pt-36 md:pt-48 pb-12 md:pb-16 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'linear-gradient(160deg, #302620 0%, #3A2C1E 35%, #2A2118 100%)' }}>
           <RevealText>
             <h1 className="font-serif text-[clamp(2.5rem,6vw,5.5rem)] text-ink">{t.title}</h1>
           </RevealText>
           <FadeIn delay={200}>
-            <p className="mt-4 text-ink-muted text-sm tracking-wide">{t.subtitle}</p>
-          </FadeIn>
-        </section>
-
-        {/* Category Filter */}
-        <section className="line-top px-6 md:px-12 lg:px-16 py-6 md:py-8" style={{ background: 'linear-gradient(90deg, #2A2118 0%, #302620 50%, #2A2118 100%)' }}>
-          <FadeIn>
-            <div className="flex flex-wrap gap-3">
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`text-xs tracking-[0.15em] uppercase px-3 py-1.5 transition-all duration-200 ${selectedCategory === cat.id ? 'text-ink border-b border-ink' : 'text-ink-muted hover:text-ink'}`}
-                >
-                  {cat.name[language as keyof typeof cat.name]}
-                </button>
-              ))}
-            </div>
+            <p className="mt-4 text-ink-muted text-sm tracking-wide max-w-xl leading-relaxed">{t.subtitle}</p>
           </FadeIn>
         </section>
 
         {/* Projects Grid */}
-        <section className="line-top px-6 md:px-12 lg:px-16 pt-10 pb-20 md:pb-32" style={{ background: 'linear-gradient(180deg, #2A2118 0%, #342A20 50%, #2C2218 100%)' }}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProjects.map((project, index) => (
-              <FadeIn key={project.id} delay={index * 60} className="h-full">
-                <div className="h-full flex flex-col bg-surface border border-divider shadow-card group hover:border-amber transition-colors duration-300">
-                  {/* Image */}
-                  <div className="flex-shrink-0 flex items-center justify-center p-3 bg-surface/50">
-                    <Image
-                      src={project.image}
-                      alt={`${project.title} — ${project.description.en}`}
-                      width={500}
-                      height={350}
-                      className="w-full h-auto max-h-[150px] object-contain group-hover:scale-[1.02] transition-all duration-300 ease-smooth"
-                    />
-                  </div>
-                  {/* Info */}
-                  <div className="p-5 flex flex-col flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-amber text-[10px] tracking-[0.2em] uppercase">
-                        {categories.find(c => c.id === project.category)?.name[language as keyof typeof categories[0]['name']]}
-                      </span>
-                      <span className={`text-[10px] tracking-[0.15em] uppercase ${project.status === 'LIVE' ? 'text-ink-muted' : 'text-ink-light'}`}>
-                        {project.status}
+        <section className="line-top px-6 md:px-12 lg:px-16 pt-12 md:pt-16 pb-20 md:pb-28" style={{ background: 'linear-gradient(180deg, #2A2118 0%, #342A20 50%, #2C2218 100%)' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-14 md:gap-y-16">
+            {projects.map((project, index) => {
+              const inner = (
+                <>
+                  <BrowserFrame domain={project.domain} className="group-hover:border-amber/40 transition-colors duration-500">
+                    <div className="aspect-[16/10] overflow-hidden">
+                      <Image
+                        src={project.image}
+                        alt={`${project.title} — ${project.description.en}`}
+                        width={960}
+                        height={600}
+                        quality={85}
+                        className="w-full h-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-[900ms] ease-smooth"
+                      />
+                    </div>
+                  </BrowserFrame>
+                  <div className="pt-5">
+                    <div className="flex items-center justify-between gap-3 mb-2.5">
+                      <div className="flex flex-wrap gap-1.5">
+                        {project.chips.map((chip) => (
+                          <span key={chip} className="text-[9px] font-mono tracking-[0.12em] uppercase text-ink-light border border-divider/60 px-2 py-0.5">{chip}</span>
+                        ))}
+                      </div>
+                      <span className={`text-[9px] font-mono tracking-[0.15em] uppercase flex items-center gap-1.5 flex-shrink-0 ${project.status === 'LIVE' ? 'text-green-400/80' : 'text-ink-light'}`}>
+                        <span className={`w-1 h-1 rounded-full ${project.status === 'LIVE' ? 'bg-green-400/80' : 'bg-ink-light'}`} />
+                        {project.status === 'LIVE' ? 'LIVE' : t.private}
                       </span>
                     </div>
-                    <h3 className="text-ink font-serif text-lg mb-1">{project.title}</h3>
-                    <p className="text-ink-muted text-sm leading-relaxed mb-4 line-clamp-2 flex-1">
-                      {project.description[language as keyof typeof project.description]}
+                    <h3 className="text-ink font-serif text-xl md:text-2xl group-hover:text-amber transition-colors duration-300">{project.title}</h3>
+                    <p className="text-ink-muted text-[13px] leading-relaxed mt-2">
+                      {project.description[lang] ?? project.description.en}
                     </p>
-                    {project.status !== "PRIVATE" ? (
-                      <Link href={project.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-amber hover:text-amber-light text-xs tracking-wide transition-colors mt-auto">
-                        {project.status === "DEMO" ? t.viewDemo : t.visitSite}
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                      </Link>
-                    ) : (
-                      <span className="text-ink-light text-xs tracking-wide mt-auto">{t.private}</span>
-                    )}
+                    <p className="text-amber/90 text-[11px] font-mono tracking-wide mt-3">
+                      {project.highlight[lang] ?? project.highlight.en}
+                    </p>
                   </div>
-                </div>
-              </FadeIn>
-            ))}
+                </>
+              )
+              return (
+                <FadeIn key={project.id} delay={(index % 2) * 100}>
+                  {project.status !== 'PRIVATE' ? (
+                    <Link href={project.url} target="_blank" rel="noopener noreferrer" className="group block">
+                      {inner}
+                    </Link>
+                  ) : (
+                    <div className="group">{inner}</div>
+                  )}
+                </FadeIn>
+              )
+            })}
           </div>
         </section>
 
@@ -318,6 +372,7 @@ export default function PortfolioPage() {
               </div>
             </div>
             <div className="flex items-center gap-4">
+              <Link href="tel:+37368327082" className="text-ink-muted hover:text-ink text-xs tracking-wide transition-colors">+373 683 27 082</Link>
               <span className="text-ink-muted text-xs tracking-wide">{t.footer.copy}</span>
               <div className="flex items-center gap-3">
                 <Link href="mailto:contact@landings.md" className="text-ink-muted hover:text-ink transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0l-9.75 6.093L2.25 6.75" /></svg></Link>

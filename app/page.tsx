@@ -6,7 +6,9 @@ import Image from 'next/image'
 import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
 import { SiteNav } from '@/components/ui/site-nav'
 import { AnimatedStatGrid } from '@/components/ui/animated-stat-grid'
-import { AnimatedRowLines } from '@/components/ui/animated-row-lines'
+import { BrowserFrame } from '@/components/ui/browser-frame'
+import { LogoMarquee } from '@/components/ui/logo-marquee'
+import { HeroLogoTrace, HeroSpotlight, HeroBreath } from '@/components/ui/hero-fx'
 import { useLanguage } from '@/hooks/useLanguage'
 
 function useInView(threshold = 0.1) {
@@ -70,7 +72,7 @@ function ImageReveal({ children, className = "", delay = 0 }: { children: React.
         className="transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
         style={{
           opacity: visible ? 1 : 0,
-          transform: visible ? 'scale(1)' : 'scale(1.08)',
+          transform: visible ? 'scale(1)' : 'scale(1.04)',
           transitionDelay: `${delay}ms`,
         }}
       >
@@ -132,6 +134,53 @@ function AnimatedNumber({ value, className = "" }: { value: string, className?: 
   )
 }
 
+/* Word-by-word cinematic reveal for headlines */
+function WordsReveal({ text, className = "", delay = 0, stagger = 80 }: { text: string, className?: string, delay?: number, stagger?: number }) {
+  const { ref, visible } = useInView(0.15)
+  const words = text.split(' ')
+  return (
+    <span ref={ref as React.RefObject<HTMLDivElement>} className={className}>
+      {words.map((word, i) => (
+        <span key={i} className="inline-block overflow-hidden align-baseline mr-[0.26em] last:mr-0">
+          <span
+            className="inline-block transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+            style={{
+              transform: visible ? 'translateY(0)' : 'translateY(115%)',
+              opacity: visible ? 1 : 0,
+              transitionDelay: `${delay + i * stagger}ms`,
+            }}
+          >
+            {word}
+          </span>
+        </span>
+      ))}
+    </span>
+  )
+}
+
+/* Hero content drifts up and fades slightly as you scroll away */
+function useHeroParallax() {
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    let raf = 0
+    const onScroll = () => {
+      if (raf) return
+      raf = requestAnimationFrame(() => {
+        const y = window.scrollY
+        el.style.transform = `translateY(${Math.min(y * 0.16, 110)}px)`
+        el.style.opacity = String(Math.max(1 - y / 620, 0))
+        raf = 0
+      })
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => { window.removeEventListener('scroll', onScroll); if (raf) cancelAnimationFrame(raf) }
+  }, [])
+  return ref
+}
+
 /* Stagger container — wraps children to cascade animation */
 function StaggerGroup({ children, className = "", stagger = 120 }: { children: React.ReactNode, className?: string, stagger?: number }) {
   const { ref, visible } = useInView(0.05)
@@ -158,6 +207,7 @@ export default function HomePage() {
   const { language } = useLanguage()
   const [formData, setFormData] = useState({ name: '', email: '', message: '' })
   const [formSent, setFormSent] = useState(false)
+  const heroRef = useHeroParallax()
 
   useEffect(() => {
     history.scrollRestoration = 'manual'
@@ -167,161 +217,201 @@ export default function HomePage() {
   const text = {
     en: {
       nav: { portfolio: "Portfolio", pricing: "Pricing", solutions: "Solutions", caseStudies: "Case Studies", contact: "Start a project" },
-      hero: { headline: "Get found on Google. Get more clients.", sub: "We build SEO-optimised websites that rank on the first page, drive real traffic, and turn visitors into paying clients. Custom-coded, no templates.", cta: "Start a project", note: "delivered in 1–4 weeks · reply within 24h" },
+      hero: { headline: "We build the site. We take it to the top. We automate the rest.", sub: "Custom-coded websites that rank on page one of Google, Meta & Google Ads campaigns, and booking, invoicing and accounting systems that free your business from paperwork.", cta: "Start a project", note: "delivered in 1–4 weeks · reply within 24h" },
       logos: "Trusted by businesses across Moldova and Europe",
+      services: {
+        label: "WHAT WE DO",
+        items: [
+          { title: "Websites & SEO", body: "Hand-coded, fast websites built to rank on the first page of Google and turn visitors into paying clients.", href: "/portfolio", link: "See the work" },
+          { title: "Marketing & Ads", body: "Meta and Google campaigns, backlinks and optimised content. We don't just build your site — we push it to the top and keep it there.", href: "/case-studies", link: "See the results" },
+          { title: "Systems & Automation", body: "Seat-selection bookings, appointments, invoicing, stock and automated accounting. Zero notebooks, zero paper, zero Excel.", href: "/solutions", link: "See the solutions" },
+        ]
+      },
       work: {
         label: "SELECTED WORK",
         viewAll: "All projects",
         projects: [
-          { name: "RespectAuto", desc: "From invisible on Google to #1 in Moldova for car rental. 300% more organic traffic, 5x more booking requests — all from SEO and a fast, optimised website.", tag: "+300% TRAFFIC", tagColor: "text-green-400", category: "SEO · TRAFFIC · CLIENTS" },
-          { name: "RADX Cooling", desc: "First page on Google for industrial cooling in Moldova. The website now generates qualified leads every week without paid ads.", tag: "PAGE 1", tagColor: "text-amber", category: "SEO · LEAD GEN" },
-          { name: "CMIEA", desc: "Educational platform that ranks for every course keyword. Organic sign-ups doubled in 3 months with zero ad spend.", tag: "2x SIGN-UPS", tagColor: "text-blue-400", category: "SEO · PLATFORM" }
+          { name: "Davo.md", desc: "International passenger and parcel transport. Website, booking system with airline-style seat selection, operator panel — plus SEO, backlinks and Meta Ads. Everything from one team.", tag: "END-TO-END", tagColor: "text-green-400", category: "SITE · SYSTEM · SEO · ADS" },
+          { name: "Inter-Bus", desc: "International bus parts store with a panel that runs the whole business: automated invoicing, live stock, profit per product and hands-free accounting.", tag: "ZERO PAPER", tagColor: "text-amber", category: "E-COMMERCE · ERP" },
+          { name: "RespectAuto", desc: "From invisible on Google to #1 in Moldova for car rental. 300% more organic traffic, 5x more booking requests — all from SEO and a fast, optimised website.", tag: "+300% TRAFFIC", tagColor: "text-green-400", category: "SEO · TRAFFIC · CLIENTS" }
         ]
       },
       numbers: [
-        { value: "50+", label: "Websites ranked on Google" },
+        { value: "50+", label: "Websites launched" },
         { value: "300%", label: "Average traffic increase" },
-        { value: "1", label: "Page on Google — where you need to be" },
-        { value: "0", label: "Ad spend needed after SEO" }
+        { value: "10+", label: "Custom systems in production" },
+        { value: "0", label: "Paper left after automation" }
       ],
-      statement: "Your competitors are already on Google. If your website doesn't show up when people search for what you sell — you're losing clients every single day.",
+      statement: "We don't just build websites. We rank them on Google, run the campaigns and automate the bookings, invoices and accounting behind them. You run the business — the systems work for you.",
       process: {
-        label: "HOW WE GET YOU CLIENTS",
+        label: "HOW WE WORK",
         steps: [
-          { num: "01", title: "SEO audit", body: "We analyse your market, competitors, and keywords. We find exactly what your clients are searching for and how to rank for it." },
-          { num: "02", title: "Build & optimise", body: "We build a fast, clean website with SEO baked into every page — structure, meta tags, speed, schema markup. Everything Google rewards." },
-          { num: "03", title: "Launch & grow", body: "Your site goes live, gets indexed, and starts climbing. We monitor rankings, traffic, and conversions — and keep optimising." }
+          { num: "01", title: "Analyse", body: "Your market, competitors and keywords — and the processes eating your hours. We find where you lose clients and where you lose time." },
+          { num: "02", title: "Build & optimise", body: "A fast website with SEO baked into every page — or a system that automates your busywork. Usually both." },
+          { num: "03", title: "Promote & grow", body: "SEO, backlinks, Meta & Google campaigns. We monitor rankings, traffic and conversions — and keep optimising." }
         ]
       },
-      contact: { label: "CONTACT", heading: "Ready to get more clients?", sub: "Tell us about your business. We'll show you how to rank on Google and get the traffic you deserve." },
+      contact: { label: "CONTACT", heading: "Ready to get more clients?", sub: "Tell us about your business. We'll show you how to rank on Google, what to automate, and what it would cost." },
       form: { name: "Name", email: "Email", message: "Tell us about your business...", send: "Send message", sent: "Sent. We'll reply within 24 hours." },
       footer: { copy: "© 2026 landings.md · Chisinau, Moldova" }
     },
     ro: {
       nav: { portfolio: "Portofoliu", pricing: "Preturi", solutions: "Solutii", caseStudies: "Studii de Caz", contact: "Incepe un proiect" },
-      hero: { headline: "Apari pe Google. Atragi mai multi clienti.", sub: "Construim website-uri optimizate SEO care apar pe prima pagina, aduc trafic real si transforma vizitatorii in clienti. Cod scris manual, fara template-uri.", cta: "Incepe un proiect", note: "livrat in 1–4 saptamani · raspuns in 24h" },
+      hero: { headline: "Construim site-ul. Il ducem in top. Automatizam restul.", sub: "Site-uri scrise manual care apar pe prima pagina Google, campanii Meta & Google Ads si sisteme de rezervari, facturare si contabilitate care iti scapa afacerea de foi.", cta: "Incepe un proiect", note: "livrat in 1–4 saptamani · raspuns in 24h" },
       logos: "De incredere pentru afaceri din Moldova si Europa",
+      services: {
+        label: "CE FACEM",
+        items: [
+          { title: "Site-uri & SEO", body: "Site-uri rapide, scrise manual, construite sa apara pe prima pagina Google si sa transforme vizitatorii in clienti.", href: "/portfolio", link: "Vezi lucrarile" },
+          { title: "Promovare & Ads", body: "Campanii Meta si Google, backlinkuri si continut optimizat. Nu doar construim site-ul — il ducem sus si il tinem acolo.", href: "/case-studies", link: "Vezi rezultatele" },
+          { title: "Sisteme & Automatizari", body: "Rezervari cu alegerea locului, programari, facturare, stoc si contabilitate automata. Zero caiete, zero foi, zero Excel.", href: "/solutions", link: "Vezi solutiile" },
+        ]
+      },
       work: {
         label: "LUCRARI SELECTATE",
         viewAll: "Toate proiectele",
         projects: [
-          { name: "RespectAuto", desc: "De la invizibil pe Google la #1 in Moldova pentru inchirieri auto. +300% trafic organic, de 5x mai multe cereri de rezervare — totul din SEO si un site rapid.", tag: "+300% TRAFIC", tagColor: "text-green-400", category: "SEO · TRAFIC · CLIENTI" },
-          { name: "RADX Cooling", desc: "Prima pagina pe Google pentru racire industriala in Moldova. Site-ul genereaza lead-uri calificate saptamanal fara reclame platite.", tag: "PAGINA 1", tagColor: "text-amber", category: "SEO · LEAD GEN" },
-          { name: "CMIEA", desc: "Platforma educationala care se claseaza pentru fiecare cuvant cheie. Inscrierile organice s-au dublat in 3 luni fara cheltuieli pe reclame.", tag: "2x INSCRIERI", tagColor: "text-blue-400", category: "SEO · PLATFORMA" }
+          { name: "Davo.md", desc: "Transport international de pasageri si colete. Site, sistem de rezervari cu alegerea locului ca la avion, panou pentru operatori — plus SEO, backlinkuri si Meta Ads. Totul de la o singura echipa.", tag: "DE LA A LA Z", tagColor: "text-green-400", category: "SITE · SISTEM · SEO · ADS" },
+          { name: "Inter-Bus", desc: "Magazin international de piese cu un panou care conduce toata afacerea: facturare automata, stoc in timp real, profit pe fiecare produs si contabilitate care se face singura.", tag: "ZERO FOI", tagColor: "text-amber", category: "MAGAZIN ONLINE · ERP" },
+          { name: "RespectAuto", desc: "De la invizibil pe Google la #1 in Moldova pentru inchirieri auto. +300% trafic organic, de 5x mai multe cereri de rezervare — totul din SEO si un site rapid.", tag: "+300% TRAFIC", tagColor: "text-green-400", category: "SEO · TRAFIC · CLIENTI" }
         ]
       },
       numbers: [
-        { value: "50+", label: "Website-uri clasate pe Google" },
+        { value: "50+", label: "Site-uri lansate" },
         { value: "300%", label: "Crestere medie a traficului" },
-        { value: "1", label: "Pagina pe Google — unde trebuie sa fii" },
-        { value: "0", label: "Cheltuieli pe reclame dupa SEO" }
+        { value: "10+", label: "Sisteme custom in productie" },
+        { value: "0", label: "Foi de hartie dupa automatizare" }
       ],
-      statement: "Competitorii tai sunt deja pe Google. Daca site-ul tau nu apare cand oamenii cauta ce vinzi — pierzi clienti in fiecare zi.",
+      statement: "Nu construim doar site-uri. Le ducem in top pe Google, rulam campaniile si automatizam rezervarile, facturile si contabilitatea din spate. Tu conduci afacerea — sistemele lucreaza pentru tine.",
       process: {
-        label: "CUM ITI ADUCEM CLIENTI",
+        label: "CUM LUCRAM",
         steps: [
-          { num: "01", title: "Audit SEO", body: "Analizam piata, competitorii si cuvintele cheie. Gasim exact ce cauta clientii tai si cum sa apari primul." },
-          { num: "02", title: "Construim si optimizam", body: "Construim un site rapid si curat cu SEO in fiecare pagina — structura, meta tags, viteza, schema markup. Tot ce Google recompenseaza." },
-          { num: "03", title: "Lansam si crestem", body: "Site-ul merge live, se indexeaza si incepe sa urce. Monitorizam pozitiile, traficul si conversiile — si continuam sa optimizam." }
+          { num: "01", title: "Analizam", body: "Piata, competitorii, cuvintele cheie — si procesele care iti mananca orele. Gasim unde pierzi clienti si unde pierzi timp." },
+          { num: "02", title: "Construim si optimizam", body: "Un site rapid cu SEO in fiecare pagina — sau un sistem care iti automatizeaza munca de rutina. De obicei, ambele." },
+          { num: "03", title: "Promovam si crestem", body: "SEO, backlinkuri, campanii Meta si Google. Monitorizam pozitiile, traficul si conversiile — si continuam sa optimizam." }
         ]
       },
-      contact: { label: "CONTACT", heading: "Pregatit sa atragi mai multi clienti?", sub: "Spune-ne despre afacerea ta. Iti aratam cum sa apari pe Google si sa primesti traficul pe care il meriti." },
+      contact: { label: "CONTACT", heading: "Pregatit sa atragi mai multi clienti?", sub: "Spune-ne despre afacerea ta. Iti aratam cum sa apari pe Google, ce merita automatizat si cat ar costa." },
       form: { name: "Nume", email: "Email", message: "Spune-ne despre afacerea ta...", send: "Trimite mesaj", sent: "Trimis. Revenim in 24 de ore." },
       footer: { copy: "© 2026 landings.md · Chisinau, Moldova" }
     },
     de: {
       nav: { portfolio: "Portfolio", pricing: "Preise", solutions: "Losungen", caseStudies: "Fallstudien", contact: "Projekt starten" },
-      hero: { headline: "Bei Google gefunden werden. Mehr Kunden gewinnen.", sub: "Wir bauen SEO-optimierte Websites, die auf Seite 1 ranken, echten Traffic bringen und Besucher in zahlende Kunden verwandeln. Handgeschriebener Code, keine Templates.", cta: "Projekt starten", note: "Lieferung in 1–4 Wochen · Antwort in 24h" },
+      hero: { headline: "Wir bauen die Website. Wir bringen sie nach oben. Wir automatisieren den Rest.", sub: "Handgeschriebene Websites auf Seite 1 bei Google, Meta & Google Ads Kampagnen und Systeme fur Buchungen, Rechnungen und Buchhaltung — die Ihr Unternehmen vom Papierkram befreien.", cta: "Projekt starten", note: "Lieferung in 1–4 Wochen · Antwort in 24h" },
       logos: "Vertraut von Unternehmen in Moldawien und Europa",
+      services: {
+        label: "WAS WIR TUN",
+        items: [
+          { title: "Websites & SEO", body: "Schnelle, handgeschriebene Websites, gebaut um auf Seite 1 zu ranken und Besucher in Kunden zu verwandeln.", href: "/portfolio", link: "Arbeiten ansehen" },
+          { title: "Marketing & Ads", body: "Meta- und Google-Kampagnen, Backlinks und optimierte Inhalte. Wir bauen nicht nur die Website — wir bringen sie nach oben und halten sie dort.", href: "/case-studies", link: "Ergebnisse ansehen" },
+          { title: "Systeme & Automatisierung", body: "Buchungen mit Sitzplatzwahl, Termine, Rechnungen, Lager und automatische Buchhaltung. Null Hefte, null Papier, null Excel.", href: "/solutions", link: "Losungen ansehen" },
+        ]
+      },
       work: {
         label: "AUSGEWAHLTE ARBEITEN",
         viewAll: "Alle Projekte",
         projects: [
-          { name: "RespectAuto", desc: "Von unsichtbar bei Google zur Nr. 1 in Moldawien fur Autovermietung. 300% mehr organischer Traffic, 5x mehr Buchungsanfragen — alles durch SEO.", tag: "+300% TRAFFIC", tagColor: "text-green-400", category: "SEO · TRAFFIC · KUNDEN" },
-          { name: "RADX Cooling", desc: "Seite 1 bei Google fur industrielle Kuhlung in Moldawien. Die Website generiert jede Woche qualifizierte Leads ohne bezahlte Werbung.", tag: "SEITE 1", tagColor: "text-amber", category: "SEO · LEAD GEN" },
-          { name: "CMIEA", desc: "Bildungsplattform die fur jedes Kurs-Keyword rankt. Organische Anmeldungen verdoppelt in 3 Monaten ohne Werbeausgaben.", tag: "2x ANMELDUNGEN", tagColor: "text-blue-400", category: "SEO · PLATTFORM" }
+          { name: "Davo.md", desc: "Internationaler Personen- und Pakettransport. Website, Buchungssystem mit Sitzplatzwahl wie im Flugzeug, Operator-Panel — plus SEO, Backlinks und Meta Ads. Alles aus einer Hand.", tag: "KOMPLETTPAKET", tagColor: "text-green-400", category: "SITE · SYSTEM · SEO · ADS" },
+          { name: "Inter-Bus", desc: "Internationaler Teileshop mit einem Panel, das das ganze Geschaft steuert: automatische Rechnungen, Live-Lager, Gewinn pro Produkt und Buchhaltung von selbst.", tag: "NULL PAPIER", tagColor: "text-amber", category: "E-COMMERCE · ERP" },
+          { name: "RespectAuto", desc: "Von unsichtbar bei Google zur Nr. 1 in Moldawien fur Autovermietung. 300% mehr organischer Traffic, 5x mehr Buchungsanfragen — alles durch SEO.", tag: "+300% TRAFFIC", tagColor: "text-green-400", category: "SEO · TRAFFIC · KUNDEN" }
         ]
       },
       numbers: [
-        { value: "50+", label: "Websites bei Google gerankt" },
+        { value: "50+", label: "Websites gestartet" },
         { value: "300%", label: "Durchschnittliche Traffic-Steigerung" },
-        { value: "1", label: "Seite bei Google — wo Sie sein mussen" },
-        { value: "0", label: "Werbeausgaben nach SEO notig" }
+        { value: "10+", label: "Individuelle Systeme im Einsatz" },
+        { value: "0", label: "Papier nach der Automatisierung" }
       ],
-      statement: "Ihre Konkurrenten sind bereits bei Google. Wenn Ihre Website nicht erscheint, wenn Menschen nach Ihrem Angebot suchen — verlieren Sie jeden Tag Kunden.",
+      statement: "Wir bauen nicht nur Websites. Wir bringen sie bei Google nach oben, fahren die Kampagnen und automatisieren Buchungen, Rechnungen und Buchhaltung dahinter. Sie fuhren das Geschaft — die Systeme arbeiten fur Sie.",
       process: {
-        label: "WIE WIR IHNEN KUNDEN BRINGEN",
+        label: "WIE WIR ARBEITEN",
         steps: [
-          { num: "01", title: "SEO-Audit", body: "Wir analysieren Ihren Markt, Wettbewerber und Keywords. Wir finden genau, wonach Ihre Kunden suchen und wie Sie dafur ranken." },
-          { num: "02", title: "Bauen & optimieren", body: "Wir bauen eine schnelle Website mit SEO in jeder Seite — Struktur, Meta-Tags, Geschwindigkeit, Schema-Markup. Alles was Google belohnt." },
-          { num: "03", title: "Launchen & wachsen", body: "Ihre Seite geht live, wird indexiert und steigt. Wir uberwachen Rankings, Traffic und Conversions — und optimieren weiter." }
+          { num: "01", title: "Analysieren", body: "Ihr Markt, Ihre Wettbewerber, Ihre Keywords — und die Prozesse, die Ihre Stunden fressen. Wir finden, wo Sie Kunden und Zeit verlieren." },
+          { num: "02", title: "Bauen & optimieren", body: "Eine schnelle Website mit SEO in jeder Seite — oder ein System, das Ihre Routinearbeit automatisiert. Meistens beides." },
+          { num: "03", title: "Bewerben & wachsen", body: "SEO, Backlinks, Meta- & Google-Kampagnen. Wir uberwachen Rankings, Traffic und Conversions — und optimieren weiter." }
         ]
       },
-      contact: { label: "KONTAKT", heading: "Bereit fur mehr Kunden?", sub: "Erzahlen Sie uns von Ihrem Geschaft. Wir zeigen Ihnen, wie Sie bei Google ranken und den Traffic bekommen, den Sie verdienen." },
+      contact: { label: "KONTAKT", heading: "Bereit fur mehr Kunden?", sub: "Erzahlen Sie uns von Ihrem Geschaft. Wir zeigen Ihnen, wie Sie bei Google ranken, was sich automatisieren lasst und was es kostet." },
       form: { name: "Name", email: "E-Mail", message: "Erzahlen Sie uns von Ihrem Geschaft...", send: "Nachricht senden", sent: "Gesendet. Antwort in 24 Stunden." },
       footer: { copy: "© 2026 landings.md · Chisinau, Moldawien" }
     },
     fr: {
       nav: { portfolio: "Portfolio", pricing: "Tarifs", solutions: "Solutions", caseStudies: "Etudes de Cas", contact: "Demarrer un projet" },
-      hero: { headline: "Apparaissez sur Google. Attirez plus de clients.", sub: "Nous construisons des sites optimises SEO qui apparaissent en premiere page, generent du vrai trafic et transforment les visiteurs en clients. Code sur mesure, pas de templates.", cta: "Demarrer un projet", note: "livre en 1–4 semaines · reponse en 24h" },
-      logos: "Des entreprises en Moldavie et en Europe nous font confiance",
+      hero: { headline: "On construit le site. On le fait monter. On automatise le reste.", sub: "Des sites codes sur mesure qui se classent en premiere page de Google, des campagnes Meta & Google Ads, et des systemes de reservation, facturation et comptabilite qui liberent votre entreprise de la paperasse.", cta: "Demarrer un projet", note: "livre en 1–4 semaines · reponse en 24h" },
+      logos: "La confiance d'entreprises en Moldavie et en Europe",
+      services: {
+        label: "CE QU'ON FAIT",
+        items: [
+          { title: "Sites & SEO", body: "Des sites rapides, codes a la main, concus pour la premiere page de Google et pour transformer les visiteurs en clients.", href: "/portfolio", link: "Voir les projets" },
+          { title: "Marketing & Ads", body: "Campagnes Meta et Google, backlinks et contenu optimise. On ne fait pas que construire votre site — on le fait monter et on l'y maintient.", href: "/case-studies", link: "Voir les resultats" },
+          { title: "Systemes & Automatisation", body: "Reservations avec choix du siege, rendez-vous, facturation, stock et comptabilite automatique. Zero cahiers, zero papier, zero Excel.", href: "/solutions", link: "Voir les solutions" },
+        ]
+      },
       work: {
         label: "TRAVAUX SELECTIONNES",
         viewAll: "Tous les projets",
         projects: [
-          { name: "RespectAuto", desc: "D'invisible sur Google au n°1 en Moldavie pour la location auto. +300% de trafic organique, 5x plus de reservations — tout grace au SEO.", tag: "+300% TRAFIC", tagColor: "text-green-400", category: "SEO · TRAFIC · CLIENTS" },
-          { name: "RADX Cooling", desc: "Premiere page Google pour le refroidissement industriel en Moldavie. Le site genere des leads qualifies chaque semaine sans publicite.", tag: "PAGE 1", tagColor: "text-amber", category: "SEO · LEAD GEN" },
-          { name: "CMIEA", desc: "Plateforme educative classee pour chaque mot-cle de cours. Les inscriptions organiques ont double en 3 mois sans depenses publicitaires.", tag: "2x INSCRIPTIONS", tagColor: "text-blue-400", category: "SEO · PLATEFORME" }
+          { name: "Davo.md", desc: "Transport international de passagers et colis. Site, systeme de reservation avec choix du siege comme en avion, panneau operateurs — plus SEO, backlinks et Meta Ads. Tout par une seule equipe.", tag: "DE A A Z", tagColor: "text-green-400", category: "SITE · SYSTEME · SEO · ADS" },
+          { name: "Inter-Bus", desc: "Boutique internationale de pieces avec un panneau qui gere toute l'entreprise : facturation automatique, stock en direct, profit par produit et comptabilite sans effort.", tag: "ZERO PAPIER", tagColor: "text-amber", category: "E-COMMERCE · ERP" },
+          { name: "RespectAuto", desc: "D'invisible sur Google au n°1 en Moldavie pour la location auto. +300% de trafic organique, 5x plus de reservations — tout grace au SEO.", tag: "+300% TRAFIC", tagColor: "text-green-400", category: "SEO · TRAFIC · CLIENTS" }
         ]
       },
       numbers: [
-        { value: "50+", label: "Sites classes sur Google" },
+        { value: "50+", label: "Sites lances" },
         { value: "300%", label: "Augmentation moyenne du trafic" },
-        { value: "1", label: "Page sur Google — la ou il faut etre" },
-        { value: "0", label: "Depenses pub necessaires apres SEO" }
+        { value: "10+", label: "Systemes sur mesure en production" },
+        { value: "0", label: "Papier apres l'automatisation" }
       ],
-      statement: "Vos concurrents sont deja sur Google. Si votre site n'apparait pas quand les gens cherchent ce que vous vendez — vous perdez des clients chaque jour.",
+      statement: "On ne construit pas que des sites. On les fait monter sur Google, on gere les campagnes et on automatise les reservations, les factures et la comptabilite derriere. Vous dirigez l'entreprise — les systemes travaillent pour vous.",
       process: {
-        label: "COMMENT ON VOUS AMENE DES CLIENTS",
+        label: "COMMENT ON TRAVAILLE",
         steps: [
-          { num: "01", title: "Audit SEO", body: "On analyse votre marche, vos concurrents et vos mots-cles. On trouve exactement ce que vos clients cherchent et comment vous positionner." },
-          { num: "02", title: "On construit et optimise", body: "On cree un site rapide avec le SEO integre dans chaque page — structure, meta tags, vitesse, schema markup. Tout ce que Google recompense." },
-          { num: "03", title: "On lance et on croit", body: "Votre site est en ligne, indexe et commence a monter. On surveille les positions, le trafic et les conversions — et on continue d'optimiser." }
+          { num: "01", title: "Analyser", body: "Votre marche, vos concurrents, vos mots-cles — et les processus qui mangent vos heures. On trouve ou vous perdez des clients et du temps." },
+          { num: "02", title: "Construire & optimiser", body: "Un site rapide avec le SEO dans chaque page — ou un systeme qui automatise votre routine. Souvent les deux." },
+          { num: "03", title: "Promouvoir & grandir", body: "SEO, backlinks, campagnes Meta & Google. On surveille les positions, le trafic et les conversions — et on continue d'optimiser." }
         ]
       },
-      contact: { label: "CONTACT", heading: "Pret a attirer plus de clients ?", sub: "Parlez-nous de votre activite. On vous montre comment apparaitre sur Google et obtenir le trafic que vous meritez." },
+      contact: { label: "CONTACT", heading: "Pret a attirer plus de clients ?", sub: "Parlez-nous de votre activite. On vous montre comment apparaitre sur Google, quoi automatiser et combien ca couterait." },
       form: { name: "Nom", email: "Email", message: "Parlez-nous de votre activite...", send: "Envoyer", sent: "Envoye. Reponse sous 24 heures." },
       footer: { copy: "© 2026 landings.md · Chisinau, Moldavie" }
     },
     es: {
       nav: { portfolio: "Portafolio", pricing: "Precios", solutions: "Soluciones", caseStudies: "Casos de Estudio", contact: "Iniciar proyecto" },
-      hero: { headline: "Aparece en Google. Consigue mas clientes.", sub: "Creamos sitios web optimizados para SEO que aparecen en la primera pagina, generan trafico real y convierten visitantes en clientes. Codigo a medida, sin plantillas.", cta: "Iniciar proyecto", note: "entregado en 1–4 semanas · respuesta en 24h" },
+      hero: { headline: "Creamos tu web. La llevamos arriba. Automatizamos el resto.", sub: "Webs a medida que aparecen en la primera pagina de Google, campanas de Meta & Google Ads, y sistemas de reservas, facturacion y contabilidad que liberan tu negocio del papeleo.", cta: "Iniciar proyecto", note: "entregado en 1–4 semanas · respuesta en 24h" },
       logos: "Confianza de empresas en Moldavia y Europa",
+      services: {
+        label: "QUE HACEMOS",
+        items: [
+          { title: "Webs & SEO", body: "Sitios rapidos, codificados a mano, disenados para la primera pagina de Google y para convertir visitantes en clientes.", href: "/portfolio", link: "Ver los proyectos" },
+          { title: "Marketing & Ads", body: "Campanas de Meta y Google, backlinks y contenido optimizado. No solo creamos tu web — la subimos y la mantenemos arriba.", href: "/case-studies", link: "Ver los resultados" },
+          { title: "Sistemas & Automatizacion", body: "Reservas con eleccion de asiento, citas, facturacion, stock y contabilidad automatica. Cero cuadernos, cero papel, cero Excel.", href: "/solutions", link: "Ver las soluciones" },
+        ]
+      },
       work: {
         label: "TRABAJOS SELECCIONADOS",
         viewAll: "Todos los proyectos",
         projects: [
-          { name: "RespectAuto", desc: "De invisible en Google al #1 en Moldavia para alquiler de autos. +300% trafico organico, 5x mas solicitudes de reserva — todo con SEO y un sitio rapido.", tag: "+300% TRAFICO", tagColor: "text-green-400", category: "SEO · TRAFICO · CLIENTES" },
-          { name: "RADX Cooling", desc: "Primera pagina en Google para refrigeracion industrial en Moldavia. El sitio genera leads calificados cada semana sin publicidad pagada.", tag: "PAGINA 1", tagColor: "text-amber", category: "SEO · LEAD GEN" },
-          { name: "CMIEA", desc: "Plataforma educativa que posiciona para cada palabra clave de curso. Las inscripciones organicas se duplicaron en 3 meses sin gasto en publicidad.", tag: "2x INSCRIPCIONES", tagColor: "text-blue-400", category: "SEO · PLATAFORMA" }
+          { name: "Davo.md", desc: "Transporte internacional de pasajeros y paquetes. Web, sistema de reservas con eleccion de asiento como en un vuelo, panel de operadores — mas SEO, backlinks y Meta Ads. Todo de un solo equipo.", tag: "TODO EN UNO", tagColor: "text-green-400", category: "SITE · SISTEMA · SEO · ADS" },
+          { name: "Inter-Bus", desc: "Tienda internacional de piezas con un panel que dirige todo el negocio: facturacion automatica, stock en vivo, beneficio por producto y contabilidad sin esfuerzo.", tag: "CERO PAPEL", tagColor: "text-amber", category: "E-COMMERCE · ERP" },
+          { name: "RespectAuto", desc: "De invisible en Google al #1 en Moldavia para alquiler de autos. +300% trafico organico, 5x mas solicitudes de reserva — todo con SEO y un sitio rapido.", tag: "+300% TRAFICO", tagColor: "text-green-400", category: "SEO · TRAFICO · CLIENTES" }
         ]
       },
       numbers: [
-        { value: "50+", label: "Sitios posicionados en Google" },
-        { value: "300%", label: "Aumento promedio de trafico" },
-        { value: "1", label: "Pagina en Google — donde debes estar" },
-        { value: "0", label: "Gasto en publicidad tras SEO" }
+        { value: "50+", label: "Webs lanzadas" },
+        { value: "300%", label: "Aumento medio del trafico" },
+        { value: "10+", label: "Sistemas a medida en produccion" },
+        { value: "0", label: "Papel tras la automatizacion" }
       ],
-      statement: "Tus competidores ya estan en Google. Si tu sitio no aparece cuando la gente busca lo que vendes — estas perdiendo clientes cada dia.",
+      statement: "No solo creamos webs. Las subimos en Google, gestionamos las campanas y automatizamos las reservas, facturas y contabilidad que hay detras. Tu diriges el negocio — los sistemas trabajan para ti.",
       process: {
-        label: "COMO TE CONSEGUIMOS CLIENTES",
+        label: "COMO TRABAJAMOS",
         steps: [
-          { num: "01", title: "Auditoria SEO", body: "Analizamos tu mercado, competidores y palabras clave. Encontramos exactamente lo que buscan tus clientes y como posicionarte." },
-          { num: "02", title: "Construimos y optimizamos", body: "Creamos un sitio rapido con SEO en cada pagina — estructura, meta tags, velocidad, schema markup. Todo lo que Google premia." },
-          { num: "03", title: "Lanzamos y crecemos", body: "Tu sitio se publica, se indexa y comienza a subir. Monitoreamos rankings, trafico y conversiones — y seguimos optimizando." }
+          { num: "01", title: "Analizamos", body: "Tu mercado, competidores y palabras clave — y los procesos que se comen tus horas. Encontramos donde pierdes clientes y tiempo." },
+          { num: "02", title: "Construimos y optimizamos", body: "Una web rapida con SEO en cada pagina — o un sistema que automatiza tu rutina. Normalmente, ambos." },
+          { num: "03", title: "Promocionamos y crecemos", body: "SEO, backlinks, campanas de Meta y Google. Monitoreamos posiciones, trafico y conversiones — y seguimos optimizando." }
         ]
       },
-      contact: { label: "CONTACTO", heading: "Listo para mas clientes?", sub: "Cuentanos sobre tu negocio. Te mostramos como posicionarte en Google y conseguir el trafico que mereces." },
+      contact: { label: "CONTACTO", heading: "Listo para mas clientes?", sub: "Cuentanos sobre tu negocio. Te mostramos como posicionarte en Google, que automatizar y cuanto costaria." },
       form: { name: "Nombre", email: "Email", message: "Cuentanos sobre tu negocio...", send: "Enviar mensaje", sent: "Enviado. Respuesta en 24 horas." },
       footer: { copy: "© 2026 landings.md · Chisinau, Moldavia" }
     }
@@ -330,9 +420,15 @@ export default function HomePage() {
   const t = text[language as keyof typeof text]
 
   const projects = [
-    { ...t.work.projects[0], src: "/images/respectauto-mockup.png", href: "https://respectauto.md" },
-    { ...t.work.projects[1], src: "/images/radx-mockup.png", href: "https://radx.solutions" },
-    { ...t.work.projects[2], src: "/images/cmiea-mockup.png", href: "https://cmiea.md" },
+    { ...t.work.projects[0], src: "/images/shot-davo.jpg", href: "https://davo.md", domain: "davo.md" },
+    { ...t.work.projects[1], src: "/images/shot-interbus.jpg", href: "https://inter-bus.md", domain: "inter-bus.md" },
+    { ...t.work.projects[2], src: "/images/shot-respectauto.jpg", href: "https://respectauto.md", domain: "respectauto.md" },
+  ]
+
+  const serviceIcons = [
+    <path key="web" strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />,
+    <path key="ads" strokeLinecap="round" strokeLinejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 01-1.44-4.282m3.102.069a18.03 18.03 0 01-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 018.835 2.535M10.34 6.66a23.847 23.847 0 008.835-2.535m0 0A23.74 23.74 0 0018.795 3m.38 1.125a23.91 23.91 0 011.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 001.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 010 3.46" />,
+    <path key="sys" strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />,
   ]
 
   return (
@@ -345,12 +441,13 @@ export default function HomePage() {
 
         {/* ── HERO ── */}
         <section className="pt-32 md:pt-44 pb-16 md:pb-24 px-6 md:px-12 lg:px-16 relative glow-amber overflow-hidden" style={{ background: 'radial-gradient(ellipse 110% 80% at 50% -5%, #4A3020 0%, #382820 35%, #2A2118 75%)' }}>
-          <div className="text-center max-w-3xl mx-auto relative z-10">
-            <RevealText delay={200}>
-              <h1 className="font-serif text-[clamp(2rem,4.5vw,3.75rem)] text-ink leading-[1.1] tracking-[-0.02em] text-balance">
-                {t.hero.headline}
-              </h1>
-            </RevealText>
+          <HeroLogoTrace />
+          <HeroBreath />
+          <HeroSpotlight />
+          <div ref={heroRef} className="text-center max-w-3xl mx-auto relative z-10 will-change-transform">
+            <h1 className="font-serif text-[clamp(2rem,4.5vw,3.5rem)] text-ink leading-[1.12] tracking-[-0.02em] text-balance">
+              <WordsReveal text={t.hero.headline} delay={200} />
+            </h1>
             <FadeIn delay={500}>
               <p className="mt-6 text-ink-muted text-[15px] md:text-base leading-relaxed max-w-xl mx-auto">
                 {t.hero.sub}
@@ -368,6 +465,14 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* ── TRUSTED BY ── */}
+        <section className="line-top py-9 md:py-12 overflow-hidden" style={{ background: 'linear-gradient(180deg, #2C2318 0%, #2A2118 100%)' }}>
+          <FadeIn>
+            <p className="text-center text-ink-light text-[10px] font-mono tracking-[0.2em] uppercase mb-7 px-6">{t.logos}</p>
+            <LogoMarquee />
+          </FadeIn>
+        </section>
+
         {/* ── NUMBERS ── */}
         <section className="line-top" style={{ background: 'linear-gradient(90deg, #2E2419 0%, #3C2E20 35%, #3A2C1E 65%, #2E2419 100%)' }}>
           <AnimatedStatGrid className="grid grid-cols-2 md:grid-cols-4" stagger={150}>
@@ -382,37 +487,67 @@ export default function HomePage() {
           </AnimatedStatGrid>
         </section>
 
+        {/* ── SERVICES ── */}
+        <section className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: 'linear-gradient(145deg, #2C2218 0%, #362C20 45%, #2A2118 100%)' }}>
+          <FadeIn>
+            <span className="text-ink-light text-[11px] font-mono tracking-[0.15em] uppercase block mb-10 md:mb-14">{t.services.label}</span>
+          </FadeIn>
+          <StaggerGroup className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 lg:gap-12" stagger={180}>
+            {t.services.items.map((s, i) => (
+              <div key={i} className="group/svc flex flex-col">
+                <div className="w-10 h-10 border border-divider/60 flex items-center justify-center mb-5 group-hover/svc:border-amber/50 transition-colors duration-500">
+                  <svg className="w-5 h-5 text-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.2}>{serviceIcons[i]}</svg>
+                </div>
+                <h3 className="font-serif text-lg md:text-xl text-ink mb-3">{s.title}</h3>
+                <p className="text-ink-muted text-[13px] leading-relaxed mb-5 flex-1">{s.body}</p>
+                <Link href={s.href} className="inline-flex items-center gap-1.5 text-amber hover:text-amber-light text-[12px] font-mono tracking-wide transition-colors group/link">
+                  {s.link}
+                  <span className="inline-block transition-transform duration-300 group-hover/link:translate-x-1">&rarr;</span>
+                </Link>
+              </div>
+            ))}
+          </StaggerGroup>
+        </section>
+
         {/* ── WORK ── */}
         <section className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: 'linear-gradient(160deg, #342A20 0%, #3A2C1E 25%, #2C2218 65%, #2A2118 100%)' }}>
           <FadeIn>
-            <div className="flex items-center justify-between mb-10 md:mb-14">
+            <div className="flex items-center justify-between mb-12 md:mb-16">
               <span className="text-ink-light text-[11px] font-mono tracking-[0.15em] uppercase">{t.work.label}</span>
               <Link href="/portfolio" className="text-ink-muted hover:text-ink text-[12px] font-mono transition-colors group inline-flex items-center gap-1">{t.work.viewAll} <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">&rarr;</span></Link>
             </div>
           </FadeIn>
 
-          <AnimatedRowLines className="space-y-0">
-            {projects.map((project, i) => (
-              <div key={i}>
-                <Link href={project.href} target="_blank" rel="noopener noreferrer" className="group block">
-                  <div className="grid grid-cols-1 md:grid-cols-[1fr_1.5fr] gap-6 md:gap-10 py-8 md:py-10">
-                    <SlideIn direction="left" delay={i * 150} className="order-2 md:order-1">
-                      <div className="flex items-center gap-2 mb-3">
+          <div className="space-y-16 md:space-y-24">
+            {projects.map((project, i) => {
+              const reversed = i % 2 === 1
+              return (
+                <Link key={i} href={project.href} target="_blank" rel="noopener noreferrer" className="group block">
+                  <div className={`grid grid-cols-1 gap-8 lg:gap-14 items-center ${reversed ? 'lg:grid-cols-[1.45fr_1fr]' : 'lg:grid-cols-[1fr_1.45fr]'}`}>
+                    <SlideIn direction={reversed ? "right" : "left"} className={`order-2 ${reversed ? 'lg:order-2' : 'lg:order-1'}`}>
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-4">
                         <span className="text-[10px] font-mono tracking-[0.1em] uppercase text-ink-light">{project.category}</span>
                         <span className="text-[9px] px-1.5 py-0.5 bg-divider/30 rounded-sm font-mono">·</span>
                         <span className={`text-[10px] font-mono tracking-[0.1em] uppercase ${project.tagColor}`}>{project.tag}</span>
                       </div>
-                      <h3 className="font-serif text-xl md:text-2xl text-ink group-hover:text-amber transition-colors duration-300 mb-2">{project.name}</h3>
-                      <p className="text-ink-muted text-[13px] leading-relaxed">{project.desc}</p>
+                      <h3 className="font-serif text-2xl md:text-3xl text-ink group-hover:text-amber transition-colors duration-300 mb-3">{project.name}</h3>
+                      <p className="text-ink-muted text-[13px] md:text-[14px] leading-relaxed max-w-md">{project.desc}</p>
+                      <span className="mt-5 inline-flex items-center gap-1.5 text-amber text-[11px] font-mono tracking-wide opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500">
+                        {project.domain} <span>&rarr;</span>
+                      </span>
                     </SlideIn>
-                    <ImageReveal delay={i * 150 + 100} className="order-1 md:order-2 rounded-sm">
-                      <Image src={project.src} alt={`${project.name} — small business website design by landings.md`} width={600} height={400} quality={90} className="w-full h-auto max-w-[320px] mx-auto block group-hover:scale-[1.03] transition-transform duration-700 ease-smooth" />
+                    <ImageReveal delay={120} className={`order-1 ${reversed ? 'lg:order-1' : 'lg:order-2'}`}>
+                      <BrowserFrame domain={project.domain} className="group-hover:border-amber/40 transition-colors duration-500">
+                        <div className="aspect-[16/10] overflow-hidden">
+                          <Image src={project.src} alt={`${project.name} — website, SEO and business systems by landings.md`} width={1280} height={800} quality={85} className="w-full h-full object-cover object-top group-hover:scale-[1.025] transition-transform duration-[900ms] ease-smooth" />
+                        </div>
+                      </BrowserFrame>
                     </ImageReveal>
                   </div>
                 </Link>
-              </div>
-            ))}
-          </AnimatedRowLines>
+              )
+            })}
+          </div>
         </section>
 
         {/* ── STATEMENT ── */}
@@ -448,6 +583,7 @@ export default function HomePage() {
               <h2 className="font-serif text-[clamp(1.8rem,3vw,2.75rem)] text-ink leading-[1.1] mb-4">{t.contact.heading}</h2>
               <p className="text-ink-muted text-[14px] leading-relaxed">{t.contact.sub}</p>
               <p className="mt-6 text-ink-light text-[12px] font-mono">contact@landings.md</p>
+              <Link href="tel:+37368327082" className="mt-1.5 inline-block text-ink-light hover:text-amber text-[12px] font-mono transition-colors">+373 683 27 082</Link>
             </SlideIn>
             <SlideIn direction="right" delay={200}>
               {formSent ? (
@@ -481,12 +617,13 @@ export default function HomePage() {
               </div>
             </div>
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+              <Link href="tel:+37368327082" className="text-ink-muted hover:text-ink text-[11px] font-mono transition-colors">+373 683 27 082</Link>
               <Link href="mailto:contact@landings.md" className="text-ink-muted hover:text-ink text-[11px] font-mono transition-colors">contact@landings.md</Link>
               <span className="text-ink-muted text-[10px] font-mono">{t.footer.copy}</span>
             </div>
           </div>
           <p className="mt-4 text-ink-light text-[9px] font-mono tracking-wide leading-relaxed max-w-2xl">
-            Affordable website design for small businesses across Europe. Custom websites from €350 — responsive, SEO-optimised, no templates. Web design services in English, Romanian, German, French, and Spanish. Chisinau, Moldova.
+            Websites, SEO, Meta & Google Ads and custom business systems for small businesses across Europe. Custom websites from €350 — plus booking, invoicing, stock and automated accounting systems that replace paperwork. In English, Romanian, German, French, and Spanish. Chisinau, Moldova.
           </p>
         </footer>
 

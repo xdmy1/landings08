@@ -203,6 +203,59 @@ body {
   animation: mobileNavLinkIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* Hero logo trace — draw, hold, un-draw, loop */
+@keyframes traceDraw {
+  0%   { stroke-dashoffset: 1; }
+  38%  { stroke-dashoffset: 0; }
+  62%  { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -1; }
+}
+.hero-trace-path {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  animation: traceDraw 18s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+/* Slow drift of the traced mark — gentle vertical float, no tilt */
+@keyframes heroDrift {
+  from { transform: translate(-50%, -51.5%); }
+  to   { transform: translate(-50%, -48.5%); }
+}
+.hero-trace-drift {
+  animation: heroDrift 22s ease-in-out infinite alternate;
+}
+
+/* Breathing ambient light */
+@keyframes heroBreathe {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50%      { opacity: 1; transform: scale(1.07); }
+}
+.hero-breathe {
+  animation: heroBreathe 9s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-trace-path { animation: none; stroke-dashoffset: 0; }
+  .hero-trace-drift { animation: none; }
+  .hero-breathe { animation: none; }
+}
+
+/* Infinite client-logo marquee */
+@keyframes logoMarquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.logo-marquee-track {
+  animation: logoMarquee 45s linear infinite;
+  will-change: transform;
+}
+.logo-marquee:hover .logo-marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-marquee-track { animation: none; }
+}
+
 /* Film grain overlay for texture */
 .grain::before {
   content: '';

@@ -13,6 +13,34 @@ const navText = {
   es: { portfolio: "Portafolio", pricing: "Precios", solutions: "Soluciones", caseStudies: "Casos de Estudio", contact: "Iniciar proyecto" },
 }
 
+const announceText = {
+  en: {
+    full: "Free 30-min audit — your Google position, what's wrong, what your keywords are worth. No site yet? We study your business.",
+    short: "Free 30-min audit — Google position & what's wrong",
+    cta: "Book it",
+  },
+  ro: {
+    full: "Audit gratuit de 30 min — pozitia ta pe Google, ce e gresit si cat se cauta cuvintele tale. Nu ai site? Iti studiem afacerea.",
+    short: "Audit gratuit de 30 min — pozitia pe Google si ce e gresit",
+    cta: "Rezerva",
+  },
+  de: {
+    full: "Gratis-Audit (30 Min): Google-Position, Fehler, Keyword-Nachfrage. Keine Website? Wir analysieren Ihr Geschaft.",
+    short: "Gratis-Audit in 30 Min — Google-Position & Fehler",
+    cta: "Termin",
+  },
+  fr: {
+    full: "Audit gratuit de 30 min — votre position Google, ce qui cloche, la demande sur vos mots-cles. Pas de site ? On etudie votre activite.",
+    short: "Audit gratuit de 30 min — position Google & erreurs",
+    cta: "Reserver",
+  },
+  es: {
+    full: "Auditoria gratis de 30 min — tu posicion en Google, que esta mal, la demanda de tus palabras clave. Sin web? Estudiamos tu negocio.",
+    short: "Auditoria gratis de 30 min — posicion en Google y errores",
+    cta: "Reservar",
+  },
+}
+
 export function SiteNav({ contactHref = "#contact" }: { contactHref?: string }) {
   const { language, setLanguage } = useLanguage()
   const [scrolled, setScrolled] = useState(false)
@@ -26,6 +54,7 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string }) 
   }, [])
 
   const t = navText[language as keyof typeof navText] ?? navText.en
+  const a = announceText[language as keyof typeof announceText] ?? announceText.en
 
   const links = [
     { href: '/portfolio',    label: t.portfolio },
@@ -46,6 +75,32 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string }) 
           backdropFilter: scrolled ? 'blur(12px)' : 'none',
         }}
       >
+        {/* ── FREE AUDIT BAR — collapses away on scroll ── */}
+        <Link
+          href={`mailto:contact@landings.md?subject=${encodeURIComponent('Audit gratuit — 30 min')}`}
+          className="group/bar block overflow-hidden transition-all duration-500 ease-smooth"
+          style={{ maxHeight: scrolled ? 0 : 40, opacity: scrolled ? 0 : 1 }}
+        >
+          <div
+            className="flex items-center justify-center gap-2.5 h-9 px-4 border-b border-amber/15 text-[10px] font-mono tracking-wide"
+            style={{ background: 'linear-gradient(90deg, rgba(212,120,90,0.06) 0%, rgba(212,120,90,0.14) 50%, rgba(212,120,90,0.06) 100%)' }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-amber animate-pulse flex-shrink-0" />
+            <span className="hidden lg:block min-w-0 text-ink-muted group-hover/bar:text-ink transition-colors duration-300 truncate">
+              {a.full}
+            </span>
+            <span className="lg:hidden text-ink-muted group-hover/bar:text-ink transition-colors duration-300 truncate">
+              {a.short}
+            </span>
+            <span className="text-amber group-hover/bar:text-amber-light transition-colors duration-300 flex-shrink-0 inline-flex items-center gap-1">
+              {a.cta}
+              <svg className="w-3 h-3 transition-transform duration-300 group-hover/bar:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </span>
+          </div>
+        </Link>
+
         <div className="max-w-[1200px] mx-auto px-6 lg:px-10">
           <div className="flex items-center justify-between h-[68px]">
             {/* Logo */}

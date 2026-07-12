@@ -4,10 +4,10 @@ import './globals.css'
 export const metadata: Metadata = {
   metadataBase: new URL('https://landings.md'),
   title: {
-    default: 'Custom Websites for Small Business | Affordable Web Design — landings.md',
+    default: 'Websites, SEO, Ads & Custom Business Systems — landings.md',
     template: '%s — landings.md',
   },
-  description: 'Professional website design for small businesses starting at €350. Get found on Google, get more clients. Custom-built, mobile-friendly, no templates. Serving Europe in 5 languages.',
+  description: 'We build websites that rank on Google, run Meta & Google Ads campaigns, and create booking, invoicing, stock and accounting systems that eliminate paperwork. Custom-coded, from €350. Serving Europe in 5 languages.',
   keywords: [
     'small business website', 'affordable website design', 'professional website design',
     'small business web design', 'website for small business', 'local business website',
@@ -26,6 +26,12 @@ export const metadata: Metadata = {
     'crear página web', 'diseño web para pequeñas empresas', 'página web barata',
     'diseño web profesional', 'cuánto cuesta una página web', 'agencia de diseño web',
     'web para negocio local', 'precio diseño web',
+    'custom business software', 'booking system for small business', 'appointment scheduling system',
+    'invoicing software custom', 'inventory management system', 'business automation',
+    'seat selection booking system', 'custom CRM development', 'ERP for small business',
+    'sistem de rezervari', 'sistem programari online', 'soft de facturare la comanda',
+    'automatizare afacere', 'CRM la comanda', 'aplicatii web la comanda Moldova',
+    'SEO Moldova', 'promovare Google', 'campanii Meta Ads', 'agentie SEO Chisinau',
   ],
   authors: [{ name: 'landings.md', url: 'https://landings.md' }],
   creator: 'landings.md',
@@ -36,19 +42,19 @@ export const metadata: Metadata = {
     alternateLocale: ['ro_RO', 'de_DE', 'fr_FR', 'es_ES'],
     url: 'https://landings.md',
     siteName: 'landings.md',
-    title: 'Custom Websites for Small Business — landings.md',
-    description: 'Professional website design for small businesses starting at €350. Get found on Google, get more clients. No templates, no WordPress.',
+    title: 'Websites, SEO, Ads & Custom Business Systems — landings.md',
+    description: 'Websites that rank on Google, Meta & Google Ads campaigns, and booking, invoicing and accounting systems that eliminate paperwork. Custom-coded, from €350.',
     images: [{
       url: '/icon.png',
       width: 512,
       height: 512,
-      alt: 'landings.md — Custom websites for small business',
+      alt: 'landings.md — websites, SEO and custom business systems',
     }],
   },
   twitter: {
     card: 'summary',
-    title: 'Custom Websites for Small Business — landings.md',
-    description: 'Professional website design starting at €350. Get found on Google, get more clients.',
+    title: 'Websites, SEO, Ads & Custom Business Systems — landings.md',
+    description: 'Websites that rank on Google, ad campaigns that convert, and custom systems that eliminate paperwork.',
   },
   robots: {
     index: true,
@@ -85,7 +91,7 @@ export default function RootLayout({
         },
         email: 'contact@landings.md',
         sameAs: ['https://instagram.com/landings.md'],
-        description: 'Professional website design and development for small businesses across Europe. Custom-built websites starting at €350.',
+        description: 'Websites that rank on Google, Meta & Google Ads campaigns, and custom business systems — bookings, invoicing, stock, automated accounting — for small businesses across Europe. Custom-built websites starting at €350.',
         areaServed: [
           { '@type': 'Country', name: 'Moldova' },
           { '@type': 'Country', name: 'Romania' },
@@ -97,7 +103,7 @@ export default function RootLayout({
           { '@type': 'Country', name: 'Belgium' },
         ],
         knowsLanguage: ['en', 'ro', 'de', 'fr', 'es'],
-        serviceType: 'Web Design',
+        serviceType: ['Web Design', 'Search Engine Optimization', 'Online Advertising', 'Custom Software Development'],
       },
       {
         '@type': 'WebSite',
@@ -110,9 +116,9 @@ export default function RootLayout({
       {
         '@type': 'ProfessionalService',
         '@id': 'https://landings.md/#service',
-        name: 'landings.md — Web Design Agency',
+        name: 'landings.md — Web Design, SEO & Business Systems',
         url: 'https://landings.md',
-        priceRange: '€350 - €850+',
+        priceRange: '€350+',
         telephone: '',
         email: 'contact@landings.md',
         address: {
@@ -154,6 +160,16 @@ export default function RootLayout({
               price: '850',
               priceCurrency: 'EUR',
               description: 'Unlimited products, cart and checkout, secure payments, stock management, 6 months support.',
+            },
+            {
+              '@type': 'Offer',
+              itemOffered: { '@type': 'Service', name: 'Custom Business System' },
+              description: 'Booking systems with seat selection, appointment scheduling, invoicing, stock tracking and automated accounting — built around your processes. Custom quote.',
+            },
+            {
+              '@type': 'Offer',
+              itemOffered: { '@type': 'Service', name: 'SEO & Advertising' },
+              description: 'Monthly growth subscription: SEO, backlinks, content, Meta & Google Ads campaigns with reporting.',
             },
           ],
         },
