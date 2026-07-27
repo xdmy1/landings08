@@ -623,7 +623,7 @@ export default function HomePage() {
             </div>
           </div>
           <p className="mt-4 text-ink-light text-[9px] font-mono tracking-wide leading-relaxed max-w-2xl">
-            Websites, SEO, Meta & Google Ads and custom business systems for small businesses across Europe. Custom websites from €350 — plus booking, invoicing, stock and automated accounting systems that replace paperwork. In English, Romanian, German, French, and Spanish. Chisinau, Moldova.
+            Websites, SEO, Meta & Google Ads and custom business systems for small businesses across Europe. Hand-coded websites that rank on Google — plus booking, invoicing, stock and automated accounting systems that replace paperwork. In English, Romanian, German, French, and Spanish. Chisinau, Moldova.
           </p>
         </footer>
 

@@ -1,12 +1,12 @@
 {
   "/_not-found": "app/_not-found.js",
-  "/apple-icon.png/route": "app/apple-icon.png/route.js",
-  "/icon.png/route": "app/icon.png/route.js",
   "/page": "app/page.js",
   "/robots.txt/route": "app/robots.txt/route.js",
+  "/icon.png/route": "app/icon.png/route.js",
   "/sitemap.xml/route": "app/sitemap.xml/route.js",
+  "/apple-icon.png/route": "app/apple-icon.png/route.js",
   "/case-studies/page": "app/case-studies/page.js",
-  "/solutions/page": "app/solutions/page.js",
   "/portfolio/page": "app/portfolio/page.js",
+  "/solutions/page": "app/solutions/page.js",
   "/pricing/page": "app/pricing/page.js"
 }

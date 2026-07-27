@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     default: 'Websites, SEO, Ads & Custom Business Systems — landings.md',
     template: '%s — landings.md',
   },
-  description: 'We build websites that rank on Google, run Meta & Google Ads campaigns, and create booking, invoicing, stock and accounting systems that eliminate paperwork. Custom-coded, from €350. Serving Europe in 5 languages.',
+  description: 'We build websites that rank on Google, run Meta & Google Ads campaigns, and create booking, invoicing, stock and accounting systems that eliminate paperwork. Custom-coded, start to finish. Serving Europe in 5 languages.',
   keywords: [
     'small business website', 'affordable website design', 'professional website design',
     'small business web design', 'website for small business', 'local business website',
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     url: 'https://landings.md',
     siteName: 'landings.md',
     title: 'Websites, SEO, Ads & Custom Business Systems — landings.md',
-    description: 'Websites that rank on Google, Meta & Google Ads campaigns, and booking, invoicing and accounting systems that eliminate paperwork. Custom-coded, from €350.',
+    description: 'Websites that rank on Google, Meta & Google Ads campaigns, and booking, invoicing and accounting systems that eliminate paperwork. Custom-coded, start to finish.',
     images: [{
       url: '/icon.png',
       width: 512,
@@ -91,7 +91,7 @@ export default function RootLayout({
         },
         email: 'contact@landings.md',
         sameAs: ['https://instagram.com/landings.md'],
-        description: 'Websites that rank on Google, Meta & Google Ads campaigns, and custom business systems — bookings, invoicing, stock, automated accounting — for small businesses across Europe. Custom-built websites starting at €350.',
+        description: 'Websites that rank on Google, Meta & Google Ads campaigns, and custom business systems — bookings, invoicing, stock, automated accounting — for small businesses across Europe. Hand-coded, in 5 languages.',
         areaServed: [
           { '@type': 'Country', name: 'Moldova' },
           { '@type': 'Country', name: 'Romania' },
