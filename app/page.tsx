@@ -233,7 +233,7 @@ export default function HomePage() {
         projects: [
           { name: "Davo.md", desc: "International passenger and parcel transport. Website, booking system with airline-style seat selection, operator panel — plus SEO, backlinks and Meta Ads. Everything from one team.", tag: "END-TO-END", tagColor: "text-green-400", category: "SITE · SYSTEM · SEO · ADS" },
           { name: "Inter-Bus", desc: "International bus parts store with a panel that runs the whole business: automated invoicing, live stock, profit per product and hands-free accounting.", tag: "ZERO PAPER", tagColor: "text-amber", category: "E-COMMERCE · ERP" },
-          { name: "RespectAuto", desc: "From invisible on Google to #1 in Moldova for car rental. 300% more organic traffic, 5x more booking requests — all from SEO and a fast, optimised website.", tag: "+300% TRAFFIC", tagColor: "text-green-400", category: "SEO · TRAFFIC · CLIENTS" }
+          { name: "CMIEA.md", desc: "Municipal adult-education platform: accounts and login, searchable course catalog, online enrollment, events and clubs — plus a panel where the team publishes courses and tracks registrations. No paper lists left.", tag: "ONLINE ENROLLMENT", tagColor: "text-green-400", category: "PLATFORM · LOGIN · COURSES" }
         ]
       },
       numbers: [
@@ -273,7 +273,7 @@ export default function HomePage() {
         projects: [
           { name: "Davo.md", desc: "Transport international de pasageri si colete. Site, sistem de rezervari cu alegerea locului ca la avion, panou pentru operatori — plus SEO, backlinkuri si Meta Ads. Totul de la o singura echipa.", tag: "DE LA A LA Z", tagColor: "text-green-400", category: "SITE · SISTEM · SEO · ADS" },
           { name: "Inter-Bus", desc: "Magazin international de piese cu un panou care conduce toata afacerea: facturare automata, stoc in timp real, profit pe fiecare produs si contabilitate care se face singura.", tag: "ZERO FOI", tagColor: "text-amber", category: "MAGAZIN ONLINE · ERP" },
-          { name: "RespectAuto", desc: "De la invizibil pe Google la #1 in Moldova pentru inchirieri auto. +300% trafic organic, de 5x mai multe cereri de rezervare — totul din SEO si un site rapid.", tag: "+300% TRAFIC", tagColor: "text-green-400", category: "SEO · TRAFIC · CLIENTI" }
+          { name: "CMIEA.md", desc: "Platforma municipala de educatie pentru adulti: conturi si login, catalog de cursuri cu filtre, inscrieri online, evenimente si cluburi — plus un panou din care echipa publica cursurile si vede inscrierile. Zero liste pe hartie.", tag: "INSCRIERI ONLINE", tagColor: "text-green-400", category: "PLATFORMA · LOGIN · CURSURI" }
         ]
       },
       numbers: [
@@ -313,7 +313,7 @@ export default function HomePage() {
         projects: [
           { name: "Davo.md", desc: "Internationaler Personen- und Pakettransport. Website, Buchungssystem mit Sitzplatzwahl wie im Flugzeug, Operator-Panel — plus SEO, Backlinks und Meta Ads. Alles aus einer Hand.", tag: "KOMPLETTPAKET", tagColor: "text-green-400", category: "SITE · SYSTEM · SEO · ADS" },
           { name: "Inter-Bus", desc: "Internationaler Teileshop mit einem Panel, das das ganze Geschaft steuert: automatische Rechnungen, Live-Lager, Gewinn pro Produkt und Buchhaltung von selbst.", tag: "NULL PAPIER", tagColor: "text-amber", category: "E-COMMERCE · ERP" },
-          { name: "RespectAuto", desc: "Von unsichtbar bei Google zur Nr. 1 in Moldawien fur Autovermietung. 300% mehr organischer Traffic, 5x mehr Buchungsanfragen — alles durch SEO.", tag: "+300% TRAFFIC", tagColor: "text-green-400", category: "SEO · TRAFFIC · KUNDEN" }
+          { name: "CMIEA.md", desc: "Kommunale Plattform fur Erwachsenenbildung: Konten und Login, durchsuchbarer Kurskatalog, Online-Anmeldung, Veranstaltungen und Clubs — plus ein Panel, in dem das Team Kurse veroffentlicht und Anmeldungen verfolgt. Keine Papierlisten mehr.", tag: "ONLINE-ANMELDUNG", tagColor: "text-green-400", category: "PLATTFORM · LOGIN · KURSE" }
         ]
       },
       numbers: [
@@ -353,7 +353,7 @@ export default function HomePage() {
         projects: [
           { name: "Davo.md", desc: "Transport international de passagers et colis. Site, systeme de reservation avec choix du siege comme en avion, panneau operateurs — plus SEO, backlinks et Meta Ads. Tout par une seule equipe.", tag: "DE A A Z", tagColor: "text-green-400", category: "SITE · SYSTEME · SEO · ADS" },
           { name: "Inter-Bus", desc: "Boutique internationale de pieces avec un panneau qui gere toute l'entreprise : facturation automatique, stock en direct, profit par produit et comptabilite sans effort.", tag: "ZERO PAPIER", tagColor: "text-amber", category: "E-COMMERCE · ERP" },
-          { name: "RespectAuto", desc: "D'invisible sur Google au n°1 en Moldavie pour la location auto. +300% de trafic organique, 5x plus de reservations — tout grace au SEO.", tag: "+300% TRAFIC", tagColor: "text-green-400", category: "SEO · TRAFIC · CLIENTS" }
+          { name: "CMIEA.md", desc: "Plateforme municipale de formation pour adultes : comptes et connexion, catalogue de cours avec filtres, inscriptions en ligne, evenements et clubs — plus un panneau ou l'equipe publie les cours et suit les inscriptions. Fini les listes papier.", tag: "INSCRIPTIONS EN LIGNE", tagColor: "text-green-400", category: "PLATEFORME · LOGIN · COURS" }
         ]
       },
       numbers: [
@@ -393,7 +393,7 @@ export default function HomePage() {
         projects: [
           { name: "Davo.md", desc: "Transporte internacional de pasajeros y paquetes. Web, sistema de reservas con eleccion de asiento como en un vuelo, panel de operadores — mas SEO, backlinks y Meta Ads. Todo de un solo equipo.", tag: "TODO EN UNO", tagColor: "text-green-400", category: "SITE · SISTEMA · SEO · ADS" },
           { name: "Inter-Bus", desc: "Tienda internacional de piezas con un panel que dirige todo el negocio: facturacion automatica, stock en vivo, beneficio por producto y contabilidad sin esfuerzo.", tag: "CERO PAPEL", tagColor: "text-amber", category: "E-COMMERCE · ERP" },
-          { name: "RespectAuto", desc: "De invisible en Google al #1 en Moldavia para alquiler de autos. +300% trafico organico, 5x mas solicitudes de reserva — todo con SEO y un sitio rapido.", tag: "+300% TRAFICO", tagColor: "text-green-400", category: "SEO · TRAFICO · CLIENTES" }
+          { name: "CMIEA.md", desc: "Plataforma municipal de formacion para adultos: cuentas y acceso, catalogo de cursos con filtros, inscripciones online, eventos y clubes — mas un panel donde el equipo publica los cursos y gestiona las inscripciones. Cero listas en papel.", tag: "INSCRIPCIONES ONLINE", tagColor: "text-green-400", category: "PLATAFORMA · LOGIN · CURSOS" }
         ]
       },
       numbers: [
@@ -422,7 +422,7 @@ export default function HomePage() {
   const projects = [
     { ...t.work.projects[0], src: "/images/shot-davo.jpg", href: "https://davo.md", domain: "davo.md" },
     { ...t.work.projects[1], src: "/images/shot-interbus.jpg", href: "https://inter-bus.md", domain: "inter-bus.md" },
-    { ...t.work.projects[2], src: "/images/shot-respectauto.jpg", href: "https://respectauto.md", domain: "respectauto.md" },
+    { ...t.work.projects[2], src: "/images/shot-cmiea.jpg", href: "http://cmiea.md", domain: "cmiea.md" },
   ]
 
   const serviceIcons = [
