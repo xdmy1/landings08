@@ -10,6 +10,7 @@ import Image from 'next/image'
 const logos: { src: string, alt: string, h: string, treatment: 'solid' | 'blend', opacity?: string }[] = [
   { src: '/images/logos/davo.png', alt: 'Davo Group — davo.md', h: 'h-6 md:h-7', treatment: 'solid' },
   { src: '/images/logos/interbus.png', alt: 'Inter Bus — inter-bus.md', h: 'h-8 md:h-9', treatment: 'solid' },
+  { src: '/images/logos/cmiea.png', alt: 'CMIEA — cmiea.md', h: 'h-10 md:h-12', treatment: 'solid' },
   { src: '/images/logos/respectauto.png', alt: 'RespectAuto — respectauto.md', h: 'h-5 md:h-6', treatment: 'solid' },
   { src: '/images/logos/eurogard.png', alt: 'EuroGard — eurogard.md', h: 'h-12 md:h-14', treatment: 'solid' },
   { src: '/images/logos/rizzaclassic.png', alt: 'Rizza Classic — rizzaclassic.com', h: 'h-9 md:h-10', treatment: 'solid' },
