@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-const COLOR = 'rgba(120, 100, 78, 0.65)'
+const COLOR = 'rgba(255, 255, 255, 0.09)'
 const ANIM  = 'railDraw 900ms cubic-bezier(0.16,1,0.3,1) 100ms forwards'
 
 export function PageLines() {

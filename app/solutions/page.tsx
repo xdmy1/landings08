@@ -368,14 +368,14 @@ export default function SolutionsPage() {
   ]
 
   return (
-    <div className="min-h-screen text-ink grain" style={{ background: '#2A2118' }}>
+    <div className="min-h-screen text-ink" style={{ background: '#0D0D0D' }}>
 
       <SiteNav contactHref="/#contact" />
 
       <div className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 relative line-sides">
 
         {/* Hero */}
-        <section className="pt-36 md:pt-48 pb-16 md:pb-28 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'linear-gradient(160deg, #302620 0%, #3C2E20 35%, #2A2118 100%)' }}>
+        <section className="pt-36 md:pt-48 pb-16 md:pb-28 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'linear-gradient(160deg, #131313 0%, #191919 35%, #0D0D0D 100%)' }}>
           <RevealText>
             <h1 className="font-serif text-[clamp(2.5rem,6vw,6rem)] text-ink leading-[1.05]">
               {t.hero.title1}<br />{t.hero.title2}
@@ -409,7 +409,7 @@ export default function SolutionsPage() {
         </section>
 
         {/* Real systems, in production */}
-        <section className="line-top py-20 md:py-32 px-6 md:px-12 lg:px-16" style={{ background: 'linear-gradient(145deg, #2A2118 0%, #342A20 40%, #3A2C1E 70%, #2C2218 100%)' }}>
+        <section className="line-top py-20 md:py-32 px-6 md:px-12 lg:px-16" style={{ background: 'linear-gradient(145deg, #0D0D0D 0%, #161616 40%, #181818 70%, #101010 100%)' }}>
           <SlideIn direction="left">
             <h2 className="font-serif text-3xl lg:text-5xl text-ink leading-tight mb-2">{t.built.heading}</h2>
             <p className="text-ink-muted text-xl mb-16">{t.built.subheading}</p>
@@ -450,7 +450,7 @@ export default function SolutionsPage() {
         </section>
 
         {/* Other systems */}
-        <section className="line-top py-20 md:py-32 px-6 md:px-12 lg:px-16" style={{ background: 'linear-gradient(160deg, #342A20 0%, #3E3229 40%, #3A2C1E 70%, #2A2118 100%)' }}>
+        <section className="line-top py-20 md:py-32 px-6 md:px-12 lg:px-16" style={{ background: 'linear-gradient(160deg, #161616 0%, #1B1B1B 40%, #181818 70%, #0D0D0D 100%)' }}>
           <FadeIn>
             <h2 className="font-serif text-3xl md:text-4xl text-ink mb-2">{t.others.heading}</h2>
             <p className="text-ink-muted mb-16">{t.others.subheading}</p>
@@ -490,7 +490,7 @@ export default function SolutionsPage() {
         </section>
 
         {/* CTA */}
-        <section className="line-top py-20 md:py-28 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'radial-gradient(ellipse 80% 100% at 15% 85%, #3E3229 0%, #302620 40%, #2A2118 85%)' }}>
+        <section className="line-top py-20 md:py-28 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'radial-gradient(ellipse 80% 100% at 15% 85%, #1B1B1B 0%, #131313 40%, #0D0D0D 85%)' }}>
           <div className="max-w-2xl mx-auto text-center">
             <RevealText>
               <h2 className="font-serif italic text-[clamp(1.8rem,3.5vw,3rem)] text-ink mb-6">{t.cta.title}</h2>
@@ -508,7 +508,7 @@ export default function SolutionsPage() {
         </section>
 
         {/* Footer */}
-        <footer className="line-top px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: 'linear-gradient(180deg, #241E18 0%, #1C1710 100%)' }}>
+        <footer className="line-top px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: 'linear-gradient(180deg, #101010 0%, #0A0A0A 100%)' }}>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
             <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
               <Link href="/" className="flex items-center"><Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="w-[22px] h-auto" /></Link>

@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-const COLOR = 'rgba(120, 100, 78, 0.55)'
+const COLOR = 'rgba(255, 255, 255, 0.08)'
 
 export function AnimatedRowLines({
   children,

@@ -100,6 +100,25 @@ const projects = [
     image: "/images/shot-interbus.jpg", url: "https://inter-bus.md", status: "LIVE"
   },
   {
+    id: 9, title: "Scoala Auto GLG", domain: "scoalaautoglg.com",
+    chips: ["SITE", "PROGRAMARI", "SISTEM"],
+    description: {
+      en: "Driving school in Chisinau with 4 centers and 15,000+ graduates. Website plus a scheduling system where students book practical lessons online and instructors manage their whole day from one panel.",
+      ro: "Scoala auto din Chisinau cu 4 centre si 15.000+ absolventi. Site plus un sistem de programari in care elevii isi rezerva lectiile practice online, iar instructorii isi administreaza ziua dintr-un singur panou.",
+      de: "Fahrschule in Chisinau mit 4 Zentren und 15.000+ Absolventen. Website plus Terminsystem: Schuler buchen Fahrstunden online, Fahrlehrer verwalten ihren Tag in einem Panel.",
+      fr: "Auto-ecole a Chisinau avec 4 centres et 15 000+ diplomes. Site plus un systeme de planification : les eleves reservent leurs lecons en ligne, les instructeurs gerent leur journee depuis un panneau.",
+      es: "Autoescuela en Chisinau con 4 centros y mas de 15.000 graduados. Web mas un sistema de citas: los alumnos reservan sus clases practicas online y los instructores gestionan su dia desde un panel."
+    },
+    highlight: {
+      en: "Practical lessons booked online — zero paper schedules",
+      ro: "Lectii practice programate online — zero orare pe hartie",
+      de: "Fahrstunden online gebucht — null Papierplane",
+      fr: "Lecons pratiques reservees en ligne — zero papier",
+      es: "Clases practicas reservadas online — cero papel"
+    },
+    image: "/images/shot-glg.jpg", url: "https://scoalaautoglg.com", status: "LIVE"
+  },
+  {
     id: 3, title: "Elite Protocol", domain: "eliteprotocol.md",
     chips: ["SITE", "BRANDING", "3 LIMBI"],
     description: {
@@ -270,14 +289,14 @@ export default function PortfolioPage() {
   const lang = language as keyof typeof projects[0]['description']
 
   return (
-    <div className="min-h-screen text-ink grain" style={{ background: '#2A2118' }}>
+    <div className="min-h-screen text-ink" style={{ background: '#0D0D0D' }}>
 
       <SiteNav contactHref="/#contact" />
 
       <div className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 relative line-sides">
 
         {/* Hero */}
-        <section className="pt-36 md:pt-48 pb-12 md:pb-16 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'linear-gradient(160deg, #302620 0%, #3A2C1E 35%, #2A2118 100%)' }}>
+        <section className="pt-36 md:pt-48 pb-12 md:pb-16 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'linear-gradient(160deg, #131313 0%, #181818 35%, #0D0D0D 100%)' }}>
           <RevealText>
             <h1 className="font-serif text-[clamp(2.5rem,6vw,5.5rem)] text-ink">{t.title}</h1>
           </RevealText>
@@ -287,7 +306,7 @@ export default function PortfolioPage() {
         </section>
 
         {/* Projects Grid */}
-        <section className="line-top px-6 md:px-12 lg:px-16 pt-12 md:pt-16 pb-20 md:pb-28" style={{ background: 'linear-gradient(180deg, #2A2118 0%, #342A20 50%, #2C2218 100%)' }}>
+        <section className="line-top px-6 md:px-12 lg:px-16 pt-12 md:pt-16 pb-20 md:pb-28" style={{ background: 'linear-gradient(180deg, #0D0D0D 0%, #161616 50%, #101010 100%)' }}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-14 md:gap-y-16">
             {projects.map((project, index) => {
               const inner = (
@@ -311,8 +330,8 @@ export default function PortfolioPage() {
                           <span key={chip} className="text-[9px] font-mono tracking-[0.12em] uppercase text-ink-light border border-divider/60 px-2 py-0.5">{chip}</span>
                         ))}
                       </div>
-                      <span className={`text-[9px] font-mono tracking-[0.15em] uppercase flex items-center gap-1.5 flex-shrink-0 ${project.status === 'LIVE' ? 'text-green-400/80' : 'text-ink-light'}`}>
-                        <span className={`w-1 h-1 rounded-full ${project.status === 'LIVE' ? 'bg-green-400/80' : 'bg-ink-light'}`} />
+                      <span className={`text-[9px] font-mono tracking-[0.15em] uppercase flex items-center gap-1.5 flex-shrink-0 ${project.status === 'LIVE' ? 'text-amber/90' : 'text-ink-light'}`}>
+                        <span className={`w-1 h-1 rounded-full ${project.status === 'LIVE' ? 'bg-amber/90' : 'bg-ink-light'}`} />
                         {project.status === 'LIVE' ? 'LIVE' : t.private}
                       </span>
                     </div>
@@ -342,7 +361,7 @@ export default function PortfolioPage() {
         </section>
 
         {/* CTA */}
-        <section className="line-top px-6 md:px-12 lg:px-16 py-20 md:py-28 relative glow-amber" style={{ background: 'radial-gradient(ellipse 90% 130% at 50% 100%, #3E3229 0%, #302620 40%, #2A2118 85%)' }}>
+        <section className="line-top px-6 md:px-12 lg:px-16 py-20 md:py-28 relative glow-amber" style={{ background: 'radial-gradient(ellipse 90% 130% at 50% 100%, #1B1B1B 0%, #131313 40%, #0D0D0D 85%)' }}>
           <div className="max-w-2xl mx-auto text-center">
             <RevealText>
               <h2 className="font-serif italic text-[clamp(1.8rem,3.5vw,3rem)] text-ink mb-4">{t.cta.title}</h2>
@@ -360,7 +379,7 @@ export default function PortfolioPage() {
         </section>
 
         {/* Footer */}
-        <footer className="line-top px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: 'linear-gradient(180deg, #241E18 0%, #1C1710 100%)' }}>
+        <footer className="line-top px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: 'linear-gradient(180deg, #101010 0%, #0A0A0A 100%)' }}>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
             <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
               <Link href="/" className="flex items-center"><Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="w-[22px] h-auto" /></Link>

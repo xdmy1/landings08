@@ -62,7 +62,7 @@ export default function NotFound() {
   }, [])
 
   return (
-    <div className="min-h-screen text-ink grain overflow-hidden" style={{ background: '#2A2118' }}>
+    <div className="min-h-screen text-ink grain overflow-hidden" style={{ background: '#0D0D0D' }}>
 
       <SiteNav contactHref="/#contact" />
 
@@ -71,7 +71,7 @@ export default function NotFound() {
         {/* Main content */}
         <section
           className="relative min-h-[90vh] flex flex-col justify-center px-6 md:px-12 lg:px-16 pt-32 pb-20 glow-amber"
-          style={{ background: 'radial-gradient(ellipse 100% 80% at 60% 40%, #3E3229 0%, #302620 35%, #2A2118 75%)' }}
+          style={{ background: 'radial-gradient(ellipse 100% 80% at 60% 40%, #1B1B1B 0%, #131313 35%, #0D0D0D 75%)' }}
         >
 
           {/* Big ghost "404" */}
@@ -95,11 +95,11 @@ export default function NotFound() {
           {/* Floating amber dot accent */}
           <div
             className="absolute top-1/3 right-[15%] w-1 h-1 rounded-full bg-amber/40 pointer-events-none"
-            style={{ boxShadow: '0 0 20px 6px rgba(212, 120, 90, 0.15)' }}
+            style={{ boxShadow: '0 0 20px 6px rgba(232, 130, 90, 0.15)' }}
           />
           <div
             className="absolute bottom-1/3 left-[20%] w-px h-16 pointer-events-none"
-            style={{ background: 'linear-gradient(180deg, transparent, rgba(212, 120, 90, 0.25), transparent)' }}
+            style={{ background: 'linear-gradient(180deg, transparent, rgba(232, 130, 90, 0.25), transparent)' }}
           />
 
           {/* Content */}
@@ -156,7 +156,7 @@ export default function NotFound() {
         </section>
 
         {/* Footer */}
-        <footer className="line-top px-6 md:px-12 lg:px-16 py-8 pb-10" style={{ background: 'linear-gradient(180deg, #241E18 0%, #1C1710 100%)' }}>
+        <footer className="line-top px-6 md:px-12 lg:px-16 py-8 pb-10" style={{ background: 'linear-gradient(180deg, #101010 0%, #0A0A0A 100%)' }}>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <Link href="/" className="flex items-center">
               <Image src="/images/logowhite.png" alt="landings.md" width={18} height={30} className="w-[18px] h-auto opacity-60" />

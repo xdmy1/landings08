@@ -599,15 +599,15 @@ export default function CaseStudiesPage() {
   }, [])
 
   const backgrounds = [
-    'linear-gradient(180deg, #2A2118 0%, #342A20 100%)',
-    'linear-gradient(180deg, #342A20 0%, #2C2218 100%)',
-    'linear-gradient(180deg, #2C2218 0%, #362C20 100%)',
-    'linear-gradient(180deg, #362C20 0%, #2A2118 100%)',
-    'linear-gradient(180deg, #2A2118 0%, #342A20 100%)',
+    'linear-gradient(180deg, #0D0D0D 0%, #161616 100%)',
+    'linear-gradient(180deg, #161616 0%, #101010 100%)',
+    'linear-gradient(180deg, #101010 0%, #171717 100%)',
+    'linear-gradient(180deg, #171717 0%, #0D0D0D 100%)',
+    'linear-gradient(180deg, #0D0D0D 0%, #161616 100%)',
   ]
 
   return (
-    <div className="min-h-screen text-ink grain" style={{ background: '#2A2118' }}>
+    <div className="min-h-screen text-ink" style={{ background: '#0D0D0D' }}>
 
       <SiteNav contactHref="/#contact" />
 
@@ -615,7 +615,7 @@ export default function CaseStudiesPage() {
       <div className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 relative line-sides">
 
         {/* ── HERO ── */}
-        <section className="pt-36 md:pt-48 pb-16 md:pb-24 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'linear-gradient(180deg, #302620 0%, #2A2118 100%)' }}>
+        <section className="pt-36 md:pt-48 pb-16 md:pb-24 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'linear-gradient(180deg, #131313 0%, #0D0D0D 100%)' }}>
           <div className="max-w-3xl">
             <FadeIn>
               <span className="text-ink-light text-[11px] font-mono tracking-[0.2em] uppercase block mb-8">{t.hero.label}</span>
@@ -713,7 +713,7 @@ export default function CaseStudiesPage() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-px" style={{ background: 'rgba(90,74,58,0.3)' }}>
                   {study.stats.map((stat, i) => (
                     <FadeIn key={i} delay={i * 120} className="h-full">
-                      <div className="px-5 py-4 md:py-5 h-full" style={{ background: '#2E251C' }}>
+                      <div className="px-5 py-4 md:py-5 h-full" style={{ background: '#121212' }}>
                         <p className="font-serif text-[clamp(1.25rem,2vw,1.75rem)] text-amber leading-none mb-1.5">
                           <AnimatedNumber value={stat.value} suffix={stat.suffix} />
                         </p>
@@ -728,7 +728,7 @@ export default function CaseStudiesPage() {
                   <div className={`grid grid-cols-1 sm:grid-cols-2 ${c.evidence.length === 3 ? 'lg:grid-cols-3' : ''} gap-4 md:gap-5 mt-8`}>
                     {c.evidence.map((src, ei) => (
                       <ImageReveal key={ei} delay={ei * 150}>
-                        <div className="border border-divider/40 aspect-[16/9] flex items-center justify-center p-3" style={{ background: '#211A13' }}>
+                        <div className="border border-divider/40 aspect-[16/9] flex items-center justify-center p-3" style={{ background: '#0C0C0C' }}>
                           <Image src={src} alt={study.captions?.[ei] ?? ""} width={720} height={405} quality={88} className="max-w-full max-h-full w-auto h-auto object-contain" />
                         </div>
                         <p className="text-ink-light text-[10px] font-mono mt-2.5 leading-relaxed">{study.captions?.[ei]}</p>
@@ -744,7 +744,7 @@ export default function CaseStudiesPage() {
         })}
 
         {/* ── CTA ── */}
-        <section className="px-6 md:px-12 lg:px-16 py-20 md:py-32 relative glow-amber grid-animated" style={{ background: 'linear-gradient(180deg, #2A2118 0%, #342A20 100%)' }}>
+        <section className="px-6 md:px-12 lg:px-16 py-20 md:py-32 relative glow-amber grid-animated" style={{ background: 'linear-gradient(180deg, #0D0D0D 0%, #161616 100%)' }}>
           <div className="text-center max-w-2xl mx-auto relative z-10">
             <RevealText>
               <h2 className="font-serif text-[clamp(1.8rem,3.5vw,3rem)] text-ink leading-[1.1] mb-4">{t.cta.headline}</h2>
@@ -753,7 +753,7 @@ export default function CaseStudiesPage() {
               <p className="text-ink-muted text-[15px] leading-relaxed mb-10">{t.cta.sub}</p>
             </FadeIn>
             <FadeIn delay={500}>
-              <Link href="mailto:contact@landings.md" className="inline-flex items-center gap-2 bg-amber hover:bg-amber-light text-[#1A1410] px-7 py-3 text-sm transition-colors duration-300 group">
+              <Link href="mailto:contact@landings.md" className="inline-flex items-center gap-2 bg-amber hover:bg-amber-light text-[#0A0A0A] px-7 py-3 text-sm transition-colors duration-300 group">
                 {t.cta.button}
                 <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
               </Link>
@@ -762,7 +762,7 @@ export default function CaseStudiesPage() {
         </section>
 
         {/* ── FOOTER ── */}
-        <footer className="line-top px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: 'linear-gradient(180deg, #241E18 0%, #1C1710 100%)' }}>
+        <footer className="line-top px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: 'linear-gradient(180deg, #101010 0%, #0A0A0A 100%)' }}>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
             <div className="flex items-center gap-6">
               <Link href="/" className="flex items-center">

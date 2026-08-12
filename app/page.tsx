@@ -6,9 +6,9 @@ import Image from 'next/image'
 import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
 import { SiteNav } from '@/components/ui/site-nav'
 import { AnimatedStatGrid } from '@/components/ui/animated-stat-grid'
-import { BrowserFrame } from '@/components/ui/browser-frame'
-import { LogoMarquee } from '@/components/ui/logo-marquee'
-import { HeroLogoTrace, HeroSpotlight, HeroBreath } from '@/components/ui/hero-fx'
+import { LogoGrid } from '@/components/ui/logo-grid'
+import { HeroSpotlight } from '@/components/ui/hero-fx'
+import { ScrubText, Magnetic } from '@/components/ui/scroll-fx'
 import { useLanguage } from '@/hooks/useLanguage'
 
 function useInView(threshold = 0.1) {
@@ -26,25 +26,6 @@ function useInView(threshold = 0.1) {
   return { ref, visible }
 }
 
-/* Clip-path text reveal — luxury upward wipe */
-function RevealText({ children, className = "", delay = 0, as: Tag = "div" }: { children: React.ReactNode, className?: string, delay?: number, as?: "div" | "h1" | "h2" | "h3" | "p" | "span" }) {
-  const { ref, visible } = useInView(0.15)
-  return (
-    <div ref={ref} className={`overflow-hidden ${className}`}>
-      <Tag
-        className="transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-        style={{
-          transform: visible ? 'translateY(0)' : 'translateY(110%)',
-          opacity: visible ? 1 : 0,
-          transitionDelay: `${delay}ms`,
-        }}
-      >
-        {children}
-      </Tag>
-    </div>
-  )
-}
-
 /* Fade up — standard but with longer, smoother timing */
 function FadeIn({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
   const { ref, visible } = useInView(0.08)
@@ -54,30 +35,12 @@ function FadeIn({ children, className = "", delay = 0 }: { children: React.React
       className={`transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${className}`}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(30px)',
+        transform: visible ? 'translateY(0)' : 'translateY(24px)',
+        filter: visible ? 'blur(0px)' : 'blur(10px)',
         transitionDelay: `${delay}ms`,
       }}
     >
       {children}
-    </div>
-  )
-}
-
-/* Scale reveal — image zooms from slightly scaled up while fading in */
-function ImageReveal({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
-  const { ref, visible } = useInView(0.1)
-  return (
-    <div ref={ref} className={`overflow-hidden ${className}`}>
-      <div
-        className="transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-        style={{
-          opacity: visible ? 1 : 0,
-          transform: visible ? 'scale(1)' : 'scale(1.04)',
-          transitionDelay: `${delay}ms`,
-        }}
-      >
-        {children}
-      </div>
     </div>
   )
 }
@@ -93,6 +56,7 @@ function SlideIn({ children, className = "", delay = 0, direction = "left" }: { 
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? 'translateX(0)' : `translateX(${x})`,
+        filter: visible ? 'blur(0px)' : 'blur(10px)',
         transitionDelay: `${delay}ms`,
       }}
     >
@@ -134,26 +98,39 @@ function AnimatedNumber({ value, className = "" }: { value: string, className?: 
   )
 }
 
-/* Word-by-word cinematic reveal for headlines */
-function WordsReveal({ text, className = "", delay = 0, stagger = 80 }: { text: string, className?: string, delay?: number, stagger?: number }) {
+/* Per-character cinematic reveal for the hero headline — each letter
+   rises 30px and fades in, words kept intact so lines never rewrap.
+   Words wrapped in *asterisks* render in the accent color. */
+function CharsReveal({ text, className = "", delay = 0 }: { text: string, className?: string, delay?: number }) {
   const { ref, visible } = useInView(0.15)
   const words = text.split(' ')
+  let charIndex = 0
   return (
-    <span ref={ref as React.RefObject<HTMLDivElement>} className={className}>
-      {words.map((word, i) => (
-        <span key={i} className="inline-block overflow-hidden align-baseline mr-[0.26em] last:mr-0">
-          <span
-            className="inline-block transition-all duration-[1000ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-            style={{
-              transform: visible ? 'translateY(0)' : 'translateY(115%)',
-              opacity: visible ? 1 : 0,
-              transitionDelay: `${delay + i * stagger}ms`,
-            }}
-          >
-            {word}
+    <span ref={ref as React.RefObject<HTMLDivElement>} className={className} aria-label={text}>
+      {words.map((raw, wi) => {
+        const accented = raw.startsWith('*')
+        const word = raw.replace(/\*/g, '')
+        return (
+          <span key={wi} aria-hidden className={`inline-block whitespace-nowrap mr-[0.24em] last:mr-0 ${accented ? 'text-amber' : ''}`}>
+            {word.split('').map((c, ci) => {
+              const d = delay + charIndex++ * 12
+              return (
+                <span
+                  key={ci}
+                  className="inline-block transition-[transform,opacity] duration-[500ms] ease-[cubic-bezier(0.6,0,0.4,1)]"
+                  style={{
+                    transform: visible ? 'translateY(0)' : 'translateY(30px)',
+                    opacity: visible ? 1 : 0.001,
+                    transitionDelay: `${d}ms`,
+                  }}
+                >
+                  {c}
+                </span>
+              )
+            })}
           </span>
-        </span>
-      ))}
+        )
+      })}
     </span>
   )
 }
@@ -192,6 +169,7 @@ function StaggerGroup({ children, className = "", stagger = 120 }: { children: R
           style={{
             opacity: visible ? 1 : 0,
             transform: visible ? 'translateY(0)' : 'translateY(24px)',
+            filter: visible ? 'blur(0px)' : 'blur(10px)',
             transitionDelay: `${i * stagger}ms`,
           }}
         >
@@ -217,7 +195,7 @@ export default function HomePage() {
   const text = {
     en: {
       nav: { portfolio: "Portfolio", pricing: "Pricing", solutions: "Solutions", caseStudies: "Case Studies", contact: "Start a project" },
-      hero: { headline: "We build the site. We take it to the top. We automate the rest.", sub: "Custom-coded websites that rank on page one of Google, Meta & Google Ads campaigns, and booking, invoicing and accounting systems that free your business from paperwork.", cta: "Start a project", note: "delivered in 1–4 weeks · reply within 24h" },
+      hero: { headline: "We build the site. We take it to the *top.* We automate the rest.", sub: "Custom-coded websites that rank on page one of Google, Meta & Google Ads campaigns, and booking, invoicing and accounting systems that free your business from paperwork.", cta: "Start a project", note: "delivered in 1–4 weeks · reply within 24h" },
       logos: "Trusted by businesses across Moldova and Europe",
       services: {
         label: "WHAT WE DO",
@@ -231,9 +209,9 @@ export default function HomePage() {
         label: "SELECTED WORK",
         viewAll: "All projects",
         projects: [
-          { name: "Davo.md", desc: "International passenger and parcel transport. Website, booking system with airline-style seat selection, operator panel — plus SEO, backlinks and Meta Ads. Everything from one team.", tag: "END-TO-END", tagColor: "text-green-400", category: "SITE · SYSTEM · SEO · ADS" },
+          { name: "Davo.md", desc: "International passenger and parcel transport. Website, booking system with airline-style seat selection, operator panel — plus SEO, backlinks and Meta Ads. Everything from one team.", tag: "END-TO-END", tagColor: "text-amber", category: "SITE · SYSTEM · SEO · ADS" },
           { name: "Inter-Bus", desc: "International bus parts store with a panel that runs the whole business: automated invoicing, live stock, profit per product and hands-free accounting.", tag: "ZERO PAPER", tagColor: "text-amber", category: "E-COMMERCE · ERP" },
-          { name: "CMIEA.md", desc: "Municipal adult-education platform: accounts and login, searchable course catalog, online enrollment, events and clubs — plus a panel where the team publishes courses and tracks registrations. No paper lists left.", tag: "ONLINE ENROLLMENT", tagColor: "text-green-400", category: "PLATFORM · LOGIN · COURSES" }
+          { name: "CMIEA.md", desc: "Municipal adult-education platform: accounts and login, searchable course catalog, online enrollment, events and clubs — plus a panel where the team publishes courses and tracks registrations. No paper lists left.", tag: "ONLINE ENROLLMENT", tagColor: "text-amber", category: "PLATFORM · LOGIN · COURSES" }
         ]
       },
       numbers: [
@@ -257,7 +235,7 @@ export default function HomePage() {
     },
     ro: {
       nav: { portfolio: "Portofoliu", pricing: "Preturi", solutions: "Solutii", caseStudies: "Studii de Caz", contact: "Incepe un proiect" },
-      hero: { headline: "Construim site-ul. Il ducem in top. Automatizam restul.", sub: "Site-uri scrise manual care apar pe prima pagina Google, campanii Meta & Google Ads si sisteme de rezervari, facturare si contabilitate care iti scapa afacerea de foi.", cta: "Incepe un proiect", note: "livrat in 1–4 saptamani · raspuns in 24h" },
+      hero: { headline: "Construim site-ul. Il ducem in *top.* Automatizam restul.", sub: "Site-uri scrise manual care apar pe prima pagina Google, campanii Meta & Google Ads si sisteme de rezervari, facturare si contabilitate care iti scapa afacerea de foi.", cta: "Incepe un proiect", note: "livrat in 1–4 saptamani · raspuns in 24h" },
       logos: "De incredere pentru afaceri din Moldova si Europa",
       services: {
         label: "CE FACEM",
@@ -271,9 +249,9 @@ export default function HomePage() {
         label: "LUCRARI SELECTATE",
         viewAll: "Toate proiectele",
         projects: [
-          { name: "Davo.md", desc: "Transport international de pasageri si colete. Site, sistem de rezervari cu alegerea locului ca la avion, panou pentru operatori — plus SEO, backlinkuri si Meta Ads. Totul de la o singura echipa.", tag: "DE LA A LA Z", tagColor: "text-green-400", category: "SITE · SISTEM · SEO · ADS" },
+          { name: "Davo.md", desc: "Transport international de pasageri si colete. Site, sistem de rezervari cu alegerea locului ca la avion, panou pentru operatori — plus SEO, backlinkuri si Meta Ads. Totul de la o singura echipa.", tag: "DE LA A LA Z", tagColor: "text-amber", category: "SITE · SISTEM · SEO · ADS" },
           { name: "Inter-Bus", desc: "Magazin international de piese cu un panou care conduce toata afacerea: facturare automata, stoc in timp real, profit pe fiecare produs si contabilitate care se face singura.", tag: "ZERO FOI", tagColor: "text-amber", category: "MAGAZIN ONLINE · ERP" },
-          { name: "CMIEA.md", desc: "Platforma municipala de educatie pentru adulti: conturi si login, catalog de cursuri cu filtre, inscrieri online, evenimente si cluburi — plus un panou din care echipa publica cursurile si vede inscrierile. Zero liste pe hartie.", tag: "INSCRIERI ONLINE", tagColor: "text-green-400", category: "PLATFORMA · LOGIN · CURSURI" }
+          { name: "CMIEA.md", desc: "Platforma municipala de educatie pentru adulti: conturi si login, catalog de cursuri cu filtre, inscrieri online, evenimente si cluburi — plus un panou din care echipa publica cursurile si vede inscrierile. Zero liste pe hartie.", tag: "INSCRIERI ONLINE", tagColor: "text-amber", category: "PLATFORMA · LOGIN · CURSURI" }
         ]
       },
       numbers: [
@@ -297,7 +275,7 @@ export default function HomePage() {
     },
     de: {
       nav: { portfolio: "Portfolio", pricing: "Preise", solutions: "Losungen", caseStudies: "Fallstudien", contact: "Projekt starten" },
-      hero: { headline: "Wir bauen die Website. Wir bringen sie nach oben. Wir automatisieren den Rest.", sub: "Handgeschriebene Websites auf Seite 1 bei Google, Meta & Google Ads Kampagnen und Systeme fur Buchungen, Rechnungen und Buchhaltung — die Ihr Unternehmen vom Papierkram befreien.", cta: "Projekt starten", note: "Lieferung in 1–4 Wochen · Antwort in 24h" },
+      hero: { headline: "Wir bauen die Website. Wir bringen sie nach *oben.* Wir automatisieren den Rest.", sub: "Handgeschriebene Websites auf Seite 1 bei Google, Meta & Google Ads Kampagnen und Systeme fur Buchungen, Rechnungen und Buchhaltung — die Ihr Unternehmen vom Papierkram befreien.", cta: "Projekt starten", note: "Lieferung in 1–4 Wochen · Antwort in 24h" },
       logos: "Vertraut von Unternehmen in Moldawien und Europa",
       services: {
         label: "WAS WIR TUN",
@@ -311,9 +289,9 @@ export default function HomePage() {
         label: "AUSGEWAHLTE ARBEITEN",
         viewAll: "Alle Projekte",
         projects: [
-          { name: "Davo.md", desc: "Internationaler Personen- und Pakettransport. Website, Buchungssystem mit Sitzplatzwahl wie im Flugzeug, Operator-Panel — plus SEO, Backlinks und Meta Ads. Alles aus einer Hand.", tag: "KOMPLETTPAKET", tagColor: "text-green-400", category: "SITE · SYSTEM · SEO · ADS" },
+          { name: "Davo.md", desc: "Internationaler Personen- und Pakettransport. Website, Buchungssystem mit Sitzplatzwahl wie im Flugzeug, Operator-Panel — plus SEO, Backlinks und Meta Ads. Alles aus einer Hand.", tag: "KOMPLETTPAKET", tagColor: "text-amber", category: "SITE · SYSTEM · SEO · ADS" },
           { name: "Inter-Bus", desc: "Internationaler Teileshop mit einem Panel, das das ganze Geschaft steuert: automatische Rechnungen, Live-Lager, Gewinn pro Produkt und Buchhaltung von selbst.", tag: "NULL PAPIER", tagColor: "text-amber", category: "E-COMMERCE · ERP" },
-          { name: "CMIEA.md", desc: "Kommunale Plattform fur Erwachsenenbildung: Konten und Login, durchsuchbarer Kurskatalog, Online-Anmeldung, Veranstaltungen und Clubs — plus ein Panel, in dem das Team Kurse veroffentlicht und Anmeldungen verfolgt. Keine Papierlisten mehr.", tag: "ONLINE-ANMELDUNG", tagColor: "text-green-400", category: "PLATTFORM · LOGIN · KURSE" }
+          { name: "CMIEA.md", desc: "Kommunale Plattform fur Erwachsenenbildung: Konten und Login, durchsuchbarer Kurskatalog, Online-Anmeldung, Veranstaltungen und Clubs — plus ein Panel, in dem das Team Kurse veroffentlicht und Anmeldungen verfolgt. Keine Papierlisten mehr.", tag: "ONLINE-ANMELDUNG", tagColor: "text-amber", category: "PLATTFORM · LOGIN · KURSE" }
         ]
       },
       numbers: [
@@ -337,7 +315,7 @@ export default function HomePage() {
     },
     fr: {
       nav: { portfolio: "Portfolio", pricing: "Tarifs", solutions: "Solutions", caseStudies: "Etudes de Cas", contact: "Demarrer un projet" },
-      hero: { headline: "On construit le site. On le fait monter. On automatise le reste.", sub: "Des sites codes sur mesure qui se classent en premiere page de Google, des campagnes Meta & Google Ads, et des systemes de reservation, facturation et comptabilite qui liberent votre entreprise de la paperasse.", cta: "Demarrer un projet", note: "livre en 1–4 semaines · reponse en 24h" },
+      hero: { headline: "On construit le site. On le fait *monter.* On automatise le reste.", sub: "Des sites codes sur mesure qui se classent en premiere page de Google, des campagnes Meta & Google Ads, et des systemes de reservation, facturation et comptabilite qui liberent votre entreprise de la paperasse.", cta: "Demarrer un projet", note: "livre en 1–4 semaines · reponse en 24h" },
       logos: "La confiance d'entreprises en Moldavie et en Europe",
       services: {
         label: "CE QU'ON FAIT",
@@ -351,9 +329,9 @@ export default function HomePage() {
         label: "TRAVAUX SELECTIONNES",
         viewAll: "Tous les projets",
         projects: [
-          { name: "Davo.md", desc: "Transport international de passagers et colis. Site, systeme de reservation avec choix du siege comme en avion, panneau operateurs — plus SEO, backlinks et Meta Ads. Tout par une seule equipe.", tag: "DE A A Z", tagColor: "text-green-400", category: "SITE · SYSTEME · SEO · ADS" },
+          { name: "Davo.md", desc: "Transport international de passagers et colis. Site, systeme de reservation avec choix du siege comme en avion, panneau operateurs — plus SEO, backlinks et Meta Ads. Tout par une seule equipe.", tag: "DE A A Z", tagColor: "text-amber", category: "SITE · SYSTEME · SEO · ADS" },
           { name: "Inter-Bus", desc: "Boutique internationale de pieces avec un panneau qui gere toute l'entreprise : facturation automatique, stock en direct, profit par produit et comptabilite sans effort.", tag: "ZERO PAPIER", tagColor: "text-amber", category: "E-COMMERCE · ERP" },
-          { name: "CMIEA.md", desc: "Plateforme municipale de formation pour adultes : comptes et connexion, catalogue de cours avec filtres, inscriptions en ligne, evenements et clubs — plus un panneau ou l'equipe publie les cours et suit les inscriptions. Fini les listes papier.", tag: "INSCRIPTIONS EN LIGNE", tagColor: "text-green-400", category: "PLATEFORME · LOGIN · COURS" }
+          { name: "CMIEA.md", desc: "Plateforme municipale de formation pour adultes : comptes et connexion, catalogue de cours avec filtres, inscriptions en ligne, evenements et clubs — plus un panneau ou l'equipe publie les cours et suit les inscriptions. Fini les listes papier.", tag: "INSCRIPTIONS EN LIGNE", tagColor: "text-amber", category: "PLATEFORME · LOGIN · COURS" }
         ]
       },
       numbers: [
@@ -377,7 +355,7 @@ export default function HomePage() {
     },
     es: {
       nav: { portfolio: "Portafolio", pricing: "Precios", solutions: "Soluciones", caseStudies: "Casos de Estudio", contact: "Iniciar proyecto" },
-      hero: { headline: "Creamos tu web. La llevamos arriba. Automatizamos el resto.", sub: "Webs a medida que aparecen en la primera pagina de Google, campanas de Meta & Google Ads, y sistemas de reservas, facturacion y contabilidad que liberan tu negocio del papeleo.", cta: "Iniciar proyecto", note: "entregado en 1–4 semanas · respuesta en 24h" },
+      hero: { headline: "Creamos tu web. La llevamos *arriba.* Automatizamos el resto.", sub: "Webs a medida que aparecen en la primera pagina de Google, campanas de Meta & Google Ads, y sistemas de reservas, facturacion y contabilidad que liberan tu negocio del papeleo.", cta: "Iniciar proyecto", note: "entregado en 1–4 semanas · respuesta en 24h" },
       logos: "Confianza de empresas en Moldavia y Europa",
       services: {
         label: "QUE HACEMOS",
@@ -391,9 +369,9 @@ export default function HomePage() {
         label: "TRABAJOS SELECCIONADOS",
         viewAll: "Todos los proyectos",
         projects: [
-          { name: "Davo.md", desc: "Transporte internacional de pasajeros y paquetes. Web, sistema de reservas con eleccion de asiento como en un vuelo, panel de operadores — mas SEO, backlinks y Meta Ads. Todo de un solo equipo.", tag: "TODO EN UNO", tagColor: "text-green-400", category: "SITE · SISTEMA · SEO · ADS" },
+          { name: "Davo.md", desc: "Transporte internacional de pasajeros y paquetes. Web, sistema de reservas con eleccion de asiento como en un vuelo, panel de operadores — mas SEO, backlinks y Meta Ads. Todo de un solo equipo.", tag: "TODO EN UNO", tagColor: "text-amber", category: "SITE · SISTEMA · SEO · ADS" },
           { name: "Inter-Bus", desc: "Tienda internacional de piezas con un panel que dirige todo el negocio: facturacion automatica, stock en vivo, beneficio por producto y contabilidad sin esfuerzo.", tag: "CERO PAPEL", tagColor: "text-amber", category: "E-COMMERCE · ERP" },
-          { name: "CMIEA.md", desc: "Plataforma municipal de formacion para adultos: cuentas y acceso, catalogo de cursos con filtros, inscripciones online, eventos y clubes — mas un panel donde el equipo publica los cursos y gestiona las inscripciones. Cero listas en papel.", tag: "INSCRIPCIONES ONLINE", tagColor: "text-green-400", category: "PLATAFORMA · LOGIN · CURSOS" }
+          { name: "CMIEA.md", desc: "Plataforma municipal de formacion para adultos: cuentas y acceso, catalogo de cursos con filtros, inscripciones online, eventos y clubes — mas un panel donde el equipo publica los cursos y gestiona las inscripciones. Cero listas en papel.", tag: "INSCRIPCIONES ONLINE", tagColor: "text-amber", category: "PLATAFORMA · LOGIN · CURSOS" }
         ]
       },
       numbers: [
@@ -432,7 +410,7 @@ export default function HomePage() {
   ]
 
   return (
-    <div className="min-h-screen text-ink grain" style={{ background: '#2A2118' }}>
+    <div className="min-h-screen text-ink" style={{ background: '#0D0D0D' }}>
 
       <SiteNav contactHref="#contact" />
 
@@ -440,13 +418,11 @@ export default function HomePage() {
       <div id="layout-container" className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 relative line-sides">
 
         {/* ── HERO ── */}
-        <section className="pt-32 md:pt-44 pb-16 md:pb-24 px-6 md:px-12 lg:px-16 relative glow-amber overflow-hidden" style={{ background: 'radial-gradient(ellipse 110% 80% at 50% -5%, #4A3020 0%, #382820 35%, #2A2118 75%)' }}>
-          <HeroLogoTrace />
-          <HeroBreath />
+        <section className="pt-32 md:pt-44 pb-16 md:pb-24 px-6 md:px-12 lg:px-16 relative glow-amber overflow-hidden" style={{ background: 'radial-gradient(ellipse 110% 80% at 50% -5%, #1B1B1B 0%, #131313 40%, #0D0D0D 78%)' }}>
           <HeroSpotlight />
-          <div ref={heroRef} className="text-center max-w-3xl mx-auto relative z-10 will-change-transform">
-            <h1 className="font-serif text-[clamp(2rem,4.5vw,3.5rem)] text-ink leading-[1.12] tracking-[-0.02em] text-balance">
-              <WordsReveal text={t.hero.headline} delay={200} />
+          <div ref={heroRef} className="text-center max-w-4xl mx-auto relative z-10 will-change-transform">
+            <h1 className="font-serif font-bold text-[clamp(2.4rem,5.6vw,4.8rem)] text-ink leading-[1.04] tracking-[-0.04em] text-balance">
+              <CharsReveal text={t.hero.headline} delay={150} />
             </h1>
             <FadeIn delay={500}>
               <p className="mt-6 text-ink-muted text-[15px] md:text-base leading-relaxed max-w-xl mx-auto">
@@ -455,10 +431,15 @@ export default function HomePage() {
             </FadeIn>
             <FadeIn delay={700}>
               <div className="mt-8 flex flex-col items-center gap-3">
-                <Link href="#contact" className="inline-flex items-center gap-2 bg-amber hover:bg-amber-light text-[#1A1410] px-7 py-3 text-sm transition-colors duration-300 group">
-                  {t.hero.cta}
-                  <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                </Link>
+                <Magnetic>
+                  <Link href="#contact" className="btn-fill inline-flex items-center bg-amber text-[#0A0A0A] px-8 py-3.5 text-sm font-medium active:scale-[0.97] transition-transform group">
+                    <span className="btn-fill-bg" aria-hidden />
+                    <span className="btn-fill-label flex items-center gap-2">
+                      {t.hero.cta}
+                      <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                    </span>
+                  </Link>
+                </Magnetic>
                 <span className="text-ink-light text-[11px] tracking-wide font-mono">{t.hero.note}</span>
               </div>
             </FadeIn>
@@ -466,15 +447,15 @@ export default function HomePage() {
         </section>
 
         {/* ── TRUSTED BY ── */}
-        <section className="line-top py-9 md:py-12 overflow-hidden" style={{ background: 'linear-gradient(180deg, #2C2318 0%, #2A2118 100%)' }}>
+        <section className="line-top" style={{ background: '#0D0D0D' }}>
           <FadeIn>
-            <p className="text-center text-ink-light text-[10px] font-mono tracking-[0.2em] uppercase mb-7 px-6">{t.logos}</p>
-            <LogoMarquee />
+            <p className="text-center text-ink-light text-[10px] font-semibold tracking-[0.14em] uppercase pt-9 md:pt-11 pb-7 px-6">{t.logos}</p>
           </FadeIn>
+          <LogoGrid />
         </section>
 
         {/* ── NUMBERS ── */}
-        <section className="line-top" style={{ background: 'linear-gradient(90deg, #2E2419 0%, #3C2E20 35%, #3A2C1E 65%, #2E2419 100%)' }}>
+        <section className="line-top" style={{ background: '#111111' }}>
           <AnimatedStatGrid className="grid grid-cols-2 md:grid-cols-4" stagger={150}>
             {t.numbers.map((n, i) => (
               <div key={i} className="px-6 md:px-8 py-8 md:py-10">
@@ -488,9 +469,9 @@ export default function HomePage() {
         </section>
 
         {/* ── SERVICES ── */}
-        <section className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: 'linear-gradient(145deg, #2C2218 0%, #362C20 45%, #2A2118 100%)' }}>
+        <section className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: '#0D0D0D' }}>
           <FadeIn>
-            <span className="text-ink-light text-[11px] font-mono tracking-[0.15em] uppercase block mb-10 md:mb-14">{t.services.label}</span>
+            <span className="text-ink-light text-[11px] font-semibold tracking-[0.1em] uppercase block mb-10 md:mb-14">{t.services.label}</span>
           </FadeIn>
           <StaggerGroup className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 lg:gap-12" stagger={180}>
             {t.services.items.map((s, i) => (
@@ -510,64 +491,53 @@ export default function HomePage() {
         </section>
 
         {/* ── WORK ── */}
-        <section className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: 'linear-gradient(160deg, #342A20 0%, #3A2C1E 25%, #2C2218 65%, #2A2118 100%)' }}>
+        <section className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: '#101010' }}>
           <FadeIn>
             <div className="flex items-center justify-between mb-12 md:mb-16">
-              <span className="text-ink-light text-[11px] font-mono tracking-[0.15em] uppercase">{t.work.label}</span>
+              <span className="text-ink-light text-[11px] font-semibold tracking-[0.1em] uppercase">{t.work.label}</span>
               <Link href="/portfolio" className="text-ink-muted hover:text-ink text-[12px] font-mono transition-colors group inline-flex items-center gap-1">{t.work.viewAll} <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">&rarr;</span></Link>
             </div>
           </FadeIn>
 
-          <div className="space-y-16 md:space-y-24">
-            {projects.map((project, i) => {
-              const reversed = i % 2 === 1
-              return (
-                <Link key={i} href={project.href} target="_blank" rel="noopener noreferrer" className="group block">
-                  <div className={`grid grid-cols-1 gap-8 lg:gap-14 items-center ${reversed ? 'lg:grid-cols-[1.45fr_1fr]' : 'lg:grid-cols-[1fr_1.45fr]'}`}>
-                    <SlideIn direction={reversed ? "right" : "left"} className={`order-2 ${reversed ? 'lg:order-2' : 'lg:order-1'}`}>
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-4">
-                        <span className="text-[10px] font-mono tracking-[0.1em] uppercase text-ink-light">{project.category}</span>
-                        <span className="text-[9px] px-1.5 py-0.5 bg-divider/30 rounded-sm font-mono">·</span>
-                        <span className={`text-[10px] font-mono tracking-[0.1em] uppercase ${project.tagColor}`}>{project.tag}</span>
-                      </div>
-                      <h3 className="font-serif text-2xl md:text-3xl text-ink group-hover:text-amber transition-colors duration-300 mb-3">{project.name}</h3>
-                      <p className="text-ink-muted text-[13px] md:text-[14px] leading-relaxed max-w-md">{project.desc}</p>
-                      <span className="mt-5 inline-flex items-center gap-1.5 text-amber text-[11px] font-mono tracking-wide opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500">
-                        {project.domain} <span>&rarr;</span>
-                      </span>
-                    </SlideIn>
-                    <ImageReveal delay={120} className={`order-1 ${reversed ? 'lg:order-1' : 'lg:order-2'}`}>
-                      <BrowserFrame domain={project.domain} className="group-hover:border-amber/40 transition-colors duration-500">
-                        <div className="aspect-[16/10] overflow-hidden">
-                          <Image src={project.src} alt={`${project.name} — website, SEO and business systems by landings.md`} width={1280} height={800} quality={85} className="w-full h-full object-cover object-top group-hover:scale-[1.025] transition-transform duration-[900ms] ease-smooth" />
-                        </div>
-                      </BrowserFrame>
-                    </ImageReveal>
+          <StaggerGroup className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6" stagger={140}>
+            {projects.map((project, i) => (
+              <Link key={i} href={project.href} target="_blank" rel="noopener noreferrer" className="group block h-full border border-white/[0.08] hover:border-white/[0.16] transition-colors duration-500 bg-[#131313]">
+                <div className="aspect-[16/10] overflow-hidden border-b border-white/[0.08]">
+                  <Image src={project.src} alt={`${project.name} — website, SEO and business systems by landings.md`} width={960} height={600} quality={85} className="w-full h-full object-cover object-top brightness-[0.96] group-hover:brightness-100 group-hover:scale-[1.03] transition-[transform,filter] duration-700 ease-smooth" />
+                </div>
+                <div className="p-5 md:p-6">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-3">
+                    <span className="text-[9px] font-mono tracking-[0.1em] uppercase text-ink-light">{project.category}</span>
+                    <span className={`text-[9px] font-mono tracking-[0.1em] uppercase ${project.tagColor}`}>· {project.tag}</span>
                   </div>
-                </Link>
-              )
-            })}
-          </div>
+                  <h3 className="font-serif text-xl md:text-[22px] text-ink group-hover:text-amber transition-colors duration-300 mb-2">{project.name}</h3>
+                  <p className="text-ink-muted text-[13px] leading-relaxed line-clamp-3">{project.desc}</p>
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-ink-light group-hover:text-amber text-[11px] font-mono tracking-wide transition-colors duration-300">
+                    {project.domain} <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </StaggerGroup>
         </section>
 
         {/* ── STATEMENT ── */}
-        <section className="line-top px-6 md:px-12 lg:px-16 py-16 md:py-24 relative glow-amber" style={{ background: 'radial-gradient(ellipse 90% 130% at 85% 50%, #3E3229 0%, #342A20 40%, #2A2118 80%)' }}>
-          <RevealText>
-            <p className="font-serif text-[clamp(1.3rem,2.4vw,2rem)] text-ink leading-[1.4] tracking-[-0.01em] max-w-2xl">
-              {t.statement}
-            </p>
-          </RevealText>
+        <section className="line-top px-6 md:px-12 lg:px-16 py-16 md:py-24 relative glow-amber" style={{ background: '#0D0D0D' }}>
+          <ScrubText
+            text={t.statement}
+            className="font-serif text-[clamp(1.3rem,2.4vw,2rem)] text-ink leading-[1.4] tracking-[-0.01em] max-w-2xl"
+          />
         </section>
 
         {/* ── PROCESS ── */}
-        <section className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: 'linear-gradient(145deg, #3E3229 0%, #362C20 30%, #2C2218 65%, #2A2118 100%)' }}>
+        <section className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: '#101010' }}>
           <FadeIn>
-            <span className="text-ink-light text-[11px] font-mono tracking-[0.15em] uppercase block mb-10 md:mb-14">{t.process.label}</span>
+            <span className="text-ink-light text-[11px] font-semibold tracking-[0.1em] uppercase block mb-10 md:mb-14">{t.process.label}</span>
           </FadeIn>
-          <StaggerGroup className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10" stagger={200}>
+          <StaggerGroup className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 md:divide-x md:divide-white/[0.08]" stagger={200}>
             {t.process.steps.map((step, i) => (
-              <div key={i} className="relative">
-                <span className="text-ink-light/30 font-mono text-[11px] tracking-widest absolute -top-0.5 right-0">{step.num}</span>
+              <div key={i} className={`relative ${i === 0 ? 'md:pr-10' : i === 2 ? 'md:pl-10' : 'md:px-10'}`}>
+                <span className="font-serif text-[2.6rem] leading-none text-ink/[0.13] block mb-4 select-none">{step.num}</span>
                 <h3 className="font-serif text-lg text-ink mb-3">{step.title}</h3>
                 <p className="text-ink-muted text-[13px] leading-relaxed">{step.body}</p>
               </div>
@@ -576,10 +546,10 @@ export default function HomePage() {
         </section>
 
         {/* ── CONTACT ── */}
-        <section id="contact" className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-24 relative grid-animated" style={{ background: 'radial-gradient(ellipse 80% 100% at 15% 85%, #3E3229 0%, #302620 40%, #2A2118 85%)' }}>
+        <section id="contact" className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-24 relative grid-animated" style={{ background: '#0E0E0E' }}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
             <SlideIn direction="left">
-              <span className="text-ink-light text-[11px] font-mono tracking-[0.15em] uppercase block mb-4">{t.contact.label}</span>
+              <span className="text-ink-light text-[11px] font-semibold tracking-[0.1em] uppercase block mb-4">{t.contact.label}</span>
               <h2 className="font-serif text-[clamp(1.8rem,3vw,2.75rem)] text-ink leading-[1.1] mb-4">{t.contact.heading}</h2>
               <p className="text-ink-muted text-[14px] leading-relaxed">{t.contact.sub}</p>
               <p className="mt-6 text-ink-light text-[12px] font-mono">contact@landings.md</p>
@@ -594,7 +564,10 @@ export default function HomePage() {
                   <input type="email" required placeholder={t.form.email} value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full bg-transparent border-b border-divider/50 px-0 py-4 text-[14px] text-ink placeholder:text-ink-muted focus:outline-none focus:border-amber/40 transition-colors duration-500 font-mono" />
                   <textarea required rows={3} placeholder={t.form.message} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} className="w-full bg-transparent border-b border-divider/50 px-0 py-4 text-[14px] text-ink placeholder:text-ink-muted focus:outline-none focus:border-amber/40 transition-colors duration-500 resize-none font-mono" />
                   <div className="pt-6">
-                    <button type="submit" className="bg-amber hover:bg-amber-light text-[#1A1410] px-7 py-3 text-[13px] transition-colors duration-300">{t.form.send}</button>
+                    <button type="submit" className="btn-fill bg-amber text-[#0A0A0A] px-7 py-3 text-[13px] font-medium active:scale-[0.98] transition-transform">
+                      <span className="btn-fill-bg" aria-hidden />
+                      <span className="btn-fill-label">{t.form.send}</span>
+                    </button>
                   </div>
                 </form>
               )}
@@ -603,7 +576,7 @@ export default function HomePage() {
         </section>
 
         {/* ── FOOTER ── */}
-        <footer className="line-top px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: 'linear-gradient(180deg, #241E18 0%, #1C1710 100%)' }}>
+        <footer className="line-top px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: '#0A0A0A' }}>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
             <div className="flex items-center gap-6">
               <Link href="/" className="flex items-center">

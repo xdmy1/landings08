@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 
-const COLOR = 'rgba(120, 100, 78, 0.55)'
+const COLOR = 'rgba(255, 255, 255, 0.08)'
 const ANIM  = 'statDivDraw 900ms cubic-bezier(0.16,1,0.3,1) 150ms forwards'
 
 export function AnimatedStatGrid({

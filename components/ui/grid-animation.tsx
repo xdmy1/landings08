@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 const SPACING = 60
-const COLOR = 'rgba(212, 120, 90, 0.13)'
+const COLOR = 'rgba(232, 130, 90, 0.13)'
 const DRAW_DURATION = 1100
 const MAX_STAGGER = 950
 const INITIAL_DELAY = 250

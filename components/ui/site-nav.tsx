@@ -70,8 +70,8 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string }) 
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-smooth"
         style={{
           background: scrolled
-            ? 'rgba(42,33,24,0.92)'
-            : 'linear-gradient(180deg, rgba(22,17,12,0.72) 0%, transparent 100%)',
+            ? 'rgba(13,13,13,0.88)'
+            : 'linear-gradient(180deg, rgba(10,10,10,0.72) 0%, transparent 100%)',
           backdropFilter: scrolled ? 'blur(12px)' : 'none',
         }}
       >
@@ -82,10 +82,10 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string }) 
           style={{ maxHeight: scrolled ? 0 : 40, opacity: scrolled ? 0 : 1 }}
         >
           <div
-            className="flex items-center justify-center gap-2.5 h-9 px-4 border-b border-amber/15 text-[10px] font-mono tracking-wide"
-            style={{ background: 'linear-gradient(90deg, rgba(212,120,90,0.06) 0%, rgba(212,120,90,0.14) 50%, rgba(212,120,90,0.06) 100%)' }}
+            className="flex items-center justify-center gap-2.5 h-9 px-4 border-b border-white/[0.07] text-[11px] font-medium"
+            style={{ background: '#101010' }}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-amber animate-pulse flex-shrink-0" />
+            <span className="w-1 h-1 rounded-full bg-amber flex-shrink-0" />
             <span className="hidden lg:block min-w-0 text-ink-muted group-hover/bar:text-ink transition-colors duration-300 truncate">
               {a.full}
             </span>
@@ -153,9 +153,10 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string }) 
                 </div>
                 <Link
                   href={contactHref}
-                  className="text-[13px] text-[#1A1410] bg-amber hover:bg-amber-light px-5 py-2 transition-colors duration-300"
+                  className="btn-fill text-[13px] font-medium text-[#0A0A0A] bg-amber px-5 py-2 active:scale-[0.98] transition-transform"
                 >
-                  {t.contact}
+                  <span className="btn-fill-bg" aria-hidden />
+                  <span className="btn-fill-label">{t.contact}</span>
                 </Link>
               </div>
             </div>
@@ -213,7 +214,7 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string }) 
               <Link
                 href={contactHref}
                 onClick={() => setMobileOpen(false)}
-                className="inline-flex items-center gap-2 bg-amber hover:bg-amber-light text-[#1A1410] px-6 py-3 text-sm transition-colors duration-300"
+                className="inline-flex items-center gap-2 bg-amber hover:bg-amber-light text-[#0A0A0A] px-6 py-3 text-sm transition-colors duration-300"
               >
                 {t.contact}
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -7,9 +7,9 @@ import React from 'react'
    Romanian on purpose: these render as authentic product UI. */
 
 const P = {
-  panel: '#2E251C',
-  panelSoft: '#352A1F',
-  inset: '#261F17',
+  panel: '#121212',
+  panelSoft: '#161616',
+  inset: '#111111',
   green: '#7FB069',
 }
 
@@ -21,13 +21,13 @@ export function SeatPickerMock({ className = "" }: { className?: string }) {
 
   const seat = (id: string) => {
     if (id === selected) return (
-      <div key={id} className="relative w-6 h-6 md:w-7 md:h-7 bg-amber text-[#1A1410] text-[8px] md:text-[9px] font-semibold flex items-center justify-center rounded-[3px]">
+      <div key={id} className="relative w-6 h-6 md:w-7 md:h-7 bg-amber text-[#0A0A0A] text-[8px] md:text-[9px] font-semibold flex items-center justify-center rounded-[3px]">
         {id}
         <span className="absolute -inset-1 border border-amber/60 rounded-[5px] animate-pulse pointer-events-none" />
       </div>
     )
     if (occupied.has(id)) return (
-      <div key={id} className="w-6 h-6 md:w-7 md:h-7 rounded-[3px] opacity-80" style={{ background: '#4A3B2C' }} />
+      <div key={id} className="w-6 h-6 md:w-7 md:h-7 rounded-[3px] opacity-80" style={{ background: '#242424' }} />
     )
     return (
       <div key={id} className="w-6 h-6 md:w-7 md:h-7 border border-divider/70 rounded-[3px] text-[8px] md:text-[9px] text-ink-light flex items-center justify-center">
@@ -71,7 +71,7 @@ export function SeatPickerMock({ className = "" }: { className?: string }) {
               <span className="text-ink-muted text-[9px] md:text-[10px]">Liber</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-[2px] flex-shrink-0" style={{ background: '#4A3B2C' }} />
+              <span className="w-2.5 h-2.5 rounded-[2px] flex-shrink-0" style={{ background: '#242424' }} />
               <span className="text-ink-muted text-[9px] md:text-[10px]">Ocupat</span>
             </div>
             <div className="flex items-center gap-2">
@@ -85,7 +85,7 @@ export function SeatPickerMock({ className = "" }: { className?: string }) {
               <span className="text-ink-muted text-[9px] md:text-[10px]">Locul 3C</span>
               <span className="text-ink font-serif text-sm md:text-base">&euro;85</span>
             </div>
-            <div className="mt-2 bg-amber text-[#1A1410] text-center text-[9px] md:text-[10px] font-medium py-1.5">
+            <div className="mt-2 bg-amber text-[#0A0A0A] text-center text-[9px] md:text-[10px] font-medium py-1.5">
               Confirma rezervarea
             </div>
           </div>
@@ -138,7 +138,7 @@ export function ErpDashboardMock({ className = "" }: { className?: string }) {
             <span className="text-ink text-[9px] md:text-[10px] font-mono">{f.suma}</span>
             <span
               className="text-[7px] md:text-[8px] font-mono uppercase tracking-wide px-1.5 py-0.5 flex-shrink-0"
-              style={f.ok ? { color: P.green, background: 'rgba(127,176,105,0.12)' } : { color: '#D4785A', background: 'rgba(212,120,90,0.12)' }}
+              style={f.ok ? { color: P.green, background: 'rgba(127,176,105,0.12)' } : { color: '#E8825A', background: 'rgba(232,130,90,0.12)' }}
             >
               {f.ok ? 'Platita' : 'In asteptare'}
             </span>
@@ -199,7 +199,7 @@ export function ScheduleCalendarMock({ className = "" }: { className?: string })
                   <div
                     key={i}
                     className={`border-l-2 p-1.5 md:p-2 ${s.now ? 'border-amber' : 'border-divider'}`}
-                    style={{ background: s.now ? 'rgba(212,120,90,0.12)' : P.panel }}
+                    style={{ background: s.now ? 'rgba(232,130,90,0.12)' : P.panel }}
                   >
                     <p className="text-ink-light text-[7px] md:text-[8px] font-mono">{s.t}</p>
                     <p className="text-ink text-[8px] md:text-[9px] truncate leading-tight mt-0.5">{s.who}</p>
