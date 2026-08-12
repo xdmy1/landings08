@@ -34,22 +34,21 @@
 body {
   color: hsl(var(--foreground));
   background: #0D0D0D;
-  font-family: 'Geist', system-ui, sans-serif;
+  font-family: 'Satoshi', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Display face — same grotesque as body, pulled tight and heavy.
-   (The class name survives from the old serif system; every headline
-   on the site uses it.) */
+/* Display face — light editorial serif at sub-1.0 leading, the
+   mirabel.agency signature. Every headline on the site uses it. */
 .font-serif {
-  font-family: 'Geist', system-ui, sans-serif;
-  font-weight: 600;
-  letter-spacing: -0.04em;
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 300;
+  letter-spacing: -0.03em;
 }
 
 .font-sans {
-  font-family: 'Geist', system-ui, sans-serif;
+  font-family: 'Satoshi', system-ui, sans-serif;
 }
 
 .font-mono {

@@ -138,25 +138,6 @@ const projects = [
     image: "/images/shot-eliteprotocol.jpg", url: "https://eliteprotocol.md", status: "LIVE"
   },
   {
-    id: 4, title: "RespectAuto", domain: "respectauto.md",
-    chips: ["SITE", "SEO", "BOOKING"],
-    description: {
-      en: "Car rental platform with advanced SEO and booking system. From invisible on Google to #1 in Moldova for car rental keywords.",
-      ro: "Platforma de inchirieri auto cu SEO avansat si sistem de rezervari. De la invizibil pe Google la #1 in Moldova pentru inchirieri auto.",
-      de: "Autovermietungsplattform mit fortschrittlichem SEO und Buchungssystem. Von unsichtbar zur Nr. 1 in Moldawien.",
-      fr: "Plateforme de location auto avec SEO avance et reservations. D'invisible sur Google au n°1 en Moldavie.",
-      es: "Plataforma de alquiler de autos con SEO avanzado y reservas. De invisible en Google al #1 en Moldavia."
-    },
-    highlight: {
-      en: "+300% organic traffic, #1 on Google",
-      ro: "+300% trafic organic, #1 pe Google",
-      de: "+300% organischer Traffic, Nr. 1 bei Google",
-      fr: "+300% de trafic organique, n°1 sur Google",
-      es: "+300% trafico organico, #1 en Google"
-    },
-    image: "/images/shot-respectauto.jpg", url: "https://respectauto.md", status: "LIVE"
-  },
-  {
     id: 5, title: "RADX Cooling", domain: "radx.solutions",
     chips: ["SITE", "SEO", "LEAD GEN"],
     description: {

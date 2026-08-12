@@ -13,13 +13,13 @@ type Treatment = 'solid' | 'blend' | 'mono'
    and warmed instead, keeping their internal drawing readable. */
 const logos: { src: string, alt: string, domain: string, h: string, treatment: Treatment, opacity?: string }[] = [
   { src: '/images/logos/davo.png', alt: 'Davo Group — davo.md', domain: 'davo.md', h: 'h-6 md:h-7', treatment: 'solid' },
-  { src: '/images/logos/interbus.png', alt: 'Inter Bus — inter-bus.md', domain: 'inter-bus.md', h: 'h-7 md:h-8', treatment: 'solid' },
-  { src: '/images/logos/cmiea.png', alt: 'CMIEA — cmiea.md', domain: 'cmiea.md', h: 'h-9 md:h-10', treatment: 'solid' },
-  { src: '/images/logos/glg.png', alt: 'Scoala Auto GLG — scoalaautoglg.com', domain: 'scoalaautoglg.com', h: 'h-11 md:h-12', treatment: 'solid', opacity: 'opacity-70' },
-  { src: '/images/logos/respectauto.png', alt: 'RespectAuto — respectauto.md', domain: 'respectauto.md', h: 'h-5 md:h-6', treatment: 'solid' },
-  { src: '/images/logos/eurogard.png', alt: 'EuroGard — eurogard.md', domain: 'eurogard.md', h: 'h-10 md:h-11', treatment: 'solid' },
-  { src: '/images/logos/rizzaclassic.png', alt: 'Rizza Classic — rizzaclassic.com', domain: 'rizzaclassic.com', h: 'h-8 md:h-9', treatment: 'solid' },
-  { src: '/images/logos/udc.png', alt: 'Universal Dental Clinic — udc.md', domain: 'udc.md', h: 'h-9 md:h-10', treatment: 'mono', opacity: 'opacity-50' },
+  { src: '/images/logos/interbus.png', alt: 'Inter Bus — inter-bus.md', domain: 'inter-bus.md', h: 'h-6 md:h-7', treatment: 'solid' },
+  { src: '/images/logos/cmiea.png', alt: 'CMIEA — cmiea.md', domain: 'cmiea.md', h: 'h-6 md:h-7', treatment: 'solid' },
+  { src: '/images/logos/glg.png', alt: 'Scoala Auto GLG — scoalaautoglg.com', domain: 'scoalaautoglg.com', h: 'h-6 md:h-7', treatment: 'solid' },
+  { src: '/images/logos/radx.png', alt: 'RADX Cooling Solutions — radx.solutions', domain: 'radx.solutions', h: 'h-6 md:h-7', treatment: 'solid' },
+  { src: '/images/logos/eurogard.png', alt: 'EuroGard — eurogard.md', domain: 'eurogard.md', h: 'h-6 md:h-7', treatment: 'solid' },
+  { src: '/images/logos/rizzaclassic.png', alt: 'Rizza Classic — rizzaclassic.com', domain: 'rizzaclassic.com', h: 'h-6 md:h-7', treatment: 'solid' },
+  { src: '/images/logos/udc.png', alt: 'Universal Dental Clinic — udc.md', domain: 'udc.md', h: 'h-6 md:h-7', treatment: 'mono' },
 ]
 
 const filters: Record<Treatment, React.CSSProperties> = {
@@ -64,7 +64,7 @@ export function LogoGrid({ className = "" }: { className?: string }) {
         return (
           <div
             key={logo.src}
-            className={`group relative flex items-center justify-center px-4 py-7 md:py-8 ${borders} transition-colors duration-500 hover:bg-[#E8825A]/[0.05]`}
+            className={`group relative flex items-center justify-center px-4 py-9 md:py-10 ${borders} transition-colors duration-500 hover:bg-[#E8825A]/[0.05]`}
             style={{
               borderColor: CELL_BORDER,
               opacity: visible ? 1 : 0,
@@ -77,7 +77,7 @@ export function LogoGrid({ className = "" }: { className?: string }) {
               alt={logo.alt}
               width={200}
               height={80}
-              className={`w-auto ${logo.h} ${logo.opacity ?? 'opacity-45'} group-hover:opacity-90 transition-opacity duration-500 select-none`}
+              className={`w-auto ${logo.h} ${logo.opacity ?? 'opacity-50'} max-w-[140px] object-contain group-hover:opacity-90 transition-opacity duration-500 select-none`}
               style={filters[logo.treatment]}
               draggable={false}
             />

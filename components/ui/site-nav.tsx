@@ -85,14 +85,14 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string }) 
             className="flex items-center justify-center gap-2.5 h-9 px-4 border-b border-white/[0.07] text-[11px] font-medium"
             style={{ background: '#101010' }}
           >
-            <span className="w-1 h-1 rounded-full bg-amber flex-shrink-0" />
+            <span className="w-1 h-1 rounded-full bg-white/40 flex-shrink-0" />
             <span className="hidden lg:block min-w-0 text-ink-muted group-hover/bar:text-ink transition-colors duration-300 truncate">
               {a.full}
             </span>
             <span className="lg:hidden text-ink-muted group-hover/bar:text-ink transition-colors duration-300 truncate">
               {a.short}
             </span>
-            <span className="text-amber group-hover/bar:text-amber-light transition-colors duration-300 flex-shrink-0 inline-flex items-center gap-1">
+            <span className="text-ink underline underline-offset-2 decoration-white/40 group-hover/bar:decoration-white transition-colors duration-300 flex-shrink-0 inline-flex items-center gap-1">
               {a.cta}
               <svg className="w-3 h-3 transition-transform duration-300 group-hover/bar:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -153,10 +153,10 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string }) 
                 </div>
                 <Link
                   href={contactHref}
-                  className="btn-fill text-[13px] font-medium text-[#0A0A0A] bg-amber px-5 py-2 active:scale-[0.98] transition-transform"
+                  className="btn-fill group text-[13px] font-medium text-ink border border-white/25 px-5 py-2 active:scale-[0.98] transition-transform"
                 >
                   <span className="btn-fill-bg" aria-hidden />
-                  <span className="btn-fill-label">{t.contact}</span>
+                  <span className="btn-fill-label transition-colors duration-[400ms] group-hover:text-[#0A0A0A]">{t.contact}</span>
                 </Link>
               </div>
             </div>

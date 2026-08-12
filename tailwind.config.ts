@@ -62,8 +62,8 @@ const config: Config = {
         ring: 'hsl(var(--ring))',
       },
       fontFamily: {
-        serif: ['Geist', 'system-ui', 'sans-serif'],
-        sans: ['Geist', 'system-ui', 'sans-serif'],
+        serif: ['Inria Serif', 'Georgia', 'serif'],
+        sans: ['Satoshi', 'system-ui', 'sans-serif'],
         mono: ['Geist Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
       animation: {

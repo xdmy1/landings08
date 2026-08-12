@@ -8,6 +8,8 @@ import { SiteNav } from '@/components/ui/site-nav'
 import { AnimatedStatGrid } from '@/components/ui/animated-stat-grid'
 import { LogoGrid } from '@/components/ui/logo-grid'
 import { HeroSpotlight } from '@/components/ui/hero-fx'
+import { BrowserFrame } from '@/components/ui/browser-frame'
+import { SeatPickerMock } from '@/components/ui/system-mocks'
 import { ScrubText, Magnetic } from '@/components/ui/scroll-fx'
 import { useLanguage } from '@/hooks/useLanguage'
 
@@ -403,12 +405,6 @@ export default function HomePage() {
     { ...t.work.projects[2], src: "/images/shot-cmiea.jpg", href: "http://cmiea.md", domain: "cmiea.md" },
   ]
 
-  const serviceIcons = [
-    <path key="web" strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />,
-    <path key="ads" strokeLinecap="round" strokeLinejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 01-1.44-4.282m3.102.069a18.03 18.03 0 01-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 018.835 2.535M10.34 6.66a23.847 23.847 0 008.835-2.535m0 0A23.74 23.74 0 0018.795 3m.38 1.125a23.91 23.91 0 011.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 001.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 010 3.46" />,
-    <path key="sys" strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />,
-  ]
-
   return (
     <div className="min-h-screen text-ink" style={{ background: '#0D0D0D' }}>
 
@@ -417,31 +413,40 @@ export default function HomePage() {
       {/* ── BORDERED CONTAINER ── */}
       <div id="layout-container" className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 relative line-sides">
 
-        {/* ── HERO ── */}
-        <section className="pt-32 md:pt-44 pb-16 md:pb-24 px-6 md:px-12 lg:px-16 relative glow-amber overflow-hidden" style={{ background: 'radial-gradient(ellipse 110% 80% at 50% -5%, #1B1B1B 0%, #131313 40%, #0D0D0D 78%)' }}>
+        {/* ── HERO — split editorial: display serif left, live system mock right ── */}
+        <section className="pt-32 md:pt-40 pb-14 md:pb-20 px-6 md:px-12 lg:px-16 relative overflow-hidden" style={{ background: '#0D0D0D' }}>
           <HeroSpotlight />
-          <div ref={heroRef} className="text-center max-w-4xl mx-auto relative z-10 will-change-transform">
-            <h1 className="font-serif font-bold text-[clamp(2.4rem,5.6vw,4.8rem)] text-ink leading-[1.04] tracking-[-0.04em] text-balance">
-              <CharsReveal text={t.hero.headline} delay={150} />
-            </h1>
-            <FadeIn delay={500}>
-              <p className="mt-6 text-ink-muted text-[15px] md:text-base leading-relaxed max-w-xl mx-auto">
-                {t.hero.sub}
-              </p>
-            </FadeIn>
-            <FadeIn delay={700}>
-              <div className="mt-8 flex flex-col items-center gap-3">
-                <Magnetic>
-                  <Link href="#contact" className="btn-fill inline-flex items-center bg-amber text-[#0A0A0A] px-8 py-3.5 text-sm font-medium active:scale-[0.97] transition-transform group">
-                    <span className="btn-fill-bg" aria-hidden />
-                    <span className="btn-fill-label flex items-center gap-2">
-                      {t.hero.cta}
-                      <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                    </span>
-                  </Link>
-                </Magnetic>
-                <span className="text-ink-light text-[11px] tracking-wide font-mono">{t.hero.note}</span>
-              </div>
+          {/* architectural hairline crossing the hero */}
+          <div className="absolute top-0 bottom-0 left-[58%] w-px bg-white/[0.05] hidden lg:block" aria-hidden />
+          <div ref={heroRef} className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-start relative z-10 will-change-transform">
+            <div className="lg:col-span-7">
+              <h1 className="font-serif text-[clamp(3rem,5.6vw,5.4rem)] text-ink leading-[0.96]">
+                <CharsReveal text={t.hero.headline} delay={150} />
+              </h1>
+              <FadeIn delay={550}>
+                <p className="mt-8 text-ink-muted text-base md:text-[17px] leading-relaxed max-w-lg">
+                  {t.hero.sub}
+                </p>
+              </FadeIn>
+              <FadeIn delay={700}>
+                <div className="mt-9 flex flex-wrap items-center gap-5">
+                  <Magnetic>
+                    <Link href="#contact" className="btn-fill inline-flex items-center bg-amber text-[#0A0A0A] px-8 py-3.5 text-sm font-medium active:scale-[0.97] transition-transform group">
+                      <span className="btn-fill-bg" aria-hidden />
+                      <span className="btn-fill-label flex items-center gap-2">
+                        {t.hero.cta}
+                        <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                      </span>
+                    </Link>
+                  </Magnetic>
+                  <span className="text-ink-light text-[11px] tracking-wide font-mono">{t.hero.note}</span>
+                </div>
+              </FadeIn>
+            </div>
+            <FadeIn delay={400} className="lg:col-span-5 hidden lg:block lg:pt-2">
+              <BrowserFrame domain="davo.md — rezervare bilet">
+                <SeatPickerMock />
+              </BrowserFrame>
             </FadeIn>
           </div>
         </section>
@@ -458,36 +463,36 @@ export default function HomePage() {
         <section className="line-top" style={{ background: '#111111' }}>
           <AnimatedStatGrid className="grid grid-cols-2 md:grid-cols-4" stagger={150}>
             {t.numbers.map((n, i) => (
-              <div key={i} className="px-6 md:px-8 py-8 md:py-10">
-                <p className="font-serif text-[clamp(1.75rem,3vw,2.5rem)] text-ink leading-none">
+              <div key={i} className="flex flex-col justify-between min-h-[150px] md:min-h-[210px] p-6 md:p-7">
+                <p className="font-serif text-[clamp(2.6rem,4.8vw,5rem)] text-ink leading-none">
                   <AnimatedNumber value={n.value} />
                 </p>
-                <p className="text-ink-muted text-[12px] mt-2 font-mono tracking-wide uppercase">{n.label}</p>
+                <p className="text-ink-light text-[11px] mt-6 font-mono tracking-[0.08em] uppercase">{n.label}</p>
               </div>
             ))}
           </AnimatedStatGrid>
         </section>
 
-        {/* ── SERVICES ── */}
-        <section className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: '#0D0D0D' }}>
+        {/* ── SERVICES — numbered rows that fill light on hover ── */}
+        <section className="line-top" style={{ background: '#0D0D0D' }}>
           <FadeIn>
-            <span className="text-ink-light text-[11px] font-semibold tracking-[0.1em] uppercase block mb-10 md:mb-14">{t.services.label}</span>
+            <span className="text-ink-light text-[11px] font-semibold tracking-[0.1em] uppercase block px-6 md:px-12 lg:px-16 pt-12 md:pt-16 pb-8 md:pb-10">{t.services.label}</span>
           </FadeIn>
-          <StaggerGroup className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 lg:gap-12" stagger={180}>
+          <div className="divide-y divide-white/[0.08] border-t border-white/[0.08]">
             {t.services.items.map((s, i) => (
-              <div key={i} className="group/svc flex flex-col">
-                <div className="w-10 h-10 border border-divider/60 flex items-center justify-center mb-5 group-hover/svc:border-amber/50 transition-colors duration-500">
-                  <svg className="w-5 h-5 text-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.2}>{serviceIcons[i]}</svg>
-                </div>
-                <h3 className="font-serif text-lg md:text-xl text-ink mb-3">{s.title}</h3>
-                <p className="text-ink-muted text-[13px] leading-relaxed mb-5 flex-1">{s.body}</p>
-                <Link href={s.href} className="inline-flex items-center gap-1.5 text-amber hover:text-amber-light text-[12px] font-mono tracking-wide transition-colors group/link">
-                  {s.link}
-                  <span className="inline-block transition-transform duration-300 group-hover/link:translate-x-1">&rarr;</span>
+              <FadeIn key={i} delay={i * 90}>
+                <Link
+                  href={s.href}
+                  className="group grid grid-cols-[2.5rem_1fr_auto] lg:grid-cols-[5rem_1.2fr_1fr_auto] gap-4 lg:gap-8 items-start px-6 md:px-12 lg:px-16 py-10 md:py-14 transition-colors duration-[350ms] ease-[cubic-bezier(0.65,0,0.35,1)] hover:bg-[#F2F2F0]"
+                >
+                  <span className="font-mono text-[12px] pt-2 md:pt-4 text-ink-light/70 group-hover:text-[#0A0A0A]/40 transition-colors duration-[350ms]">0{i + 1}</span>
+                  <h3 className="font-serif text-3xl md:text-[3.4rem] leading-[1.02] text-ink group-hover:text-[#0A0A0A] transition-colors duration-[350ms]">{s.title}</h3>
+                  <p className="hidden lg:block text-ink-muted group-hover:text-[#0A0A0A]/70 text-[15px] leading-[1.55] max-w-[36ch] pt-2 md:pt-3 transition-colors duration-[350ms]">{s.body}</p>
+                  <span className="text-ink-light group-hover:text-[#0A0A0A] text-2xl pt-1 md:pt-3 transition-all duration-[350ms] group-hover:translate-x-1.5">&rarr;</span>
                 </Link>
-              </div>
+              </FadeIn>
             ))}
-          </StaggerGroup>
+          </div>
         </section>
 
         {/* ── WORK ── */}
@@ -503,7 +508,7 @@ export default function HomePage() {
             {projects.map((project, i) => (
               <Link key={i} href={project.href} target="_blank" rel="noopener noreferrer" className="group block h-full border border-white/[0.08] hover:border-white/[0.16] transition-colors duration-500 bg-[#131313]">
                 <div className="aspect-[16/10] overflow-hidden border-b border-white/[0.08]">
-                  <Image src={project.src} alt={`${project.name} — website, SEO and business systems by landings.md`} width={960} height={600} quality={85} className="w-full h-full object-cover object-top brightness-[0.96] group-hover:brightness-100 group-hover:scale-[1.03] transition-[transform,filter] duration-700 ease-smooth" />
+                  <Image src={project.src} alt={`${project.name} — website, SEO and business systems by landings.md`} width={960} height={600} quality={85} className="w-full h-full object-cover object-top brightness-[0.9] group-hover:brightness-100 group-hover:scale-[1.03] transition-[transform,filter] duration-700 ease-smooth" />
                 </div>
                 <div className="p-5 md:p-6">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-3">
@@ -511,7 +516,7 @@ export default function HomePage() {
                     <span className={`text-[9px] font-mono tracking-[0.1em] uppercase ${project.tagColor}`}>· {project.tag}</span>
                   </div>
                   <h3 className="font-serif text-xl md:text-[22px] text-ink group-hover:text-amber transition-colors duration-300 mb-2">{project.name}</h3>
-                  <p className="text-ink-muted text-[13px] leading-relaxed line-clamp-3">{project.desc}</p>
+                  <p className="text-ink-muted text-[13px] leading-relaxed line-clamp-2">{project.desc}</p>
                   <span className="mt-4 inline-flex items-center gap-1.5 text-ink-light group-hover:text-amber text-[11px] font-mono tracking-wide transition-colors duration-300">
                     {project.domain} <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
                   </span>
@@ -522,51 +527,52 @@ export default function HomePage() {
         </section>
 
         {/* ── STATEMENT ── */}
-        <section className="line-top px-6 md:px-12 lg:px-16 py-16 md:py-24 relative glow-amber" style={{ background: '#0D0D0D' }}>
+        <section className="line-top px-6 md:px-12 lg:px-16 py-24 md:py-44 relative" style={{ background: '#0D0D0D' }}>
           <ScrubText
             text={t.statement}
-            className="font-serif text-[clamp(1.3rem,2.4vw,2rem)] text-ink leading-[1.4] tracking-[-0.01em] max-w-2xl"
+            className="font-serif text-[clamp(1.6rem,2.9vw,2.6rem)] text-ink leading-[1.35] max-w-3xl"
           />
         </section>
 
         {/* ── PROCESS ── */}
-        <section className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: '#101010' }}>
+        <section className="line-top px-6 md:px-12 lg:px-16 py-20 md:py-32" style={{ background: '#101010' }}>
           <FadeIn>
             <span className="text-ink-light text-[11px] font-semibold tracking-[0.1em] uppercase block mb-10 md:mb-14">{t.process.label}</span>
           </FadeIn>
           <StaggerGroup className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 md:divide-x md:divide-white/[0.08]" stagger={200}>
             {t.process.steps.map((step, i) => (
               <div key={i} className={`relative ${i === 0 ? 'md:pr-10' : i === 2 ? 'md:pl-10' : 'md:px-10'}`}>
-                <span className="font-serif text-[2.6rem] leading-none text-ink/[0.13] block mb-4 select-none">{step.num}</span>
-                <h3 className="font-serif text-lg text-ink mb-3">{step.title}</h3>
-                <p className="text-ink-muted text-[13px] leading-relaxed">{step.body}</p>
+                <span className="font-serif text-[clamp(5rem,9vw,8.5rem)] leading-none text-ink/[0.07] block -mb-[0.32em] select-none">{step.num}</span>
+                <h3 className="font-serif text-2xl text-ink mb-3 relative">{step.title}</h3>
+                <p className="text-ink-muted text-[15px] leading-[1.6] max-w-[30ch]">{step.body}</p>
               </div>
             ))}
           </StaggerGroup>
         </section>
 
         {/* ── CONTACT ── */}
-        <section id="contact" className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-24 relative grid-animated" style={{ background: '#0E0E0E' }}>
+        {/* ── CONTACT — the saved accent: full ember flood ── */}
+        <section id="contact" className="px-6 md:px-12 lg:px-16 py-24 md:py-40 relative" style={{ background: '#E8825A' }}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
             <SlideIn direction="left">
-              <span className="text-ink-light text-[11px] font-semibold tracking-[0.1em] uppercase block mb-4">{t.contact.label}</span>
-              <h2 className="font-serif text-[clamp(1.8rem,3vw,2.75rem)] text-ink leading-[1.1] mb-4">{t.contact.heading}</h2>
-              <p className="text-ink-muted text-[14px] leading-relaxed">{t.contact.sub}</p>
-              <p className="mt-6 text-ink-light text-[12px] font-mono">contact@landings.md</p>
-              <Link href="tel:+37368327082" className="mt-1.5 inline-block text-ink-light hover:text-amber text-[12px] font-mono transition-colors">+373 683 27 082</Link>
+              <span className="text-[#140B06]/60 text-[11px] font-semibold tracking-[0.1em] uppercase block mb-4">{t.contact.label}</span>
+              <h2 className="font-serif text-[clamp(2.6rem,5vw,4.9rem)] text-[#140B06] leading-[0.96] mb-6">{t.contact.heading}</h2>
+              <p className="text-[#140B06]/75 text-[14px] leading-relaxed max-w-md">{t.contact.sub}</p>
+              <p className="mt-7 text-[#140B06]/70 text-[12px] font-mono">contact@landings.md</p>
+              <Link href="tel:+37368327082" className="mt-1.5 inline-block text-[#140B06]/70 hover:text-[#140B06] text-[12px] font-mono transition-colors">+373 683 27 082</Link>
             </SlideIn>
             <SlideIn direction="right" delay={200}>
               {formSent ? (
-                <div className="flex items-center h-full"><p className="text-ink font-serif text-lg">{t.form.sent}</p></div>
+                <div className="flex items-center h-full"><p className="text-[#140B06] font-serif text-lg">{t.form.sent}</p></div>
               ) : (
                 <form onSubmit={(e) => { e.preventDefault(); const s = encodeURIComponent(`New project from ${formData.name}`); const b = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`); window.location.href = `mailto:contact@landings.md?subject=${s}&body=${b}`; setFormSent(true) }}>
-                  <input type="text" required placeholder={t.form.name} value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full bg-transparent border-b border-divider/50 px-0 py-4 text-[14px] text-ink placeholder:text-ink-muted focus:outline-none focus:border-amber/40 transition-colors duration-500 font-mono" />
-                  <input type="email" required placeholder={t.form.email} value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full bg-transparent border-b border-divider/50 px-0 py-4 text-[14px] text-ink placeholder:text-ink-muted focus:outline-none focus:border-amber/40 transition-colors duration-500 font-mono" />
-                  <textarea required rows={3} placeholder={t.form.message} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} className="w-full bg-transparent border-b border-divider/50 px-0 py-4 text-[14px] text-ink placeholder:text-ink-muted focus:outline-none focus:border-amber/40 transition-colors duration-500 resize-none font-mono" />
+                  <input type="text" required placeholder={t.form.name} value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full bg-transparent border-b border-[#140B06]/30 px-0 py-4 text-[14px] text-[#140B06] placeholder:text-[#140B06]/50 focus:outline-none focus:border-[#140B06]/70 transition-colors duration-500 font-mono" />
+                  <input type="email" required placeholder={t.form.email} value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full bg-transparent border-b border-[#140B06]/30 px-0 py-4 text-[14px] text-[#140B06] placeholder:text-[#140B06]/50 focus:outline-none focus:border-[#140B06]/70 transition-colors duration-500 font-mono" />
+                  <textarea required rows={3} placeholder={t.form.message} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} className="w-full bg-transparent border-b border-[#140B06]/30 px-0 py-4 text-[14px] text-[#140B06] placeholder:text-[#140B06]/50 focus:outline-none focus:border-[#140B06]/70 transition-colors duration-500 resize-none font-mono" />
                   <div className="pt-6">
-                    <button type="submit" className="btn-fill bg-amber text-[#0A0A0A] px-7 py-3 text-[13px] font-medium active:scale-[0.98] transition-transform">
+                    <button type="submit" className="btn-fill group bg-[#140B06] text-[#F2F2F0] px-9 py-4 text-[12px] font-mono uppercase tracking-[0.08em] active:scale-[0.98] transition-transform">
                       <span className="btn-fill-bg" aria-hidden />
-                      <span className="btn-fill-label">{t.form.send}</span>
+                      <span className="btn-fill-label transition-colors duration-[400ms] group-hover:text-[#140B06]">{t.form.send}</span>
                     </button>
                   </div>
                 </form>
