@@ -373,10 +373,10 @@ export default function PricingPage() {
                     <button
                       key={i}
                       onClick={() => selectAnswer(i)}
-                      className={`text-left px-6 py-4 border text-sm transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                      className={`text-left px-6 py-4 rounded-xl border text-sm transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-[0.99] ${
                         selectedFlash === i || answers[step] === i
-                          ? 'border-amber bg-amber/10 text-ink'
-                          : 'border-divider bg-surface text-ink-muted hover:border-ink-light hover:text-ink'
+                          ? 'border-amber/70 bg-amber/10 text-ink'
+                          : 'border-white/10 bg-white/[0.04] text-ink-muted hover:border-white/25 hover:bg-white/[0.06] hover:text-ink'
                       }${q[step].options.length % 2 !== 0 && i === q[step].options.length - 1 ? ' sm:col-span-2' : ''}`}
                     >
                       {option}
@@ -431,7 +431,7 @@ export default function PricingPage() {
 
                 <Link
                   href={getContactURL()}
-                  className="inline-block px-8 py-3 bg-amber text-[#0A0A0A] text-sm tracking-wide hover:bg-amber-light transition-colors"
+                  className="inline-block px-8 py-3.5 bg-amber text-[#0A0A0A] text-sm font-medium tracking-wide rounded-full hover:bg-amber-light active:scale-[0.97] transition-[background-color,transform]"
                 >
                   {result.cta}
                 </Link>
@@ -463,9 +463,9 @@ export default function PricingPage() {
             const price = BASE_PRICES[tier]
             const isPopular = tier === 'business'
             return (
-              <div key={tier} className={`relative flex flex-col border p-6 ${isPopular ? 'border-amber/60' : 'border-divider'}`} style={{ background: '#121212' }}>
+              <div key={tier} className="relative flex flex-col glass rounded-2xl p-6" style={isPopular ? { borderColor: 'rgba(232,130,90,0.55)' } : undefined}>
                 {isPopular && (
-                  <span className="absolute -top-2.5 left-6 text-[9px] font-mono tracking-[0.2em] uppercase text-[#0A0A0A] bg-amber px-2 py-0.5">{pk.popular}</span>
+                  <span className="absolute -top-2.5 left-6 text-[9px] font-mono tracking-[0.2em] uppercase text-[#0A0A0A] bg-amber rounded-full px-2.5 py-0.5">{pk.popular}</span>
                 )}
                 <h3 className="font-serif text-xl text-ink mb-1">{tr.name}</h3>
                 <div className="mb-4">
@@ -488,7 +488,7 @@ export default function PricingPage() {
                 </div>
                 <Link
                   href={`mailto:contact@landings.md?subject=${encodeURIComponent(price !== null ? `${tr.name} (€${price})` : tr.name)}`}
-                  className={`block text-center px-5 py-2.5 text-[13px] tracking-wide transition-colors ${isPopular ? 'bg-amber text-[#0A0A0A] hover:bg-amber-light' : 'border border-divider text-ink-muted hover:border-amber/60 hover:text-ink'}`}
+                  className={`block text-center px-5 py-2.5 text-[13px] font-medium tracking-wide rounded-full transition-[background-color,border-color,color,transform] active:scale-[0.98] ${isPopular ? 'bg-amber text-[#0A0A0A] hover:bg-amber-light' : 'border border-white/20 text-ink-muted hover:border-white/40 hover:text-ink'}`}
                 >
                   {tr.cta}
                 </Link>
@@ -498,14 +498,14 @@ export default function PricingPage() {
         </div>
 
         {/* Monthly growth strip */}
-        <div className="mt-4 border border-divider p-6 md:p-8 flex flex-col md:flex-row md:items-center gap-6 md:gap-10" style={{ background: '#121212' }}>
+        <div className="mt-5 glass rounded-2xl p-6 md:p-8 flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
           <div className="flex-1">
             <h3 className="font-serif text-lg md:text-xl text-ink mb-2">{growth.title}</h3>
             <p className="text-ink-muted text-[13px] leading-relaxed max-w-2xl">{growth.body}</p>
           </div>
           <Link
             href={`mailto:contact@landings.md?subject=${encodeURIComponent('SEO & Ads')}`}
-            className="inline-flex items-center justify-center gap-2 border border-amber/60 text-amber hover:bg-amber hover:text-[#0A0A0A] px-6 py-3 text-[13px] tracking-wide transition-colors flex-shrink-0 group"
+            className="inline-flex items-center justify-center gap-2 border border-amber/60 text-amber rounded-full hover:bg-amber hover:text-[#0A0A0A] px-6 py-3 text-[13px] font-medium tracking-wide transition-colors flex-shrink-0 active:scale-[0.98] group"
           >
             {growth.cta}
             <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>

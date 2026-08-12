@@ -62,7 +62,7 @@ const config: Config = {
         ring: 'hsl(var(--ring))',
       },
       fontFamily: {
-        serif: ['Inria Serif', 'Georgia', 'serif'],
+        serif: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'Satoshi', 'system-ui', 'sans-serif'],
         sans: ['Satoshi', 'system-ui', 'sans-serif'],
         mono: ['Geist Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },

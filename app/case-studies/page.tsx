@@ -753,7 +753,7 @@ export default function CaseStudiesPage() {
               <p className="text-ink-muted text-[15px] leading-relaxed mb-10">{t.cta.sub}</p>
             </FadeIn>
             <FadeIn delay={500}>
-              <Link href="mailto:contact@landings.md" className="inline-flex items-center gap-2 bg-amber hover:bg-amber-light text-[#0A0A0A] px-7 py-3 text-sm transition-colors duration-300 group">
+              <Link href="mailto:contact@landings.md" className="inline-flex items-center gap-2 bg-amber hover:bg-amber-light text-[#0A0A0A] px-7 py-3.5 text-sm font-medium rounded-full transition-[background-color,transform] duration-300 active:scale-[0.97] group">
                 {t.cta.button}
                 <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
               </Link>

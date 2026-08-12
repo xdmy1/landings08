@@ -36,11 +36,11 @@ export const StickyContactPill = ({ language }: StickyContactPillProps) => {
       }}
     >
       <Link href="mailto:contact@landings.md" target="_blank" rel="noopener noreferrer">
-        <div className="bg-surface/90 backdrop-blur-sm border border-divider shadow-card px-5 py-3 flex items-center justify-between sm:justify-start sm:gap-6 hover:border-amber/40 transition-all duration-300 cursor-pointer group">
-          <span className="text-ink-muted text-sm tracking-wide">{t.question}</span>
-          <span className="text-amber text-sm font-medium tracking-wide flex items-center gap-2 group-hover:text-amber-light transition-colors">
+        <div className="glass rounded-full shadow-[0_18px_50px_-18px_rgba(0,0,0,0.6)] pl-6 pr-2 py-2 flex items-center justify-between sm:justify-start sm:gap-5 transition-transform duration-300 ease-out hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer group">
+          <span className="text-ink-muted text-[13px] tracking-wide">{t.question}</span>
+          <span className="bg-amber text-[#0A0A0A] rounded-full px-4 py-2 text-[13px] font-medium flex items-center gap-2 transition-colors group-hover:bg-amber-light">
             {t.contact}
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </span>

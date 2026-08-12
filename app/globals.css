@@ -39,11 +39,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Display face — light editorial serif at sub-1.0 leading, the
-   mirabel.agency signature. Every headline on the site uses it. */
+/* Display face — the Apple system font (SF Pro on Mac/iOS), heavy and
+   tight, falling back to Satoshi elsewhere. Every headline uses it. */
 .font-serif {
-  font-family: 'Inria Serif', Georgia, serif;
-  font-weight: 300;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Satoshi', system-ui, sans-serif;
+  font-weight: 700;
   letter-spacing: -0.03em;
 }
 
