@@ -66,15 +66,7 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string }) 
   return (
     <>
       {/* ── DESKTOP / SCROLLED NAV ── */}
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-smooth"
-        style={{
-          background: scrolled
-            ? 'rgba(13,13,13,0.88)'
-            : 'linear-gradient(180deg, rgba(10,10,10,0.72) 0%, transparent 100%)',
-          backdropFilter: scrolled ? 'blur(12px)' : 'none',
-        }}
-      >
+      <nav className="fixed top-0 left-0 right-0 z-50">
         {/* ── FREE AUDIT BAR — collapses away on scroll ── */}
         <Link
           href={`mailto:contact@landings.md?subject=${encodeURIComponent('Audit gratuit — 30 min')}`}
@@ -101,8 +93,8 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string }) 
           </div>
         </Link>
 
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-10">
-          <div className="flex items-center justify-between h-[68px]">
+        <div className="px-3 md:px-6 mt-3 transition-transform duration-500 ease-smooth" style={{ transform: scrolled ? 'translateY(-2px)' : 'translateY(0)' }}>
+          <div className="glass rounded-full max-w-[1120px] mx-auto pl-5 pr-2.5 md:pl-7 md:pr-3 flex items-center justify-between h-[56px] shadow-[0_18px_50px_-20px_rgba(0,0,0,0.55)]">
             {/* Logo */}
             <Link href="/" className="flex items-center">
               <Image
@@ -135,7 +127,7 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string }) 
                   {langOpen && (
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setLangOpen(false)} />
-                      <div className="absolute top-full right-0 mt-2 bg-surface border border-divider z-50 min-w-[56px] py-1">
+                      <div className="absolute top-full right-0 mt-3 glass rounded-xl z-50 min-w-[56px] py-1 overflow-hidden">
                         {(['en', 'ro', 'de', 'fr', 'es'] as const).map(lang => (
                           <button
                             key={lang}
@@ -153,7 +145,7 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string }) 
                 </div>
                 <Link
                   href={contactHref}
-                  className="btn-fill group text-[13px] font-medium text-ink border border-white/25 px-5 py-2 active:scale-[0.98] transition-transform"
+                  className="btn-fill group text-[13px] font-medium text-ink border border-white/25 rounded-full px-5 py-2 active:scale-[0.98] transition-transform"
                 >
                   <span className="btn-fill-bg" aria-hidden />
                   <span className="btn-fill-label transition-colors duration-[400ms] group-hover:text-[#0A0A0A]">{t.contact}</span>

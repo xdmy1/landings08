@@ -9,7 +9,6 @@ import { AnimatedStatGrid } from '@/components/ui/animated-stat-grid'
 import { LogoGrid } from '@/components/ui/logo-grid'
 import { HeroSpotlight } from '@/components/ui/hero-fx'
 import { BrowserFrame } from '@/components/ui/browser-frame'
-import { SeatPickerMock } from '@/components/ui/system-mocks'
 import { ScrubText, Magnetic } from '@/components/ui/scroll-fx'
 import { useLanguage } from '@/hooks/useLanguage'
 
@@ -416,6 +415,9 @@ export default function HomePage() {
         {/* ── HERO — split editorial: display serif left, live system mock right ── */}
         <section className="pt-32 md:pt-40 pb-14 md:pb-20 px-6 md:px-12 lg:px-16 relative overflow-hidden" style={{ background: '#0D0D0D' }}>
           <HeroSpotlight />
+          {/* ambient light the glass surfaces refract */}
+          <div className="orb w-[560px] h-[560px] -top-48 left-[6%]" style={{ background: 'radial-gradient(circle, rgba(232,130,90,0.16), transparent 70%)' }} aria-hidden />
+          <div className="orb w-[460px] h-[460px] top-16 right-[2%]" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.07), transparent 70%)' }} aria-hidden />
           {/* architectural hairline crossing the hero */}
           <div className="absolute top-0 bottom-0 left-[58%] w-px bg-white/[0.05] hidden lg:block" aria-hidden />
           <div ref={heroRef} className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-start relative z-10 will-change-transform">
@@ -431,7 +433,7 @@ export default function HomePage() {
               <FadeIn delay={700}>
                 <div className="mt-9 flex flex-wrap items-center gap-5">
                   <Magnetic>
-                    <Link href="#contact" className="btn-fill inline-flex items-center bg-amber text-[#0A0A0A] px-8 py-3.5 text-sm font-medium active:scale-[0.97] transition-transform group">
+                    <Link href="#contact" className="btn-fill inline-flex items-center bg-amber text-[#0A0A0A] px-8 py-3.5 text-sm font-medium rounded-full active:scale-[0.97] transition-transform group">
                       <span className="btn-fill-bg" aria-hidden />
                       <span className="btn-fill-label flex items-center gap-2">
                         {t.hero.cta}
@@ -444,8 +446,10 @@ export default function HomePage() {
               </FadeIn>
             </div>
             <FadeIn delay={400} className="lg:col-span-5 hidden lg:block lg:pt-2">
-              <BrowserFrame domain="davo.md — rezervare bilet">
-                <SeatPickerMock />
+              <BrowserFrame domain="davo.md">
+                <div className="aspect-[16/11] overflow-hidden">
+                  <Image src="/images/shot-davo.jpg" alt="davo.md — site and booking system by landings.md" width={960} height={660} quality={85} className="w-full h-full object-cover object-top" priority />
+                </div>
               </BrowserFrame>
             </FadeIn>
           </div>
@@ -496,7 +500,8 @@ export default function HomePage() {
         </section>
 
         {/* ── WORK ── */}
-        <section className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: '#101010' }}>
+        <section className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-20 relative overflow-hidden" style={{ background: '#101010' }}>
+          <div className="orb w-[640px] h-[640px] -bottom-56 left-1/2 -translate-x-1/2" style={{ background: 'radial-gradient(circle, rgba(232,130,90,0.10), transparent 70%)' }} aria-hidden />
           <FadeIn>
             <div className="flex items-center justify-between mb-12 md:mb-16">
               <span className="text-ink-light text-[11px] font-semibold tracking-[0.1em] uppercase">{t.work.label}</span>
@@ -506,11 +511,11 @@ export default function HomePage() {
 
           <StaggerGroup className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6" stagger={140}>
             {projects.map((project, i) => (
-              <Link key={i} href={project.href} target="_blank" rel="noopener noreferrer" className="group block h-full border border-white/[0.08] hover:border-white/[0.16] transition-colors duration-500 bg-[#131313]">
-                <div className="aspect-[16/10] overflow-hidden border-b border-white/[0.08]">
-                  <Image src={project.src} alt={`${project.name} — website, SEO and business systems by landings.md`} width={960} height={600} quality={85} className="w-full h-full object-cover object-top brightness-[0.9] group-hover:brightness-100 group-hover:scale-[1.03] transition-[transform,filter] duration-700 ease-smooth" />
+              <Link key={i} href={project.href} target="_blank" rel="noopener noreferrer" className="group block h-full glass rounded-2xl p-2.5 transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[0_28px_80px_-28px_rgba(0,0,0,0.65)]">
+                <div className="aspect-[16/10] overflow-hidden rounded-xl">
+                  <Image src={project.src} alt={`${project.name} — website, SEO and business systems by landings.md`} width={960} height={600} quality={85} className="w-full h-full object-cover object-top brightness-[0.92] group-hover:brightness-100 group-hover:scale-[1.03] transition-[transform,filter] duration-700 ease-smooth" />
                 </div>
-                <div className="p-5 md:p-6">
+                <div className="px-3.5 md:px-4 pt-4 pb-4">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-3">
                     <span className="text-[9px] font-mono tracking-[0.1em] uppercase text-ink-light">{project.category}</span>
                     <span className={`text-[9px] font-mono tracking-[0.1em] uppercase ${project.tagColor}`}>· {project.tag}</span>
@@ -570,7 +575,7 @@ export default function HomePage() {
                   <input type="email" required placeholder={t.form.email} value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full bg-transparent border-b border-[#140B06]/30 px-0 py-4 text-[14px] text-[#140B06] placeholder:text-[#140B06]/50 focus:outline-none focus:border-[#140B06]/70 transition-colors duration-500 font-mono" />
                   <textarea required rows={3} placeholder={t.form.message} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} className="w-full bg-transparent border-b border-[#140B06]/30 px-0 py-4 text-[14px] text-[#140B06] placeholder:text-[#140B06]/50 focus:outline-none focus:border-[#140B06]/70 transition-colors duration-500 resize-none font-mono" />
                   <div className="pt-6">
-                    <button type="submit" className="btn-fill group bg-[#140B06] text-[#F2F2F0] px-9 py-4 text-[12px] font-mono uppercase tracking-[0.08em] active:scale-[0.98] transition-transform">
+                    <button type="submit" className="btn-fill group bg-[#140B06] text-[#F2F2F0] px-9 py-4 text-[12px] font-mono uppercase tracking-[0.08em] rounded-full active:scale-[0.98] transition-transform">
                       <span className="btn-fill-bg" aria-hidden />
                       <span className="btn-fill-label transition-colors duration-[400ms] group-hover:text-[#140B06]">{t.form.send}</span>
                     </button>

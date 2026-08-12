@@ -61,6 +61,32 @@ body {
   }
 }
 
+/* Translucent material — Apple-style glass. A floating layer with a
+   bright top edge (light catching the material). Needs something
+   luminous behind it (orbs, imagery) to read as glass. */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-top-color: rgba(255, 255, 255, 0.18);
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass {
+    background: #161616;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* Ambient light orbs — the luminance the glass surfaces refract */
+.orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  pointer-events: none;
+}
+
 /* Slide-up fill button — a light sheet rises from the bottom edge on
    hover while the dark label stays put. One easing, everywhere. */
 .btn-fill {
