@@ -39,12 +39,13 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Display face — the Apple system font (SF Pro on Mac/iOS), heavy and
-   tight, falling back to Satoshi elsewhere. Every headline uses it. */
+/* Display face — Clash Display (council verdict): an authored display
+   grotesque, monoline so the dark ground can't eat it, never below
+   20px, never all-caps. Satoshi stays the information layer. */
 .font-serif {
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Satoshi', system-ui, sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  font-family: 'Clash Display', 'Satoshi', system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .font-sans {

@@ -104,11 +104,19 @@ function AnimatedNumber({ value, className = "" }: { value: string, className?: 
    Words wrapped in *asterisks* render in the accent color. */
 function CharsReveal({ text, className = "", delay = 0 }: { text: string, className?: string, delay?: number }) {
   const { ref, visible } = useInView(0.15)
-  const words = text.split(' ')
   let charIndex = 0
   return (
-    <span ref={ref as React.RefObject<HTMLDivElement>} className={className} aria-label={text}>
-      {words.map((raw, wi) => {
+    <span ref={ref as React.RefObject<HTMLDivElement>} className={className} aria-label={text.replace(/\n/g, ' ')}>
+      {text.split('\n').map((line, li) => (
+        <span key={li} className="block">
+          {renderLine(line)}
+        </span>
+      ))}
+    </span>
+  )
+
+  function renderLine(line: string) {
+    return line.split(' ').map((raw, wi) => {
         const accented = raw.startsWith('*')
         const word = raw.replace(/\*/g, '')
         return (
@@ -131,9 +139,8 @@ function CharsReveal({ text, className = "", delay = 0 }: { text: string, classN
             })}
           </span>
         )
-      })}
-    </span>
-  )
+      })
+  }
 }
 
 /* Hero content drifts up and fades slightly as you scroll away */
@@ -196,7 +203,7 @@ export default function HomePage() {
   const text = {
     en: {
       nav: { portfolio: "Portfolio", pricing: "Pricing", solutions: "Solutions", caseStudies: "Case Studies", contact: "Start a project" },
-      hero: { headline: "We build the site. We take it to the *top.* We automate the rest.", sub: "Custom-coded websites that rank on page one of Google, Meta & Google Ads campaigns, and booking, invoicing and accounting systems that free your business from paperwork.", cta: "Start a project", note: "delivered in 1–4 weeks · reply within 24h" },
+      hero: { headline: "We build the site\nWe take it to the *top.*\nWe automate the rest", sub: "Custom-coded websites that rank on page one of Google, Meta & Google Ads campaigns, and booking, invoicing and accounting systems that free your business from paperwork.", cta: "Start a project", note: "delivered in 1–4 weeks · reply within 24h" },
       logos: "Trusted by businesses across Moldova and Europe",
       services: {
         label: "WHAT WE DO",
@@ -236,7 +243,7 @@ export default function HomePage() {
     },
     ro: {
       nav: { portfolio: "Portofoliu", pricing: "Preturi", solutions: "Solutii", caseStudies: "Studii de Caz", contact: "Incepe un proiect" },
-      hero: { headline: "Construim site-ul. Il ducem in *top.* Automatizam restul.", sub: "Site-uri scrise manual care apar pe prima pagina Google, campanii Meta & Google Ads si sisteme de rezervari, facturare si contabilitate care iti scapa afacerea de foi.", cta: "Incepe un proiect", note: "livrat in 1–4 saptamani · raspuns in 24h" },
+      hero: { headline: "Construim site-ul\nIl ducem in *top.*\nAutomatizam restul", sub: "Site-uri scrise manual care apar pe prima pagina Google, campanii Meta & Google Ads si sisteme de rezervari, facturare si contabilitate care iti scapa afacerea de foi.", cta: "Incepe un proiect", note: "livrat in 1–4 saptamani · raspuns in 24h" },
       logos: "De incredere pentru afaceri din Moldova si Europa",
       services: {
         label: "CE FACEM",
@@ -276,7 +283,7 @@ export default function HomePage() {
     },
     de: {
       nav: { portfolio: "Portfolio", pricing: "Preise", solutions: "Losungen", caseStudies: "Fallstudien", contact: "Projekt starten" },
-      hero: { headline: "Wir bauen die Website. Wir bringen sie nach *oben.* Wir automatisieren den Rest.", sub: "Handgeschriebene Websites auf Seite 1 bei Google, Meta & Google Ads Kampagnen und Systeme fur Buchungen, Rechnungen und Buchhaltung — die Ihr Unternehmen vom Papierkram befreien.", cta: "Projekt starten", note: "Lieferung in 1–4 Wochen · Antwort in 24h" },
+      hero: { headline: "Wir bauen die Website\nWir bringen sie nach *oben.*\nWir automatisieren den Rest", sub: "Handgeschriebene Websites auf Seite 1 bei Google, Meta & Google Ads Kampagnen und Systeme fur Buchungen, Rechnungen und Buchhaltung — die Ihr Unternehmen vom Papierkram befreien.", cta: "Projekt starten", note: "Lieferung in 1–4 Wochen · Antwort in 24h" },
       logos: "Vertraut von Unternehmen in Moldawien und Europa",
       services: {
         label: "WAS WIR TUN",
@@ -316,7 +323,7 @@ export default function HomePage() {
     },
     fr: {
       nav: { portfolio: "Portfolio", pricing: "Tarifs", solutions: "Solutions", caseStudies: "Etudes de Cas", contact: "Demarrer un projet" },
-      hero: { headline: "On construit le site. On le fait *monter.* On automatise le reste.", sub: "Des sites codes sur mesure qui se classent en premiere page de Google, des campagnes Meta & Google Ads, et des systemes de reservation, facturation et comptabilite qui liberent votre entreprise de la paperasse.", cta: "Demarrer un projet", note: "livre en 1–4 semaines · reponse en 24h" },
+      hero: { headline: "On construit le site\nOn le fait *monter.*\nOn automatise le reste", sub: "Des sites codes sur mesure qui se classent en premiere page de Google, des campagnes Meta & Google Ads, et des systemes de reservation, facturation et comptabilite qui liberent votre entreprise de la paperasse.", cta: "Demarrer un projet", note: "livre en 1–4 semaines · reponse en 24h" },
       logos: "La confiance d'entreprises en Moldavie et en Europe",
       services: {
         label: "CE QU'ON FAIT",
@@ -356,7 +363,7 @@ export default function HomePage() {
     },
     es: {
       nav: { portfolio: "Portafolio", pricing: "Precios", solutions: "Soluciones", caseStudies: "Casos de Estudio", contact: "Iniciar proyecto" },
-      hero: { headline: "Creamos tu web. La llevamos *arriba.* Automatizamos el resto.", sub: "Webs a medida que aparecen en la primera pagina de Google, campanas de Meta & Google Ads, y sistemas de reservas, facturacion y contabilidad que liberan tu negocio del papeleo.", cta: "Iniciar proyecto", note: "entregado en 1–4 semanas · respuesta en 24h" },
+      hero: { headline: "Creamos tu web\nLa llevamos *arriba.*\nAutomatizamos el resto", sub: "Webs a medida que aparecen en la primera pagina de Google, campanas de Meta & Google Ads, y sistemas de reservas, facturacion y contabilidad que liberan tu negocio del papeleo.", cta: "Iniciar proyecto", note: "entregado en 1–4 semanas · respuesta en 24h" },
       logos: "Confianza de empresas en Moldavia y Europa",
       services: {
         label: "QUE HACEMOS",
@@ -422,7 +429,7 @@ export default function HomePage() {
           <div className="absolute top-0 bottom-0 left-[58%] w-px bg-white/[0.05] hidden lg:block" aria-hidden />
           <div ref={heroRef} className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-start relative z-10 will-change-transform">
             <div className="lg:col-span-7">
-              <h1 className="font-serif text-[clamp(3rem,5.6vw,5.4rem)] text-ink leading-[0.96]">
+              <h1 className="font-serif text-[clamp(2.9rem,5.2vw,5rem)] text-ink leading-[0.98]">
                 <CharsReveal text={t.hero.headline} delay={150} />
               </h1>
               <FadeIn delay={550}>
@@ -468,7 +475,7 @@ export default function HomePage() {
           <AnimatedStatGrid className="grid grid-cols-2 md:grid-cols-4" stagger={150}>
             {t.numbers.map((n, i) => (
               <div key={i} className="flex flex-col justify-between min-h-[150px] md:min-h-[210px] p-6 md:p-7">
-                <p className="font-serif text-[clamp(2.6rem,4.8vw,5rem)] text-ink leading-none">
+                <p className="font-serif font-medium text-[clamp(2.3rem,4.2vw,4.5rem)] text-ink/80 leading-none">
                   <AnimatedNumber value={n.value} />
                 </p>
                 <p className="text-ink-light text-[11px] mt-6 font-mono tracking-[0.08em] uppercase">{n.label}</p>
@@ -490,7 +497,7 @@ export default function HomePage() {
                   className="group grid grid-cols-[2.5rem_1fr_auto] lg:grid-cols-[5rem_1.2fr_1fr_auto] gap-4 lg:gap-8 items-start px-6 md:px-12 lg:px-16 py-10 md:py-14 transition-colors duration-[350ms] ease-[cubic-bezier(0.65,0,0.35,1)] hover:bg-[#F2F2F0]"
                 >
                   <span className="font-mono text-[12px] pt-2 md:pt-4 text-ink-light/70 group-hover:text-[#0A0A0A]/40 transition-colors duration-[350ms]">0{i + 1}</span>
-                  <h3 className="font-serif text-3xl md:text-[3.4rem] leading-[1.02] text-ink group-hover:text-[#0A0A0A] transition-colors duration-[350ms]">{s.title}</h3>
+                  <h3 className="font-serif font-medium text-3xl md:text-[3rem] leading-[1.05] text-ink group-hover:text-[#0A0A0A] transition-colors duration-[350ms]">{s.title}</h3>
                   <p className="hidden lg:block text-ink-muted group-hover:text-[#0A0A0A]/70 text-[15px] leading-[1.55] max-w-[36ch] pt-2 md:pt-3 transition-colors duration-[350ms]">{s.body}</p>
                   <span className="text-ink-light group-hover:text-[#0A0A0A] text-2xl pt-1 md:pt-3 transition-all duration-[350ms] group-hover:translate-x-1.5">&rarr;</span>
                 </Link>
