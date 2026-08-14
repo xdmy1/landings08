@@ -6,13 +6,13 @@ import { SiteNav } from '@/components/ui/site-nav'
 import { useLanguage } from '@/hooks/useLanguage'
 
 /* ────────────────────────────────────────────────────────────────
-   navarro.ro clone — landings.md content only.
+   navarro.ro clone | landings.md content only.
    Ground #0d0d0d · lime #FF9E7A · Geist · blur-up reveals.
    ──────────────────────────────────────────────────────────────── */
 
 const LIME = '#FF9E7A'
 
-/* Blur-up reveal — IntersectionObserver at 0.1 that REPLAYS:
+/* Blur-up reveal, IntersectionObserver at 0.1 that REPLAYS:
    the .nv-hidden class returns when the block scrolls away. */
 function Reveal({
   children,
@@ -82,14 +82,12 @@ function Label({ children }: { children: React.ReactNode }) {
 
 /* ── Fixed data: projects, accents, logos ── */
 const PROJECTS_META = [
+  { key: 'glg',           name: 'Scoala Auto GLG', url: 'scoalaautoglg.com', accent: '#2f7df6', shot: '/images/tall-glg.jpg' },
   { key: 'davo',          name: 'Davo.md',         url: 'davo.md',           accent: '#2456A6', shot: '/images/tall-davo.jpg' },
   { key: 'interbus',      name: 'Inter-Bus',       url: 'inter-bus.md',      accent: '#D23B33', shot: '/images/tall-interbus.jpg' },
   { key: 'cmiea',         name: 'CMIEA.md',        url: 'cmiea.md',          accent: '#3E7BFA', shot: '/images/tall-cmiea.jpg' },
-  { key: 'glg',           name: 'Scoala Auto GLG', url: 'scoalaautoglg.com', accent: '#2f7df6', shot: '/images/tall-glg.jpg' },
   { key: 'radx',          name: 'RADX Cooling',    url: 'radx.solutions',    accent: '#E23B3B', shot: '/images/tall-radx.jpg' },
   { key: 'eliteprotocol', name: 'Elite Protocol',  url: 'eliteprotocol.md',  accent: '#C9A227', shot: '/images/tall-eliteprotocol.jpg' },
-  { key: 'rizzaclassic',  name: 'Rizza Classic',   url: 'rizzaclassic.com',  accent: '#B98F5A', shot: '/images/tall-rizzaclassic.jpg' },
-  { key: 'autohuse',      name: 'Auto Huse',       url: 'autohuse.md',       accent: '#F08A24', shot: '/images/tall-autohuse.jpg' },
 ] as const
 
 const LOGO_ROW = [
@@ -101,7 +99,7 @@ const LOGO_ROW = [
   { k: 'glg', h: 'h-9 md:h-10' },
 ] as const
 
-/* ── 5-language copy — real facts only, no diacritics ── */
+/* ── 5-language copy, real facts only, no diacritics ── */
 const T = {
   en: {
     hero: {
@@ -110,8 +108,8 @@ const T = {
       cta: 'Start a project',
       note: 'delivered in 1–4 weeks · reply within 24h',
     },
-    badges: ['50+ websites launched', '+300% avg. organic traffic', '10+ custom systems live', 'DR 50 · 2.6K backlinks', 'Delivered in 1-4 weeks', '5 languages, one team'],
-    badgeEm: 'Custom-coded websites from 350 EUR — start to finish',
+    badges: ['Hand-written code, zero templates', '+300% avg. organic traffic', '10+ custom systems live', 'DR 50 · 2.6K backlinks', 'Delivered in 1-4 weeks', '5 languages, one team'],
+    badgeEm: 'Custom-coded websites from 350 EUR, start to finish',
     logos: 'Trusted by businesses across Moldova and Europe',
     work: {
       label: 'Selected work',
@@ -131,26 +129,26 @@ const T = {
     proof: {
       label: 'Real results',
       quote: 'davo.md ranks *#1 on Google* for Moldova–Europe transport: *DR 50*, 2.6K backlinks and *+300% organic traffic* after relaunch.',
-      attribution: 'Davo.md — a landings.md project · real Ahrefs data',
+      attribution: 'Davo.md, a landings.md project · real Ahrefs data',
     },
     stats: {
       cells: [
-        { v: '50+', l: 'websites launched' },
+        { v: '24h', l: 'response time' },
         { v: '300%', l: 'average traffic increase' },
         { v: '10+', l: 'custom systems in production' },
         { v: 'DR 50', l: 'davo.md · 2.6K backlinks' },
       ],
       offerLabel: 'The offer',
       offerTitle: 'from 350 EUR',
-      offerSub: 'Custom-coded website — design, build, launch.',
+      offerSub: 'Custom-coded website, design, build, launch.',
       offerNote: 'Delivered in 1-4 weeks.',
       floats: ['SITE', 'SEO', 'ADS', 'SYSTEMS'],
     },
     about: {
       heading: 'Solutions, not just *websites.*',
-      headingSub: 'Websites, SEO, ads and business systems — one team, start to finish.',
+      headingSub: 'Websites, SEO, ads and business systems, one team, start to finish.',
       aboutTitle: 'About the agency',
-      aboutBody: 'landings.md is a web agency in Chisinau. We hand-code every website — no themes, no builders — then rank it on Google and automate the business behind it. 50+ projects live across Moldova and Europe.',
+      aboutBody: 'landings.md is a web agency in Chisinau. We hand-code every website, no themes, no builders, then rank it on Google and automate the business behind it.',
       stackLabel: 'The stack',
       stack: ['Next.js', 'React', 'Tailwind', 'Hand-written code'],
       langsLabel: '5 languages',
@@ -171,7 +169,7 @@ const T = {
       form: { name: 'Name', email: 'Email', message: 'Tell us about your business...', send: 'Send message' },
     },
     footer: { tagline: 'We build the site. We take it to the top. We automate the rest.', copy: '© 2026 landings.md · Chisinau, Moldova', nav: ['Portfolio', 'Pricing', 'Solutions', 'Case Studies'], pages: 'Pages', reach: 'Contact' },
-    pill: { l1: 'Have a project in mind?', l2: 'Get a quote — from 350 EUR' },
+    pill: { l1: 'Have a project in mind?', l2: 'Get a quote, from 350 EUR' },
   },
   ro: {
     hero: {
@@ -180,8 +178,8 @@ const T = {
       cta: 'Incepe un proiect',
       note: 'livrat in 1–4 saptamani · raspuns in 24h',
     },
-    badges: ['50+ site-uri lansate', '+300% trafic organic in medie', '10+ sisteme custom in productie', 'DR 50 · 2.6K backlinks', 'Livrare in 1-4 saptamani', '5 limbi, o singura echipa'],
-    badgeEm: 'Site-uri custom-coded de la 350 EUR — de la A la Z',
+    badges: ['Cod scris manual, zero template-uri', '+300% trafic organic in medie', '10+ sisteme custom in productie', 'DR 50 · 2.6K backlinks', 'Livrare in 1-4 saptamani', '5 limbi, o singura echipa'],
+    badgeEm: 'Site-uri custom-coded de la 350 EUR, de la A la Z',
     logos: 'De incredere pentru afaceri din Moldova si Europa',
     work: {
       label: 'Lucrari selectate',
@@ -201,26 +199,26 @@ const T = {
     proof: {
       label: 'Rezultate reale',
       quote: 'davo.md e *#1 pe Google* la transport Moldova–Europa: *DR 50*, 2.6K backlinks si *+300% trafic organic* dupa relansare.',
-      attribution: 'Davo.md — proiect landings.md · date reale din Ahrefs',
+      attribution: 'Davo.md, proiect landings.md · date reale din Ahrefs',
     },
     stats: {
       cells: [
-        { v: '50+', l: 'site-uri lansate' },
+        { v: '24h', l: 'timp de raspuns' },
         { v: '300%', l: 'crestere medie a traficului' },
         { v: '10+', l: 'sisteme custom in productie' },
         { v: 'DR 50', l: 'davo.md · 2.6K backlinks' },
       ],
       offerLabel: 'Oferta',
       offerTitle: 'de la 350 EUR',
-      offerSub: 'Site custom-coded — design, constructie, lansare.',
+      offerSub: 'Site custom-coded, design, constructie, lansare.',
       offerNote: 'Livrat in 1-4 saptamani.',
       floats: ['SITE', 'SEO', 'ADS', 'SISTEME'],
     },
     about: {
       heading: 'Solutii, nu doar *site-uri.*',
-      headingSub: 'Site-uri, SEO, ads si sisteme de business — o singura echipa, de la A la Z.',
+      headingSub: 'Site-uri, SEO, ads si sisteme de business, o singura echipa, de la A la Z.',
       aboutTitle: 'Despre agentie',
-      aboutBody: 'landings.md e o agentie web din Chisinau. Scriem fiecare site manual — fara teme, fara constructori — apoi il ducem sus pe Google si automatizam business-ul din spate. 50+ proiecte live in Moldova si Europa.',
+      aboutBody: 'landings.md e o agentie web din Chisinau. Scriem fiecare site manual, fara teme, fara constructori, apoi il ducem sus pe Google si automatizam business-ul din spate.',
       stackLabel: 'Stack-ul',
       stack: ['Next.js', 'React', 'Tailwind', 'Cod scris manual'],
       langsLabel: '5 limbi',
@@ -241,17 +239,17 @@ const T = {
       form: { name: 'Nume', email: 'Email', message: 'Spune-ne despre afacerea ta...', send: 'Trimite mesaj' },
     },
     footer: { tagline: 'Construim site-ul. Il ducem in top. Automatizam restul.', copy: '© 2026 landings.md · Chisinau, Moldova', nav: ['Portofoliu', 'Preturi', 'Solutii', 'Studii de Caz'], pages: 'Pagini', reach: 'Contact' },
-    pill: { l1: 'Ai un proiect in minte?', l2: 'Cere oferta — de la 350 EUR' },
+    pill: { l1: 'Ai un proiect in minte?', l2: 'Cere oferta, de la 350 EUR' },
   },
   de: {
     hero: {
       headline: 'Wir bauen die Website\nWir bringen sie nach *oben.*\nWir automatisieren den Rest',
-      sub: 'Handgeschriebene Websites auf Seite 1 bei Google, Meta & Google Ads Kampagnen und Systeme fur Buchungen, Rechnungen und Buchhaltung — die Ihr Unternehmen vom Papierkram befreien.',
+      sub: 'Handgeschriebene Websites auf Seite 1 bei Google, Meta & Google Ads Kampagnen und Systeme fur Buchungen, Rechnungen und Buchhaltung, die Ihr Unternehmen vom Papierkram befreien.',
       cta: 'Projekt starten',
       note: 'Lieferung in 1–4 Wochen · Antwort in 24h',
     },
-    badges: ['50+ Websites gestartet', '+300% organischer Traffic im Schnitt', '10+ Systeme im Einsatz', 'DR 50 · 2.6K Backlinks', 'Lieferung in 1-4 Wochen', '5 Sprachen, ein Team'],
-    badgeEm: 'Custom-coded Websites ab 350 EUR — von A bis Z',
+    badges: ['Handgeschriebener Code, null Templates', '+300% organischer Traffic im Schnitt', '10+ Systeme im Einsatz', 'DR 50 · 2.6K Backlinks', 'Lieferung in 1-4 Wochen', '5 Sprachen, ein Team'],
+    badgeEm: 'Custom-coded Websites ab 350 EUR, von A bis Z',
     logos: 'Vertraut von Unternehmen in Moldawien und Europa',
     work: {
       label: 'Ausgewahlte Arbeiten',
@@ -271,26 +269,26 @@ const T = {
     proof: {
       label: 'Echte Ergebnisse',
       quote: 'davo.md steht *#1 bei Google* fur Transport Moldau–Europa: *DR 50*, 2.6K Backlinks und *+300% organischer Traffic* nach dem Relaunch.',
-      attribution: 'Davo.md — ein landings.md Projekt · echte Ahrefs-Daten',
+      attribution: 'Davo.md, ein landings.md Projekt · echte Ahrefs-Daten',
     },
     stats: {
       cells: [
-        { v: '50+', l: 'Websites gestartet' },
+        { v: '24h', l: 'Antwortzeit' },
         { v: '300%', l: 'durchschnittliche Traffic-Steigerung' },
         { v: '10+', l: 'individuelle Systeme im Einsatz' },
         { v: 'DR 50', l: 'davo.md · 2.6K Backlinks' },
       ],
       offerLabel: 'Das Angebot',
       offerTitle: 'ab 350 EUR',
-      offerSub: 'Custom-coded Website — Design, Bau, Launch.',
+      offerSub: 'Custom-coded Website, Design, Bau, Launch.',
       offerNote: 'Lieferung in 1-4 Wochen.',
       floats: ['SITE', 'SEO', 'ADS', 'SYSTEME'],
     },
     about: {
       heading: 'Losungen, nicht nur *Websites.*',
-      headingSub: 'Websites, SEO, Ads und Business-Systeme — ein Team, von A bis Z.',
+      headingSub: 'Websites, SEO, Ads und Business-Systeme, ein Team, von A bis Z.',
       aboutTitle: 'Uber die Agentur',
-      aboutBody: 'landings.md ist eine Webagentur in Chisinau. Wir schreiben jede Website von Hand — keine Themes, keine Baukasten — bringen sie bei Google nach oben und automatisieren das Geschaft dahinter. 50+ Projekte live in Moldawien und Europa.',
+      aboutBody: 'landings.md ist eine Webagentur in Chisinau. Wir schreiben jede Website von Hand, keine Themes, keine Baukasten, bringen sie bei Google nach oben und automatisieren das Geschaft dahinter.',
       stackLabel: 'Der Stack',
       stack: ['Next.js', 'React', 'Tailwind', 'Handgeschriebener Code'],
       langsLabel: '5 Sprachen',
@@ -311,7 +309,7 @@ const T = {
       form: { name: 'Name', email: 'E-Mail', message: 'Erzahlen Sie uns von Ihrem Geschaft...', send: 'Nachricht senden' },
     },
     footer: { tagline: 'Wir bauen die Website. Wir bringen sie nach oben. Wir automatisieren den Rest.', copy: '© 2026 landings.md · Chisinau, Moldawien', nav: ['Portfolio', 'Preise', 'Losungen', 'Fallstudien'], pages: 'Seiten', reach: 'Kontakt' },
-    pill: { l1: 'Ein Projekt im Kopf?', l2: 'Angebot anfordern — ab 350 EUR' },
+    pill: { l1: 'Ein Projekt im Kopf?', l2: 'Angebot anfordern, ab 350 EUR' },
   },
   fr: {
     hero: {
@@ -320,8 +318,8 @@ const T = {
       cta: 'Demarrer un projet',
       note: 'livre en 1–4 semaines · reponse en 24h',
     },
-    badges: ['50+ sites lances', '+300% de trafic organique en moyenne', '10+ systemes en production', 'DR 50 · 2.6K backlinks', 'Livraison en 1-4 semaines', '5 langues, une equipe'],
-    badgeEm: 'Sites codes sur mesure des 350 EUR — de A a Z',
+    badges: ['Code ecrit main, zero templates', '+300% de trafic organique en moyenne', '10+ systemes en production', 'DR 50 · 2.6K backlinks', 'Livraison en 1-4 semaines', '5 langues, une equipe'],
+    badgeEm: 'Sites codes sur mesure des 350 EUR, de A a Z',
     logos: "La confiance d'entreprises en Moldavie et en Europe",
     work: {
       label: 'Travaux selectionnes',
@@ -332,7 +330,7 @@ const T = {
         interbus: { caption: 'Pieces auto · Boutique + ERP', line: "Boutique + ERP qui gere toute l'entreprise" },
         cmiea:    { caption: 'Education · Plateforme',       line: 'La plateforme educative de la municipalite' },
         glg:      { caption: 'Auto-ecole · Rendez-vous',     line: '15 000+ diplomes, rendez-vous en ligne' },
-        radx:          { caption: 'Refroidissement · Site',     line: 'Page 1 sur Google — refroidissement industriel' },
+        radx:          { caption: 'Refroidissement · Site',     line: 'Page 1 sur Google, refroidissement industriel' },
         eliteprotocol: { caption: 'Etiquette · Site premium',   line: 'Marque premium, au pixel pres' },
         rizzaclassic:  { caption: 'Restauration · Italie',      line: 'Classiques italiennes, clients internationaux' },
         autohuse:      { caption: 'Housses sur mesure',         line: 'Housses sur mesure, commandees en ligne' },
@@ -341,26 +339,26 @@ const T = {
     proof: {
       label: 'Resultats reels',
       quote: 'davo.md est *#1 sur Google* pour le transport Moldavie–Europe : *DR 50*, 2.6K backlinks et *+300% de trafic organique* apres la refonte.',
-      attribution: 'Davo.md — un projet landings.md · donnees reelles Ahrefs',
+      attribution: 'Davo.md, un projet landings.md · donnees reelles Ahrefs',
     },
     stats: {
       cells: [
-        { v: '50+', l: 'sites lances' },
+        { v: '24h', l: 'temps de reponse' },
         { v: '300%', l: 'augmentation moyenne du trafic' },
         { v: '10+', l: 'systemes sur mesure en production' },
         { v: 'DR 50', l: 'davo.md · 2.6K backlinks' },
       ],
       offerLabel: "L'offre",
       offerTitle: 'des 350 EUR',
-      offerSub: 'Site code sur mesure — design, construction, lancement.',
+      offerSub: 'Site code sur mesure, design, construction, lancement.',
       offerNote: 'Livre en 1-4 semaines.',
       floats: ['SITE', 'SEO', 'ADS', 'SYSTEMES'],
     },
     about: {
       heading: 'Des solutions, pas seulement des *sites.*',
-      headingSub: 'Sites, SEO, ads et systemes business — une seule equipe, de A a Z.',
+      headingSub: 'Sites, SEO, ads et systemes business, une seule equipe, de A a Z.',
       aboutTitle: "L'agence",
-      aboutBody: 'landings.md est une agence web a Chisinau. Chaque site est code a la main — pas de themes, pas de builders — puis classe sur Google, avec le business automatise derriere. 50+ projets en ligne en Moldavie et en Europe.',
+      aboutBody: 'landings.md est une agence web a Chisinau. Chaque site est code a la main, pas de themes, pas de builders, puis classe sur Google, avec le business automatise derriere.',
       stackLabel: 'Le stack',
       stack: ['Next.js', 'React', 'Tailwind', 'Code ecrit main'],
       langsLabel: '5 langues',
@@ -381,7 +379,7 @@ const T = {
       form: { name: 'Nom', email: 'Email', message: 'Parlez-nous de votre activite...', send: 'Envoyer' },
     },
     footer: { tagline: 'On construit le site. On le fait monter. On automatise le reste.', copy: '© 2026 landings.md · Chisinau, Moldavie', nav: ['Portfolio', 'Tarifs', 'Solutions', 'Etudes de Cas'], pages: 'Pages', reach: 'Contact' },
-    pill: { l1: 'Un projet en tete ?', l2: 'Demandez un devis — des 350 EUR' },
+    pill: { l1: 'Un projet en tete ?', l2: 'Demandez un devis, des 350 EUR' },
   },
   es: {
     hero: {
@@ -390,8 +388,8 @@ const T = {
       cta: 'Iniciar proyecto',
       note: 'entregado en 1–4 semanas · respuesta en 24h',
     },
-    badges: ['50+ webs lanzadas', '+300% de trafico organico de media', '10+ sistemas en produccion', 'DR 50 · 2.6K backlinks', 'Entrega en 1-4 semanas', '5 idiomas, un equipo'],
-    badgeEm: 'Webs a medida desde 350 EUR — de principio a fin',
+    badges: ['Codigo a mano, cero plantillas', '+300% de trafico organico de media', '10+ sistemas en produccion', 'DR 50 · 2.6K backlinks', 'Entrega en 1-4 semanas', '5 idiomas, un equipo'],
+    badgeEm: 'Webs a medida desde 350 EUR, de principio a fin',
     logos: 'Confianza de empresas en Moldavia y Europa',
     work: {
       label: 'Trabajos seleccionados',
@@ -411,26 +409,26 @@ const T = {
     proof: {
       label: 'Resultados reales',
       quote: 'davo.md es *#1 en Google* en transporte Moldavia–Europa: *DR 50*, 2.6K backlinks y *+300% de trafico organico* tras el relanzamiento.',
-      attribution: 'Davo.md — un proyecto de landings.md · datos reales de Ahrefs',
+      attribution: 'Davo.md, un proyecto de landings.md · datos reales de Ahrefs',
     },
     stats: {
       cells: [
-        { v: '50+', l: 'webs lanzadas' },
+        { v: '24h', l: 'tiempo de respuesta' },
         { v: '300%', l: 'aumento medio del trafico' },
         { v: '10+', l: 'sistemas a medida en produccion' },
         { v: 'DR 50', l: 'davo.md · 2.6K backlinks' },
       ],
       offerLabel: 'La oferta',
       offerTitle: 'desde 350 EUR',
-      offerSub: 'Web a medida — diseno, construccion, lanzamiento.',
+      offerSub: 'Web a medida, diseno, construccion, lanzamiento.',
       offerNote: 'Entregado en 1-4 semanas.',
       floats: ['SITE', 'SEO', 'ADS', 'SISTEMAS'],
     },
     about: {
       heading: 'Soluciones, no solo *webs.*',
-      headingSub: 'Webs, SEO, ads y sistemas de negocio — un solo equipo, de principio a fin.',
+      headingSub: 'Webs, SEO, ads y sistemas de negocio, un solo equipo, de principio a fin.',
       aboutTitle: 'La agencia',
-      aboutBody: 'landings.md es una agencia web en Chisinau. Codificamos cada web a mano — sin plantillas, sin builders — la subimos en Google y automatizamos el negocio detras. 50+ proyectos en Moldavia y Europa.',
+      aboutBody: 'landings.md es una agencia web en Chisinau. Codificamos cada web a mano, sin plantillas, sin builders, la subimos en Google y automatizamos el negocio detras.',
       stackLabel: 'El stack',
       stack: ['Next.js', 'React', 'Tailwind', 'Codigo a mano'],
       langsLabel: '5 idiomas',
@@ -451,7 +449,7 @@ const T = {
       form: { name: 'Nombre', email: 'Email', message: 'Cuentanos sobre tu negocio...', send: 'Enviar mensaje' },
     },
     footer: { tagline: 'Creamos tu web. La llevamos arriba. Automatizamos el resto.', copy: '© 2026 landings.md · Chisinau, Moldavia', nav: ['Portafolio', 'Precios', 'Soluciones', 'Casos de Estudio'], pages: 'Paginas', reach: 'Contacto' },
-    pill: { l1: 'Un proyecto en mente?', l2: 'Pide presupuesto — desde 350 EUR' },
+    pill: { l1: 'Un proyecto en mente?', l2: 'Pide presupuesto, desde 350 EUR' },
   },
 }
 
@@ -484,7 +482,7 @@ export default function Home() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const submitForm = (e: React.FormEvent) => {
     e.preventDefault()
-    const subject = encodeURIComponent(`Proiect nou — ${form.name || 'landings.md'}`)
+    const subject = encodeURIComponent(`Proiect nou, ${form.name || 'landings.md'}`)
     const body = encodeURIComponent(`${form.message}\n\n${form.name} · ${form.email}`)
     window.location.href = `mailto:contact@landings.md?subject=${subject}&body=${body}`
   }
@@ -493,9 +491,9 @@ export default function Home() {
     <main style={{ background: '#0d0d0d' }}>
       <SiteNav contactHref="#contact" />
 
-      {/* ════════ HERO — his rhythm, our moves: arch + diagonal ribbed glass ════════ */}
+      {/* ════════ HERO, his rhythm, our moves: arch + diagonal ribbed glass ════════ */}
       <section className="relative overflow-hidden">
-        {/* badges cloud — static real-fact chips */}
+        {/* badges cloud, static real-fact chips */}
         <div className="nv-container pt-8 md:pt-12">
           <Reveal>
             <div className="mx-auto flex max-w-[860px] flex-wrap items-center justify-center gap-3">
@@ -520,7 +518,7 @@ export default function Home() {
             </div>
           </Reveal>
 
-          {/* client logo row — 30% → 80% */}
+          {/* client logo row, 30% → 80% */}
           <Reveal delay={0.14}>
             <div className="mx-auto mt-12 flex max-w-[900px] flex-wrap items-center justify-center gap-x-10 gap-y-6 md:mt-14">
               {LOGO_ROW.map((l) => (
@@ -533,7 +531,7 @@ export default function Home() {
           </Reveal>
         </div>
 
-        {/* the ARCH — our shape, holding the real product */}
+        {/* the ARCH, our shape, holding the real product */}
         <div className="relative z-0 mt-12 flex justify-center md:mt-16">
           <div className="relative" style={{ width: 'min(430px, 80vw)', aspectRatio: '430 / 560' }}>
             {/* warm saturated blob */}
@@ -558,7 +556,7 @@ export default function Home() {
             >
               <Image
                 src="/images/tall-davo.jpg"
-                alt="Davo.md — platforma de rezervari construita de landings.md"
+                alt="Davo.md, platforma de rezervari construita de landings.md"
                 fill
                 sizes="430px"
                 className="object-cover object-top"
@@ -568,7 +566,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* diagonal ribbed glass band — H1 sits on it */}
+        {/* diagonal ribbed glass band, H1 sits on it */}
         <div className="ribbed relative z-10 -mt-44 md:-mt-52">
           <div className="relative z-[1] nv-container">
             <div className="mx-auto max-w-[1040px] pb-14 pt-20 text-center md:pb-20 md:pt-28">
@@ -614,7 +612,8 @@ export default function Home() {
       </section>
 
       {/* ════════ PROJECTS SLIDER ════════ */}
-      <section className="pt-16 md:pt-24">
+      <div className="nv-seam" aria-hidden />
+      <section className="pt-14 md:pt-20">
         <div className="nv-container">
           <Reveal>
             <Label>{t.work.label}</Label>
@@ -628,7 +627,7 @@ export default function Home() {
             </h2>
           </Reveal>
 
-          {/* track — scroll-snap, portrait cards 408x710 */}
+          {/* track, scroll-snap, portrait cards 408x710 */}
           <div
             ref={trackRef}
             onScroll={onTrackScroll}
@@ -640,7 +639,7 @@ export default function Home() {
               return (
                 <Reveal key={p.key} delay={i * 0.07} className="flex-none" >
                   <article
-                    className="group relative overflow-hidden"
+                    className="group nv-card3d relative overflow-hidden"
                     style={{
                       width: 'min(408px, 80vw)',
                       aspectRatio: '408 / 710',
@@ -656,12 +655,12 @@ export default function Home() {
                       alt={p.name}
                       fill
                       sizes="408px"
-                      className="object-cover object-top transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                      className="object-cover object-top transition-transform duration-200 ease-out group-hover:scale-[1.03]"
                     />
                     {/* top overlay: client + service caption */}
                     <div
                       className="absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-3 px-6 pb-12 pt-5"
-                      style={{ background: 'linear-gradient(180deg, rgba(8,8,8,0.72), rgba(8,8,8,0.28) 55%, transparent)' }}
+                      style={{ background: 'linear-gradient(180deg, rgba(8,8,8,0.88), rgba(8,8,8,0.45) 60%, transparent)' }}
                     >
                       <span className="text-[15px] font-medium text-white">{p.name}</span>
                       <span className="text-right text-[12px] font-medium uppercase tracking-[0.1em]" style={{ color: '#a4a4a4' }}>
@@ -671,7 +670,7 @@ export default function Home() {
                     {/* bottom overlay: superlative + view */}
                     <div
                       className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-4 px-6 pb-6 pt-16"
-                      style={{ background: 'linear-gradient(0deg, rgba(6,6,6,0.88), rgba(6,6,6,0.42) 55%, transparent)' }}
+                      style={{ background: 'linear-gradient(0deg, rgba(6,6,6,0.94), rgba(6,6,6,0.55) 55%, transparent)' }}
                     >
                       <p className="max-w-[68%] text-[0.9375rem] font-medium leading-snug text-white">{pt.line}</p>
                       <a
@@ -705,7 +704,7 @@ export default function Home() {
                     <button
                       key={p.key}
                       onClick={() => goTo(i)}
-                      aria-label={`Slide ${i + 1} — ${p.name}`}
+                      aria-label={`Slide ${i + 1}, ${p.name}`}
                       style={{
                         width: active === i ? 22 : 10,
                         height: 10,
@@ -738,7 +737,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ════════ PROOF — real claim + real analytics ════════ */}
+      {/* ════════ PROOF, real claim + real analytics ════════ */}
       <section className="pt-20 md:pt-28">
         <div className="nv-container">
           <Reveal>
@@ -765,7 +764,7 @@ export default function Home() {
                 >
                   <Image
                     src="/images/davo-ahrefs.png"
-                    alt="Ahrefs — davo.md: DR 50, 2.6K backlinks"
+                    alt="Ahrefs, davo.md: DR 50, 2.6K backlinks"
                     width={2102}
                     height={512}
                     sizes="(min-width: 768px) 600px, 90vw"
@@ -778,21 +777,22 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ════════ STATS BENTO — .7fr 1fr .8fr, center offer spans 2 rows ════════ */}
+      {/* ════════ STATS BENTO, .7fr 1fr .8fr, center offer spans 2 rows ════════ */}
       <section className="pt-20 md:pt-28">
         <div className="nv-container">
           <div className="nv-bento-stats">
             {/* col 1 row 1 */}
             <Reveal className="h-full">
-              <div className="nv-edge nv-edge--ring h-full">
+              <div className="nv-edge nv-edge--ring nv-cell h-full">
                 <div className="nv-edge-inner flex h-full flex-col justify-center p-7">
                   <span className="font-medium" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{t.stats.cells[0].v}</span>
                   <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{t.stats.cells[0].l}</span>
+                  <span className="nv-cell-detail mt-2 text-[12px] font-medium" style={{ color: '#FF9E7A' }}>contact@landings.md</span>
                 </div>
               </div>
             </Reveal>
 
-            {/* center offer card — spans both rows */}
+            {/* center offer card, spans both rows */}
             <Reveal delay={0.06} className="nv-bento-center h-full">
               <div className="nv-edge nv-edge--alt h-full">
                 <div className="nv-edge-inner flex h-full flex-col p-7 text-center md:p-9">
@@ -814,7 +814,7 @@ export default function Home() {
                     >
                       <Image
                         src="/images/tall-davo.jpg"
-                        alt="Site custom-coded — landings.md"
+                        alt="Site custom-coded | landings.md"
                         fill
                         sizes="380px"
                         className="object-cover object-top"
@@ -832,30 +832,67 @@ export default function Home() {
 
             {/* col 3 row 1 */}
             <Reveal delay={0.1} className="h-full">
-              <div className="nv-edge nv-edge--ring h-full">
+              <div className="nv-edge nv-edge--ring nv-cell h-full">
                 <div className="nv-edge-inner flex h-full flex-col justify-center p-7">
                   <span className="font-medium" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{t.stats.cells[1].v}</span>
                   <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{t.stats.cells[1].l}</span>
+                  <div className="mt-5 flex h-14 items-end gap-1.5" aria-hidden>
+                    {[22, 30, 38, 46, 58, 72, 86, 100].map((h, i) => (
+                      <span
+                        key={i}
+                        className="nv-bar flex-1 rounded-sm"
+                        style={{
+                          height: `${h}%`,
+                          ['--i' as string]: i,
+                          background: i === 7 ? '#FF9E7A' : 'rgba(255,255,255,0.14)',
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <span className="nv-cell-detail mt-2 text-[12px] font-medium" style={{ color: '#FF9E7A' }}>Google Analytics</span>
                 </div>
               </div>
             </Reveal>
 
             {/* col 1 row 2 */}
             <Reveal delay={0.14} className="h-full">
-              <div className="nv-edge nv-edge--ring h-full">
+              <div className="nv-edge nv-edge--ring nv-cell h-full">
                 <div className="nv-edge-inner flex h-full flex-col justify-center p-7">
                   <span className="font-medium" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{t.stats.cells[2].v}</span>
                   <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{t.stats.cells[2].l}</span>
+                  <div className="mt-5 flex items-center gap-0" aria-hidden>
+                    <span className="nv-node h-2.5 w-2.5 rounded-full" style={{ background: '#FF9E7A' }} />
+                    <span className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }} />
+                    <span className="nv-node h-2.5 w-2.5 rounded-full" style={{ background: '#FF9E7A' }} />
+                    <span className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }} />
+                    <span className="nv-node h-2.5 w-2.5 rounded-full" style={{ background: '#FF9E7A' }} />
+                  </div>
+                  <span className="nv-cell-detail mt-3 text-[12px] font-medium" style={{ color: '#FF9E7A' }}>Booking · ERP · CRM</span>
                 </div>
               </div>
             </Reveal>
 
             {/* col 3 row 2 */}
             <Reveal delay={0.18} className="h-full">
-              <div className="nv-edge nv-edge--ring h-full">
+              <div className="nv-edge nv-edge--ring nv-cell h-full">
                 <div className="nv-edge-inner flex h-full flex-col justify-center p-7">
-                  <span className="font-medium" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1, color: LIME }}>{t.stats.cells[3].v}</span>
-                  <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{t.stats.cells[3].l}</span>
+                  <div className="flex items-center gap-5">
+                    <svg width="72" height="72" viewBox="0 0 96 96" aria-hidden>
+                      <circle cx="48" cy="48" r="42" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="7" />
+                      <circle
+                        cx="48" cy="48" r="42" fill="none"
+                        stroke="#FF9E7A" strokeWidth="7" strokeLinecap="round"
+                        strokeDasharray="264" strokeDashoffset="132"
+                        transform="rotate(-90 48 48)"
+                        style={{ animation: 'nv-ring-fill 0.6s ease-out both' }}
+                      />
+                    </svg>
+                    <div>
+                      <span className="font-medium" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1, color: LIME }}>{t.stats.cells[3].v}</span>
+                      <span className="mt-2 block text-[0.875rem] font-medium" style={{ color: '#909099' }}>{t.stats.cells[3].l}</span>
+                    </div>
+                  </div>
+                  <span className="nv-cell-detail mt-3 text-[12px] font-medium" style={{ color: '#FF9E7A' }}>Ahrefs</span>
                 </div>
               </div>
             </Reveal>
@@ -863,11 +900,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ════════ ABOUT BENTO — named areas ════════ */}
+      {/* ════════ ABOUT BENTO, named areas ════════ */}
       <section className="pt-20 md:pt-28">
         <div className="nv-container">
           <div className="nv-bento-about">
-            {/* div1 — despre agentie (tall left) */}
+            {/* div1, despre agentie (tall left) */}
             <Reveal className="nv-a1 h-full">
               <div className="nv-edge h-full">
                 <div className="nv-edge-inner flex h-full min-h-[300px] flex-col p-7 md:p-8">
@@ -888,7 +925,7 @@ export default function Home() {
               </div>
             </Reveal>
 
-            {/* div3 — heading + stack (top right, wide) */}
+            {/* div3, heading + stack (top right, wide) */}
             <Reveal delay={0.06} className="nv-a3 h-full">
               <div className="nv-edge nv-edge--alt h-full">
                 <div className="nv-edge-inner flex h-full min-h-[220px] flex-col justify-center p-7 text-center md:p-9">
@@ -909,7 +946,7 @@ export default function Home() {
               </div>
             </Reveal>
 
-            {/* div4 — 5 limbi (short wide) */}
+            {/* div4, 5 limbi (short wide) */}
             <Reveal delay={0.1} className="nv-a4 h-full">
               <div className="nv-edge nv-edge--ring h-full">
                 <div className="nv-edge-inner flex h-full min-h-[110px] flex-wrap items-center justify-between gap-4 px-7 py-5">
@@ -932,7 +969,7 @@ export default function Home() {
               </div>
             </Reveal>
 
-            {/* div5 — proces scurt (bottom wide) */}
+            {/* div5, proces scurt (bottom wide) */}
             <Reveal delay={0.14} className="nv-a5 h-full">
               <div className="nv-edge h-full">
                 <div className="nv-edge-inner flex h-full min-h-[180px] flex-col p-7 md:p-8">
@@ -950,7 +987,7 @@ export default function Home() {
               </div>
             </Reveal>
 
-            {/* div2 — contact mini (bottom left) */}
+            {/* div2, contact mini (bottom left) */}
             <Reveal delay={0.18} className="nv-a2 h-full">
               <div className="nv-edge nv-edge--ring h-full">
                 <div className="nv-edge-inner flex h-full min-h-[150px] flex-col justify-center gap-2 p-7">
@@ -1011,7 +1048,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* cinematic mailto form — staggered reveals, sweeping lime underlines */}
+                  {/* cinematic mailto form, staggered reveals, sweeping lime underlines */}
                   <form onSubmit={submitForm} className="flex flex-col gap-6">
                     <Reveal delay={0.1}>
                       <div className="nv-field">
@@ -1066,7 +1103,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ════════ FOOTER — breathes above the fixed pill ════════ */}
+      {/* ════════ FOOTER, breathes above the fixed pill ════════ */}
       <footer style={{ margin: '100px 0 200px' }}>
         <div className="nv-container">
           <div

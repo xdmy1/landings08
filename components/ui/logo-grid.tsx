@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 type Treatment = 'solid' | 'mono' | 'white'
 
-/* Client logos on the ink ground — one static flex strip, no cells,
+/* Client logos on the ink ground, one static flex strip, no cells,
    no marquee, no hover behavior. treatment 'solid' flattens transparent
    marks to white; 'mono' lifts detailed marks; 'white' passes
    already-white artwork through. */

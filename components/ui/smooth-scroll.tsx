@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import Lenis from 'lenis'
 
-/* Lenis smooth scroll, default config — the reference site runs it and
+/* Lenis smooth scroll, default config, the reference site runs it and
    much of the "expensive" feel is this alone. */
 export function SmoothScroll() {
   useEffect(() => {

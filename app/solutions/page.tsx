@@ -7,13 +7,14 @@ import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
 
 /* ────────────────────────────────────────────────────────────────
-   Solutions — navarro-clone shell, landings.md content only.
+   Solutions, navarro-clone shell, landings.md content only.
    Ground #0d0d0d · lime #FF9E7A · Geist · blur-up reveals.
+   Arch header · card3d system cards · white-fill rows · nv-cell stats.
    ──────────────────────────────────────────────────────────────── */
 
 const LIME = '#FF9E7A'
 
-/* Blur-up reveal — IntersectionObserver at 0.1 that REPLAYS:
+/* Blur-up reveal, IntersectionObserver at 0.1 that REPLAYS:
    the .nv-hidden class returns when the block scrolls away. */
 function Reveal({
   children,
@@ -47,22 +48,31 @@ function Reveal({
   )
 }
 
+/* Plain letter-spaced caps label, no dot */
 function Label({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-2 text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
-      <span className="dot-lime" />
+    <span className="inline-flex items-center text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
       {children}
     </span>
   )
 }
 
-/* Other systems we shipped — compact rows */
+/* Section seam hairline */
+function Seam() {
+  return (
+    <div className="nv-container pt-16 md:pt-24">
+      <div className="nv-seam" />
+    </div>
+  )
+}
+
+/* Other systems we shipped, compact rows */
 const otherSystems = [
   {
     id: 1,
     badge: { en: "LOGISTICS", ro: "LOGISTICA", de: "LOGISTIK", fr: "LOGISTIQUE", es: "LOGISTICA" },
     title: { en: "Package Tracking Platform", ro: "Platforma Urmarire Colete", de: "Paketverfolgungs-Plattform", fr: "Plateforme de Suivi de Colis", es: "Plataforma de Seguimiento de Paquetes" },
-    subtitle: { en: "MD — Europe — MD", ro: "MD — Europa — MD", de: "MD — Europa — MD", fr: "MD — Europe — MD", es: "MD — Europa — MD" },
+    subtitle: { en: "MD, Europe, MD", ro: "MD, Europa, MD", de: "MD, Europa, MD", fr: "MD, Europe, MD", es: "MD, Europa, MD" },
     description: {
       en: "A logistics application managing packages between Moldova and Europe. Real-time tracking, automated status updates, admin panel, driver assignments and full delivery history.",
       ro: "O aplicatie logistica pentru gestionarea coletelor intre Moldova si Europa. Urmarire in timp real, statusuri automate, panou admin, atribuire soferi si istoric complet al livrarilor.",
@@ -82,7 +92,7 @@ const otherSystems = [
     id: 2,
     badge: { en: "FAMILY APP", ro: "APLICATIE FAMILIALA", de: "FAMILIEN-APP", fr: "APP FAMILIALE", es: "APP FAMILIAR" },
     title: { en: "Growing Memories Album", ro: "Album Amintiri in Crestere", de: "Wachsende Erinnerungen Album", fr: "Album de Souvenirs Grandissants", es: "Album de Recuerdos Crecientes" },
-    subtitle: { en: "Ages 1 — 18", ro: "Varsta 1 — 18", de: "Alter 1 — 18", fr: "Ages 1 — 18", es: "Edades 1 — 18" },
+    subtitle: { en: "Ages 1, 18", ro: "Varsta 1, 18", de: "Alter 1, 18", fr: "Ages 1, 18", es: "Edades 1, 18" },
     description: {
       en: "A unique digital family album where parents document their child's journey from age 1 to 18. On their 18th birthday, the child receives access to the complete album.",
       ro: "Un album digital unic unde parintii documenteaza calatoria copilului de la 1 la 18 ani. La 18 ani, copilul primeste acces la albumul complet.",
@@ -104,11 +114,11 @@ const otherSystems = [
     title: { en: "Auto Service CRM", ro: "CRM Service Auto", de: "Auto-Service CRM", fr: "CRM Service Auto", es: "CRM Servicio Automotriz" },
     subtitle: { en: "Complete Business Management", ro: "Management Complet Afacere", de: "Komplettes Geschaftsmanagement", fr: "Gestion Complete d'Entreprise", es: "Gestion Empresarial Completa" },
     description: {
-      en: "A complete client management platform built for auto services. Appointments, service history, invoicing, parts inventory, client communication and analytics — in one dashboard.",
-      ro: "O platforma completa de management clienti pentru service-uri auto. Programari, istoric servicii, facturare, inventar piese, comunicare clienti si analize — intr-un singur panou.",
-      de: "Eine komplette Kundenmanagement-Plattform fur Autoservices. Termine, Historie, Rechnungen, Inventar, Kommunikation und Analysen — in einem Dashboard.",
-      fr: "Une plateforme complete de gestion clients pour services auto. Rendez-vous, historique, facturation, inventaire, communication et analyses — dans un seul tableau de bord.",
-      es: "Una plataforma completa de gestion de clientes para servicios automotrices. Citas, historial, facturas, inventario, comunicacion y analisis — en un solo panel."
+      en: "A complete client management platform built for auto services. Appointments, service history, invoicing, parts inventory, client communication and analytics, in one dashboard.",
+      ro: "O platforma completa de management clienti pentru service-uri auto. Programari, istoric servicii, facturare, inventar piese, comunicare clienti si analize, intr-un singur panou.",
+      de: "Eine komplette Kundenmanagement-Plattform fur Autoservices. Termine, Historie, Rechnungen, Inventar, Kommunikation und Analysen, in einem Dashboard.",
+      fr: "Une plateforme complete de gestion clients pour services auto. Rendez-vous, historique, facturation, inventaire, communication et analyses, dans un seul tableau de bord.",
+      es: "Una plataforma completa de gestion de clientes para servicios automotrices. Citas, historial, facturas, inventario, comunicacion y analisis, en un solo panel."
     },
     features: {
       en: ["Appointment scheduling", "Service history", "Invoice generation", "Parts inventory", "Client portal", "Performance analytics"],
@@ -121,10 +131,26 @@ const otherSystems = [
 ]
 
 const stats = [
-  { value: "99.9%", label: { en: "Uptime", ro: "Disponibilitate", de: "Verfugbarkeit", fr: "Disponibilite", es: "Disponibilidad" } },
-  { value: "3x", label: { en: "Faster Operations", ro: "Operatii Mai Rapide", de: "Schnellere Ablaufe", fr: "Operations Plus Rapides", es: "Operaciones Mas Rapidas" } },
-  { value: "0", label: { en: "Paper Needed", ro: "Hartie Necesara", de: "Papier benotigt", fr: "Papier Necessaire", es: "Papel Necesario" } },
-  { value: "24/7", label: { en: "System Access", ro: "Acces Sistem", de: "Systemzugang", fr: "Acces Systeme", es: "Acceso al Sistema" } },
+  {
+    value: "99.9%",
+    label: { en: "Uptime", ro: "Disponibilitate", de: "Verfugbarkeit", fr: "Disponibilite", es: "Disponibilidad" },
+    detail: { en: "Monitored around the clock", ro: "Monitorizat non-stop", de: "Rund um die Uhr uberwacht", fr: "Surveille en continu", es: "Monitorizado sin parar" },
+  },
+  {
+    value: "3x",
+    label: { en: "Faster Operations", ro: "Operatii Mai Rapide", de: "Schnellere Ablaufe", fr: "Operations Plus Rapides", es: "Operaciones Mas Rapidas" },
+    detail: { en: "Same team, fewer clicks", ro: "Aceeasi echipa, mai putine clickuri", de: "Gleiches Team, weniger Klicks", fr: "Meme equipe, moins de clics", es: "Mismo equipo, menos clics" },
+  },
+  {
+    value: "0",
+    label: { en: "Paper Needed", ro: "Hartie Necesara", de: "Papier benotigt", fr: "Papier Necessaire", es: "Papel Necesario" },
+    detail: { en: "The notebooks are retired", ro: "Caietele au iesit la pensie", de: "Die Hefte sind Geschichte", fr: "Les cahiers sont a la retraite", es: "Los cuadernos se jubilaron" },
+  },
+  {
+    value: "24/7",
+    label: { en: "System Access", ro: "Acces Sistem", de: "Systemzugang", fr: "Acces Systeme", es: "Acceso al Sistema" },
+    detail: { en: "Any device, anywhere", ro: "Orice dispozitiv, oriunde", de: "Jedes Gerat, uberall", fr: "Tout appareil, partout", es: "Cualquier dispositivo, donde sea" },
+  },
 ]
 
 export default function SolutionsPage() {
@@ -141,7 +167,7 @@ export default function SolutionsPage() {
       hero: {
         title1: "We free your business",
         title2: "from paper.",
-        description: "Driving school scheduling, seat-selection bookings, operator panels, invoicing, stock, profit tracking and automated accounting — we build real systems for real businesses. Some of them are below.",
+        description: "Driving school scheduling, seat-selection bookings, operator panels, invoicing, stock, profit tracking and automated accounting, we build real systems for real businesses. Some of them are below.",
         cta: "Discuss your project"
       },
       built: {
@@ -150,21 +176,21 @@ export default function SolutionsPage() {
         visit: "Visit site",
         systems: [
           {
-            client: "DAVO.MD — INTERNATIONAL TRANSPORT",
+            client: "DAVO.MD, INTERNATIONAL TRANSPORT",
             title: "Bookings with seat selection, like a flight.",
-            body: "Passengers pick their seat on the coach map, exactly like at an airline check-in. Operators get their own panel: they see the routes, book clients over the phone and track every seat — no notebooks, no double-bookings.",
+            body: "Passengers pick their seat on the coach map, exactly like at an airline check-in. Operators get their own panel: they see the routes, book clients over the phone and track every seat, no notebooks, no double-bookings.",
             tags: ["Seat map", "Operator panel", "Online bookings", "Payments & tickets"],
             url: "https://davo.md"
           },
           {
-            client: "INTER-BUS.MD — PARTS & E-COMMERCE",
+            client: "INTER-BUS.MD, PARTS & E-COMMERCE",
             title: "Invoicing, stock and accounting on autopilot.",
             body: "An international online store plus the back office that runs the business: invoices generated automatically, stock updated in real time, profit calculated per product and accounting that does itself.",
             tags: ["Automated invoicing", "Stock tracking", "Profit per product", "Accounting"],
             url: "https://inter-bus.md"
           },
           {
-            client: "GLG DRIVING SCHOOL — EDUCATION",
+            client: "GLG DRIVING SCHOOL, EDUCATION",
             title: "Practical lesson scheduling, without the phone calls.",
             body: "Students book their own practical lessons, instructors see their day at a glance, and the office stops juggling calls and notebooks. The schedule fills itself.",
             tags: ["Online scheduling", "Instructor calendar", "Notifications", "Zero phone calls"],
@@ -172,7 +198,7 @@ export default function SolutionsPage() {
           },
         ]
       },
-      others: { heading: "Other systems we've built", subheading: "From logistics to personal apps — if it runs on paper, we can automate it." },
+      others: { heading: "Other systems we've built", subheading: "From logistics to personal apps, if it runs on paper, we can automate it." },
       cta: { title: "Ready to get rid of the paperwork?", body: "Tell us how your business runs today. We'll design a custom system that eliminates the notebooks and multiplies your efficiency.", button: "Start your transformation" },
       footer: { copy: "© 2026 All rights reserved." }
     },
@@ -181,7 +207,7 @@ export default function SolutionsPage() {
       hero: {
         title1: "Iti scapam afacerea",
         title2: "de foi.",
-        description: "Programari la scoala auto, rezervari cu alegerea locului, panouri pentru operatori, facturare, stoc, calcul de profit si contabilitate automata — construim sisteme reale pentru afaceri reale. Cateva dintre ele, mai jos.",
+        description: "Programari la scoala auto, rezervari cu alegerea locului, panouri pentru operatori, facturare, stoc, calcul de profit si contabilitate automata, construim sisteme reale pentru afaceri reale. Cateva dintre ele, mai jos.",
         cta: "Discuta proiectul tau"
       },
       built: {
@@ -190,21 +216,21 @@ export default function SolutionsPage() {
         visit: "Acceseaza site-ul",
         systems: [
           {
-            client: "DAVO.MD — TRANSPORT INTERNATIONAL",
+            client: "DAVO.MD, TRANSPORT INTERNATIONAL",
             title: "Rezervari cu alegerea locului, ca la avion.",
-            body: "Pasagerii isi aleg locul pe harta autocarului, exact ca la check-in-ul unui zbor. Operatorii au panoul lor: vad cursele, rezerva pentru clientii de la telefon si tin evidenta fiecarui loc — fara caiete, fara suprapuneri.",
+            body: "Pasagerii isi aleg locul pe harta autocarului, exact ca la check-in-ul unui zbor. Operatorii au panoul lor: vad cursele, rezerva pentru clientii de la telefon si tin evidenta fiecarui loc, fara caiete, fara suprapuneri.",
             tags: ["Harta locurilor", "Panou operatori", "Rezervari online", "Plati & bilete"],
             url: "https://davo.md"
           },
           {
-            client: "INTER-BUS.MD — PIESE & E-COMMERCE",
+            client: "INTER-BUS.MD, PIESE & E-COMMERCE",
             title: "Facturare, stoc si contabilitate pe autopilot.",
             body: "Magazin online international plus panoul din spate care conduce afacerea: facturi generate automat, stoc actualizat in timp real, profit calculat pe fiecare produs si contabilitate care se face singura.",
             tags: ["Facturare automata", "Evidenta stoc", "Profit pe produs", "Contabilitate"],
             url: "https://inter-bus.md"
           },
           {
-            client: "SCOALA AUTO GLG — EDUCATIE",
+            client: "SCOALA AUTO GLG, EDUCATIE",
             title: "Programari la lectii practice, fara telefoane.",
             body: "Elevii isi programeaza singuri lectiile practice, instructorii isi vad ziua dintr-o privire, iar administratia nu mai jongleaza cu apeluri si caiete. Orarul se umple singur.",
             tags: ["Programari online", "Orar instructori", "Notificari", "Zero apeluri"],
@@ -212,7 +238,7 @@ export default function SolutionsPage() {
           },
         ]
       },
-      others: { heading: "Alte sisteme construite", subheading: "De la logistica la aplicatii personale — daca merge pe hartie, putem automatiza." },
+      others: { heading: "Alte sisteme construite", subheading: "De la logistica la aplicatii personale, daca merge pe hartie, putem automatiza." },
       cta: { title: "Gata sa scapi de hartii?", body: "Spune-ne cum functioneaza afacerea ta azi. Proiectam un sistem custom care elimina caietele si iti multiplica eficienta.", button: "Incepe transformarea" },
       footer: { copy: "© 2026 Toate drepturile rezervate." }
     },
@@ -221,7 +247,7 @@ export default function SolutionsPage() {
       hero: {
         title1: "Wir befreien Ihr Geschaft",
         title2: "vom Papier.",
-        description: "Fahrschul-Terminplanung, Buchungen mit Sitzplatzwahl, Operator-Panels, Rechnungen, Lager, Gewinnberechnung und automatische Buchhaltung — wir bauen echte Systeme fur echte Unternehmen. Einige davon unten.",
+        description: "Fahrschul-Terminplanung, Buchungen mit Sitzplatzwahl, Operator-Panels, Rechnungen, Lager, Gewinnberechnung und automatische Buchhaltung, wir bauen echte Systeme fur echte Unternehmen. Einige davon unten.",
         cta: "Projekt besprechen"
       },
       built: {
@@ -230,21 +256,21 @@ export default function SolutionsPage() {
         visit: "Website besuchen",
         systems: [
           {
-            client: "DAVO.MD — INTERNATIONALER TRANSPORT",
+            client: "DAVO.MD, INTERNATIONALER TRANSPORT",
             title: "Buchungen mit Sitzplatzwahl, wie im Flugzeug.",
-            body: "Passagiere wahlen ihren Sitz auf der Buskarte, genau wie beim Airline-Check-in. Operatoren haben ihr eigenes Panel: Routen sehen, telefonisch buchen, jeden Platz verfolgen — ohne Hefte, ohne Doppelbuchungen.",
+            body: "Passagiere wahlen ihren Sitz auf der Buskarte, genau wie beim Airline-Check-in. Operatoren haben ihr eigenes Panel: Routen sehen, telefonisch buchen, jeden Platz verfolgen, ohne Hefte, ohne Doppelbuchungen.",
             tags: ["Sitzplan", "Operator-Panel", "Online-Buchungen", "Zahlungen & Tickets"],
             url: "https://davo.md"
           },
           {
-            client: "INTER-BUS.MD — TEILE & E-COMMERCE",
+            client: "INTER-BUS.MD, TEILE & E-COMMERCE",
             title: "Rechnungen, Lager und Buchhaltung auf Autopilot.",
             body: "Ein internationaler Online-Shop plus das Backoffice, das das Geschaft steuert: automatische Rechnungen, Live-Lager, Gewinn pro Produkt und Buchhaltung, die sich selbst erledigt.",
             tags: ["Automatische Rechnungen", "Lagerverwaltung", "Gewinn pro Produkt", "Buchhaltung"],
             url: "https://inter-bus.md"
           },
           {
-            client: "FAHRSCHULE GLG — BILDUNG",
+            client: "FAHRSCHULE GLG, BILDUNG",
             title: "Fahrstunden-Planung ohne Telefonate.",
             body: "Schuler buchen ihre Fahrstunden selbst, Fahrlehrer sehen ihren Tag auf einen Blick, und das Buro jongliert nicht mehr mit Anrufen und Heften. Der Stundenplan fullt sich von selbst.",
             tags: ["Online-Terminplanung", "Fahrlehrer-Kalender", "Benachrichtigungen", "Null Anrufe"],
@@ -252,7 +278,7 @@ export default function SolutionsPage() {
           },
         ]
       },
-      others: { heading: "Weitere gebaute Systeme", subheading: "Von Logistik bis zu personlichen Apps — was auf Papier lauft, konnen wir automatisieren." },
+      others: { heading: "Weitere gebaute Systeme", subheading: "Von Logistik bis zu personlichen Apps, was auf Papier lauft, konnen wir automatisieren." },
       cta: { title: "Bereit, den Papierkram loszuwerden?", body: "Erzahlen Sie uns, wie Ihr Geschaft heute lauft. Wir entwerfen ein System, das die Hefte eliminiert und Ihre Effizienz vervielfacht.", button: "Transformation starten" },
       footer: { copy: "© 2026 Alle Rechte vorbehalten." }
     },
@@ -261,7 +287,7 @@ export default function SolutionsPage() {
       hero: {
         title1: "On libere votre entreprise",
         title2: "du papier.",
-        description: "Planning d'auto-ecole, reservations avec choix du siege, panneaux operateurs, facturation, stock, calcul de profit et comptabilite automatique — on construit de vrais systemes pour de vraies entreprises. En voici quelques-uns.",
+        description: "Planning d'auto-ecole, reservations avec choix du siege, panneaux operateurs, facturation, stock, calcul de profit et comptabilite automatique, on construit de vrais systemes pour de vraies entreprises. En voici quelques-uns.",
         cta: "Discuter de votre projet"
       },
       built: {
@@ -270,21 +296,21 @@ export default function SolutionsPage() {
         visit: "Visiter le site",
         systems: [
           {
-            client: "DAVO.MD — TRANSPORT INTERNATIONAL",
+            client: "DAVO.MD, TRANSPORT INTERNATIONAL",
             title: "Reservations avec choix du siege, comme en avion.",
-            body: "Les passagers choisissent leur siege sur le plan du car, exactement comme a l'enregistrement d'un vol. Les operateurs ont leur panneau : ils voient les trajets, reservent par telephone et suivent chaque place — sans cahiers, sans doublons.",
+            body: "Les passagers choisissent leur siege sur le plan du car, exactement comme a l'enregistrement d'un vol. Les operateurs ont leur panneau : ils voient les trajets, reservent par telephone et suivent chaque place, sans cahiers, sans doublons.",
             tags: ["Plan des sieges", "Panneau operateurs", "Reservations en ligne", "Paiements & billets"],
             url: "https://davo.md"
           },
           {
-            client: "INTER-BUS.MD — PIECES & E-COMMERCE",
+            client: "INTER-BUS.MD, PIECES & E-COMMERCE",
             title: "Facturation, stock et comptabilite en pilote automatique.",
             body: "Une boutique en ligne internationale plus le back-office qui gere l'entreprise : factures automatiques, stock en temps reel, profit par produit et comptabilite qui se fait toute seule.",
             tags: ["Facturation automatique", "Suivi du stock", "Profit par produit", "Comptabilite"],
             url: "https://inter-bus.md"
           },
           {
-            client: "AUTO-ECOLE GLG — EDUCATION",
+            client: "AUTO-ECOLE GLG, EDUCATION",
             title: "Planning des lecons pratiques, sans coups de fil.",
             body: "Les eleves reservent eux-memes leurs lecons, les instructeurs voient leur journee d'un coup d'oeil, et le bureau ne jongle plus avec les appels et les cahiers. Le planning se remplit tout seul.",
             tags: ["Reservation en ligne", "Calendrier instructeurs", "Notifications", "Zero appels"],
@@ -292,7 +318,7 @@ export default function SolutionsPage() {
           },
         ]
       },
-      others: { heading: "D'autres systemes construits", subheading: "De la logistique aux apps personnelles — si ca tourne sur papier, on peut l'automatiser." },
+      others: { heading: "D'autres systemes construits", subheading: "De la logistique aux apps personnelles, si ca tourne sur papier, on peut l'automatiser." },
       cta: { title: "Pret a vous debarrasser de la paperasse ?", body: "Dites-nous comment votre entreprise fonctionne aujourd'hui. On concoit un systeme sur mesure qui elimine les cahiers et multiplie votre efficacite.", button: "Commencer la transformation" },
       footer: { copy: "© 2026 Tous droits reserves." }
     },
@@ -301,7 +327,7 @@ export default function SolutionsPage() {
       hero: {
         title1: "Liberamos tu negocio",
         title2: "del papel.",
-        description: "Agenda de autoescuela, reservas con eleccion de asiento, paneles de operadores, facturacion, stock, calculo de beneficios y contabilidad automatica — construimos sistemas reales para negocios reales. Aqui van algunos.",
+        description: "Agenda de autoescuela, reservas con eleccion de asiento, paneles de operadores, facturacion, stock, calculo de beneficios y contabilidad automatica, construimos sistemas reales para negocios reales. Aqui van algunos.",
         cta: "Discutir tu proyecto"
       },
       built: {
@@ -310,21 +336,21 @@ export default function SolutionsPage() {
         visit: "Visitar sitio",
         systems: [
           {
-            client: "DAVO.MD — TRANSPORTE INTERNACIONAL",
+            client: "DAVO.MD, TRANSPORTE INTERNACIONAL",
             title: "Reservas con eleccion de asiento, como en un vuelo.",
-            body: "Los pasajeros eligen su asiento en el mapa del autobus, igual que en el check-in de un vuelo. Los operadores tienen su panel: ven las rutas, reservan por telefono y controlan cada asiento — sin cuadernos, sin duplicados.",
+            body: "Los pasajeros eligen su asiento en el mapa del autobus, igual que en el check-in de un vuelo. Los operadores tienen su panel: ven las rutas, reservan por telefono y controlan cada asiento, sin cuadernos, sin duplicados.",
             tags: ["Mapa de asientos", "Panel de operadores", "Reservas online", "Pagos & billetes"],
             url: "https://davo.md"
           },
           {
-            client: "INTER-BUS.MD — PIEZAS & E-COMMERCE",
+            client: "INTER-BUS.MD, PIEZAS & E-COMMERCE",
             title: "Facturacion, stock y contabilidad en piloto automatico.",
             body: "Una tienda online internacional mas el back office que dirige el negocio: facturas automaticas, stock en tiempo real, beneficio por producto y contabilidad que se hace sola.",
             tags: ["Facturacion automatica", "Control de stock", "Beneficio por producto", "Contabilidad"],
             url: "https://inter-bus.md"
           },
           {
-            client: "AUTOESCUELA GLG — EDUCACION",
+            client: "AUTOESCUELA GLG, EDUCACION",
             title: "Agenda de clases practicas, sin llamadas.",
             body: "Los alumnos reservan sus clases practicas, los instructores ven su dia de un vistazo, y la oficina deja de hacer malabares con llamadas y cuadernos. El horario se llena solo.",
             tags: ["Reservas online", "Calendario instructores", "Notificaciones", "Cero llamadas"],
@@ -332,7 +358,7 @@ export default function SolutionsPage() {
           },
         ]
       },
-      others: { heading: "Otros sistemas construidos", subheading: "De la logistica a las apps personales — si funciona en papel, podemos automatizarlo." },
+      others: { heading: "Otros sistemas construidos", subheading: "De la logistica a las apps personales, si funciona en papel, podemos automatizarlo." },
       cta: { title: "Listo para deshacerte del papeleo?", body: "Cuentanos como funciona tu negocio hoy. Disenamos un sistema a medida que elimina los cuadernos y multiplica tu eficiencia.", button: "Iniciar la transformacion" },
       footer: { copy: "© 2026 Todos los derechos reservados." }
     }
@@ -341,11 +367,11 @@ export default function SolutionsPage() {
   const t = text[language as keyof typeof text]
   const lang = language as 'en' | 'ro' | 'de' | 'fr' | 'es'
 
-  /* Real screenshots — full-bleed in hairline cards */
+  /* Real portrait screenshots, dual-vignette overlays carry the text */
   const systemFrames = [
-    { domain: "davo.md", src: "/images/shot-davo.jpg" },
-    { domain: "inter-bus.md", src: "/images/shot-interbus.jpg" },
-    { domain: "scoalaautoglg.com", src: "/images/shot-glg.jpg" },
+    { domain: "davo.md", src: "/images/tall-davo.jpg" },
+    { domain: "inter-bus.md", src: "/images/tall-interbus.jpg" },
+    { domain: "scoalaautoglg.com", src: "/images/tall-glg.jpg" },
   ]
 
   return (
@@ -353,42 +379,89 @@ export default function SolutionsPage() {
 
       <SiteNav contactHref="/#contact" />
 
-      {/* ════════ HERO ════════ */}
-      <section className="pt-14 md:pt-20">
+      {/* ════════ HERO, text left, ARCH-cropped system screenshot right ════════ */}
+      <section className="relative overflow-hidden pt-14 md:pt-20">
         <div className="nv-container">
-          <Reveal>
-            <Label>{t.nav.solutions}</Label>
-          </Reveal>
-          <Reveal delay={0.06}>
-            <h1
-              className="mt-5 max-w-[900px] font-bold"
-              style={{ fontSize: 'clamp(2.625rem, 5.6vw, 4.5rem)', lineHeight: 1.01, letterSpacing: '-0.055em' }}
-            >
-              <span className="block">{t.hero.title1}</span>
-              <b>{t.hero.title2}</b>
-            </h1>
-          </Reveal>
-          <Reveal delay={0.12}>
-            <p
-              className="mt-7 max-w-[820px] font-medium"
-              style={{ color: '#e0e0e2', fontSize: 'clamp(1.0625rem, 1.6vw, 1.25rem)', lineHeight: 1.35, letterSpacing: '-0.03em' }}
-            >
-              {t.hero.description}
-            </p>
-          </Reveal>
-          <Reveal delay={0.18}>
-            <div className="mt-9">
-              <Link href="/#contact" className="btn-metal">
-                {t.hero.cta}
-                <span className="nv-arr" aria-hidden>&rarr;</span>
-              </Link>
+          <div className="grid items-center gap-12 md:grid-cols-[1.15fr_0.7fr] md:gap-10">
+            <div>
+              <Reveal>
+                <Label>{t.nav.solutions}</Label>
+              </Reveal>
+              <Reveal delay={0.06}>
+                <h1
+                  className="mt-5 max-w-[900px] font-bold"
+                  style={{ fontSize: 'clamp(2.625rem, 5.6vw, 4.5rem)', lineHeight: 1.01, letterSpacing: '-0.055em' }}
+                >
+                  <span className="block">{t.hero.title1}</span>
+                  <b>{t.hero.title2}</b>
+                </h1>
+              </Reveal>
+              <Reveal delay={0.12}>
+                <p
+                  className="mt-7 max-w-[720px] font-medium"
+                  style={{ color: '#e0e0e2', fontSize: 'clamp(1.0625rem, 1.6vw, 1.25rem)', lineHeight: 1.35, letterSpacing: '-0.03em' }}
+                >
+                  {t.hero.description}
+                </p>
+              </Reveal>
+              <Reveal delay={0.18}>
+                <div className="mt-9">
+                  <Link href="/#contact" className="btn-metal">
+                    {t.hero.cta}
+                    <span className="nv-arr" aria-hidden>&rarr;</span>
+                  </Link>
+                </div>
+              </Reveal>
             </div>
-          </Reveal>
+
+            {/* the ARCH, signature shape, real order system inside */}
+            <Reveal delay={0.1} className="justify-self-center md:justify-self-end">
+              <div className="relative" style={{ width: 'min(320px, 74vw)', aspectRatio: '320 / 410' }}>
+                {/* warm saturated blob */}
+                <div
+                  aria-hidden
+                  className="absolute -inset-12 rounded-full"
+                  style={{
+                    background: 'conic-gradient(from 30deg, #FF9E7A, #f2d06f, #d23b33, #7a4df0, #FF9E7A)',
+                    filter: 'saturate(1.1) blur(70px)',
+                    opacity: 0.32,
+                  }}
+                />
+                <div
+                  className="group relative h-full w-full overflow-hidden"
+                  style={{ borderRadius: '999px 999px 26px 26px', border: '1px solid rgba(73,73,73,0.6)' }}
+                >
+                  <Image
+                    src="/images/tall-autohuse.jpg"
+                    alt="Auto Huse, made-to-order system by landings.md"
+                    fill
+                    sizes="320px"
+                    className="object-cover object-top transition-transform duration-200 ease-out group-hover:scale-[1.03]"
+                    priority
+                  />
+                  {/* dual vignettes, text sits on the shot */}
+                  <div
+                    aria-hidden
+                    className="absolute inset-x-0 top-0 z-10 h-24"
+                    style={{ background: 'linear-gradient(180deg, rgba(8,8,8,0.72), transparent)' }}
+                  />
+                  <div
+                    className="absolute inset-x-0 bottom-0 z-10 flex items-end px-5 pb-5 pt-14"
+                    style={{ background: 'linear-gradient(0deg, rgba(8,8,8,0.72), transparent)' }}
+                  >
+                    <span className="text-[13px] font-medium text-white">autohuse.md</span>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          </div>
         </div>
       </section>
 
-      {/* ════════ BUILT SYSTEMS — landscape hairline cards, real screenshots ════════ */}
-      <section className="pt-16 md:pt-24">
+      <Seam />
+
+      {/* ════════ BUILT SYSTEMS, card3d hairline cards, tall shots, dual vignettes ════════ */}
+      <section className="pt-16 md:pt-20">
         <div className="nv-container">
           <Reveal>
             <h2 className="font-bold" style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}>
@@ -406,31 +479,43 @@ export default function SolutionsPage() {
               const reversed = i % 2 === 1
               return (
                 <Reveal key={i} delay={0.05}>
-                  <div className={`nv-edge ${reversed ? 'nv-edge--alt' : ''}`}>
-                    <div className="nv-edge-inner grid items-center gap-8 p-6 md:grid-cols-[1.05fr_1fr] md:gap-12 md:p-10">
-                      {/* full-bleed screenshot in 1px rgba(73,73,73,0.6) border */}
+                  <div className={`group nv-edge nv-card3d ${reversed ? 'nv-edge--alt' : ''}`}>
+                    <div className="nv-edge-inner grid items-center gap-8 p-6 md:grid-cols-[0.85fr_1.15fr] md:gap-12 md:p-10">
+                      {/* portrait screenshot, top + bottom vignette overlays carry the text */}
                       <div className={`${reversed ? 'md:order-2' : 'md:order-1'}`}>
                         <div
-                          className="relative overflow-hidden rounded-[24px]"
-                          style={{ border: '1px solid rgba(73,73,73,0.6)', aspectRatio: '16 / 10' }}
+                          className="relative mx-auto w-full max-w-[400px] overflow-hidden rounded-[24px]"
+                          style={{ border: '1px solid rgba(73,73,73,0.6)', aspectRatio: '4 / 5' }}
                         >
                           <Image
                             src={systemFrames[i].src}
-                            alt={`${systemFrames[i].domain} — business system by landings.md`}
+                            alt={`${systemFrames[i].domain}, business system by landings.md`}
                             fill
-                            sizes="(min-width: 768px) 620px, 92vw"
-                            className="object-cover object-top"
+                            sizes="(min-width: 768px) 400px, 92vw"
+                            className="object-cover object-top transition-transform duration-200 ease-out group-hover:scale-[1.03]"
                           />
+                          {/* top vignette: client eyebrow */}
+                          <div
+                            className="absolute inset-x-0 top-0 z-10 px-5 pb-10 pt-4"
+                            style={{ background: 'linear-gradient(180deg, rgba(8,8,8,0.72), transparent)' }}
+                          >
+                            <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-white">
+                              {sys.client}
+                            </span>
+                          </div>
+                          {/* bottom vignette: domain */}
+                          <div
+                            className="absolute inset-x-0 bottom-0 z-10 flex items-end px-5 pb-4 pt-12"
+                            style={{ background: 'linear-gradient(0deg, rgba(8,8,8,0.72), transparent)' }}
+                          >
+                            <span className="text-[13px] font-medium text-white">{systemFrames[i].domain}</span>
+                          </div>
                         </div>
                       </div>
-                      {/* superlative caption + copy + feature chips */}
+                      {/* copy + feature chips */}
                       <div className={`${reversed ? 'md:order-1' : 'md:order-2'}`}>
-                        <span className="inline-flex items-center gap-2 text-[12px] font-medium uppercase tracking-[0.12em]" style={{ color: '#909099' }}>
-                          <span className="dot-lime" />
-                          {sys.client}
-                        </span>
                         <h3
-                          className="mt-4 font-semibold text-white"
+                          className="font-semibold text-white"
                           style={{ fontSize: 'clamp(1.5rem, 2.6vw, 1.75rem)', lineHeight: 1.15, letterSpacing: '-1.34px' }}
                         >
                           {sys.title}
@@ -450,11 +535,17 @@ export default function SolutionsPage() {
                             href={sys.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="mt-7 inline-flex items-center gap-2 rounded-full px-4 py-2 text-[13px] font-medium text-white transition-[box-shadow] duration-300 ease-in-out hover:[box-shadow:0_0_1px_1px_#FF9E7A]"
+                            className="group/visit mt-7 inline-flex items-center gap-2 rounded-full px-4 py-2 text-[13px] font-medium text-white transition-[box-shadow] duration-200 ease-out hover:[box-shadow:0_0_1px_1px_#FF9E7A]"
                             style={{ border: '1px solid rgba(255,255,255,0.2)', background: 'linear-gradient(120deg, rgba(30,30,30,0.65), rgba(10,10,10,0.55))' }}
                           >
                             {t.built.visit}
-                            <span aria-hidden style={{ display: 'inline-block', transform: 'rotate(-45deg)', color: LIME }}>&rarr;</span>
+                            <span
+                              aria-hidden
+                              className="inline-block -rotate-45 transition-transform duration-200 ease-out group-hover/visit:rotate-0"
+                              style={{ color: LIME }}
+                            >
+                              &rarr;
+                            </span>
                           </a>
                         )}
                       </div>
@@ -467,8 +558,10 @@ export default function SolutionsPage() {
         </div>
       </section>
 
-      {/* ════════ OTHER SYSTEMS — portrait hairline cards, feature chips ════════ */}
-      <section className="pt-20 md:pt-28">
+      <Seam />
+
+      {/* ════════ OTHER SYSTEMS, numbered rows, fast white-fill hover ════════ */}
+      <section className="pt-16 md:pt-20">
         <div className="nv-container">
           <Reveal>
             <h2 className="font-bold" style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}>
@@ -481,56 +574,81 @@ export default function SolutionsPage() {
             </p>
           </Reveal>
 
-          <div className="mt-10 grid gap-6 md:mt-12 md:grid-cols-3">
+          <div className="mt-8 md:mt-10">
             {otherSystems.map((study, i) => (
-              <Reveal key={study.id} delay={i * 0.07} className="h-full">
-                <div className="nv-edge nv-edge--ring h-full">
-                  <div className="nv-edge-inner flex h-full flex-col p-7 md:p-8">
-                    <div className="flex items-baseline justify-between gap-3">
-                      <span className="text-[13px] font-semibold" style={{ color: LIME }}>0{i + 1}</span>
-                      <span className="text-[11px] font-medium uppercase tracking-[0.12em]" style={{ color: '#909099' }}>
-                        {study.badge[lang]}
-                      </span>
-                    </div>
-                    <h3 className="mt-5 text-[1.375rem] font-semibold text-white" style={{ letterSpacing: '-0.03em', lineHeight: 1.15 }}>
-                      {study.title[lang]}
-                    </h3>
-                    <span className="mt-1 block text-[0.8125rem] font-medium" style={{ color: '#909099' }}>
-                      {study.subtitle[lang]}
-                    </span>
-                    <p className="mt-4 flex-1 text-[0.9375rem] font-medium leading-relaxed" style={{ color: '#b8b8b9' }}>
-                      {study.description[lang]}
-                    </p>
-                    <div className="mt-6 flex flex-wrap gap-2">
-                      {study.features[lang].map((feature, fi) => (
-                        <span key={fi} className="chip">
-                          <span className="chip-inner !px-3.5 !py-1.5 text-[12px]">{feature}</span>
+              <Reveal key={study.id} delay={i * 0.06}>
+                <div>
+                  <div
+                    className="h-px w-full"
+                    style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)' }}
+                  />
+                  <div className="group my-2 rounded-[22px] px-4 py-6 transition-colors duration-200 ease-out hover:bg-white md:px-6 md:py-7">
+                    <div className="grid gap-4 md:grid-cols-[64px_1fr_1.25fr] md:gap-8">
+                      <span className="text-[15px] font-semibold" style={{ color: LIME }}>0{i + 1}</span>
+                      <div>
+                        <span
+                          className="block text-[11px] font-medium uppercase tracking-[0.12em] transition-colors duration-200 group-hover:!text-[#6b6b73]"
+                          style={{ color: '#909099' }}
+                        >
+                          {study.badge[lang]}
                         </span>
-                      ))}
+                        <h3
+                          className="mt-2 text-[1.25rem] font-semibold text-white transition-colors duration-200 group-hover:!text-[#0d0d0d]"
+                          style={{ letterSpacing: '-0.03em', lineHeight: 1.15 }}
+                        >
+                          {study.title[lang]}
+                        </h3>
+                        <span
+                          className="mt-1 block text-[0.8125rem] font-medium transition-colors duration-200 group-hover:!text-[#52525b]"
+                          style={{ color: '#909099' }}
+                        >
+                          {study.subtitle[lang]}
+                        </span>
+                      </div>
+                      <div>
+                        <p
+                          className="text-[0.9375rem] font-medium leading-relaxed transition-colors duration-200 group-hover:!text-[#3f3f46]"
+                          style={{ color: '#b8b8b9' }}
+                        >
+                          {study.description[lang]}
+                        </p>
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {study.features[lang].map((feature, fi) => (
+                            <span key={fi} className="chip">
+                              <span className="chip-inner !px-3.5 !py-1.5 text-[12px]">{feature}</span>
+                            </span>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </Reveal>
             ))}
+            <div
+              className="h-px w-full"
+              style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)' }}
+            />
           </div>
         </div>
       </section>
 
-      {/* ════════ STATS BENTO — .7fr 1fr .8fr, metallic CTA in the center ════════ */}
+      {/* ════════ STATS BENTO, nv-cell hover detail, metallic CTA in the center ════════ */}
       <section className="pt-20 md:pt-28">
         <div className="nv-container">
           <div className="nv-bento-stats">
             {/* col 1 row 1 */}
             <Reveal className="h-full">
               <div className="nv-edge nv-edge--ring h-full">
-                <div className="nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
+                <div className="nv-cell nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
                   <span className="font-semibold" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{stats[0].value}</span>
                   <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{stats[0].label[lang]}</span>
+                  <span className="nv-cell-detail mt-2 text-[12px] font-medium" style={{ color: LIME }}>{stats[0].detail[lang]}</span>
                 </div>
               </div>
             </Reveal>
 
-            {/* center CTA card — spans both rows */}
+            {/* center CTA card, spans both rows */}
             <Reveal delay={0.06} className="nv-bento-center h-full">
               <div className="nv-edge nv-edge--alt h-full">
                 <div className="nv-edge-inner relative flex h-full flex-col items-center justify-center p-8 text-center md:p-10">
@@ -553,7 +671,7 @@ export default function SolutionsPage() {
                   </Link>
                   <a
                     href="mailto:contact@landings.md"
-                    className="mt-5 text-[0.875rem] font-medium transition-colors duration-300 hover:!text-white"
+                    className="mt-5 text-[0.875rem] font-medium transition-colors duration-200 hover:!text-white"
                     style={{ color: '#909099' }}
                   >
                     contact@landings.md
@@ -565,9 +683,10 @@ export default function SolutionsPage() {
             {/* col 3 row 1 */}
             <Reveal delay={0.1} className="h-full">
               <div className="nv-edge nv-edge--ring h-full">
-                <div className="nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
+                <div className="nv-cell nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
                   <span className="font-semibold" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{stats[1].value}</span>
                   <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{stats[1].label[lang]}</span>
+                  <span className="nv-cell-detail mt-2 text-[12px] font-medium" style={{ color: LIME }}>{stats[1].detail[lang]}</span>
                 </div>
               </div>
             </Reveal>
@@ -575,9 +694,10 @@ export default function SolutionsPage() {
             {/* col 1 row 2 */}
             <Reveal delay={0.14} className="h-full">
               <div className="nv-edge nv-edge--ring h-full">
-                <div className="nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
+                <div className="nv-cell nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
                   <span className="font-semibold" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{stats[2].value}</span>
                   <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{stats[2].label[lang]}</span>
+                  <span className="nv-cell-detail mt-2 text-[12px] font-medium" style={{ color: LIME }}>{stats[2].detail[lang]}</span>
                 </div>
               </div>
             </Reveal>
@@ -585,9 +705,10 @@ export default function SolutionsPage() {
             {/* col 3 row 2 */}
             <Reveal delay={0.18} className="h-full">
               <div className="nv-edge nv-edge--ring h-full">
-                <div className="nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
-                  <span className="font-semibold" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{stats[3].value}</span>
+                <div className="nv-cell nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
+                  <span className="font-semibold" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1, color: LIME }}>{stats[3].value}</span>
                   <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{stats[3].label[lang]}</span>
+                  <span className="nv-cell-detail mt-2 text-[12px] font-medium" style={{ color: LIME }}>{stats[3].detail[lang]}</span>
                 </div>
               </div>
             </Reveal>
@@ -610,14 +731,14 @@ export default function SolutionsPage() {
               </Link>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-5 text-[13px] font-medium">
-              <Link href="/portfolio" className="transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.portfolio}</Link>
-              <Link href="/pricing" className="transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.pricing}</Link>
-              <Link href="/solutions" className="transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.solutions}</Link>
-              <Link href="/case-studies" className="transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.caseStudies}</Link>
+              <Link href="/portfolio" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.portfolio}</Link>
+              <Link href="/pricing" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.pricing}</Link>
+              <Link href="/solutions" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.solutions}</Link>
+              <Link href="/case-studies" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.caseStudies}</Link>
             </div>
             <div className="flex items-center gap-5 text-[13px] font-medium">
-              <a href="tel:+37368327082" className="transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>+373 683 27 082</a>
-              <a href="mailto:contact@landings.md" className="transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>contact@landings.md</a>
+              <a href="tel:+37368327082" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>+373 683 27 082</a>
+              <a href="mailto:contact@landings.md" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>contact@landings.md</a>
             </div>
           </div>
           <p className="pt-8 text-center text-[12px] font-medium" style={{ color: '#909099' }}>

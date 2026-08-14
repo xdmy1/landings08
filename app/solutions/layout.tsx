@@ -12,15 +12,15 @@ export const metadata: Metadata = {
     'crear tienda online', 'desarrollo web para pymes', 'web responsive',
   ],
   openGraph: {
-    title: 'Custom Web Solutions — landings.md',
+    title: 'Custom Web Solutions | landings.md',
     description: 'CRM systems, e-commerce stores, logistics platforms. Custom-built for small businesses.',
     url: 'https://landings.md/solutions',
     type: 'website',
   },
   twitter: {
     card: 'summary',
-    title: 'Custom Web Solutions — landings.md',
-    description: 'CRM, e-commerce, logistics — custom digital solutions for small businesses.',
+    title: 'Custom Web Solutions | landings.md',
+    description: 'CRM, e-commerce, logistics, custom digital solutions for small businesses.',
   },
   alternates: {
     canonical: 'https://landings.md/solutions',

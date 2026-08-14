@@ -12,14 +12,14 @@ export const metadata: Metadata = {
     'cuánto cuesta una página web', 'precio diseño web', 'página web barata', 'diseño web económico',
   ],
   openGraph: {
-    title: 'Website Design Pricing | From €350 — landings.md',
+    title: 'Website Design Pricing | From €350 | landings.md',
     description: 'Starter from €350, Business from €550, Online Store from €850. Find out what your website will cost.',
     url: 'https://landings.md/pricing',
     type: 'website',
   },
   twitter: {
     card: 'summary',
-    title: 'Website Design Pricing | From €350 — landings.md',
+    title: 'Website Design Pricing | From €350 | landings.md',
     description: 'Find out what your website will cost in 2 minutes. Transparent pricing, no surprises.',
   },
   alternates: {

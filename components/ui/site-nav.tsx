@@ -14,11 +14,11 @@ const navText = {
 }
 
 const announceText = {
-  en: { short: "Free 30-min audit — your Google position & what's wrong", cta: "Book it" },
-  ro: { short: "Audit gratuit de 30 min — pozitia pe Google si ce e gresit", cta: "Rezerva" },
-  de: { short: "Gratis-Audit in 30 Min — Google-Position & Fehler", cta: "Termin" },
-  fr: { short: "Audit gratuit de 30 min — position Google & erreurs", cta: "Reserver" },
-  es: { short: "Auditoria gratis de 30 min — posicion en Google y errores", cta: "Reservar" },
+  en: { short: "Free 30-min audit, your Google position & what's wrong", cta: "Book it" },
+  ro: { short: "Audit gratuit de 30 min, pozitia pe Google si ce e gresit", cta: "Rezerva" },
+  de: { short: "Gratis-Audit in 30 Min, Google-Position & Fehler", cta: "Termin" },
+  fr: { short: "Audit gratuit de 30 min, position Google & erreurs", cta: "Reserver" },
+  es: { short: "Auditoria gratis de 30 min, posicion en Google y errores", cta: "Reservar" },
 }
 
 /* navarro-clone header: audit strip (static, scrolls away) above a sticky
@@ -49,9 +49,9 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string, to
 
   return (
     <>
-      {/* ── AUDIT STRIP — protected conversion element; static, scrolls away ── */}
+      {/* ── AUDIT STRIP, protected conversion element; static, scrolls away ── */}
       <Link
-        href={`mailto:contact@landings.md?subject=${encodeURIComponent('Audit gratuit — 30 min')}`}
+        href={`mailto:contact@landings.md?subject=${encodeURIComponent('Audit gratuit, 30 min')}`}
         className="block"
         style={{ background: '#0f0f0f', borderBottom: '1px solid rgba(198,198,198,0.15)' }}
       >
@@ -66,7 +66,7 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string, to
         </div>
       </Link>
 
-      {/* ── HEADER — sticky; transparent → dark glass on scroll ── */}
+      {/* ── HEADER, sticky; transparent → dark glass on scroll ── */}
       <header
         className="sticky top-0 z-50"
         style={{
@@ -109,7 +109,7 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string, to
             </div>
 
             <div className="flex items-center gap-4">
-              {/* language switcher — dark dropdown in a gradient hairline */}
+              {/* language switcher, dark dropdown in a gradient hairline */}
               <div className="relative">
                 <button
                   onClick={() => setLangOpen(!langOpen)}
@@ -121,14 +121,14 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string, to
                 {langOpen && (
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setLangOpen(false)} />
-                    <div className="absolute top-full right-0 mt-3 z-50 nv-edge" style={{ borderRadius: 16 }}>
+                    <div className="absolute top-full right-0 mt-3 z-50 nv-edge nv-dd" style={{ borderRadius: 16 }}>
                       <div className="nv-edge-inner min-w-[64px] py-1.5" style={{ background: '#0f0f0f' }}>
-                        {(['en', 'ro', 'de', 'fr', 'es'] as const).map(lang => (
+                        {(['en', 'ro', 'de', 'fr', 'es'] as const).map((lang, i) => (
                           <button
                             key={lang}
                             onClick={() => { setLanguage(lang); setLangOpen(false) }}
-                            className="block w-full text-left px-4 py-1.5 text-[12px] tracking-[0.08em] uppercase transition-colors duration-300 ease-in-out"
-                            style={{ color: language === lang ? '#FF9E7A' : '#a4a4a4' }}
+                            className="nv-dd-item block w-full text-left px-4 py-1.5 text-[12px] tracking-[0.08em] uppercase transition-colors duration-150 ease-out hover:!text-white"
+                            style={{ color: language === lang ? '#FF9E7A' : '#a4a4a4', ['--i' as string]: i }}
                           >
                             {lang}
                           </button>
@@ -161,7 +161,7 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string, to
         </div>
       </header>
 
-      {/* ── MOBILE OVERLAY — solid #0f0f0f, big Geist links ── */}
+      {/* ── MOBILE OVERLAY, solid #0f0f0f, big Geist links ── */}
       {mobileOpen && (
         <div className="md:hidden fixed inset-0 z-[70] flex flex-col mobile-nav-overlay" style={{ background: '#0f0f0f' }}>
           <div className="flex items-center justify-between px-5 h-[64px] flex-shrink-0" style={{ borderBottom: '1px solid rgba(198,198,198,0.15)' }}>

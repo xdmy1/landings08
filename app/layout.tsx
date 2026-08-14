@@ -5,8 +5,8 @@ import { SmoothScroll } from '@/components/ui/smooth-scroll'
 export const metadata: Metadata = {
   metadataBase: new URL('https://landings.md'),
   title: {
-    default: 'Websites, SEO, Ads & Custom Business Systems — landings.md',
-    template: '%s — landings.md',
+    default: 'Websites, SEO, Ads & Custom Business Systems | landings.md',
+    template: '%s | landings.md',
   },
   description: 'We build websites that rank on Google, run Meta & Google Ads campaigns, and create booking, invoicing, stock and accounting systems that eliminate paperwork. Custom-coded, start to finish. Serving Europe in 5 languages.',
   keywords: [
@@ -43,18 +43,18 @@ export const metadata: Metadata = {
     alternateLocale: ['ro_RO', 'de_DE', 'fr_FR', 'es_ES'],
     url: 'https://landings.md',
     siteName: 'landings.md',
-    title: 'Websites, SEO, Ads & Custom Business Systems — landings.md',
+    title: 'Websites, SEO, Ads & Custom Business Systems | landings.md',
     description: 'Websites that rank on Google, Meta & Google Ads campaigns, and booking, invoicing and accounting systems that eliminate paperwork. Custom-coded, start to finish.',
     images: [{
       url: '/icon.png',
       width: 512,
       height: 512,
-      alt: 'landings.md — websites, SEO and custom business systems',
+      alt: 'landings.md, websites, SEO and custom business systems',
     }],
   },
   twitter: {
     card: 'summary',
-    title: 'Websites, SEO, Ads & Custom Business Systems — landings.md',
+    title: 'Websites, SEO, Ads & Custom Business Systems | landings.md',
     description: 'Websites that rank on Google, ad campaigns that convert, and custom systems that eliminate paperwork.',
   },
   robots: {
@@ -92,7 +92,7 @@ export default function RootLayout({
         },
         email: 'contact@landings.md',
         sameAs: ['https://instagram.com/landings.md'],
-        description: 'Websites that rank on Google, Meta & Google Ads campaigns, and custom business systems — bookings, invoicing, stock, automated accounting — for small businesses across Europe. Hand-coded, in 5 languages.',
+        description: 'Websites that rank on Google, Meta & Google Ads campaigns, and custom business systems, bookings, invoicing, stock, automated accounting, for small businesses across Europe. Hand-coded, in 5 languages.',
         areaServed: [
           { '@type': 'Country', name: 'Moldova' },
           { '@type': 'Country', name: 'Romania' },
@@ -117,7 +117,7 @@ export default function RootLayout({
       {
         '@type': 'ProfessionalService',
         '@id': 'https://landings.md/#service',
-        name: 'landings.md — Web Design, SEO & Business Systems',
+        name: 'landings.md, Web Design, SEO & Business Systems',
         url: 'https://landings.md',
         priceRange: '€350+',
         telephone: '',
@@ -165,7 +165,7 @@ export default function RootLayout({
             {
               '@type': 'Offer',
               itemOffered: { '@type': 'Service', name: 'Custom Business System' },
-              description: 'Booking systems with seat selection, appointment scheduling, invoicing, stock tracking and automated accounting — built around your processes. Custom quote.',
+              description: 'Booking systems with seat selection, appointment scheduling, invoicing, stock tracking and automated accounting, built around your processes. Custom quote.',
             },
             {
               '@type': 'Offer',

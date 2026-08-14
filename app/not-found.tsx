@@ -120,7 +120,7 @@ export default function NotFound() {
 
             <FadeIn delay={400}>
               <p className="mt-6 text-ink-muted text-[15px] leading-relaxed max-w-sm">
-                Whatever you were looking for, it's not here. But a website that actually gets you clients — that we can do.
+                Whatever you were looking for, it's not here. But a website that actually gets you clients, that we can do.
               </p>
             </FadeIn>
 
