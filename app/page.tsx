@@ -7,10 +7,10 @@ import { useLanguage } from '@/hooks/useLanguage'
 
 /* ────────────────────────────────────────────────────────────────
    navarro.ro clone — landings.md content only.
-   Ground #0d0d0d · lime #c6ff69 · Geist · blur-up reveals.
+   Ground #0d0d0d · lime #6FF2CE · Geist · blur-up reveals.
    ──────────────────────────────────────────────────────────────── */
 
-const LIME = '#c6ff69'
+const LIME = '#6FF2CE'
 
 /* Blur-up reveal — IntersectionObserver at 0.1 that REPLAYS:
    the .nv-hidden class returns when the block scrolls away. */
@@ -493,12 +493,97 @@ export default function Home() {
     <main style={{ background: '#0d0d0d' }}>
       <SiteNav contactHref="#contact" />
 
-      {/* ════════ HERO ════════ */}
+      {/* ════════ HERO — left-set type, fanned real-work stack ════════ */}
       <section className="relative overflow-hidden">
-        {/* badges cloud — 2x3 real-fact chips + 1 emphasized, drifting */}
-        <div className="nv-container pt-8 md:pt-12">
-          <Reveal>
-            <div className="mx-auto flex max-w-[860px] flex-wrap items-center justify-center gap-3">
+        {/* faint accent atmosphere behind the headline */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-24 left-[8%] h-[520px] w-[520px] rounded-full"
+          style={{ background: 'radial-gradient(closest-side, rgba(111,242,206,0.11), transparent)', filter: 'blur(40px)' }}
+        />
+        <div className="nv-container relative">
+          <div className="grid items-center gap-14 pt-14 md:grid-cols-[1.05fr_1fr] md:gap-10 md:pt-20">
+            {/* left: type */}
+            <div>
+              <Reveal>
+                <h1
+                  className="font-bold"
+                  style={{
+                    fontSize: 'clamp(2.625rem, 5.6vw, 4.75rem)',
+                    lineHeight: 1.01,
+                    letterSpacing: '-0.055em',
+                  }}
+                >
+                  <Marked text={t.hero.headline} />
+                </h1>
+              </Reveal>
+              <Reveal delay={0.08}>
+                <p
+                  className="mt-6 max-w-[540px] font-medium"
+                  style={{ color: '#b8b8b9', fontSize: '1.125rem', lineHeight: 1.4, letterSpacing: '-0.02em' }}
+                >
+                  {t.hero.sub}
+                </p>
+              </Reveal>
+              <Reveal delay={0.16}>
+                <div className="mt-9 flex flex-wrap items-center gap-4">
+                  <a href="mailto:contact@landings.md" className="btn-metal">
+                    {t.hero.cta}
+                    <span className="nv-arr" aria-hidden>&rarr;</span>
+                  </a>
+                  <a
+                    href="#contact"
+                    className="inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-[0.9375rem] font-medium text-white transition-[box-shadow] duration-300 ease-in-out hover:[box-shadow:0_0_1px_1px_#6FF2CE]"
+                    style={{ border: '1px solid rgba(255,255,255,0.16)' }}
+                  >
+                    {t.pill.l2}
+                  </a>
+                </div>
+              </Reveal>
+              <Reveal delay={0.22}>
+                <p className="mt-5 text-[0.875rem] font-medium" style={{ color: '#909099' }}>
+                  {t.hero.note}
+                </p>
+              </Reveal>
+            </div>
+
+            {/* right: fanned stack of real portrait shots */}
+            <Reveal delay={0.12}>
+              <div className="group relative mx-auto hidden h-[560px] w-full max-w-[520px] md:block" aria-hidden={false}>
+                {[
+                  { shot: '/images/tall-interbus.jpg', alt: 'inter-bus.md', r: '-7deg', x: '-34%', z: 1 },
+                  { shot: '/images/tall-cmiea.jpg', alt: 'cmiea.md', r: '6.5deg', x: '34%', z: 2 },
+                  { shot: '/images/tall-davo.jpg', alt: 'davo.md', r: '0deg', x: '0%', z: 3 },
+                ].map((c) => (
+                  <div
+                    key={c.shot}
+                    className="absolute left-1/2 top-1/2 overflow-hidden transition-transform duration-500 ease-out"
+                    style={{
+                      width: 'min(300px, 58%)',
+                      aspectRatio: '300 / 520',
+                      borderRadius: 20,
+                      border: '1px solid rgba(73,73,73,0.7)',
+                      boxShadow: '0 30px 80px -20px rgba(0,0,0,0.7)',
+                      transform: `translate(calc(-50% + ${c.x}), -50%) rotate(${c.r})`,
+                      zIndex: c.z,
+                    }}
+                  >
+                    <Image src={c.shot} alt={c.alt} fill sizes="300px" className="object-cover object-top" />
+                  </div>
+                ))}
+                {/* accent glow under the stack */}
+                <div
+                  aria-hidden
+                  className="absolute left-1/2 top-[88%] h-24 w-[70%] -translate-x-1/2 rounded-full"
+                  style={{ background: 'radial-gradient(closest-side, rgba(111,242,206,0.2), transparent)', filter: 'blur(24px)' }}
+                />
+              </div>
+            </Reveal>
+          </div>
+
+          {/* fact strip — static chips */}
+          <Reveal delay={0.2}>
+            <div className="mt-14 flex flex-wrap items-center justify-center gap-3 md:mt-20">
               {t.badges.map((b) => (
                 <span key={b} className="chip">
                   <span className="chip-inner">
@@ -509,7 +594,7 @@ export default function Home() {
               ))}
             </div>
           </Reveal>
-          <Reveal delay={0.08}>
+          <Reveal delay={0.26}>
             <div className="mt-4 flex justify-center">
               <span className="chip chip--em">
                 <span className="chip-inner">
@@ -520,9 +605,9 @@ export default function Home() {
             </div>
           </Reveal>
 
-          {/* client logo row — 30% → 80% */}
-          <Reveal delay={0.14}>
-            <div className="mx-auto mt-12 flex max-w-[900px] flex-wrap items-center justify-center gap-x-10 gap-y-6 md:mt-14">
+          {/* client logo row */}
+          <Reveal delay={0.3}>
+            <div className="mx-auto mt-12 flex max-w-[900px] flex-wrap items-center justify-center gap-x-10 gap-y-6 pb-4 md:mt-14">
               {LOGO_ROW.map((l) => (
                 <span key={l.k} className="nv-logo">
                   <Image src={`/images/logos/${l.k}.png`} alt={l.k} width={140} height={40} className={`w-auto ${l.h}`} />
@@ -531,82 +616,6 @@ export default function Home() {
             </div>
             <p className="sr-only">{t.logos}</p>
           </Reveal>
-        </div>
-
-        {/* 460px circle — the product replaces the portrait */}
-        <div className="relative z-0 mt-12 flex justify-center md:mt-16">
-          <div className="relative" style={{ width: 'min(460px, 84vw)', aspectRatio: '1 / 1' }}>
-            {/* saturated blob */}
-            <div
-              aria-hidden
-              className="absolute -inset-14 rounded-full"
-              style={{
-                background: 'conic-gradient(from 40deg, #2456A6, #c6ff69, #D23B33, #3E7BFA, #2456A6)',
-                filter: 'saturate(1.1) blur(70px)',
-                opacity: 0.45,
-              }}
-            />
-            {/* white ellipse blur */}
-            <div
-              aria-hidden
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
-              style={{ width: '120%', height: 300, background: '#fff', filter: 'blur(140px)', opacity: 0.16 }}
-            />
-            <div className="relative h-full w-full overflow-hidden rounded-full" style={{ border: '1px solid rgba(73,73,73,0.6)' }}>
-              <Image
-                src="/images/shot-davo.jpg"
-                alt="Davo.md — platforma de rezervari construita de landings.md"
-                fill
-                sizes="460px"
-                className="object-cover object-top"
-                priority
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* fluted glass band — overlaps the circle bottom; H1 sits ON the glass */}
-        <div className="fluted relative z-10 -mt-40 md:-mt-48">
-          <div className="relative z-[1] nv-container">
-            <div className="mx-auto max-w-[1040px] pb-14 pt-16 text-center md:pb-20 md:pt-24">
-              <Reveal>
-                <h1
-                  className="mx-auto max-w-[900px] font-bold"
-                  style={{
-                    fontSize: 'clamp(2.625rem, 6.2vw, 5rem)',
-                    lineHeight: 1.01,
-                    letterSpacing: '-0.058em',
-                  }}
-                >
-                  <Marked text={t.hero.headline} />
-                </h1>
-              </Reveal>
-              <Reveal delay={0.08}>
-                <p
-                  className="mx-auto mt-7 max-w-[900px] font-medium"
-                  style={{
-                    color: '#e0e0e2',
-                    fontSize: 'clamp(1.125rem, 2.4vw, 2.0625rem)',
-                    lineHeight: 1.15,
-                    letterSpacing: '-0.045em',
-                  }}
-                >
-                  {t.hero.sub}
-                </p>
-              </Reveal>
-              <Reveal delay={0.16}>
-                <a href="mailto:contact@landings.md" className="btn-metal mt-9 inline-flex">
-                  {t.hero.cta}
-                  <span className="nv-arr" aria-hidden>&rarr;</span>
-                </a>
-              </Reveal>
-              <Reveal delay={0.22}>
-                <p className="mt-5 text-[0.875rem] font-medium" style={{ color: '#909099' }}>
-                  {t.hero.note}
-                </p>
-              </Reveal>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -675,7 +684,7 @@ export default function Home() {
                         href={`https://${p.url}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex flex-none items-center gap-2 rounded-full px-4 py-2 text-[13px] font-medium text-white transition-[box-shadow] duration-300 ease-in-out hover:[box-shadow:0_0_1px_1px_#c6ff69]"
+                        className="inline-flex flex-none items-center gap-2 rounded-full px-4 py-2 text-[13px] font-medium text-white transition-[box-shadow] duration-300 ease-in-out hover:[box-shadow:0_0_1px_1px_#6FF2CE]"
                         style={{
                           border: '1px solid rgba(255,255,255,0.2)',
                           background: 'linear-gradient(120deg, rgba(30,30,30,0.65), rgba(10,10,10,0.55))',
@@ -707,7 +716,7 @@ export default function Home() {
                         width: active === i ? 22 : 10,
                         height: 10,
                         borderRadius: 999,
-                        background: active === i ? p.accent : 'rgba(255,255,255,0.2)',
+                        background: active === i ? '#6FF2CE' : 'rgba(255,255,255,0.2)',
                         transition: 'all 0.3s ease-in-out',
                       }}
                     />
@@ -757,7 +766,7 @@ export default function Home() {
                   className="overflow-hidden rounded-[20px] bg-white p-3 md:p-4"
                   style={{
                     border: '1px solid rgba(73,73,73,0.6)',
-                    boxShadow: '0 0 50px -9px rgba(198,255,105,0.3)',
+                    boxShadow: '0 0 50px -9px rgba(111,242,206,0.3)',
                   }}
                 >
                   <Image
@@ -952,10 +961,10 @@ export default function Home() {
               <div className="nv-edge nv-edge--ring h-full">
                 <div className="nv-edge-inner flex h-full min-h-[150px] flex-col justify-center gap-2 p-7">
                   <Label>{t.about.contactLabel}</Label>
-                  <a href="mailto:contact@landings.md" className="mt-2 text-[1rem] font-medium text-white transition-colors duration-300 hover:!text-[#c6ff69]">
+                  <a href="mailto:contact@landings.md" className="mt-2 text-[1rem] font-medium text-white transition-colors duration-300 hover:!text-[#6FF2CE]">
                     contact@landings.md
                   </a>
-                  <a href="tel:+37368327082" className="text-[1rem] font-medium transition-colors duration-300 hover:!text-[#c6ff69]" style={{ color: '#b8b8b9' }}>
+                  <a href="tel:+37368327082" className="text-[1rem] font-medium transition-colors duration-300 hover:!text-[#6FF2CE]" style={{ color: '#b8b8b9' }}>
                     +373 683 27 082
                   </a>
                   <p className="mt-3 inline-flex items-center gap-2 text-[13px] font-medium" style={{ color: '#909099' }}>
@@ -979,7 +988,7 @@ export default function Home() {
                 <div
                   aria-hidden
                   className="pointer-events-none absolute left-1/2 top-0 h-40 w-[440px] -translate-x-1/2 -translate-y-1/2"
-                  style={{ background: 'radial-gradient(closest-side, #c6ff6933, transparent)' }}
+                  style={{ background: 'radial-gradient(closest-side, #6FF2CE33, transparent)' }}
                 />
                 <div className="grid gap-10 md:grid-cols-[1fr_1fr] md:gap-14">
                   <div>
@@ -1000,7 +1009,7 @@ export default function Home() {
                       </a>
                       <a
                         href="tel:+37368327082"
-                        className="inline-flex items-center rounded-full px-6 py-3.5 text-[0.9375rem] font-medium text-white transition-[box-shadow] duration-300 ease-in-out hover:[box-shadow:0_0_1px_1px_#c6ff69]"
+                        className="inline-flex items-center rounded-full px-6 py-3.5 text-[0.9375rem] font-medium text-white transition-[box-shadow] duration-300 ease-in-out hover:[box-shadow:0_0_1px_1px_#6FF2CE]"
                         style={{ border: '1px solid rgba(255,255,255,0.16)' }}
                       >
                         +373 683 27 082

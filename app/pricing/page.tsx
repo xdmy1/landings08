@@ -367,14 +367,14 @@ export default function PricingPage() {
                         onClick={() => isCompleted ? goToStep(i) : undefined}
                         className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ease-in-out ${
                           showResult
-                            ? 'bg-[#c6ff69]'
+                            ? 'bg-[#6FF2CE]'
                             : isCompleted
-                              ? 'bg-[#c6ff69] cursor-pointer hover:opacity-70'
+                              ? 'bg-[#6FF2CE] cursor-pointer hover:opacity-70'
                               : isCurrent
                                 ? 'bg-white/40'
                                 : 'bg-white/10'
                         }`}
-                        style={showResult || isCompleted ? { boxShadow: '0 0 8px rgba(198, 255, 105, 0.6)' } : undefined}
+                        style={showResult || isCompleted ? { boxShadow: '0 0 8px rgba(111, 242, 206, 0.6)' } : undefined}
                         aria-label={`Step ${i + 1}`}
                       />
                     )
@@ -387,8 +387,8 @@ export default function PricingPage() {
             </div>
             <div className="w-full h-px bg-white/10">
               <div
-                className="h-full bg-[#c6ff69] transition-[width] duration-[400ms] ease-in-out"
-                style={{ width: `${progressPercent}%`, boxShadow: '0 0 8px rgba(198, 255, 105, 0.5)' }}
+                className="h-full bg-[#6FF2CE] transition-[width] duration-[400ms] ease-in-out"
+                style={{ width: `${progressPercent}%`, boxShadow: '0 0 8px rgba(111, 242, 206, 0.5)' }}
               />
             </div>
           </div>
@@ -413,7 +413,7 @@ export default function PricingPage() {
                         key={i}
                         onClick={() => selectAnswer(i)}
                         className={`nv-edge group text-left transition-shadow duration-300 ease-in-out${q[step].options.length % 2 !== 0 && i === q[step].options.length - 1 ? ' sm:col-span-2' : ''}`}
-                        style={isSelected ? { boxShadow: '0 0 1px 1px #c6ff69' } : undefined}
+                        style={isSelected ? { boxShadow: '0 0 1px 1px #6FF2CE' } : undefined}
                       >
                         <span
                           className={`nv-edge-inner flex items-center px-6 py-4 text-[15px] font-medium leading-[1.3] transition-colors duration-300 ease-in-out ${
@@ -548,7 +548,7 @@ export default function PricingPage() {
                   /* featured tier — emphasized-chip treatment: tinted glass, olive border, lime under-glow */
                   <div
                     className="flex flex-col h-full p-6 rounded-[30px] border-2 border-[#4d612d] bg-[#181c12]"
-                    style={{ boxShadow: '0 14px 44px -8px rgba(198, 255, 105, 0.28)' }}
+                    style={{ boxShadow: '0 14px 44px -8px rgba(111, 242, 206, 0.28)' }}
                   >
                     {inner}
                   </div>

@@ -8,11 +8,11 @@ import { SiteNav } from '@/components/ui/site-nav'
 
 /* ────────────────────────────────────────────────────────────────
    Case studies — navarro-language skin, landings.md content only.
-   Ground #0d0d0d · lime #c6ff69 at word/ring/glow scale · Geist ·
+   Ground #0d0d0d · lime #6FF2CE at word/ring/glow scale · Geist ·
    gradient-hairline bento cells · blur-up reveals that replay.
    ──────────────────────────────────────────────────────────────── */
 
-const LIME = '#c6ff69'
+const LIME = '#6FF2CE'
 
 /* Blur-up reveal — IntersectionObserver at 0.1 that REPLAYS:
    the .nv-hidden class returns when the block scrolls away. */
@@ -554,7 +554,7 @@ export default function CaseStudiesPage() {
                         href={c.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-7 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[13px] font-medium text-white transition-[box-shadow] duration-300 ease-in-out hover:[box-shadow:0_0_1px_1px_#c6ff69]"
+                        className="mt-7 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[13px] font-medium text-white transition-[box-shadow] duration-300 ease-in-out hover:[box-shadow:0_0_1px_1px_#6FF2CE]"
                         style={{ border: '1px solid rgba(255,255,255,0.2)' }}
                       >
                         {t.labels.visit} {c.domain}
@@ -568,7 +568,7 @@ export default function CaseStudiesPage() {
                     className="relative overflow-hidden rounded-[24px]"
                     style={{
                       border: '1px solid rgba(73,73,73,0.6)',
-                      boxShadow: '0 0 50px -9px rgba(198,255,105,0.3)',
+                      boxShadow: '0 0 50px -9px rgba(111,242,206,0.3)',
                       aspectRatio: '16 / 10',
                     }}
                   >
@@ -622,7 +622,7 @@ export default function CaseStudiesPage() {
                         className="relative overflow-hidden rounded-[20px]"
                         style={{
                           border: '1px solid rgba(73,73,73,0.6)',
-                          boxShadow: '0 0 50px -9px rgba(198,255,105,0.3)',
+                          boxShadow: '0 0 50px -9px rgba(111,242,206,0.3)',
                           aspectRatio: '16 / 10',
                           background: '#0f0f0f',
                         }}
@@ -650,7 +650,7 @@ export default function CaseStudiesPage() {
                 <div
                   aria-hidden
                   className="pointer-events-none absolute left-1/2 top-0 h-40 w-[440px] -translate-x-1/2 -translate-y-1/2"
-                  style={{ background: 'radial-gradient(closest-side, #c6ff6933, transparent)' }}
+                  style={{ background: 'radial-gradient(closest-side, #6FF2CE33, transparent)' }}
                 />
                 <h2 className="font-bold" style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}>
                   <LimeTail text={t.cta.headline} />
