@@ -1,15 +1,11 @@
 "use client"
 
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
 import { SiteNav } from '@/components/ui/site-nav'
-import { AnimatedStatGrid } from '@/components/ui/animated-stat-grid'
-import { LogoGrid } from '@/components/ui/logo-grid'
-import { HeroSpotlight } from '@/components/ui/hero-fx'
+import { LogoStrip } from '@/components/ui/logo-grid'
 import { BrowserFrame } from '@/components/ui/browser-frame'
-import { ScrubText, Magnetic } from '@/components/ui/scroll-fx'
 import { useLanguage } from '@/hooks/useLanguage'
 
 function useInView(threshold = 0.1) {
@@ -27,17 +23,16 @@ function useInView(threshold = 0.1) {
   return { ref, visible }
 }
 
-/* Fade up — standard but with longer, smoother timing */
-function FadeIn({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
+/* RISE — the element-level reveal verb: opacity + 30px rise, one easing */
+function Rise({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
   const { ref, visible } = useInView(0.08)
   return (
     <div
       ref={ref}
-      className={`transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${className}`}
+      className={`transition-[transform,opacity] duration-[400ms] ease-m ${className}`}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(24px)',
-        filter: visible ? 'blur(0px)' : 'blur(10px)',
+        transform: visible ? 'translateY(0)' : 'translateY(30px)',
         transitionDelay: `${delay}ms`,
       }}
     >
@@ -46,154 +41,82 @@ function FadeIn({ children, className = "", delay = 0 }: { children: React.React
   )
 }
 
-/* Horizontal slide reveal — slides in from left or right */
-function SlideIn({ children, className = "", delay = 0, direction = "left" }: { children: React.ReactNode, className?: string, delay?: number, direction?: "left" | "right" }) {
-  const { ref, visible } = useInView(0.1)
-  const x = direction === "left" ? "-40px" : "40px"
-  return (
-    <div
-      ref={ref}
-      className={`transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${className}`}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'translateX(0)' : `translateX(${x})`,
-        filter: visible ? 'blur(0px)' : 'blur(10px)',
-        transitionDelay: `${delay}ms`,
-      }}
-    >
-      {children}
-    </div>
-  )
-}
-
-/* Animated counter for number stats */
-function AnimatedNumber({ value, className = "" }: { value: string, className?: string }) {
-  const { ref, visible } = useInView(0.3)
-  const [display, setDisplay] = useState("0")
-  const numericPart = parseInt(value.replace(/[^0-9]/g, '')) || 0
-  const suffix = value.replace(/[0-9]/g, '')
-
-  useEffect(() => {
-    if (!visible || numericPart === 0) {
-      if (visible) setDisplay(value)
-      return
-    }
-    let start = 0
-    const duration = 2000
-    const startTime = performance.now()
-    const step = (now: number) => {
-      const elapsed = now - startTime
-      const progress = Math.min(elapsed / duration, 1)
-      const eased = 1 - Math.pow(1 - progress, 4)
-      const current = Math.round(eased * numericPart)
-      setDisplay(`${current}${suffix}`)
-      if (progress < 1) requestAnimationFrame(step)
-    }
-    requestAnimationFrame(step)
-  }, [visible, numericPart, suffix, value])
-
-  return (
-    <span ref={ref} className={className}>
-      {visible ? display : `0${suffix}`}
-    </span>
-  )
-}
-
-/* Per-character cinematic reveal for the hero headline — each letter
-   rises 30px and fades in, words kept intact so lines never rewrap.
-   Words wrapped in *asterisks* render in the accent color. */
+/* Per-character rise for display headings. Lines split on \n; words in
+   *asterisks* set in italic (the serif accent voice — never a color). */
 function CharsReveal({ text, className = "", delay = 0 }: { text: string, className?: string, delay?: number }) {
   const { ref, visible } = useInView(0.15)
+  const [reduced, setReduced] = useState(false)
+  useEffect(() => {
+    setReduced(window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  }, [])
   let charIndex = 0
+  const shown = visible || reduced
   return (
     <span ref={ref as React.RefObject<HTMLDivElement>} className={className} aria-label={text.replace(/\n/g, ' ')}>
       {text.split('\n').map((line, li) => (
-        <span key={li} className="block">
-          {renderLine(line)}
+        <span key={li} aria-hidden className="block">
+          {line.split(' ').map((raw, wi) => {
+            const accented = raw.startsWith('*')
+            const word = raw.replace(/\*/g, '')
+            return (
+              <span key={wi} className={`inline-block whitespace-nowrap mr-[0.24em] last:mr-0 ${accented ? 'italic' : ''}`}>
+                {word.split('').map((ch, ci) => {
+                  const d = delay + charIndex++ * 12
+                  return (
+                    <span
+                      key={ci}
+                      className="inline-block transition-[transform,opacity] duration-[400ms] ease-m"
+                      style={{
+                        transform: shown ? 'translateY(0)' : 'translateY(30px)',
+                        opacity: shown ? 1 : 0.001,
+                        transitionDelay: reduced ? '0ms' : `${d}ms`,
+                      }}
+                    >
+                      {ch}
+                    </span>
+                  )
+                })}
+              </span>
+            )
+          })}
         </span>
       ))}
     </span>
   )
-
-  function renderLine(line: string) {
-    return line.split(' ').map((raw, wi) => {
-        const accented = raw.startsWith('*')
-        const word = raw.replace(/\*/g, '')
-        return (
-          <span key={wi} aria-hidden className={`inline-block whitespace-nowrap mr-[0.24em] last:mr-0 ${accented ? 'text-amber' : ''}`}>
-            {word.split('').map((c, ci) => {
-              const d = delay + charIndex++ * 12
-              return (
-                <span
-                  key={ci}
-                  className="inline-block transition-[transform,opacity] duration-[500ms] ease-[cubic-bezier(0.6,0,0.4,1)]"
-                  style={{
-                    transform: visible ? 'translateY(0)' : 'translateY(30px)',
-                    opacity: visible ? 1 : 0.001,
-                    transitionDelay: `${d}ms`,
-                  }}
-                >
-                  {c}
-                </span>
-              )
-            })}
-          </span>
-        )
-      })
-  }
 }
 
-/* Hero content drifts up and fades slightly as you scroll away */
-function useHeroParallax() {
-  const ref = useRef<HTMLDivElement>(null)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    let raf = 0
-    const onScroll = () => {
-      if (raf) return
-      raf = requestAnimationFrame(() => {
-        const y = window.scrollY
-        el.style.transform = `translateY(${Math.min(y * 0.16, 110)}px)`
-        el.style.opacity = String(Math.max(1 - y / 620, 0))
-        raf = 0
-      })
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => { window.removeEventListener('scroll', onScroll); if (raf) cancelAnimationFrame(raf) }
-  }, [])
-  return ref
-}
-
-/* Stagger container — wraps children to cascade animation */
-function StaggerGroup({ children, className = "", stagger = 120 }: { children: React.ReactNode, className?: string, stagger?: number }) {
-  const { ref, visible } = useInView(0.05)
+/* Per-word rise for the statement: dim ink to solid ink, 6px, enter once */
+function WordsRise({ text, className = "" }: { text: string, className?: string }) {
+  const { ref, visible } = useInView(0.2)
+  const words = text.split(' ')
   return (
-    <div ref={ref} className={className}>
-      {React.Children.map(children, (child, i) => (
-        <div
-          className="transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+    <p ref={ref as React.RefObject<HTMLParagraphElement>} className={className} aria-label={text}>
+      {words.map((word, i) => (
+        <span
+          key={i}
+          aria-hidden
+          className="inline-block mr-[0.28em] last:mr-0 transition-[transform,opacity,color] duration-[400ms] ease-m"
           style={{
-            opacity: visible ? 1 : 0,
-            transform: visible ? 'translateY(0)' : 'translateY(24px)',
-            filter: visible ? 'blur(0px)' : 'blur(10px)',
-            transitionDelay: `${i * stagger}ms`,
+            color: visible ? '#251109' : 'rgba(37,17,9,0.18)',
+            transform: visible ? 'translateY(0)' : 'translateY(6px)',
+            transitionDelay: `${i * 20}ms`,
           }}
         >
-          {child}
-        </div>
+          {word}
+        </span>
       ))}
-    </div>
+    </p>
   )
 }
 
+const ArrowUpRight = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 17L17 7M7 7h10v10" /></svg>
+)
 
 export default function HomePage() {
   const { language } = useLanguage()
   const [formData, setFormData] = useState({ name: '', email: '', message: '' })
   const [formSent, setFormSent] = useState(false)
-  const heroRef = useHeroParallax()
 
   useEffect(() => {
     history.scrollRestoration = 'manual'
@@ -412,216 +335,237 @@ export default function HomePage() {
   ]
 
   return (
-    <div className="min-h-screen text-ink" style={{ background: '#0D0D0D' }}>
+    <div className="min-h-screen">
 
-      <SiteNav contactHref="#contact" />
+      {/* ── S1+S2: ANNOUNCE + NAV + HERO on ink ── */}
+      <div className="ground-ink text-white" style={{ background: '#251109' }}>
+        <SiteNav contactHref="#contact" tone="dark" />
 
-      {/* ── BORDERED CONTAINER ── */}
-      <div id="layout-container" className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 relative line-sides">
-
-        {/* ── HERO — split editorial: display serif left, live system mock right ── */}
-        <section className="pt-32 md:pt-40 pb-14 md:pb-20 px-6 md:px-12 lg:px-16 relative overflow-hidden" style={{ background: '#0D0D0D' }}>
-          <HeroSpotlight />
-          {/* ambient light the glass surfaces refract */}
-          <div className="orb w-[560px] h-[560px] -top-48 left-[6%]" style={{ background: 'radial-gradient(circle, rgba(232,130,90,0.16), transparent 70%)' }} aria-hidden />
-          <div className="orb w-[460px] h-[460px] top-16 right-[2%]" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.07), transparent 70%)' }} aria-hidden />
-          {/* architectural hairline crossing the hero */}
-          <div className="absolute top-0 bottom-0 left-[58%] w-px bg-white/[0.05] hidden lg:block" aria-hidden />
-          <div ref={heroRef} className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-start relative z-10 will-change-transform">
+        <section className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-10 md:pt-16 pb-14 md:pb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
             <div className="lg:col-span-7">
-              <h1 className="font-serif text-[clamp(2.9rem,5.2vw,5rem)] text-ink leading-[0.98]">
+              <h1 className="font-serif font-light text-[clamp(2.6rem,4.9vw,4.1rem)] leading-[0.9] tracking-[-0.06em] text-white">
                 <CharsReveal text={t.hero.headline} delay={150} />
               </h1>
-              <FadeIn delay={550}>
-                <p className="mt-8 text-ink-muted text-base md:text-[17px] leading-relaxed max-w-lg">
-                  {t.hero.sub}
-                </p>
-              </FadeIn>
-              <FadeIn delay={700}>
-                <div className="mt-9 flex flex-wrap items-center gap-5">
-                  <Magnetic>
-                    <Link href="#contact" className="btn-fill inline-flex items-center bg-amber text-[#0A0A0A] px-8 py-3.5 text-sm font-medium rounded-full active:scale-[0.97] transition-transform group">
-                      <span className="btn-fill-bg" aria-hidden />
-                      <span className="btn-fill-label flex items-center gap-2">
-                        {t.hero.cta}
-                        <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+              <Rise delay={400}>
+                <p className="mt-8 text-[17px] leading-[1.3] text-white/60 max-w-md">{t.hero.sub}</p>
+              </Rise>
+              <Rise delay={500}>
+                <div className="mt-9 flex flex-wrap items-center gap-6">
+                  <Link href="#contact" className="btn-cta">
+                    <span className="btn-fill-bg" aria-hidden />
+                    <span className="btn-fill-label">
+                      {t.hero.cta}
+                      <span className="btn-chip" aria-hidden>
+                        <ArrowUpRight className="arrow-a" />
+                        <ArrowUpRight className="arrow-b" />
                       </span>
-                    </Link>
-                  </Magnetic>
-                  <span className="text-ink-light text-[11px] tracking-wide font-mono">{t.hero.note}</span>
+                    </span>
+                  </Link>
+                  <span className="text-[11px] font-mono tracking-[0.08em] uppercase text-white/40">{t.hero.note}</span>
                 </div>
-              </FadeIn>
+              </Rise>
             </div>
-            <FadeIn delay={400} className="lg:col-span-5 hidden lg:block lg:pt-2">
-              <BrowserFrame domain="davo.md">
-                <div className="aspect-[16/11] overflow-hidden">
-                  <Image src="/images/shot-davo.jpg" alt="davo.md — site and booking system by landings.md" width={960} height={660} quality={85} className="w-full h-full object-cover object-top" priority />
+            <Rise delay={300} className="lg:col-span-5">
+              <BrowserFrame domain="davo.md" ground="ink">
+                <div className="aspect-[16/10] overflow-hidden">
+                  <Image src="/images/shot-davo.jpg" alt="davo.md — site and booking system by landings.md" width={960} height={600} quality={85} className="w-full h-full object-cover object-top" priority />
                 </div>
               </BrowserFrame>
-            </FadeIn>
+            </Rise>
           </div>
         </section>
 
-        {/* ── TRUSTED BY ── */}
-        <section className="line-top" style={{ background: '#0D0D0D' }}>
-          <FadeIn>
-            <p className="text-center text-ink-light text-[10px] font-semibold tracking-[0.14em] uppercase pt-9 md:pt-11 pb-7 px-6">{t.logos}</p>
-          </FadeIn>
-          <LogoGrid />
+        {/* ── S3: LOGO STRIP on ink ── */}
+        <section className="border-t border-[#57433B]">
+          <div className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-14 pb-7">
+            <Rise>
+              <p className="text-[11px] font-bold tracking-[0.04em] uppercase text-white/40 mb-7">{t.logos}</p>
+              <LogoStrip />
+            </Rise>
+          </div>
         </section>
+      </div>
 
-        {/* ── NUMBERS ── */}
-        <section className="line-top" style={{ background: '#111111' }}>
-          <AnimatedStatGrid className="grid grid-cols-2 md:grid-cols-4" stagger={150}>
+      {/* ── S4: STATS on paper ── */}
+      <section className="text-ink" style={{ background: '#FFFFFF' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-16 md:py-20">
+          <div className="grid grid-cols-2 md:grid-cols-4 border border-[#E8E3E0]">
             {t.numbers.map((n, i) => (
-              <div key={i} className="flex flex-col justify-between min-h-[150px] md:min-h-[210px] p-6 md:p-7">
-                <p className="font-serif font-medium text-[clamp(2.3rem,4.2vw,4.5rem)] text-ink/80 leading-none">
-                  <AnimatedNumber value={n.value} />
-                </p>
-                <p className="text-ink-light text-[11px] mt-6 font-mono tracking-[0.08em] uppercase">{n.label}</p>
-              </div>
-            ))}
-          </AnimatedStatGrid>
-        </section>
-
-        {/* ── SERVICES — numbered rows that fill light on hover ── */}
-        <section className="line-top" style={{ background: '#0D0D0D' }}>
-          <FadeIn>
-            <span className="text-ink-light text-[11px] font-semibold tracking-[0.1em] uppercase block px-6 md:px-12 lg:px-16 pt-12 md:pt-16 pb-8 md:pb-10">{t.services.label}</span>
-          </FadeIn>
-          <div className="divide-y divide-white/[0.08] border-t border-white/[0.08]">
-            {t.services.items.map((s, i) => (
-              <FadeIn key={i} delay={i * 90}>
-                <Link
-                  href={s.href}
-                  className="group grid grid-cols-[2.5rem_1fr_auto] lg:grid-cols-[5rem_1.2fr_1fr_auto] gap-4 lg:gap-8 items-start px-6 md:px-12 lg:px-16 py-10 md:py-14 transition-colors duration-[350ms] ease-[cubic-bezier(0.65,0,0.35,1)] hover:bg-[#F2F2F0]"
-                >
-                  <span className="font-mono text-[12px] pt-2 md:pt-4 text-ink-light/70 group-hover:text-[#0A0A0A]/40 transition-colors duration-[350ms]">0{i + 1}</span>
-                  <h3 className="font-serif font-medium text-3xl md:text-[3rem] leading-[1.05] text-ink group-hover:text-[#0A0A0A] transition-colors duration-[350ms]">{s.title}</h3>
-                  <p className="hidden lg:block text-ink-muted group-hover:text-[#0A0A0A]/70 text-[15px] leading-[1.55] max-w-[36ch] pt-2 md:pt-3 transition-colors duration-[350ms]">{s.body}</p>
-                  <span className="text-ink-light group-hover:text-[#0A0A0A] text-2xl pt-1 md:pt-3 transition-all duration-[350ms] group-hover:translate-x-1.5">&rarr;</span>
-                </Link>
-              </FadeIn>
+              <Rise key={i} delay={i * 80} className={`p-7 ${i % 2 === 0 ? 'border-r border-[#E8E3E0]' : ''} ${i < 2 ? 'border-b md:border-b-0 border-[#E8E3E0]' : ''} ${i < 3 ? 'md:border-r md:border-[#E8E3E0]' : ''}`}>
+                <p className="font-sans font-medium text-[40px] leading-[1.05] tracking-[-0.02em] text-ink">{n.value}</p>
+                <p className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light mt-4">{n.label}</p>
+              </Rise>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ── WORK ── */}
-        <section className="line-top px-6 md:px-12 lg:px-16 py-14 md:py-20 relative overflow-hidden" style={{ background: '#101010' }}>
-          <div className="orb w-[640px] h-[640px] -bottom-56 left-1/2 -translate-x-1/2" style={{ background: 'radial-gradient(circle, rgba(232,130,90,0.10), transparent 70%)' }} aria-hidden />
-          <FadeIn>
-            <div className="flex items-center justify-between mb-12 md:mb-16">
-              <span className="text-ink-light text-[11px] font-semibold tracking-[0.1em] uppercase">{t.work.label}</span>
-              <Link href="/portfolio" className="text-ink-muted hover:text-ink text-[12px] font-mono transition-colors group inline-flex items-center gap-1">{t.work.viewAll} <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">&rarr;</span></Link>
+      {/* ── S5: SERVICE ROWS on ink — the dark return ── */}
+      <section className="ground-ink text-white" style={{ background: '#251109' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-14 md:pt-16">
+          <Rise>
+            <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-white/40 block pb-8">{t.services.label}</span>
+          </Rise>
+        </div>
+        <div className="border-t border-[#57433B]">
+          {t.services.items.map((s, i) => (
+            <Link
+              key={i}
+              href={s.href}
+              className="group block border-b border-[#57433B] transition-colors duration-[400ms] ease-m hover:bg-white"
+            >
+              <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-8 md:py-12 grid grid-cols-[2.5rem_1fr_auto] lg:grid-cols-[5rem_1.2fr_1fr_auto] gap-4 lg:gap-8 items-start">
+                <span className="text-[11px] font-bold tracking-[0.04em] pt-2 md:pt-4 text-white/30 group-hover:text-ink/30 transition-colors duration-[400ms] ease-m">0{i + 1}</span>
+                <h3 className="font-serif font-light text-[28px] md:text-[40px] leading-[1.0] tracking-[-0.03em] text-white group-hover:text-ink transition-colors duration-[400ms] ease-m">{s.title}</h3>
+                <p className="hidden lg:block text-[15px] leading-[1.3] text-white/60 group-hover:text-ink-light max-w-[36ch] pt-1.5 transition-colors duration-[400ms] ease-m">{s.body}</p>
+                <span className="pt-1.5 text-white group-hover:text-ink transition-[color,transform] duration-[400ms] ease-m group-hover:rotate-45">
+                  <ArrowUpRight className="w-5 h-5" />
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ── S6: SELECTED WORK on paper ── */}
+      <section className="text-ink" style={{ background: '#FFFFFF' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-16 md:py-20">
+          <Rise>
+            <div className="flex items-center justify-between mb-10">
+              <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light">{t.work.label}</span>
+              <Link href="/portfolio" className="text-[14px] font-medium text-ink hover:underline underline-offset-4">{t.work.viewAll} &rarr;</Link>
             </div>
-          </FadeIn>
-
-          <StaggerGroup className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6" stagger={140}>
+          </Rise>
+          <div className="grid grid-cols-1 md:grid-cols-3 border border-[#E8E3E0]">
             {projects.map((project, i) => (
-              <Link key={i} href={project.href} target="_blank" rel="noopener noreferrer" className="group block h-full glass rounded-2xl p-2.5 transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1.5 hover:shadow-[0_28px_80px_-28px_rgba(0,0,0,0.65)]">
-                <div className="aspect-[16/10] overflow-hidden rounded-xl">
-                  <Image src={project.src} alt={`${project.name} — website, SEO and business systems by landings.md`} width={960} height={600} quality={85} className="w-full h-full object-cover object-top brightness-[0.92] group-hover:brightness-100 group-hover:scale-[1.03] transition-[transform,filter] duration-700 ease-smooth" />
-                </div>
-                <div className="px-3.5 md:px-4 pt-4 pb-4">
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-3">
-                    <span className="text-[9px] font-mono tracking-[0.1em] uppercase text-ink-light">{project.category}</span>
-                    <span className={`text-[9px] font-mono tracking-[0.1em] uppercase ${project.tagColor}`}>· {project.tag}</span>
+              <Link
+                key={i}
+                href={project.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group block p-6 transition-colors duration-[400ms] ease-m hover:bg-[#FAF7F5] ${i < 2 ? 'md:border-r md:border-[#E8E3E0]' : ''} ${i < 2 ? 'border-b md:border-b-0 border-[#E8E3E0]' : ''}`}
+              >
+                <BrowserFrame domain={project.domain} ground="light">
+                  <div className="aspect-[16/10] overflow-hidden">
+                    <Image src={project.src} alt={`${project.name} — website, SEO and business systems by landings.md`} width={960} height={600} quality={85} className="w-full h-full object-cover object-top" />
                   </div>
-                  <h3 className="font-serif text-xl md:text-[22px] text-ink group-hover:text-amber transition-colors duration-300 mb-2">{project.name}</h3>
-                  <p className="text-ink-muted text-[13px] leading-relaxed line-clamp-2">{project.desc}</p>
-                  <span className="mt-4 inline-flex items-center gap-1.5 text-ink-light group-hover:text-amber text-[11px] font-mono tracking-wide transition-colors duration-300">
-                    {project.domain} <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
+                </BrowserFrame>
+                <div className="pt-5">
+                  <div className="flex flex-wrap items-center gap-x-2 mb-2.5">
+                    <span className="text-[10px] font-mono tracking-[0.08em] uppercase text-ink/30">{project.category}</span>
+                    <span className="text-[10px] font-mono tracking-[0.08em] uppercase text-ink/30">· {project.tag}</span>
+                  </div>
+                  <h3 className="font-sans font-medium text-[20px] leading-[1.2] tracking-[-0.01em] text-ink mb-2">{project.name}</h3>
+                  <p className="text-[14px] leading-[1.5] text-ink-light line-clamp-2">{project.desc}</p>
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-[12px] font-mono text-ink-light group-hover:text-ink transition-colors duration-[400ms] ease-m">
+                    {project.domain}
+                    <span className="inline-block -rotate-45 group-hover:rotate-0 transition-transform duration-[400ms] ease-m"><ArrowUpRight className="w-3 h-3" /></span>
                   </span>
                 </div>
               </Link>
             ))}
-          </StaggerGroup>
-        </section>
+          </div>
+        </div>
+      </section>
 
-        {/* ── STATEMENT ── */}
-        <section className="line-top px-6 md:px-12 lg:px-16 py-24 md:py-44 relative" style={{ background: '#0D0D0D' }}>
-          <ScrubText
+      {/* ── S7: STATEMENT on paper-2 ── */}
+      <section className="border-y border-[#E8E3E0]" style={{ background: '#FAF7F5' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-20 md:py-28">
+          <WordsRise
             text={t.statement}
-            className="font-serif text-[clamp(1.6rem,2.9vw,2.6rem)] text-ink leading-[1.35] max-w-3xl"
+            className="font-serif font-light text-[26px] md:text-[32px] leading-[1.15] tracking-[-0.03em] max-w-3xl"
           />
-        </section>
+        </div>
+      </section>
 
-        {/* ── PROCESS ── */}
-        <section className="line-top px-6 md:px-12 lg:px-16 py-20 md:py-32" style={{ background: '#101010' }}>
-          <FadeIn>
-            <span className="text-ink-light text-[11px] font-semibold tracking-[0.1em] uppercase block mb-10 md:mb-14">{t.process.label}</span>
-          </FadeIn>
-          <StaggerGroup className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0 md:divide-x md:divide-white/[0.08]" stagger={200}>
+      {/* ── S8: PROCESS on paper ── */}
+      <section className="text-ink" style={{ background: '#FFFFFF' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-16 md:py-24">
+          <Rise>
+            <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light block mb-12">{t.process.label}</span>
+          </Rise>
+          <div className="grid grid-cols-1 md:grid-cols-3 md:divide-x md:divide-[#E8E3E0] gap-10 md:gap-0">
             {t.process.steps.map((step, i) => (
-              <div key={i} className={`relative ${i === 0 ? 'md:pr-10' : i === 2 ? 'md:pl-10' : 'md:px-10'}`}>
-                <span className="font-serif text-[clamp(5rem,9vw,8.5rem)] leading-none text-ink/[0.07] block -mb-[0.32em] select-none">{step.num}</span>
-                <h3 className="font-serif text-2xl text-ink mb-3 relative">{step.title}</h3>
-                <p className="text-ink-muted text-[15px] leading-[1.6] max-w-[30ch]">{step.body}</p>
-              </div>
+              <Rise key={i} delay={i * 80} className={i === 0 ? 'md:pr-10' : i === 2 ? 'md:pl-10' : 'md:px-10'}>
+                <span className="font-serif font-light text-[96px] leading-none block -mb-[0.32em] select-none" style={{ color: 'rgba(37,17,9,0.08)' }}>{step.num}</span>
+                <h3 className="font-serif font-light text-[24px] tracking-[-0.03em] text-ink mb-3 relative">{step.title}</h3>
+                <p className="text-[15px] leading-[1.6] text-ink-muted max-w-[30ch]">{step.body}</p>
+              </Rise>
             ))}
-          </StaggerGroup>
-        </section>
+          </div>
+        </div>
+      </section>
 
-        {/* ── CONTACT ── */}
-        {/* ── CONTACT — the saved accent: full ember flood ── */}
-        <section id="contact" className="px-6 md:px-12 lg:px-16 py-24 md:py-40 relative" style={{ background: '#E8825A' }}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-            <SlideIn direction="left">
-              <span className="text-[#140B06]/60 text-[11px] font-semibold tracking-[0.1em] uppercase block mb-4">{t.contact.label}</span>
-              <h2 className="font-serif text-[clamp(2.6rem,5vw,4.9rem)] text-[#140B06] leading-[0.96] mb-6">{t.contact.heading}</h2>
-              <p className="text-[#140B06]/75 text-[14px] leading-relaxed max-w-md">{t.contact.sub}</p>
-              <p className="mt-7 text-[#140B06]/70 text-[12px] font-mono">contact@landings.md</p>
-              <Link href="tel:+37368327082" className="mt-1.5 inline-block text-[#140B06]/70 hover:text-[#140B06] text-[12px] font-mono transition-colors">+373 683 27 082</Link>
-            </SlideIn>
-            <SlideIn direction="right" delay={200}>
+      {/* ── S9+S10: CONTACT FLOOD + FOOTER — the saved punchline ── */}
+      <section id="contact" style={{ background: '#E8825A' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-20 md:pt-28">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 pb-20 md:pb-28">
+            <div>
+              <Rise>
+                <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink block mb-5">{t.contact.label}</span>
+              </Rise>
+              <h2 className="font-serif font-light text-[clamp(2.2rem,4vw,3.4rem)] leading-[1.0] tracking-[-0.03em] text-ink mb-6">
+                <CharsReveal text={t.contact.heading} />
+              </h2>
+              <Rise delay={200}>
+                <p className="text-[15px] leading-[1.4] max-w-md" style={{ color: 'rgba(37,17,9,0.7)' }}>{t.contact.sub}</p>
+                <p className="mt-7 text-[14px] font-medium text-ink">contact@landings.md</p>
+                <Link href="tel:+37368327082" className="mt-1 inline-block text-[14px] font-medium text-ink/70 hover:text-ink transition-colors duration-[400ms] ease-m">+373 683 27 082</Link>
+              </Rise>
+            </div>
+            <Rise delay={150}>
               {formSent ? (
-                <div className="flex items-center h-full"><p className="text-[#140B06] font-serif text-lg">{t.form.sent}</p></div>
+                <div className="flex items-center h-full"><p className="text-ink text-[17px] font-medium">{t.form.sent}</p></div>
               ) : (
                 <form onSubmit={(e) => { e.preventDefault(); const s = encodeURIComponent(`New project from ${formData.name}`); const b = encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`); window.location.href = `mailto:contact@landings.md?subject=${s}&body=${b}`; setFormSent(true) }}>
-                  <input type="text" required placeholder={t.form.name} value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full bg-transparent border-b border-[#140B06]/30 px-0 py-4 text-[14px] text-[#140B06] placeholder:text-[#140B06]/50 focus:outline-none focus:border-[#140B06]/70 transition-colors duration-500 font-mono" />
-                  <input type="email" required placeholder={t.form.email} value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full bg-transparent border-b border-[#140B06]/30 px-0 py-4 text-[14px] text-[#140B06] placeholder:text-[#140B06]/50 focus:outline-none focus:border-[#140B06]/70 transition-colors duration-500 font-mono" />
-                  <textarea required rows={3} placeholder={t.form.message} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} className="w-full bg-transparent border-b border-[#140B06]/30 px-0 py-4 text-[14px] text-[#140B06] placeholder:text-[#140B06]/50 focus:outline-none focus:border-[#140B06]/70 transition-colors duration-500 resize-none font-mono" />
-                  <div className="pt-6">
-                    <button type="submit" className="btn-fill group bg-[#140B06] text-[#F2F2F0] px-9 py-4 text-[12px] font-mono uppercase tracking-[0.08em] rounded-full active:scale-[0.98] transition-transform">
+                  <input type="text" required placeholder={t.form.name} value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full bg-transparent border-b px-0 py-4 text-[15px] text-ink placeholder:text-ink/60 focus:outline-none transition-colors duration-[400ms] ease-m" style={{ borderColor: 'rgba(37,17,9,0.3)' }} onFocus={(e) => e.currentTarget.style.borderColor = '#251109'} onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(37,17,9,0.3)'} />
+                  <input type="email" required placeholder={t.form.email} value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full bg-transparent border-b px-0 py-4 text-[15px] text-ink placeholder:text-ink/60 focus:outline-none transition-colors duration-[400ms] ease-m" style={{ borderColor: 'rgba(37,17,9,0.3)' }} onFocus={(e) => e.currentTarget.style.borderColor = '#251109'} onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(37,17,9,0.3)'} />
+                  <textarea required rows={3} placeholder={t.form.message} value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} className="w-full bg-transparent border-b px-0 py-4 text-[15px] text-ink placeholder:text-ink/60 focus:outline-none transition-colors duration-[400ms] ease-m resize-none" style={{ borderColor: 'rgba(37,17,9,0.3)' }} onFocus={(e) => e.currentTarget.style.borderColor = '#251109'} onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(37,17,9,0.3)'} />
+                  <div className="pt-8">
+                    <button type="submit" className="btn-cta btn-cta--ink">
                       <span className="btn-fill-bg" aria-hidden />
-                      <span className="btn-fill-label transition-colors duration-[400ms] group-hover:text-[#140B06]">{t.form.send}</span>
+                      <span className="btn-fill-label">
+                        {t.form.send}
+                        <span className="btn-chip" aria-hidden>
+                          <ArrowUpRight className="arrow-a" />
+                          <ArrowUpRight className="arrow-b" />
+                        </span>
+                      </span>
                     </button>
                   </div>
                 </form>
               )}
-            </SlideIn>
+            </Rise>
           </div>
-        </section>
 
-        {/* ── FOOTER ── */}
-        <footer className="line-top px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: '#0A0A0A' }}>
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
-            <div className="flex items-center gap-6">
-              <Link href="/" className="flex items-center">
-                <Image src="/images/logowhite.png" alt="landings.md — website design agency" width={16} height={26} className="w-4 h-auto opacity-70" />
-              </Link>
-              <div className="hidden md:flex items-center gap-4 text-[11px] text-ink-muted font-mono">
-                <Link href="/portfolio" className="hover:text-ink transition-colors">{t.nav.portfolio}</Link>
-                <Link href="/pricing" className="hover:text-ink transition-colors">{t.nav.pricing}</Link>
-                <Link href="/solutions" className="hover:text-ink transition-colors">{t.nav.solutions}</Link>
-                <Link href="/case-studies" className="hover:text-ink transition-colors">{t.nav.caseStudies}</Link>
+          {/* footer lives inside the flood */}
+          <footer className="border-t py-10" style={{ borderColor: '#C96540' }}>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
+              <div className="flex items-center gap-6">
+                <Link href="/" className="flex items-center">
+                  <Image src="/images/logowhite.png" alt="landings.md" width={16} height={26} className="w-4 h-auto" style={{ filter: 'brightness(0)' }} />
+                </Link>
+                <div className="hidden md:flex items-center gap-4 text-[14px] font-medium">
+                  <Link href="/portfolio" className="text-ink/70 hover:text-ink hover:underline underline-offset-4 transition-colors">{t.nav.portfolio}</Link>
+                  <Link href="/pricing" className="text-ink/70 hover:text-ink hover:underline underline-offset-4 transition-colors">{t.nav.pricing}</Link>
+                  <Link href="/solutions" className="text-ink/70 hover:text-ink hover:underline underline-offset-4 transition-colors">{t.nav.solutions}</Link>
+                  <Link href="/case-studies" className="text-ink/70 hover:text-ink hover:underline underline-offset-4 transition-colors">{t.nav.caseStudies}</Link>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-[13px]" style={{ color: 'rgba(37,17,9,0.7)' }}>
+                <Link href="tel:+37368327082" className="hover:text-ink transition-colors">+373 683 27 082</Link>
+                <Link href="mailto:contact@landings.md" className="hover:text-ink transition-colors">contact@landings.md</Link>
+                <span>{t.footer.copy}</span>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-              <Link href="tel:+37368327082" className="text-ink-muted hover:text-ink text-[11px] font-mono transition-colors">+373 683 27 082</Link>
-              <Link href="mailto:contact@landings.md" className="text-ink-muted hover:text-ink text-[11px] font-mono transition-colors">contact@landings.md</Link>
-              <span className="text-ink-muted text-[10px] font-mono">{t.footer.copy}</span>
-            </div>
-          </div>
-          <p className="mt-4 text-ink-light text-[9px] font-mono tracking-wide leading-relaxed max-w-2xl">
-            Websites, SEO, Meta & Google Ads and custom business systems for small businesses across Europe. Hand-coded websites that rank on Google — plus booking, invoicing, stock and automated accounting systems that replace paperwork. In English, Romanian, German, French, and Spanish. Chisinau, Moldova.
-          </p>
-        </footer>
+            <p className="mt-5 text-[11px] leading-relaxed max-w-2xl" style={{ color: 'rgba(37,17,9,0.5)' }}>
+              Websites, SEO, Meta & Google Ads and custom business systems for small businesses across Europe. Hand-coded websites that rank on Google — plus booking, invoicing, stock and automated accounting systems that replace paperwork. In English, Romanian, German, French, and Spanish. Chisinau, Moldova.
+            </p>
+          </footer>
+        </div>
+      </section>
 
-      </div>
-      {/* ── END BORDERED CONTAINER ── */}
-
-      <StickyContactPill language={language as 'en' | 'ro' | 'de' | 'fr' | 'es'} />
     </div>
   )
 }

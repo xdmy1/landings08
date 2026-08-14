@@ -2,50 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── mirabel-adaptation tokens ──
+   ink is the ONLY dark; every grey is an alpha step of it.
+   Hairlines are solid literal hexes re-derived per background. */
 @layer base {
   :root {
-    --background: 0 0% 5%;
-    --foreground: 60 3% 95%;
-    --card: 0 0% 8%;
-    --card-foreground: 60 3% 95%;
-    --popover: 0 0% 8%;
-    --popover-foreground: 60 3% 95%;
-    --primary: 60 3% 95%;
-    --primary-foreground: 0 0% 5%;
-    --secondary: 0 0% 12%;
-    --secondary-foreground: 60 3% 95%;
-    --muted: 0 0% 12%;
-    --muted-foreground: 240 2% 66%;
-    --accent: 17 76% 63%;
-    --accent-foreground: 0 0% 5%;
+    --ink: #251109;
+    --paper: #FFFFFF;
+    --paper-2: #FAF7F5;
+    --accent: #E8825A;
+    --accent-shade: #C96540;
+    --hairline-light: #E8E3E0;
+    --hairline-dark: #57433B;
+    --chrome-dark: #36241D;
+    --ease-m: cubic-bezier(0.6, 0, 0.4, 1);
+
+    --background: 17 66% 9%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 17 66% 9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 17 66% 9%;
+    --primary: 17 66% 9%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 20 20% 96%;
+    --secondary-foreground: 17 66% 9%;
+    --muted: 20 20% 96%;
+    --muted-foreground: 17 66% 30%;
+    --accent-hsl: 17 76% 63%;
+    --accent-foreground: 17 66% 9%;
     --destructive: 0 63% 31%;
-    --destructive-foreground: 60 3% 95%;
-    --border: 0 0% 16%;
-    --input: 0 0% 16%;
-    --ring: 17 76% 63%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 20 15% 90%;
+    --input: 20 15% 90%;
+    --ring: 17 66% 9%;
     --radius: 0px;
   }
 }
 
 * {
-  border-color: hsl(var(--border));
+  border-color: var(--hairline-light);
 }
 
 body {
-  color: hsl(var(--foreground));
-  background: #0D0D0D;
+  color: #FFFFFF;
+  background: var(--ink);
   font-family: 'Satoshi', system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-size: 17px;
+  line-height: 1.3;
 }
 
-/* Display face — Clash Display (council verdict): an authored display
-   grotesque, monoline so the dark ground can't eat it, never below
-   20px, never all-caps. Satoshi stays the information layer. */
+/* Display face — Inria Serif Light, mirabel's identity, re-tried in the
+   context it was designed for: mostly dark-ink-on-light, huge, at 0.9
+   leading. Never below 24px on light grounds or 40px on dark. */
 .font-serif {
-  font-family: 'Clash Display', 'Satoshi', system-ui, sans-serif;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-family: 'Inria Serif', Georgia, serif;
+  font-weight: 300;
+  letter-spacing: -0.03em;
 }
 
 .font-sans {
@@ -53,202 +66,126 @@ body {
 }
 
 .font-mono {
-  font-family: 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Dark sections: antialias to stop light-on-dark bloom eating the serif */
+.ground-ink {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-}
-
-/* Translucent material — Apple-style glass. A floating layer with a
-   bright top edge (light catching the material). Needs something
-   luminous behind it (orbs, imagery) to read as glass. */
-.glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  border-top-color: rgba(255, 255, 255, 0.18);
-}
-@media (prefers-reduced-transparency: reduce) {
-  .glass {
-    background: #161616;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+  .ease-m {
+    transition-timing-function: var(--ease-m);
   }
 }
 
-/* Ambient light orbs — the luminance the glass surfaces refract */
-.orb {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(90px);
-  pointer-events: none;
-}
-
-/* Slide-up fill button — a light sheet rises from the bottom edge on
-   hover while the dark label stays put. One easing, everywhere. */
-.btn-fill {
+/* ── CTA block — mirabel button anatomy ──
+   Sharp accent block, dark icon chip with a stacked arrow swap, and a
+   light sheet that slides up from the bottom edge on hover. */
+.btn-cta {
   position: relative;
   overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--accent);
+  color: var(--ink);
+  padding: 20px 24px;
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1;
 }
-.btn-fill .btn-fill-bg {
+.btn-cta .btn-fill-bg {
   position: absolute;
   inset: 0;
-  background: #F2F2F0;
+  background: var(--paper);
   transform: translateY(101%);
-  transition: transform 0.4s cubic-bezier(0.6, 0, 0.4, 1);
+  transition: transform 0.4s var(--ease-m);
   pointer-events: none;
 }
-.btn-fill:hover .btn-fill-bg {
+.btn-cta:hover .btn-fill-bg {
   transform: translateY(0);
 }
-.btn-fill .btn-fill-label {
+.btn-cta .btn-fill-label {
   position: relative;
   z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
 }
-
-/* Soft radial glow accent */
-.glow-amber {
+.btn-cta .btn-chip {
   position: relative;
+  width: 40px;
+  height: 40px;
+  margin: -10px -4px -10px 0;
+  background: var(--ink);
+  overflow: hidden;
+  flex-shrink: 0;
 }
-.glow-amber::after {
-  content: '';
+.btn-cta .btn-chip svg {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 60%;
-  height: 70%;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(ellipse, rgba(232, 130, 90, 0.06) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
+  width: 14px;
+  height: 14px;
+  color: #FFFFFF;
+  transition: transform 0.4s var(--ease-m), opacity 0.4s var(--ease-m);
+}
+.btn-cta .btn-chip .arrow-a { transform: translate(-50%, -50%); opacity: 1; }
+.btn-cta .btn-chip .arrow-b { transform: translate(calc(-50% - 10px), calc(-50% + 10px)); opacity: 0; }
+.btn-cta:hover .btn-chip .arrow-a { transform: translate(calc(-50% + 10px), calc(-50% - 10px)); opacity: 0; }
+.btn-cta:hover .btn-chip .arrow-b { transform: translate(-50%, -50%); opacity: 1; }
+
+/* small variant — nav */
+.btn-cta--sm {
+  padding: 10px 14px;
+  font-size: 13px;
+  gap: 0;
 }
 
+/* ink variant — submit on the ember flood */
+.btn-cta--ink {
+  background: var(--ink);
+  color: #FFFFFF;
+}
+.btn-cta--ink .btn-chip { background: var(--accent); }
+.btn-cta--ink .btn-chip svg { color: var(--ink); }
+.btn-cta--ink:hover .btn-fill-label { color: var(--ink); }
+.btn-cta--ink .btn-fill-label { transition: color 0.4s var(--ease-m); }
 
-/* Animated grid that builds up */
-@keyframes gridFadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 0.04; }
-}
-
-.grid-animated {
-  position: relative;
-}
-.grid-animated::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(232, 130, 90, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(232, 130, 90, 0.06) 1px, transparent 1px);
-  background-size: 60px 60px;
-  animation: gridFadeIn 2s ease-out forwards;
-  pointer-events: none;
-  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 20%, transparent 70%);
-  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 20%, transparent 70%);
-}
-
-/* Shimmer line animation */
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-.shimmer-line {
-  overflow: hidden;
-  position: relative;
-}
-.shimmer-line::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(232, 130, 90, 0.15), transparent);
-  animation: shimmer 3s ease-in-out infinite;
-}
+/* on light grounds the fill must be ink and the label flips to white */
+.btn-cta--on-light .btn-fill-bg { background: var(--ink); }
+.btn-cta--on-light .btn-fill-label { transition: color 0.4s var(--ease-m); }
+.btn-cta--on-light:hover .btn-fill-label { color: #FFFFFF; }
 
 ::selection {
-  background: rgba(232, 130, 90, 0.35);
-  color: #F2F2F0;
+  background: var(--ink);
+  color: #FFFFFF;
+}
+.ground-ink ::selection,
+.ground-ink::selection {
+  background: #FFFFFF;
+  color: var(--ink);
 }
 
-/* Mobile nav overlay animations */
+/* Mobile nav overlay — solid ink, no blur */
 @keyframes mobileNavIn {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
-
 @keyframes mobileNavLinkIn {
   from { opacity: 0; transform: translateY(22px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
-@keyframes sectionLineDraw {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
-}
-
-/* Horizontal border that draws from center — add to any section */
-.line-top {
-  position: relative;
-}
-.line-top::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.09);
-  transform: scaleX(0);
-  transform-origin: center;
-  animation: sectionLineDraw 900ms cubic-bezier(0.16, 1, 0.3, 1) 100ms forwards;
-  z-index: 2;
-  pointer-events: none;
-}
-
-/* Vertical side rails — add to the layout container */
-@keyframes vertLineDraw {
-  from { transform: scaleY(0); }
-  to   { transform: scaleY(1); }
-}
-.line-sides::before,
-.line-sides::after {
-  content: '';
-  position: absolute;
-  top: 0; bottom: 0;
-  width: 1px;
-  background: rgba(255, 255, 255, 0.09);
-  transform: scaleY(0);
-  transform-origin: center;
-  animation: vertLineDraw 900ms cubic-bezier(0.16, 1, 0.3, 1) 100ms forwards;
-  z-index: 2;
-  pointer-events: none;
-}
-.line-sides::before { left: 0; }
-.line-sides::after  { right: 0; }
-
 .mobile-nav-overlay {
-  animation: mobileNavIn 0.25s ease-out forwards;
+  animation: mobileNavIn 0.4s var(--ease-m) forwards;
 }
-
 .mobile-nav-link {
-  animation: mobileNavLinkIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-/* Film grain overlay for texture */
-.grain::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: 0.035;
-  background-image: url('/images/grain.avif');
-  background-size: 200px;
-  background-repeat: repeat;
-  mix-blend-mode: screen;
+  animation: mobileNavLinkIn 0.4s var(--ease-m) both;
 }

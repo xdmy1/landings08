@@ -299,14 +299,13 @@ export default function PricingPage() {
   const tiers: Tier[] = ['starter', 'business', 'ecommerce', 'custom']
 
   return (
-    <div className="min-h-screen text-ink" style={{ background: 'linear-gradient(180deg, #131313 0%, #0D0D0D 30%, #161616 70%, #0D0D0D 100%)' }}>
+    <div className="min-h-screen text-ink" style={{ background: '#FFFFFF' }}>
 
-      <SiteNav contactHref="/#contact" />
-
-      <div className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 relative line-sides">
+      <SiteNav contactHref="/#contact" tone="light" />
 
       {/* Quiz */}
-      <div className="min-h-[100vh] flex items-center justify-center pt-32 pb-24 px-6 md:px-8">
+      <section style={{ background: '#FFFFFF' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-16 md:py-20 pt-6 md:pt-10 pb-16 flex justify-center">
         <div className="max-w-2xl w-full">
 
           {/* Progress */}
@@ -316,7 +315,7 @@ export default function PricingPage() {
                 {(step > 0 || showResult) && (
                   <button
                     onClick={() => showResult ? goToStep(TOTAL_STEPS - 1) : goToStep(step - 1)}
-                    className="text-ink-muted hover:text-ink transition-colors mr-1"
+                    className="text-ink-light hover:text-ink transition-colors duration-[400ms] ease-m mr-1"
                     aria-label="Go back"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -332,14 +331,14 @@ export default function PricingPage() {
                       <button
                         key={i}
                         onClick={() => isCompleted ? goToStep(i) : undefined}
-                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                        className={`w-1.5 h-1.5 transition-colors duration-[400ms] ease-m ${
                           showResult
-                            ? 'bg-amber'
+                            ? 'bg-ink'
                             : isCompleted
-                              ? 'bg-amber cursor-pointer hover:bg-amber-light'
+                              ? 'bg-ink cursor-pointer hover:bg-ink/70'
                               : isCurrent
-                                ? 'bg-ink'
-                                : 'bg-divider'
+                                ? 'bg-ink/30'
+                                : 'bg-[#E8E3E0]'
                         }`}
                         aria-label={`Step ${i + 1}`}
                       />
@@ -347,24 +346,24 @@ export default function PricingPage() {
                   })}
                 </div>
               </div>
-              <span className="text-ink-light text-sm font-mono tracking-wide">
+              <span className="text-ink-light text-[12px] font-mono tracking-[0.08em]">
                 {showResult ? String(TOTAL_STEPS).padStart(2, '0') : String(step + 1).padStart(2, '0')} / {String(TOTAL_STEPS).padStart(2, '0')}
               </span>
             </div>
-            <div className="w-full h-px bg-divider">
+            <div className="w-full h-px bg-[#E8E3E0]">
               <div
-                className="h-full bg-amber transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                className="h-full bg-ink transition-[width] duration-[400ms] ease-m"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
           </div>
 
           {/* Content */}
-          <div className={`transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${slideDirection === 'in' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}>
+          <div className={`transition-[opacity,transform] duration-[400ms] ease-m ${slideDirection === 'in' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}>
 
             {!showResult ? (
               <>
-                <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-ink text-center leading-tight mb-12">
+                <h1 className="font-serif font-light text-[clamp(2.125rem,3.4vw,2.5rem)] leading-[1.05] tracking-[-0.03em] text-ink text-center mb-12">
                   {q[step].question}
                 </h1>
 
@@ -373,10 +372,10 @@ export default function PricingPage() {
                     <button
                       key={i}
                       onClick={() => selectAnswer(i)}
-                      className={`text-left px-6 py-4 rounded-xl border text-sm transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-[0.99] ${
+                      className={`text-left px-6 py-4 border text-[15px] leading-[1.3] transition-colors duration-[400ms] ease-m ${
                         selectedFlash === i || answers[step] === i
-                          ? 'border-amber/70 bg-amber/10 text-ink'
-                          : 'border-white/10 bg-white/[0.04] text-ink-muted hover:border-white/25 hover:bg-white/[0.06] hover:text-ink'
+                          ? 'border-ink bg-white text-ink'
+                          : 'border-[#E8E3E0] bg-white text-ink-muted hover:bg-[#FAF7F5] hover:text-ink'
                       }${q[step].options.length % 2 !== 0 && i === q[step].options.length - 1 ? ' sm:col-span-2' : ''}`}
                     >
                       {option}
@@ -386,33 +385,33 @@ export default function PricingPage() {
               </>
             ) : (
               <div className="text-center">
-                <span className="inline-block text-[10px] tracking-[0.25em] uppercase text-ink-light font-mono mb-6">
+                <span className="inline-block text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light mb-6">
                   {r.label}
                 </span>
 
-                <h2 className="font-serif text-4xl md:text-5xl text-ink mb-3">
+                <h2 className="font-serif font-light text-[40px] leading-[1.0] tracking-[-0.03em] text-ink mb-4">
                   {result.name}
                 </h2>
 
-                <div className="font-serif text-5xl md:text-6xl text-amber mb-2">
+                <div className="font-sans font-medium text-[40px] leading-[1.05] tracking-[-0.02em] text-ink mb-2">
                   {totalPrice !== null
                     ? `${isMinimum ? `${fromText[lang]} ` : ''}€${totalPrice}`
                     : priceOnRequestText[lang]}
                 </div>
 
                 {!isCustom && extraCount > 0 && (
-                  <p className="text-ink-light text-xs font-mono tracking-wide mb-4">
+                  <p className="text-ink-light text-[12px] font-mono tracking-[0.08em] mb-4">
                     {langNoteText[lang](extraCount, addon)}
                   </p>
                 )}
 
                 {(isCustom || extraCount === 0) && <div className="mb-4" />}
 
-                <p className="text-ink-light text-[11px] tracking-wide mb-8">
+                <p className="text-ink-light text-[12px] mb-8">
                   {isCustom ? customNoteText[lang] : negotiableText[lang]}
                 </p>
 
-                <p className="text-ink-muted text-sm mb-10 max-w-md mx-auto">
+                <p className="text-ink-muted text-[15px] leading-[1.3] mb-10 max-w-md mx-auto">
                   {result.why}
                 </p>
 
@@ -421,25 +420,28 @@ export default function PricingPage() {
                     <div
                       key={i}
                       className="flex items-start gap-3"
-                      style={{ animation: `fadeInUp 600ms ${i * 60}ms both` }}
+                      style={{ animation: `fadeInUp 400ms cubic-bezier(0.6,0,0.4,1) ${i * 60}ms both` }}
                     >
                       <span className="text-ink-light text-xs mt-0.5">&mdash;</span>
-                      <span className="text-ink text-sm">{feature}</span>
+                      <span className="text-ink text-[15px] leading-[1.3]">{feature}</span>
                     </div>
                   ))}
                 </div>
 
-                <Link
-                  href={getContactURL()}
-                  className="inline-block px-8 py-3.5 bg-amber text-[#0A0A0A] text-sm font-medium tracking-wide rounded-full hover:bg-amber-light active:scale-[0.97] transition-[background-color,transform]"
-                >
-                  {result.cta}
+                <Link href={getContactURL()} className="btn-cta btn-cta--on-light">
+                  <span className="btn-fill-bg" aria-hidden />
+                  <span className="btn-fill-label">{result.cta}
+                    <span className="btn-chip" aria-hidden>
+                      <svg className="arrow-a" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 17L17 7M7 7h10v10" /></svg>
+                      <svg className="arrow-b" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 17L17 7M7 7h10v10" /></svg>
+                    </span>
+                  </span>
                 </Link>
 
                 <div className="mt-6">
                   <button
                     onClick={resetInterview}
-                    className="text-ink-light hover:text-ink-muted text-xs tracking-wide transition-colors"
+                    className="text-ink-light hover:text-ink text-[12px] transition-colors duration-[400ms] ease-m"
                   >
                     {startOverText[lang]}
                   </button>
@@ -448,13 +450,15 @@ export default function PricingPage() {
             )}
           </div>
         </div>
-      </div>
+        </div>
+      </section>
 
       {/* Static packages */}
-      <section className="line-top px-6 md:px-12 lg:px-16 py-16 md:py-24" style={{ background: 'linear-gradient(180deg, #0D0D0D 0%, #121212 100%)' }}>
+      <section style={{ background: '#FAF7F5' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-16 md:py-20">
         <div className="text-center mb-12 md:mb-16">
-          <h2 className="font-serif text-3xl md:text-4xl text-ink mb-3">{pk.heading}</h2>
-          <p className="text-ink-muted text-sm max-w-xl mx-auto">{pk.sub}</p>
+          <h2 className="font-serif font-light text-[clamp(2rem,3.4vw,2.5rem)] leading-[1.0] tracking-[-0.03em] text-ink mb-3">{pk.heading}</h2>
+          <p className="text-ink-muted text-[15px] leading-[1.3] max-w-xl mx-auto">{pk.sub}</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -463,57 +467,79 @@ export default function PricingPage() {
             const price = BASE_PRICES[tier]
             const isPopular = tier === 'business'
             return (
-              <div key={tier} className="relative flex flex-col glass rounded-2xl p-6" style={isPopular ? { borderColor: 'rgba(232,130,90,0.55)' } : undefined}>
+              <div
+                key={tier}
+                className={`flex flex-col p-6 ${isPopular ? 'ground-ink text-white' : 'bg-white border border-[#E8E3E0]'}`}
+                style={isPopular ? { background: '#251109' } : undefined}
+              >
                 {isPopular && (
-                  <span className="absolute -top-2.5 left-6 text-[9px] font-mono tracking-[0.2em] uppercase text-[#0A0A0A] bg-amber rounded-full px-2.5 py-0.5">{pk.popular}</span>
+                  <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-white/40 mb-3">{pk.popular}</span>
                 )}
-                <h3 className="font-serif text-xl text-ink mb-1">{tr.name}</h3>
-                <div className="mb-4">
+                <h3 className={`font-sans font-medium text-[20px] tracking-[-0.01em] mb-1 ${isPopular ? 'text-white' : 'text-ink'}`}>{tr.name}</h3>
+                <div className="mb-5">
                   {price !== null ? (
-                    <p className="font-serif text-3xl text-amber">
-                      <span className="text-ink-light text-xs font-sans mr-1.5">{fromText[lang]}</span>€{price}
+                    <p className={`font-sans font-medium text-[40px] leading-[1.05] tracking-[-0.02em] ${isPopular ? 'text-white' : 'text-ink'}`}>
+                      <span className={`text-[13px] font-normal mr-1.5 ${isPopular ? 'text-white/40' : 'text-ink-light'}`}>{fromText[lang]}</span>€{price}
                     </p>
                   ) : (
-                    <p className="font-serif text-2xl text-amber leading-[1.35]">{priceOnRequestText[lang]}</p>
+                    <p className="font-sans font-medium text-[24px] leading-[1.2] tracking-[-0.01em] text-ink">{priceOnRequestText[lang]}</p>
                   )}
                 </div>
-                <p className="text-ink-muted text-[12px] leading-relaxed mb-5">{tr.why}</p>
-                <div className="space-y-2 mb-8 flex-1">
+                <p className={`text-[13px] leading-[1.4] mb-5 ${isPopular ? 'text-white/60' : 'text-ink-muted'}`}>{tr.why}</p>
+                <div className={`flex-1 mb-8 border-t ${isPopular ? 'border-[#57433B]' : 'border-[#E8E3E0]'}`}>
                   {tr.features.map((f, fi) => (
-                    <div key={fi} className="flex items-start gap-2.5">
-                      <span className="text-amber text-[10px] mt-0.5 flex-shrink-0">&mdash;</span>
-                      <span className="text-ink text-[12px] leading-snug">{f}</span>
+                    <div key={fi} className={`py-2.5 border-b text-[15px] leading-[1.3] ${isPopular ? 'border-[#57433B] text-white/60' : 'border-[#E8E3E0] text-ink-muted'}`}>
+                      {f}
                     </div>
                   ))}
                 </div>
-                <Link
-                  href={`mailto:contact@landings.md?subject=${encodeURIComponent(price !== null ? `${tr.name} (€${price})` : tr.name)}`}
-                  className={`block text-center px-5 py-2.5 text-[13px] font-medium tracking-wide rounded-full transition-[background-color,border-color,color,transform] active:scale-[0.98] ${isPopular ? 'bg-amber text-[#0A0A0A] hover:bg-amber-light' : 'border border-white/20 text-ink-muted hover:border-white/40 hover:text-ink'}`}
-                >
-                  {tr.cta}
-                </Link>
+                {isPopular ? (
+                  <Link
+                    href={`mailto:contact@landings.md?subject=${encodeURIComponent(price !== null ? `${tr.name} (€${price})` : tr.name)}`}
+                    className="btn-cta w-full justify-center"
+                  >
+                    <span className="btn-fill-bg" aria-hidden />
+                    <span className="btn-fill-label">{tr.cta}
+                      <span className="btn-chip" aria-hidden>
+                        <svg className="arrow-a" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 17L17 7M7 7h10v10" /></svg>
+                        <svg className="arrow-b" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 17L17 7M7 7h10v10" /></svg>
+                      </span>
+                    </span>
+                  </Link>
+                ) : (
+                  <Link
+                    href={`mailto:contact@landings.md?subject=${encodeURIComponent(price !== null ? `${tr.name} (€${price})` : tr.name)}`}
+                    className="block text-center px-5 py-3.5 border border-ink text-ink text-[14px] font-medium transition-colors duration-[400ms] ease-m hover:bg-ink hover:text-white"
+                  >
+                    {tr.cta}
+                  </Link>
+                )}
               </div>
             )
           })}
         </div>
 
         {/* Monthly growth strip */}
-        <div className="mt-5 glass rounded-2xl p-6 md:p-8 flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
+        <div className="mt-4 bg-white border border-[#E8E3E0] p-6 md:p-8 flex flex-col md:flex-row md:items-center gap-6 md:gap-10">
           <div className="flex-1">
-            <h3 className="font-serif text-lg md:text-xl text-ink mb-2">{growth.title}</h3>
-            <p className="text-ink-muted text-[13px] leading-relaxed max-w-2xl">{growth.body}</p>
+            <h3 className="font-serif font-light text-[24px] leading-[1.1] tracking-[-0.02em] text-ink mb-2">{growth.title}</h3>
+            <p className="text-ink-muted text-[15px] leading-[1.3] max-w-2xl">{growth.body}</p>
           </div>
           <Link
             href={`mailto:contact@landings.md?subject=${encodeURIComponent('SEO & Ads')}`}
-            className="inline-flex items-center justify-center gap-2 border border-amber/60 text-amber rounded-full hover:bg-amber hover:text-[#0A0A0A] px-6 py-3 text-[13px] font-medium tracking-wide transition-colors flex-shrink-0 active:scale-[0.98] group"
+            className="btn-cta btn-cta--on-light flex-shrink-0"
           >
-            {growth.cta}
-            <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            <span className="btn-fill-bg" aria-hidden />
+            <span className="btn-fill-label">{growth.cta}
+              <span className="btn-chip" aria-hidden>
+                <svg className="arrow-a" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 17L17 7M7 7h10v10" /></svg>
+                <svg className="arrow-b" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 17L17 7M7 7h10v10" /></svg>
+              </span>
+            </span>
           </Link>
         </div>
+        </div>
       </section>
-
-      </div>
 
       <style jsx>{`
         @keyframes fadeInUp {

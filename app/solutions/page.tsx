@@ -3,11 +3,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
 import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
 import { BrowserFrame } from '@/components/ui/browser-frame'
-import { SeatPickerMock, ErpDashboardMock, ScheduleCalendarMock } from '@/components/ui/system-mocks'
 
 function useInView(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
@@ -24,30 +22,13 @@ function useInView(threshold = 0.1) {
   return { ref, visible }
 }
 
-function RevealText({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
-  const { ref, visible } = useInView(0.15)
-  return (
-    <div ref={ref} className={`overflow-hidden ${className}`}>
-      <div
-        className="transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-        style={{
-          transform: visible ? 'translateY(0)' : 'translateY(110%)',
-          opacity: visible ? 1 : 0,
-          transitionDelay: `${delay}ms`,
-        }}
-      >
-        {children}
-      </div>
-    </div>
-  )
-}
-
-function FadeIn({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
+/* RISE — the element-level reveal verb: opacity + 30px rise, one easing */
+function Rise({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
   const { ref, visible } = useInView(0.08)
   return (
     <div
       ref={ref}
-      className={`transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${className}`}
+      className={`transition-[transform,opacity] duration-[400ms] ease-m ${className}`}
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? 'translateY(0)' : 'translateY(30px)',
@@ -59,23 +40,9 @@ function FadeIn({ children, className = "", delay = 0 }: { children: React.React
   )
 }
 
-function SlideIn({ children, className = "", delay = 0, direction = "left" }: { children: React.ReactNode, className?: string, delay?: number, direction?: "left" | "right" }) {
-  const { ref, visible } = useInView(0.1)
-  const x = direction === "left" ? "-40px" : "40px"
-  return (
-    <div
-      ref={ref}
-      className={`transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${className}`}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'translateX(0)' : `translateX(${x})`,
-        transitionDelay: `${delay}ms`,
-      }}
-    >
-      {children}
-    </div>
-  )
-}
+const ArrowUpRight = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 17L17 7M7 7h10v10" /></svg>
+)
 
 /* Other systems we shipped — compact rows */
 const otherSystems = [
@@ -360,178 +327,202 @@ export default function SolutionsPage() {
   }
 
   const t = text[language as keyof typeof text]
+  const lang = language as 'en' | 'ro' | 'de' | 'fr' | 'es'
 
+  /* Real screenshots replace the old CSS mocks */
   const systemFrames = [
-    { domain: "davo.md — rezervare bilet", mock: <SeatPickerMock /> },
-    { domain: "inter-bus.md — panou administrare", mock: <ErpDashboardMock /> },
-    { domain: "Scoala Auto GLG — programari", mock: <ScheduleCalendarMock /> },
+    { domain: "davo.md", src: "/images/shot-davo.jpg" },
+    { domain: "inter-bus.md", src: "/images/shot-interbus.jpg" },
+    { domain: "scoalaautoglg.com", src: "/images/shot-glg.jpg" },
   ]
 
   return (
-    <div className="min-h-screen text-ink" style={{ background: '#0D0D0D' }}>
+    <div className="min-h-screen text-ink" style={{ background: '#FFFFFF' }}>
 
-      <SiteNav contactHref="/#contact" />
+      <SiteNav contactHref="/#contact" tone="light" />
 
-      <div className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 relative line-sides">
-
-        {/* Hero */}
-        <section className="pt-36 md:pt-48 pb-16 md:pb-28 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'linear-gradient(160deg, #131313 0%, #191919 35%, #0D0D0D 100%)' }}>
-          <RevealText>
-            <h1 className="font-serif text-[clamp(2.5rem,6vw,6rem)] text-ink leading-[1.05]">
+      {/* ── HERO on paper ── */}
+      <section style={{ background: '#FFFFFF' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-14 md:pt-20 pb-16 md:pb-20">
+          <Rise>
+            <h1 className="font-serif font-light text-[clamp(2.75rem,5.2vw,4.35rem)] leading-[0.9] tracking-[-0.06em] text-ink">
               {t.hero.title1}<br />{t.hero.title2}
             </h1>
-          </RevealText>
-          <FadeIn delay={200}>
-            <p className="mt-6 text-ink-muted text-lg md:text-xl leading-relaxed max-w-3xl">
+          </Rise>
+          <Rise delay={100}>
+            <p className="mt-8 text-[17px] leading-[1.3] text-ink-muted max-w-2xl">
               {t.hero.description}
             </p>
-          </FadeIn>
-          <FadeIn delay={350}>
-            <div className="mt-10">
-              <Link href="mailto:contact@landings.md" className="inline-flex items-center gap-3 text-amber hover:text-amber-light text-sm tracking-wide transition-colors group">
-                {t.hero.cta}
-                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+          </Rise>
+          <Rise delay={200}>
+            <div className="mt-9">
+              <Link href="/#contact" className="btn-cta btn-cta--on-light">
+                <span className="btn-fill-bg" aria-hidden />
+                <span className="btn-fill-label">
+                  {t.hero.cta}
+                  <span className="btn-chip" aria-hidden>
+                    <ArrowUpRight className="arrow-a" />
+                    <ArrowUpRight className="arrow-b" />
+                  </span>
+                </span>
               </Link>
             </div>
-          </FadeIn>
+          </Rise>
 
-          {/* Stats */}
-          <FadeIn delay={500}>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 pt-10 border-t border-divider">
-              {stats.map((stat, i) => (
-                <div key={i}>
-                  <div className="text-2xl md:text-3xl font-serif text-ink">{stat.value}</div>
-                  <div className="text-ink-muted text-xs tracking-wide mt-1">{stat.label[language as keyof typeof stat.label]}</div>
-                </div>
-              ))}
-            </div>
-          </FadeIn>
-        </section>
+          {/* Stats row — bordered cells */}
+          <div className="grid grid-cols-2 md:grid-cols-4 border border-[#E8E3E0] mt-14 md:mt-16">
+            {stats.map((stat, i) => (
+              <Rise key={i} delay={i * 80} className={`p-7 ${i % 2 === 0 ? 'border-r border-[#E8E3E0]' : ''} ${i < 2 ? 'border-b md:border-b-0 border-[#E8E3E0]' : ''} ${i < 3 ? 'md:border-r md:border-[#E8E3E0]' : ''}`}>
+                <p className="font-sans font-medium text-[34px] md:text-[40px] leading-[1.05] tracking-[-0.02em] text-ink">{stat.value}</p>
+                <p className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light mt-4">{stat.label[lang]}</p>
+              </Rise>
+            ))}
+          </div>
+        </div>
+      </section>
 
-        {/* Real systems, in production */}
-        <section className="line-top py-20 md:py-32 px-6 md:px-12 lg:px-16" style={{ background: 'linear-gradient(145deg, #0D0D0D 0%, #161616 40%, #181818 70%, #101010 100%)' }}>
-          <SlideIn direction="left">
-            <h2 className="font-serif text-3xl lg:text-5xl text-ink leading-tight mb-2">{t.built.heading}</h2>
-            <p className="text-ink-muted text-xl mb-16">{t.built.subheading}</p>
-          </SlideIn>
+      {/* ── BUILT SYSTEMS on paper-2 — real screenshots ── */}
+      <section className="border-t border-[#E8E3E0]" style={{ background: '#FAF7F5' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-16 md:py-20">
+          <Rise>
+            <h2 className="font-serif font-light text-[32px] md:text-[40px] leading-[1.0] tracking-[-0.03em] text-ink mb-3">{t.built.heading}</h2>
+            <p className="text-[17px] leading-[1.3] text-ink-muted mb-14">{t.built.subheading}</p>
+          </Rise>
 
-          <div className="space-y-24">
+          <div className="space-y-16 md:space-y-20">
             {t.built.systems.map((sys, i) => {
               const reversed = i % 2 === 1
               return (
-                <div key={i} className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-                  <FadeIn delay={100} className={`order-1 ${reversed ? 'lg:order-2' : 'lg:order-1'}`}>
-                    <BrowserFrame domain={systemFrames[i].domain}>
-                      {systemFrames[i].mock}
+                <div key={i} className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+                  <Rise delay={80} className={`order-1 ${reversed ? 'lg:order-2' : 'lg:order-1'}`}>
+                    <BrowserFrame domain={systemFrames[i].domain} ground="light">
+                      <div className="aspect-[16/10] overflow-hidden">
+                        <Image src={systemFrames[i].src} alt={`${systemFrames[i].domain} — business system by landings.md`} width={960} height={600} quality={85} className="w-full h-full object-cover object-top" />
+                      </div>
                     </BrowserFrame>
-                  </FadeIn>
-                  <SlideIn direction={reversed ? "left" : "right"} delay={150} className={`order-2 ${reversed ? 'lg:order-1' : 'lg:order-2'}`}>
+                  </Rise>
+                  <Rise delay={160} className={`order-2 ${reversed ? 'lg:order-1' : 'lg:order-2'}`}>
                     <div>
-                      <span className="text-amber text-xs tracking-[0.2em] uppercase">{sys.client}</span>
-                      <h3 className="font-serif text-2xl lg:text-3xl text-ink leading-tight mt-3 mb-5">{sys.title}</h3>
-                      <p className="text-ink-muted leading-relaxed mb-6">{sys.body}</p>
-                      <div className="flex flex-wrap gap-2 mb-6">
+                      <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light">{sys.client}</span>
+                      <h3 className="font-serif font-light text-[26px] md:text-[32px] leading-[1.05] tracking-[-0.03em] text-ink mt-3 mb-4">{sys.title}</h3>
+                      <p className="text-[15px] leading-[1.5] text-ink-muted mb-5 max-w-[52ch]">{sys.body}</p>
+                      <div className="flex flex-wrap gap-x-3 gap-y-1.5 mb-6">
                         {sys.tags.map((tag) => (
-                          <span key={tag} className="text-xs px-3 py-1.5 border border-divider text-ink-muted">{tag}</span>
+                          <span key={tag} className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light">{tag}</span>
                         ))}
                       </div>
                       {sys.url && (
-                        <Link href={sys.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-amber hover:text-amber-light text-xs tracking-wide transition-colors group">
+                        <Link href={sys.url} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-1.5 text-[12px] font-mono text-ink-light hover:text-ink transition-colors duration-[400ms] ease-m">
                           {t.built.visit}
-                          <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                          <span className="inline-block -rotate-45 group-hover:rotate-0 transition-transform duration-[400ms] ease-m"><ArrowUpRight className="w-3 h-3" /></span>
                         </Link>
                       )}
                     </div>
-                  </SlideIn>
+                  </Rise>
                 </div>
               )
             })}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Other systems */}
-        <section className="line-top py-20 md:py-32 px-6 md:px-12 lg:px-16" style={{ background: 'linear-gradient(160deg, #161616 0%, #1B1B1B 40%, #181818 70%, #0D0D0D 100%)' }}>
-          <FadeIn>
-            <h2 className="font-serif text-3xl md:text-4xl text-ink mb-2">{t.others.heading}</h2>
-            <p className="text-ink-muted mb-16">{t.others.subheading}</p>
-          </FadeIn>
-
-          <div className="space-y-0">
-            {otherSystems.map((study, i) => (
-              <FadeIn key={study.id} delay={i * 100}>
-                <div className="border-t border-divider py-10 md:py-12">
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    <div className="lg:col-span-4">
-                      <span className="text-ink-light text-[10px] tracking-[0.25em] uppercase">{study.badge[language as keyof typeof study.badge]}</span>
-                      <h3 className="font-serif text-xl md:text-2xl text-ink mt-2 mb-1">{study.title[language as keyof typeof study.title]}</h3>
-                      <span className="text-amber text-xs tracking-wide">{study.subtitle[language as keyof typeof study.subtitle]}</span>
-                    </div>
-                    <div className="lg:col-span-4">
-                      <p className="text-ink-muted text-sm leading-relaxed">
-                        {study.description[language as keyof typeof study.description]}
-                      </p>
-                    </div>
-                    <div className="lg:col-span-4">
-                      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                        {(study.features[language as keyof typeof study.features] as string[]).map((feature: string, fi: number) => (
-                          <div key={fi} className="flex items-center gap-2">
-                            <span className="text-ink-light text-[8px]">&#9642;</span>
-                            <span className="text-ink-muted text-xs">{feature}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+      {/* ── OTHER SYSTEMS — ink band, numbered rows ── */}
+      <section className="ground-ink text-white" style={{ background: '#251109' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-14 md:pt-16">
+          <Rise>
+            <h2 className="font-serif font-light text-[32px] md:text-[40px] leading-[1.0] tracking-[-0.03em] text-white mb-3">{t.others.heading}</h2>
+            <p className="text-[15px] leading-[1.3] text-white/60 pb-10">{t.others.subheading}</p>
+          </Rise>
+        </div>
+        <div className="border-t border-[#57433B]">
+          {otherSystems.map((study, i) => (
+            <div key={study.id} className="group border-b border-[#57433B] transition-colors duration-[400ms] ease-m hover:bg-white">
+              <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-8 md:py-12 grid grid-cols-[2.5rem_1fr_auto] lg:grid-cols-[5rem_1.2fr_1fr_auto] gap-4 lg:gap-8 items-start">
+                <span className="text-[11px] font-bold tracking-[0.04em] pt-2 md:pt-4 text-white/30 group-hover:text-ink/30 transition-colors duration-[400ms] ease-m">0{i + 1}</span>
+                <div>
+                  <h3 className="font-serif font-light text-[28px] md:text-[40px] leading-[1.0] tracking-[-0.03em] text-white group-hover:text-ink transition-colors duration-[400ms] ease-m">{study.title[lang]}</h3>
+                  <span className="mt-3 block text-[10px] font-mono tracking-[0.08em] uppercase text-white/40 group-hover:text-ink/30 transition-colors duration-[400ms] ease-m">{study.badge[lang]} · {study.subtitle[lang]}</span>
                 </div>
-              </FadeIn>
+                <p className="hidden lg:block text-[15px] leading-[1.3] text-white/60 group-hover:text-ink-light max-w-[40ch] pt-1.5 transition-colors duration-[400ms] ease-m">{study.description[lang]}</p>
+                <span className="pt-1.5 text-white group-hover:text-ink transition-[color,transform] duration-[400ms] ease-m group-hover:rotate-45">
+                  <ArrowUpRight className="w-5 h-5" />
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── SPEC / FEATURE LISTS on paper ── */}
+      <section style={{ background: '#FFFFFF' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-16 md:py-20">
+          <div className="grid grid-cols-1 md:grid-cols-3 md:divide-x md:divide-[#E8E3E0] gap-10 md:gap-0">
+            {otherSystems.map((study, i) => (
+              <Rise key={study.id} delay={i * 80} className={i === 0 ? 'md:pr-10' : i === 2 ? 'md:pl-10' : 'md:px-10'}>
+                <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light">0{i + 1} — {study.badge[lang]}</span>
+                <h3 className="font-sans font-medium text-[20px] leading-[1.2] tracking-[-0.01em] text-ink mt-3 mb-1">{study.title[lang]}</h3>
+                <p className="lg:hidden text-[15px] leading-[1.5] text-ink-muted mt-2">{study.description[lang]}</p>
+                <ul className="mt-5">
+                  {study.features[lang].map((feature, fi) => (
+                    <li key={fi} className="border-t border-[#E8E3E0] py-2.5 text-[15px] leading-[1.3] text-ink-muted">{feature}</li>
+                  ))}
+                </ul>
+              </Rise>
             ))}
-            <div className="border-t border-divider" />
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* CTA */}
-        <section className="line-top py-20 md:py-28 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'radial-gradient(ellipse 80% 100% at 15% 85%, #1B1B1B 0%, #131313 40%, #0D0D0D 85%)' }}>
-          <div className="max-w-2xl mx-auto text-center">
-            <RevealText>
-              <h2 className="font-serif italic text-[clamp(1.8rem,3.5vw,3rem)] text-ink mb-6">{t.cta.title}</h2>
-            </RevealText>
-            <FadeIn delay={200}>
-              <p className="text-ink-muted leading-relaxed mb-10">{t.cta.body}</p>
-            </FadeIn>
-            <FadeIn delay={350}>
-              <Link href="mailto:contact@landings.md" className="inline-flex items-center gap-3 text-amber hover:text-amber-light text-sm tracking-wide transition-colors group">
-                {t.cta.button}
-                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+      {/* ── CLOSING CTA on paper-2 ── */}
+      <section className="border-t border-[#E8E3E0]" style={{ background: '#FAF7F5' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-16 md:py-20">
+          <div className="max-w-2xl">
+            <Rise>
+              <h2 className="font-serif font-light text-[32px] md:text-[40px] leading-[1.0] tracking-[-0.03em] text-ink mb-5">{t.cta.title}</h2>
+            </Rise>
+            <Rise delay={100}>
+              <p className="text-[15px] leading-[1.5] text-ink-muted mb-9">{t.cta.body}</p>
+            </Rise>
+            <Rise delay={200}>
+              <Link href="/#contact" className="btn-cta btn-cta--on-light">
+                <span className="btn-fill-bg" aria-hidden />
+                <span className="btn-fill-label">
+                  {t.cta.button}
+                  <span className="btn-chip" aria-hidden>
+                    <ArrowUpRight className="arrow-a" />
+                    <ArrowUpRight className="arrow-b" />
+                  </span>
+                </span>
               </Link>
-            </FadeIn>
+            </Rise>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Footer */}
-        <footer className="line-top px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: 'linear-gradient(180deg, #101010 0%, #0A0A0A 100%)' }}>
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-            <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-              <Link href="/" className="flex items-center"><Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="w-[22px] h-auto" /></Link>
-              <div className="flex items-center gap-6 text-sm text-ink-muted">
-                <Link href="/portfolio" className="hover:text-ink transition-colors">{t.nav.portfolio}</Link>
-                <Link href="/pricing" className="hover:text-ink transition-colors">{t.nav.pricing}</Link>
-                <Link href="/solutions" className="hover:text-ink transition-colors">{t.nav.solutions}</Link>
-                <Link href="/case-studies" className="hover:text-ink transition-colors">{t.nav.caseStudies}</Link>
+      {/* ── FOOTER on paper ── */}
+      <footer className="border-t border-[#E8E3E0]" style={{ background: '#FFFFFF' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-10">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
+            <div className="flex items-center gap-6">
+              <Link href="/" className="flex items-center">
+                <Image src="/images/logowhite.png" alt="landings.md" width={16} height={26} className="w-4 h-auto" style={{ filter: 'brightness(0)' }} />
+              </Link>
+              <div className="flex flex-wrap items-center gap-4 text-[14px] font-medium">
+                <Link href="/portfolio" className="text-ink/70 hover:text-ink hover:underline underline-offset-4 transition-colors">{t.nav.portfolio}</Link>
+                <Link href="/pricing" className="text-ink/70 hover:text-ink hover:underline underline-offset-4 transition-colors">{t.nav.pricing}</Link>
+                <Link href="/solutions" className="text-ink/70 hover:text-ink hover:underline underline-offset-4 transition-colors">{t.nav.solutions}</Link>
+                <Link href="/case-studies" className="text-ink/70 hover:text-ink hover:underline underline-offset-4 transition-colors">{t.nav.caseStudies}</Link>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <Link href="tel:+37368327082" className="text-ink-muted hover:text-ink text-xs tracking-wide transition-colors">+373 683 27 082</Link>
-              <span className="text-ink-muted text-xs tracking-wide">{t.footer.copy}</span>
-              <div className="flex items-center gap-3">
-                <Link href="mailto:contact@landings.md" className="text-ink-muted hover:text-ink transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0l-9.75 6.093L2.25 6.75" /></svg></Link>
-              </div>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-[13px] text-ink-muted">
+              <Link href="tel:+37368327082" className="hover:text-ink transition-colors">+373 683 27 082</Link>
+              <Link href="mailto:contact@landings.md" className="hover:text-ink transition-colors">contact@landings.md</Link>
+              <span>{t.footer.copy}</span>
             </div>
           </div>
-        </footer>
+        </div>
+      </footer>
 
-      </div>
-
-      <StickyContactPill language={language as 'en' | 'ro' | 'de' | 'fr' | 'es'} />
     </div>
   )
 }

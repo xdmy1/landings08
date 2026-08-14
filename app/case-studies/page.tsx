@@ -3,11 +3,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
 import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
 import { BrowserFrame } from '@/components/ui/browser-frame'
-import { ScheduleCalendarMock } from '@/components/ui/system-mocks'
 
 function useInView(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null)
@@ -24,30 +22,13 @@ function useInView(threshold = 0.1) {
   return { ref, visible }
 }
 
-function RevealText({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
-  const { ref, visible } = useInView(0.15)
-  return (
-    <div ref={ref} className={`overflow-hidden ${className}`}>
-      <div
-        className="transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-        style={{
-          transform: visible ? 'translateY(0)' : 'translateY(110%)',
-          opacity: visible ? 1 : 0,
-          transitionDelay: `${delay}ms`,
-        }}
-      >
-        {children}
-      </div>
-    </div>
-  )
-}
-
-function FadeIn({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
+/* RISE — the element-level reveal verb: opacity + 30px rise, one easing */
+function Rise({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
   const { ref, visible } = useInView(0.08)
   return (
     <div
       ref={ref}
-      className={`transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${className}`}
+      className={`transition-[transform,opacity] duration-[400ms] ease-m ${className}`}
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? 'translateY(0)' : 'translateY(30px)',
@@ -59,60 +40,12 @@ function FadeIn({ children, className = "", delay = 0 }: { children: React.React
   )
 }
 
-function ImageReveal({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
-  const { ref, visible } = useInView(0.1)
-  return (
-    <div ref={ref} className={`overflow-hidden ${className}`}>
-      <div
-        className="transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-        style={{
-          opacity: visible ? 1 : 0,
-          transform: visible ? 'scale(1)' : 'scale(1.03)',
-          transitionDelay: `${delay}ms`,
-        }}
-      >
-        {children}
-      </div>
-    </div>
-  )
-}
+const ArrowUpRight = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 17L17 7M7 7h10v10" /></svg>
+)
 
-function AnimatedNumber({ value, suffix = "", className = "" }: { value: number, suffix?: string, className?: string }) {
-  const { ref, visible } = useInView(0.3)
-  const [display, setDisplay] = useState(0)
-
-  useEffect(() => {
-    if (!visible || value === 0) { if (visible) setDisplay(value); return }
-    const duration = 2000
-    const startTime = performance.now()
-    const step = (now: number) => {
-      const elapsed = now - startTime
-      const progress = Math.min(elapsed / duration, 1)
-      const eased = 1 - Math.pow(1 - progress, 4)
-      setDisplay(Math.round(eased * value))
-      if (progress < 1) requestAnimationFrame(step)
-    }
-    requestAnimationFrame(step)
-  }, [visible, value])
-
-  return <span ref={ref} className={className}>{visible ? display : 0}{suffix}</span>
-}
-
-function HorizontalLine({ className = "", delay = 0 }: { className?: string, delay?: number }) {
-  const { ref, visible } = useInView(0.2)
-  return (
-    <div ref={ref} className={`overflow-hidden ${className}`}>
-      <div
-        className="h-px bg-divider transition-all duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-        style={{
-          transform: visible ? 'scaleX(1)' : 'scaleX(0)',
-          transformOrigin: 'left',
-          transitionDelay: `${delay}ms`,
-        }}
-      />
-    </div>
-  )
-}
+/* Language-neutral schedule grid for the GLG study (no screenshot exists).
+   Ink-ground styling: #57433B hairlines, white-alpha fills, sharp corners. */
 
 type Stat = { value: number, suffix: string, label: string }
 type CaseStudy = {
@@ -125,9 +58,9 @@ type CaseStudy = {
   stats: Stat[]
   captions?: string[]
 }
-type CaseKey = 'davo' | 'interbus' | 'glg' | 'droppack' | 'respectauto'
+type CaseKey = 'davo' | 'interbus' | 'glg' | 'droppack'
 
-const caseConfigs: { key: CaseKey, num: string, domain: string, url?: string, image?: string, alt?: string, evidence?: string[] }[] = [
+const caseConfigs: { key: CaseKey, num: string, domain: string, url?: string, image: string, alt?: string, evidence?: string[] }[] = [
   {
     key: 'davo', num: '01', domain: 'davo.md', url: 'https://davo.md',
     image: '/images/shot-davo.jpg',
@@ -140,18 +73,12 @@ const caseConfigs: { key: CaseKey, num: string, domain: string, url?: string, im
     alt: 'Inter-Bus — international parts store with automated invoicing, stock and accounting by landings.md',
   },
   {
-    key: 'glg', num: '03', domain: 'Scoala Auto GLG — programari',
+    key: 'glg', num: '03', domain: 'scoalaautoglg.com', url: 'https://scoalaautoglg.com', image: '/images/shot-glg.jpg',
   },
   {
     key: 'droppack', num: '04', domain: 'droppack.vercel.app', url: 'https://droppack.vercel.app',
     image: '/images/shot-droppack.jpg',
     alt: 'DropPack — parcel logistics app for Moldova–Europe transport companies, built by landings.md',
-  },
-  {
-    key: 'respectauto', num: '05', domain: 'respectauto.md', url: 'https://respectauto.md',
-    image: '/images/shot-respectauto.jpg',
-    alt: 'RespectAuto car rental website — ranked #1 on Google Moldova',
-    evidence: ['/images/case-study-respectauto1.png', '/images/case-study-respectauto2.png'],
   },
 ]
 
@@ -224,24 +151,6 @@ export default function CaseStudiesPage() {
           { value: 0, suffix: "", label: "Sheets of paper" },
         ],
       } as CaseStudy,
-      respectauto: {
-        tag: "CAR RENTAL · SEO · GROWTH",
-        title: "RespectAuto",
-        subtitle: "From invisible on Google to #1 in Moldova for car rental.",
-        challenge: "RespectAuto had a basic website that generated zero organic traffic. In a competitive market with established players running Google Ads, they needed to rank organically — without spending on advertising.",
-        approach: "We rebuilt the entire website from scratch with SEO as the foundation. Every page optimised for high-intent keywords: schema markup, speed under 2 seconds, internal linking, and content matching exactly what people search for.",
-        results: "The results speak for themselves.",
-        stats: [
-          { value: 300, suffix: "%", label: "Organic traffic increase" },
-          { value: 5, suffix: "x", label: "More booking requests" },
-          { value: 1, suffix: "st", label: "Position on Google" },
-          { value: 0, suffix: "€", label: "Spent on ads" },
-        ],
-        captions: [
-          "Ahrefs: organic traffic explosion after our SEO rebuild",
-          "Referring domains growth — building authority over time",
-        ],
-      } as CaseStudy,
       cta: { headline: "Want results like these?", sub: "Tell us about your business. We'll show you what's possible.", button: "Start a project" },
       footer: { copy: "© 2026 landings.md · Chisinau, Moldova" },
     },
@@ -308,24 +217,6 @@ export default function CaseStudiesPage() {
           { value: 2, suffix: "", label: "Limbi: RO & RU" },
           { value: 1, suffix: "", label: "Click pentru export Excel" },
           { value: 0, suffix: "", label: "Foi de hartie" },
-        ],
-      } as CaseStudy,
-      respectauto: {
-        tag: "INCHIRIERI AUTO · SEO · CRESTERE",
-        title: "RespectAuto",
-        subtitle: "De la invizibil pe Google la #1 in Moldova pentru inchirieri auto.",
-        challenge: "RespectAuto avea un website basic care nu genera trafic organic. Intr-o piata competitiva cu jucatori care rulau Google Ads, aveau nevoie sa apara organic — fara sa cheltuie pe publicitate.",
-        approach: "Am reconstruit intregul website de la zero cu SEO ca fundatie. Fiecare pagina optimizata pentru cuvinte cheie cu intentie de cumparare: schema markup, viteza sub 2 secunde, legaturi interne si continut care se potriveste exact cu ce cauta oamenii.",
-        results: "Rezultatele vorbesc de la sine.",
-        stats: [
-          { value: 300, suffix: "%", label: "Crestere trafic organic" },
-          { value: 5, suffix: "x", label: "Mai multe cereri de rezervare" },
-          { value: 1, suffix: "", label: "Pozitia pe Google" },
-          { value: 0, suffix: "€", label: "Cheltuiti pe reclame" },
-        ],
-        captions: [
-          "Ahrefs: explozie de trafic organic dupa reconstruirea SEO",
-          "Cresterea domeniilor de referinta — construind autoritate in timp",
         ],
       } as CaseStudy,
       cta: { headline: "Vrei rezultate ca acestea?", sub: "Spune-ne despre afacerea ta. Iti aratam ce e posibil.", button: "Incepe un proiect" },
@@ -396,24 +287,6 @@ export default function CaseStudiesPage() {
           { value: 0, suffix: "", label: "Blatter Papier" },
         ],
       } as CaseStudy,
-      respectauto: {
-        tag: "AUTOVERMIETUNG · SEO · WACHSTUM",
-        title: "RespectAuto",
-        subtitle: "Von unsichtbar bei Google zur Nr. 1 in Moldawien fur Autovermietung.",
-        challenge: "RespectAuto hatte eine einfache Website ohne organischen Traffic. In einem wettbewerbsintensiven Markt mussten sie organisch ranken — ohne Werbeausgaben.",
-        approach: "Wir haben die gesamte Website von Grund auf mit SEO als Fundament neu aufgebaut. Jede Seite fur hochwertige Keywords optimiert: Schema-Markup, Ladezeit unter 2 Sekunden, interne Verlinkung und passgenauer Content.",
-        results: "Die Ergebnisse sprechen fur sich.",
-        stats: [
-          { value: 300, suffix: "%", label: "Organischer Traffic-Anstieg" },
-          { value: 5, suffix: "x", label: "Mehr Buchungsanfragen" },
-          { value: 1, suffix: ".", label: "Position bei Google" },
-          { value: 0, suffix: "€", label: "Fur Werbung ausgegeben" },
-        ],
-        captions: [
-          "Ahrefs: organische Traffic-Explosion nach unserem SEO-Rebuild",
-          "Wachstum der Referring Domains — Autoritatsaufbau uber Zeit",
-        ],
-      } as CaseStudy,
       cta: { headline: "Wollen Sie solche Ergebnisse?", sub: "Erzahlen Sie uns von Ihrem Geschaft. Wir zeigen Ihnen, was moglich ist.", button: "Projekt starten" },
       footer: { copy: "© 2026 landings.md · Chisinau, Moldawien" },
     },
@@ -480,24 +353,6 @@ export default function CaseStudiesPage() {
           { value: 2, suffix: "", label: "Langues : RO & RU" },
           { value: 1, suffix: "", label: "Clic pour exporter vers Excel" },
           { value: 0, suffix: "", label: "Feuilles de papier" },
-        ],
-      } as CaseStudy,
-      respectauto: {
-        tag: "LOCATION AUTO · SEO · CROISSANCE",
-        title: "RespectAuto",
-        subtitle: "D'invisible sur Google au n.1 en Moldavie pour la location auto.",
-        challenge: "RespectAuto avait un site basique sans trafic organique. Dans un marche concurrentiel, ils devaient se positionner organiquement — sans depenser en publicite.",
-        approach: "Nous avons reconstruit le site entier avec le SEO comme fondation. Chaque page optimisee pour des mots-cles a haute intention : schema markup, vitesse sous 2 secondes, maillage interne et contenu adapte.",
-        results: "Les resultats parlent d'eux-memes.",
-        stats: [
-          { value: 300, suffix: "%", label: "Augmentation du trafic organique" },
-          { value: 5, suffix: "x", label: "Plus de demandes de reservation" },
-          { value: 1, suffix: "ere", label: "Position sur Google" },
-          { value: 0, suffix: "€", label: "Depense en publicite" },
-        ],
-        captions: [
-          "Ahrefs : explosion du trafic organique apres notre refonte SEO",
-          "Croissance des domaines referents — construction d'autorite",
         ],
       } as CaseStudy,
       cta: { headline: "Vous voulez ces resultats ?", sub: "Parlez-nous de votre activite. On vous montre ce qui est possible.", button: "Demarrer un projet" },
@@ -568,24 +423,6 @@ export default function CaseStudiesPage() {
           { value: 0, suffix: "", label: "Hojas de papel" },
         ],
       } as CaseStudy,
-      respectauto: {
-        tag: "ALQUILER DE AUTOS · SEO · CRECIMIENTO",
-        title: "RespectAuto",
-        subtitle: "De invisible en Google al #1 en Moldavia para alquiler de autos.",
-        challenge: "RespectAuto tenia un sitio basico sin trafico organico. En un mercado competitivo, necesitaban posicionarse organicamente — sin gastar en publicidad.",
-        approach: "Reconstruimos todo el sitio con SEO como base. Cada pagina optimizada para palabras clave de alta intencion: schema markup, velocidad bajo 2 segundos, enlaces internos y contenido adaptado.",
-        results: "Los resultados hablan por si mismos.",
-        stats: [
-          { value: 300, suffix: "%", label: "Aumento de trafico organico" },
-          { value: 5, suffix: "x", label: "Mas solicitudes de reserva" },
-          { value: 1, suffix: "er", label: "Posicion en Google" },
-          { value: 0, suffix: "€", label: "Gastado en publicidad" },
-        ],
-        captions: [
-          "Ahrefs: explosion de trafico organico tras nuestra reconstruccion SEO",
-          "Crecimiento de dominios de referencia — construyendo autoridad",
-        ],
-      } as CaseStudy,
       cta: { headline: "Quieres resultados asi?", sub: "Cuentanos sobre tu negocio. Te mostramos lo que es posible.", button: "Iniciar proyecto" },
       footer: { copy: "© 2026 landings.md · Chisinau, Moldavia" },
     },
@@ -598,193 +435,181 @@ export default function CaseStudiesPage() {
     window.scrollTo(0, 0)
   }, [])
 
-  const backgrounds = [
-    'linear-gradient(180deg, #0D0D0D 0%, #161616 100%)',
-    'linear-gradient(180deg, #161616 0%, #101010 100%)',
-    'linear-gradient(180deg, #101010 0%, #171717 100%)',
-    'linear-gradient(180deg, #171717 0%, #0D0D0D 100%)',
-    'linear-gradient(180deg, #0D0D0D 0%, #161616 100%)',
-  ]
-
   return (
-    <div className="min-h-screen text-ink" style={{ background: '#0D0D0D' }}>
+    <div className="min-h-screen text-ink" style={{ background: '#FFFFFF' }}>
 
-      <SiteNav contactHref="/#contact" />
+      <SiteNav contactHref="/#contact" tone="light" />
 
-      {/* ── BORDERED CONTAINER ── */}
-      <div className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 relative line-sides">
+      {/* ── HERO — white opening band ── */}
+      <section className="text-ink" style={{ background: '#FFFFFF' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-10 md:pt-16 pb-14 md:pb-20">
+          <Rise>
+            <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light block mb-6">{t.hero.label}</span>
+          </Rise>
+          <Rise delay={80}>
+            <h1 className="font-serif font-light text-[clamp(2.75rem,5.2vw,4.35rem)] leading-[0.9] tracking-[-0.06em] text-ink whitespace-pre-line">
+              {t.hero.headline}
+            </h1>
+          </Rise>
+          <Rise delay={160}>
+            <p className="mt-8 text-[17px] leading-[1.3] text-ink-muted max-w-xl">{t.hero.sub}</p>
+          </Rise>
+        </div>
+      </section>
 
-        {/* ── HERO ── */}
-        <section className="pt-36 md:pt-48 pb-16 md:pb-24 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'linear-gradient(180deg, #131313 0%, #0D0D0D 100%)' }}>
-          <div className="max-w-3xl">
-            <FadeIn>
-              <span className="text-ink-light text-[11px] font-mono tracking-[0.2em] uppercase block mb-8">{t.hero.label}</span>
-            </FadeIn>
-            <RevealText>
-              <h1 className="font-serif text-[clamp(2.2rem,5vw,4.5rem)] text-ink leading-[1.05] tracking-[-0.02em] whitespace-pre-line">
-                {t.hero.headline}
-              </h1>
-            </RevealText>
-            <FadeIn delay={400}>
-              <p className="mt-6 text-ink-muted text-[15px] md:text-lg leading-relaxed max-w-xl">
-                {t.hero.sub}
-              </p>
-            </FadeIn>
-          </div>
-        </section>
+      {caseConfigs.map((c) => {
+        const study = t[c.key]
+        return (
+          <React.Fragment key={c.key}>
 
-        <HorizontalLine />
-
-        {caseConfigs.map((c, ci) => {
-          const study = t[c.key]
-          const reversed = ci % 2 === 1
-          return (
-            <React.Fragment key={c.key}>
-              <section className="px-6 md:px-12 lg:px-16 py-14 md:py-20" style={{ background: backgrounds[ci] }}>
-
-                {/* Header */}
-                <div className="flex items-baseline gap-4 md:gap-6 mb-8 md:mb-12">
-                  <span className="text-ink-light/25 font-serif text-[34px] md:text-[46px] leading-none flex-shrink-0">{c.num}</span>
-                  <div className="min-w-0">
-                    <span className="text-amber text-[10px] font-mono tracking-[0.2em] uppercase block mb-2">{study.tag}</span>
-                    <h2 className="font-serif text-[clamp(1.6rem,3vw,2.5rem)] text-ink leading-[1.1] mb-2">{study.title}</h2>
-                    <p className="text-ink-muted text-[15px] leading-relaxed max-w-2xl">{study.subtitle}</p>
-                  </div>
-                </div>
-
-                {/* Visual + story */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center mb-8 md:mb-12">
-                  <ImageReveal className={reversed ? 'lg:order-2' : ''}>
-                    {c.image ? (
-                      c.url ? (
-                        <Link href={c.url} target="_blank" rel="noopener noreferrer" className="group block">
-                          <BrowserFrame domain={c.domain} className="group-hover:border-amber/40 transition-colors duration-500">
-                            <div className="aspect-[16/10] overflow-hidden">
-                              <Image src={c.image} alt={c.alt ?? study.title} width={1100} height={688} quality={88} className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)]" />
-                            </div>
-                          </BrowserFrame>
-                        </Link>
-                      ) : (
-                        <BrowserFrame domain={c.domain}>
-                          <div className="aspect-[16/10] overflow-hidden">
-                            <Image src={c.image} alt={c.alt ?? study.title} width={1100} height={688} quality={88} className="w-full h-full object-cover object-top" />
+            {/* ── Study header — ink band ── */}
+            <section className="ground-ink text-white" style={{ background: '#251109' }}>
+              <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-16 md:py-20">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
+                  <div className="lg:col-span-7">
+                    <Rise>
+                      <p className="text-[11px] font-bold tracking-[0.04em] uppercase mb-5">
+                        <span className="text-white/30">{c.num}</span>
+                        <span className="text-white/40 ml-4">{study.tag}</span>
+                      </p>
+                    </Rise>
+                    <Rise delay={80}>
+                      <h2 className="font-serif font-light text-[40px] md:text-[clamp(2.5rem,4vw,3.25rem)] leading-[1.0] tracking-[-0.03em] text-white">{study.title}</h2>
+                      <p className="mt-4 text-[17px] leading-[1.3] text-white/60 max-w-xl">{study.subtitle}</p>
+                    </Rise>
+                    {/* Two-metric pair — the study lead */}
+                    <Rise delay={160}>
+                      <div className="mt-10 grid grid-cols-2 border-t border-[#57433B] max-w-md">
+                        {study.stats.slice(0, 2).map((stat, i) => (
+                          <div key={i} className={`pt-6 ${i === 0 ? 'pr-6 border-r border-[#57433B]' : 'pl-6'}`}>
+                            <p className="font-sans font-medium text-[40px] leading-[1.05] tracking-[-0.02em] text-white">{stat.value}{stat.suffix}</p>
+                            <p className="text-[11px] font-bold tracking-[0.04em] uppercase text-white/40 mt-3">{stat.label}</p>
                           </div>
-                        </BrowserFrame>
-                      )
-                    ) : (
-                      <BrowserFrame domain={c.domain}>
-                        <ScheduleCalendarMock />
-                      </BrowserFrame>
-                    )}
-                  </ImageReveal>
-
-                  <div className={reversed ? 'lg:order-1' : ''}>
-                    <div className="space-y-6">
-                      <FadeIn>
-                        <div>
-                          <span className="text-ink-light text-[10px] font-mono tracking-[0.2em] uppercase block mb-2.5">{t.labels.challenge}</span>
-                          <p className="text-ink-muted text-[13px] md:text-[14px] leading-[1.75]">{study.challenge}</p>
-                        </div>
-                      </FadeIn>
-                      <FadeIn delay={120}>
-                        <div>
-                          <span className="text-ink-light text-[10px] font-mono tracking-[0.2em] uppercase block mb-2.5">{t.labels.approach}</span>
-                          <p className="text-ink-muted text-[13px] md:text-[14px] leading-[1.75]">{study.approach}</p>
-                        </div>
-                      </FadeIn>
-                      <FadeIn delay={240}>
-                        <p className="font-serif text-[16px] md:text-[18px] text-ink leading-[1.5] border-l-2 border-amber/70 pl-4">
-                          {study.results}
-                        </p>
-                      </FadeIn>
-                      {c.url && (
-                        <FadeIn delay={320}>
-                          <Link href={c.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-amber hover:text-amber-light text-[11px] font-mono tracking-wide transition-colors group">
-                            {t.labels.visit} {c.domain}
-                            <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
-                          </Link>
-                        </FadeIn>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Stats strip */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-px" style={{ background: 'rgba(90,74,58,0.3)' }}>
-                  {study.stats.map((stat, i) => (
-                    <FadeIn key={i} delay={i * 120} className="h-full">
-                      <div className="px-5 py-4 md:py-5 h-full" style={{ background: '#121212' }}>
-                        <p className="font-serif text-[clamp(1.25rem,2vw,1.75rem)] text-amber leading-none mb-1.5">
-                          <AnimatedNumber value={stat.value} suffix={stat.suffix} />
-                        </p>
-                        <p className="text-ink-muted text-[10px] font-mono tracking-wide uppercase leading-snug">{stat.label}</p>
+                        ))}
                       </div>
-                    </FadeIn>
-                  ))}
+                    </Rise>
+                  </div>
+                  <Rise delay={160} className="lg:col-span-5">
+                    <BrowserFrame domain={c.domain} ground="ink">
+                      <div className="aspect-[16/10] overflow-hidden">
+                        <Image src={c.image} alt={c.alt ?? study.title} width={1100} height={688} quality={88} className="w-full h-full object-cover object-top" />
+                      </div>
+                    </BrowserFrame>
+                  </Rise>
+                </div>
+              </div>
+            </section>
+
+            {/* ── Study body — paper ── */}
+            <section className="text-ink" style={{ background: '#FFFFFF' }}>
+              <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-16 md:py-20">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
+                  <Rise>
+                    <div>
+                      <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light block mb-3">{t.labels.challenge}</span>
+                      <p className="text-[15px] leading-[1.5] text-ink-muted">{study.challenge}</p>
+                    </div>
+                  </Rise>
+                  <Rise delay={80}>
+                    <div>
+                      <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light block mb-3">{t.labels.approach}</span>
+                      <p className="text-[15px] leading-[1.5] text-ink-muted">{study.approach}</p>
+                    </div>
+                  </Rise>
                 </div>
 
-                {/* Evidence strip */}
+                <div className="mt-12 md:mt-14 pt-10 border-t border-[#E8E3E0] grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+                  <Rise className="lg:col-span-7">
+                    <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light block mb-4">{t.labels.results}</span>
+                    <p className="font-serif font-light italic text-[21px] leading-[1.35] text-ink max-w-[46ch]">{study.results}</p>
+                    {c.url && (
+                      <Link href={c.url} target="_blank" rel="noopener noreferrer" className="group mt-7 inline-flex items-center gap-2 text-[14px] font-medium text-ink hover:underline underline-offset-4">
+                        {t.labels.visit} {c.domain}
+                        <span className="inline-block transition-transform duration-[400ms] ease-m group-hover:rotate-45">
+                          <ArrowUpRight className="w-4 h-4" />
+                        </span>
+                      </Link>
+                    )}
+                  </Rise>
+                  <Rise delay={80} className="lg:col-span-5">
+                    <div className="grid grid-cols-2 border border-[#E8E3E0]">
+                      {study.stats.slice(2, 4).map((stat, i) => (
+                        <div key={i} className={`p-6 ${i === 0 ? 'border-r border-[#E8E3E0]' : ''}`}>
+                          <p className="font-sans font-medium text-[40px] leading-[1.05] tracking-[-0.02em] text-ink">{stat.value}{stat.suffix}</p>
+                          <p className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light mt-3">{stat.label}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </Rise>
+                </div>
+
+                {/* Evidence strip — real analytics shots */}
                 {c.evidence && study.captions && (
-                  <div className={`grid grid-cols-1 sm:grid-cols-2 ${c.evidence.length === 3 ? 'lg:grid-cols-3' : ''} gap-4 md:gap-5 mt-8`}>
+                  <div className={`mt-12 grid grid-cols-1 sm:grid-cols-2 ${c.evidence.length === 3 ? 'lg:grid-cols-3' : ''} gap-5`}>
                     {c.evidence.map((src, ei) => (
-                      <ImageReveal key={ei} delay={ei * 150}>
-                        <div className="border border-divider/40 aspect-[16/9] flex items-center justify-center p-3" style={{ background: '#0C0C0C' }}>
+                      <Rise key={ei} delay={ei * 80}>
+                        <div className="aspect-[16/9] flex items-center justify-center p-3" style={{ background: '#FFFFFF', border: '1px solid rgba(37,17,9,0.1)' }}>
                           <Image src={src} alt={study.captions?.[ei] ?? ""} width={720} height={405} quality={88} className="max-w-full max-h-full w-auto h-auto object-contain" />
                         </div>
-                        <p className="text-ink-light text-[10px] font-mono mt-2.5 leading-relaxed">{study.captions?.[ei]}</p>
-                      </ImageReveal>
+                        <p className="mt-3 text-[12px] leading-[1.4] text-ink-light">{study.captions?.[ei]}</p>
+                      </Rise>
                     ))}
                   </div>
                 )}
-              </section>
-
-              <HorizontalLine />
-            </React.Fragment>
-          )
-        })}
-
-        {/* ── CTA ── */}
-        <section className="px-6 md:px-12 lg:px-16 py-20 md:py-32 relative glow-amber grid-animated" style={{ background: 'linear-gradient(180deg, #0D0D0D 0%, #161616 100%)' }}>
-          <div className="text-center max-w-2xl mx-auto relative z-10">
-            <RevealText>
-              <h2 className="font-serif text-[clamp(1.8rem,3.5vw,3rem)] text-ink leading-[1.1] mb-4">{t.cta.headline}</h2>
-            </RevealText>
-            <FadeIn delay={300}>
-              <p className="text-ink-muted text-[15px] leading-relaxed mb-10">{t.cta.sub}</p>
-            </FadeIn>
-            <FadeIn delay={500}>
-              <Link href="mailto:contact@landings.md" className="inline-flex items-center gap-2 bg-amber hover:bg-amber-light text-[#0A0A0A] px-7 py-3.5 text-sm font-medium rounded-full transition-[background-color,transform] duration-300 active:scale-[0.97] group">
-                {t.cta.button}
-                <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-              </Link>
-            </FadeIn>
-          </div>
-        </section>
-
-        {/* ── FOOTER ── */}
-        <footer className="line-top px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: 'linear-gradient(180deg, #101010 0%, #0A0A0A 100%)' }}>
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
-            <div className="flex items-center gap-6">
-              <Link href="/" className="flex items-center">
-                <Image src="/images/logowhite.png" alt="landings.md" width={16} height={26} className="w-4 h-auto opacity-70" />
-              </Link>
-              <div className="hidden md:flex items-center gap-4 text-[11px] text-ink-muted font-mono">
-                <Link href="/portfolio" className="hover:text-ink transition-colors">{t.nav.portfolio}</Link>
-                <Link href="/pricing" className="hover:text-ink transition-colors">{t.nav.pricing}</Link>
-                <Link href="/solutions" className="hover:text-ink transition-colors">{t.nav.solutions}</Link>
-                <Link href="/case-studies" className="hover:text-ink transition-colors">{t.nav.caseStudies}</Link>
               </div>
+            </section>
+
+          </React.Fragment>
+        )
+      })}
+
+      {/* ── CTA — paper-2 ── */}
+      <section className="text-ink" style={{ background: '#FAF7F5' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-16 md:py-20">
+          <Rise>
+            <h2 className="font-serif font-light text-[clamp(1.75rem,3.4vw,2.5rem)] leading-[1.0] tracking-[-0.03em] text-ink">{t.cta.headline}</h2>
+          </Rise>
+          <Rise delay={80}>
+            <p className="mt-5 text-[15px] leading-[1.3] text-ink-muted max-w-md">{t.cta.sub}</p>
+          </Rise>
+          <Rise delay={160}>
+            <div className="mt-9">
+              <Link href="/#contact" className="btn-cta btn-cta--on-light">
+                <span className="btn-fill-bg" aria-hidden />
+                <span className="btn-fill-label">
+                  {t.cta.button}
+                  <span className="btn-chip" aria-hidden>
+                    <ArrowUpRight className="arrow-a" />
+                    <ArrowUpRight className="arrow-b" />
+                  </span>
+                </span>
+              </Link>
             </div>
-            <div className="flex items-center gap-4">
-              <Link href="tel:+37368327082" className="text-ink-muted hover:text-ink text-[11px] font-mono transition-colors">+373 683 27 082</Link>
-              <span className="text-ink-muted text-[10px] font-mono">{t.footer.copy}</span>
+          </Rise>
+        </div>
+      </section>
+
+      {/* ── FOOTER — paper ── */}
+      <footer className="text-ink border-t border-[#E8E3E0]" style={{ background: '#FFFFFF' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
+          <div className="flex items-center gap-6">
+            <Link href="/" className="flex items-center">
+              <Image src="/images/logowhite.png" alt="landings.md" width={16} height={26} className="w-4 h-auto" style={{ filter: 'brightness(0)' }} />
+            </Link>
+            <div className="hidden md:flex items-center gap-4 text-[14px] font-medium">
+              <Link href="/portfolio" className="text-ink-muted hover:text-ink hover:underline underline-offset-4 transition-colors duration-[400ms] ease-m">{t.nav.portfolio}</Link>
+              <Link href="/pricing" className="text-ink-muted hover:text-ink hover:underline underline-offset-4 transition-colors duration-[400ms] ease-m">{t.nav.pricing}</Link>
+              <Link href="/solutions" className="text-ink-muted hover:text-ink hover:underline underline-offset-4 transition-colors duration-[400ms] ease-m">{t.nav.solutions}</Link>
+              <Link href="/case-studies" className="text-ink-muted hover:text-ink hover:underline underline-offset-4 transition-colors duration-[400ms] ease-m">{t.nav.caseStudies}</Link>
             </div>
           </div>
-        </footer>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-[13px] text-ink-muted">
+            <Link href="tel:+37368327082" className="hover:text-ink transition-colors duration-[400ms] ease-m">+373 683 27 082</Link>
+            <span>{t.footer.copy}</span>
+          </div>
+        </div>
+      </footer>
 
-      </div>
-
-      <StickyContactPill language={language as 'en' | 'ro' | 'de' | 'fr' | 'es'} />
     </div>
   )
 }

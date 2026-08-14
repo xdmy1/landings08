@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useLanguage } from '@/hooks/useLanguage'
@@ -14,47 +14,30 @@ const navText = {
 }
 
 const announceText = {
-  en: {
-    full: "Free 30-min audit — your Google position, what's wrong, what your keywords are worth. No site yet? We study your business.",
-    short: "Free 30-min audit — Google position & what's wrong",
-    cta: "Book it",
-  },
-  ro: {
-    full: "Audit gratuit de 30 min — pozitia ta pe Google, ce e gresit si cat se cauta cuvintele tale. Nu ai site? Iti studiem afacerea.",
-    short: "Audit gratuit de 30 min — pozitia pe Google si ce e gresit",
-    cta: "Rezerva",
-  },
-  de: {
-    full: "Gratis-Audit (30 Min): Google-Position, Fehler, Keyword-Nachfrage. Keine Website? Wir analysieren Ihr Geschaft.",
-    short: "Gratis-Audit in 30 Min — Google-Position & Fehler",
-    cta: "Termin",
-  },
-  fr: {
-    full: "Audit gratuit de 30 min — votre position Google, ce qui cloche, la demande sur vos mots-cles. Pas de site ? On etudie votre activite.",
-    short: "Audit gratuit de 30 min — position Google & erreurs",
-    cta: "Reserver",
-  },
-  es: {
-    full: "Auditoria gratis de 30 min — tu posicion en Google, que esta mal, la demanda de tus palabras clave. Sin web? Estudiamos tu negocio.",
-    short: "Auditoria gratis de 30 min — posicion en Google y errores",
-    cta: "Reservar",
-  },
+  en: { short: "Free 30-min audit — your Google position & what's wrong", cta: "Book it" },
+  ro: { short: "Audit gratuit de 30 min — pozitia pe Google si ce e gresit", cta: "Rezerva" },
+  de: { short: "Gratis-Audit in 30 Min — Google-Position & Fehler", cta: "Termin" },
+  fr: { short: "Audit gratuit de 30 min — position Google & erreurs", cta: "Reserver" },
+  es: { short: "Auditoria gratis de 30 min — posicion en Google y errores", cta: "Reservar" },
 }
 
-export function SiteNav({ contactHref = "#contact" }: { contactHref?: string }) {
+/* Static nav — mirabel-style: in flow, transparent, simply scrolls away.
+   tone="dark" on ink grounds (white ladder), tone="light" on paper. */
+export function SiteNav({ contactHref = "#contact", tone = "dark" }: { contactHref?: string, tone?: "dark" | "light" }) {
   const { language, setLanguage } = useLanguage()
-  const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
   const t = navText[language as keyof typeof navText] ?? navText.en
   const a = announceText[language as keyof typeof announceText] ?? announceText.en
+  const dark = tone === "dark"
+
+  const c = {
+    link: dark ? 'text-white/60 hover:text-white' : 'text-ink-light hover:text-ink',
+    strong: dark ? 'text-white' : 'text-ink',
+    meta: dark ? 'text-white/40' : 'text-ink-light',
+    hairline: dark ? 'border-[#57433B]' : 'border-[#E8E3E0]',
+  }
 
   const links = [
     { href: '/portfolio',    label: t.portfolio },
@@ -65,122 +48,93 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string }) 
 
   return (
     <>
-      {/* ── DESKTOP / SCROLLED NAV ── */}
-      <nav className="fixed top-0 left-0 right-0 z-50">
-        {/* ── FREE AUDIT BAR — collapses away on scroll ── */}
-        <Link
-          href={`mailto:contact@landings.md?subject=${encodeURIComponent('Audit gratuit — 30 min')}`}
-          className="group/bar block overflow-hidden transition-all duration-500 ease-smooth"
-          style={{ maxHeight: scrolled ? 0 : 40, opacity: scrolled ? 0 : 1 }}
-        >
-          <div
-            className="flex items-center justify-center gap-2.5 h-9 px-4 border-b border-white/[0.07] text-[11px] font-medium"
-            style={{ background: '#101010' }}
-          >
-            <span className="w-1 h-1 rounded-full bg-white/40 flex-shrink-0" />
-            <span className="hidden lg:block min-w-0 text-ink-muted group-hover/bar:text-ink transition-colors duration-300 truncate">
-              {a.full}
-            </span>
-            <span className="lg:hidden text-ink-muted group-hover/bar:text-ink transition-colors duration-300 truncate">
-              {a.short}
-            </span>
-            <span className="text-ink underline underline-offset-2 decoration-white/40 group-hover/bar:decoration-white transition-colors duration-300 flex-shrink-0 inline-flex items-center gap-1">
-              {a.cta}
-              <svg className="w-3 h-3 transition-transform duration-300 group-hover/bar:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </span>
-          </div>
+      {/* ── AUDIT STRIP — static, scrolls away with the page ── */}
+      <Link
+        href={`mailto:contact@landings.md?subject=${encodeURIComponent('Audit gratuit — 30 min')}`}
+        className={`block border-b ${c.hairline}`}
+      >
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-3 text-[13px] flex items-center justify-center gap-2">
+          <span className={`${c.link} transition-colors duration-[400ms] ease-m truncate`}>{a.short}</span>
+          <span className={`${c.strong} underline underline-offset-2 flex-shrink-0 ${dark ? 'decoration-white/40 hover:decoration-white' : 'decoration-ink/40 hover:decoration-ink'}`}>{a.cta}</span>
+        </div>
+      </Link>
+
+      {/* ── NAV — static in flow ── */}
+      <nav className="max-w-[1200px] mx-auto px-6 lg:px-10 py-8 md:py-10 flex items-center justify-between">
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/images/logowhite.png"
+            alt="landings.md"
+            width={22} height={36}
+            className="w-[22px] h-auto"
+            style={dark ? undefined : { filter: 'brightness(0)' }}
+            priority
+          />
         </Link>
 
-        <div className="px-3 md:px-6 mt-3 transition-transform duration-500 ease-smooth" style={{ transform: scrolled ? 'translateY(-2px)' : 'translateY(0)' }}>
-          <div className="glass rounded-full max-w-[1120px] mx-auto pl-5 pr-2.5 md:pl-7 md:pr-3 flex items-center justify-between h-[56px] shadow-[0_18px_50px_-20px_rgba(0,0,0,0.55)]">
-            {/* Logo */}
-            <Link href="/" className="flex items-center">
-              <Image
-                src="/images/logowhite.png"
-                alt="landings.md"
-                width={22} height={36}
-                className="w-[22px] h-auto"
-                priority
-              />
-            </Link>
-
-            {/* Desktop links */}
-            <div className="hidden md:flex items-center gap-8">
-              <div className="flex items-center gap-6 text-[13px] text-ink-muted">
-                {links.map(({ href, label }) => (
-                  <Link key={href} href={href} className="hover:text-ink transition-colors">
-                    {label}
-                  </Link>
-                ))}
-              </div>
-              <div className="flex items-center gap-3">
-                {/* Language switcher */}
-                <div className="relative">
-                  <button
-                    onClick={() => setLangOpen(!langOpen)}
-                    className="text-ink-light hover:text-ink-muted text-[11px] tracking-widest uppercase transition-colors"
-                  >
-                    {language}
-                  </button>
-                  {langOpen && (
-                    <>
-                      <div className="fixed inset-0 z-40" onClick={() => setLangOpen(false)} />
-                      <div className="absolute top-full right-0 mt-3 glass rounded-xl z-50 min-w-[56px] py-1 overflow-hidden">
-                        {(['en', 'ro', 'de', 'fr', 'es'] as const).map(lang => (
-                          <button
-                            key={lang}
-                            onClick={() => { setLanguage(lang); setLangOpen(false) }}
-                            className={`block w-full text-left px-4 py-1.5 text-[11px] tracking-widest uppercase transition-colors ${
-                              language === lang ? 'text-amber' : 'text-ink-muted hover:text-ink'
-                            }`}
-                          >
-                            {lang}
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-                <Link
-                  href={contactHref}
-                  className="btn-fill group text-[13px] font-medium text-ink border border-white/25 rounded-full px-5 py-2 active:scale-[0.98] transition-transform"
-                >
-                  <span className="btn-fill-bg" aria-hidden />
-                  <span className="btn-fill-label transition-colors duration-[400ms] group-hover:text-[#0A0A0A]">{t.contact}</span>
-                </Link>
-              </div>
+        <div className="hidden md:flex items-center gap-8">
+          <div className="flex items-center gap-6 text-[14px] font-medium">
+            {links.map(({ href, label }) => (
+              <Link key={href} href={href} className={`${c.link} transition-colors duration-[400ms] ease-m`}>
+                {label}
+              </Link>
+            ))}
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <button
+                onClick={() => setLangOpen(!langOpen)}
+                className={`${c.meta} text-[11px] tracking-[0.08em] uppercase transition-colors duration-[400ms] ease-m`}
+              >
+                {language}
+              </button>
+              {langOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setLangOpen(false)} />
+                  <div className={`absolute top-full right-0 mt-2 z-50 min-w-[56px] py-1 border ${c.hairline}`} style={{ background: dark ? '#251109' : '#FFFFFF' }}>
+                    {(['en', 'ro', 'de', 'fr', 'es'] as const).map(lang => (
+                      <button
+                        key={lang}
+                        onClick={() => { setLanguage(lang); setLangOpen(false) }}
+                        className={`block w-full text-left px-4 py-1.5 text-[11px] tracking-[0.08em] uppercase transition-colors duration-[400ms] ease-m ${
+                          language === lang ? c.strong : c.link
+                        }`}
+                      >
+                        {lang}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
-
-            {/* Mobile hamburger */}
-            <button
-              onClick={() => setMobileOpen(true)}
-              className="md:hidden p-2 text-ink-muted hover:text-ink transition-colors"
-              aria-label="Open menu"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 8h16M4 16h16" />
-              </svg>
-            </button>
+            <Link href={contactHref} className="btn-cta btn-cta--sm">
+              <span className="btn-fill-bg" aria-hidden />
+              <span className="btn-fill-label">{t.contact}</span>
+            </Link>
           </div>
         </div>
+
+        <button
+          onClick={() => setMobileOpen(true)}
+          className={`md:hidden p-2 ${c.link} transition-colors`}
+          aria-label="Open menu"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 8h16M4 16h16" />
+          </svg>
+        </button>
       </nav>
 
-      {/* ── MOBILE FULL-SCREEN MENU ── */}
+      {/* ── MOBILE MENU — solid ink, no blur ── */}
       {mobileOpen && (
-        <div
-          className="md:hidden fixed inset-0 z-[60] flex flex-col mobile-nav-overlay"
-          style={{ background: 'rgba(20,15,10,0.98)', backdropFilter: 'blur(20px)' }}
-        >
-          {/* Top bar */}
-          <div className="flex items-center justify-between px-6 h-[68px] flex-shrink-0 border-b border-divider/30">
+        <div className="md:hidden fixed inset-0 z-[60] flex flex-col mobile-nav-overlay" style={{ background: '#251109' }}>
+          <div className="flex items-center justify-between px-6 h-[68px] flex-shrink-0 border-b border-[#57433B]">
             <Link href="/" onClick={() => setMobileOpen(false)}>
               <Image src="/images/logowhite.png" alt="landings.md" width={18} height={30} className="w-[18px] h-auto" />
             </Link>
             <button
               onClick={() => setMobileOpen(false)}
-              className="p-2 text-ink-muted hover:text-ink transition-colors"
+              className="p-2 text-white/60 hover:text-white transition-colors"
               aria-label="Close menu"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -188,53 +142,46 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string }) 
               </svg>
             </button>
           </div>
-
-          {/* Links */}
-          <div className="flex-1 flex flex-col justify-center px-8 gap-2">
+          <div className="flex-1 flex flex-col justify-center px-8 gap-3">
             {links.map(({ href, label }, i) => (
               <Link
                 key={href}
                 href={href}
                 onClick={() => setMobileOpen(false)}
-                className="font-serif text-[clamp(2rem,9vw,3.2rem)] text-ink hover:text-amber transition-colors duration-300 leading-tight mobile-nav-link"
+                className="font-serif text-[clamp(2.5rem,9vw,3.2rem)] leading-[1.02] text-white mobile-nav-link"
                 style={{ animationDelay: `${60 + i * 70}ms` }}
               >
                 {label}
               </Link>
             ))}
             <div className="mt-8 mobile-nav-link" style={{ animationDelay: '340ms' }}>
-              <Link
-                href={contactHref}
-                onClick={() => setMobileOpen(false)}
-                className="inline-flex items-center gap-2 bg-amber hover:bg-amber-light text-[#0A0A0A] px-7 py-3.5 text-sm font-medium rounded-full transition-[background-color,transform] duration-300 active:scale-[0.97]"
-              >
-                {t.contact}
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
+              <Link href={contactHref} onClick={() => setMobileOpen(false)} className="btn-cta">
+                <span className="btn-fill-bg" aria-hidden />
+                <span className="btn-fill-label">
+                  {t.contact}
+                  <span className="btn-chip" aria-hidden>
+                    <svg className="arrow-a" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 17L17 7M7 7h10v10" /></svg>
+                    <svg className="arrow-b" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 17L17 7M7 7h10v10" /></svg>
+                  </span>
+                </span>
               </Link>
             </div>
           </div>
-
-          {/* Bottom: language + brand */}
-          <div
-            className="px-8 pb-10 flex items-center justify-between border-t border-divider/30 pt-6 mobile-nav-link"
-            style={{ animationDelay: '400ms' }}
-          >
+          <div className="px-8 pb-10 flex items-center justify-between border-t border-[#57433B] pt-6 mobile-nav-link" style={{ animationDelay: '400ms' }}>
             <div className="flex items-center gap-4">
               {(['en', 'ro', 'de', 'fr', 'es'] as const).map(lang => (
                 <button
                   key={lang}
                   onClick={() => { setLanguage(lang); setMobileOpen(false) }}
-                  className={`text-[11px] tracking-widest uppercase transition-colors ${
-                    language === lang ? 'text-amber' : 'text-ink-light hover:text-ink-muted'
+                  className={`text-[11px] tracking-[0.08em] uppercase transition-colors ${
+                    language === lang ? 'text-white' : 'text-white/40 hover:text-white/60'
                   }`}
                 >
                   {lang}
                 </button>
               ))}
             </div>
-            <span className="text-ink-light/40 text-[10px] font-mono tracking-wide">landings.md</span>
+            <span className="text-white/40 text-[10px] font-mono tracking-[0.08em] uppercase">landings.md</span>
           </div>
         </div>
       )}

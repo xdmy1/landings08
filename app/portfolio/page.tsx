@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { StickyContactPill } from '@/components/ui/sticky-contact-pill'
 import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
 import { BrowserFrame } from '@/components/ui/browser-frame'
@@ -23,30 +22,12 @@ function useInView(threshold = 0.1) {
   return { ref, visible }
 }
 
-function RevealText({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
-  const { ref, visible } = useInView(0.15)
-  return (
-    <div ref={ref} className={`overflow-hidden ${className}`}>
-      <div
-        className="transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-        style={{
-          transform: visible ? 'translateY(0)' : 'translateY(110%)',
-          opacity: visible ? 1 : 0,
-          transitionDelay: `${delay}ms`,
-        }}
-      >
-        {children}
-      </div>
-    </div>
-  )
-}
-
-function FadeIn({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
+function Rise({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
   const { ref, visible } = useInView(0.08)
   return (
     <div
       ref={ref}
-      className={`transition-all duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${className}`}
+      className={`transition-all duration-[400ms] ease-m ${className}`}
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? 'translateY(0)' : 'translateY(30px)',
@@ -270,29 +251,30 @@ export default function PortfolioPage() {
   const lang = language as keyof typeof projects[0]['description']
 
   return (
-    <div className="min-h-screen text-ink" style={{ background: '#0D0D0D' }}>
+    <div className="min-h-screen text-ink" style={{ background: '#FFFFFF' }}>
 
-      <SiteNav contactHref="/#contact" />
+      <SiteNav contactHref="/#contact" tone="light" />
 
-      <div className="mx-4 md:mx-8 lg:mx-24 xl:mx-32 relative line-sides">
+      {/* Hero */}
+      <section style={{ background: '#FFFFFF' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-14 md:pt-20 pb-10 md:pb-14">
+          <Rise>
+            <h1 className="font-serif font-light text-[clamp(2.75rem,5.2vw,4.35rem)] leading-[0.9] tracking-[-0.06em] text-ink">{t.title}</h1>
+          </Rise>
+          <Rise delay={100}>
+            <p className="mt-5 text-[17px] leading-[1.3] text-ink-muted max-w-xl">{t.subtitle}</p>
+          </Rise>
+        </div>
+      </section>
 
-        {/* Hero */}
-        <section className="pt-36 md:pt-48 pb-12 md:pb-16 px-6 md:px-12 lg:px-16 relative glow-amber" style={{ background: 'linear-gradient(160deg, #131313 0%, #181818 35%, #0D0D0D 100%)' }}>
-          <RevealText>
-            <h1 className="font-serif text-[clamp(2.5rem,6vw,5.5rem)] text-ink">{t.title}</h1>
-          </RevealText>
-          <FadeIn delay={200}>
-            <p className="mt-4 text-ink-muted text-sm tracking-wide max-w-xl leading-relaxed">{t.subtitle}</p>
-          </FadeIn>
-        </section>
-
-        {/* Projects Grid */}
-        <section className="line-top px-6 md:px-12 lg:px-16 pt-12 md:pt-16 pb-20 md:pb-28" style={{ background: 'linear-gradient(180deg, #0D0D0D 0%, #161616 50%, #101010 100%)' }}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-14 md:gap-y-16">
+      {/* Projects Grid */}
+      <section style={{ background: '#FFFFFF' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 pb-16 md:pb-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border" style={{ borderColor: '#E8E3E0' }}>
             {projects.map((project, index) => {
               const inner = (
-                <>
-                  <BrowserFrame domain={project.domain} className="group-hover:border-amber/40 transition-colors duration-500">
+                <Rise delay={(index % 2) * 100}>
+                  <BrowserFrame domain={project.domain} ground="light">
                     <div className="aspect-[16/10] overflow-hidden">
                       <Image
                         src={project.image}
@@ -300,90 +282,104 @@ export default function PortfolioPage() {
                         width={960}
                         height={600}
                         quality={85}
-                        className="w-full h-full object-cover object-top group-hover:scale-[1.03] transition-transform duration-[900ms] ease-smooth"
+                        className="w-full h-full object-cover object-top"
                       />
                     </div>
                   </BrowserFrame>
                   <div className="pt-5">
                     <div className="flex items-center justify-between gap-3 mb-2.5">
-                      <div className="flex flex-wrap gap-1.5">
+                      <div className="flex flex-wrap gap-x-3 gap-y-1">
                         {project.chips.map((chip) => (
-                          <span key={chip} className="text-[9px] font-mono tracking-[0.12em] uppercase text-ink-light border border-divider/60 px-2 py-0.5">{chip}</span>
+                          <span key={chip} className="font-mono text-[10px] tracking-[0.08em] uppercase text-ink/30">{chip}</span>
                         ))}
                       </div>
-                      <span className={`text-[9px] font-mono tracking-[0.15em] uppercase flex items-center gap-1.5 flex-shrink-0 ${project.status === 'LIVE' ? 'text-amber/90' : 'text-ink-light'}`}>
-                        <span className={`w-1 h-1 rounded-full ${project.status === 'LIVE' ? 'bg-amber/90' : 'bg-ink-light'}`} />
+                      <span className="font-mono text-[10px] tracking-[0.08em] uppercase text-ink/30 flex-shrink-0">
                         {project.status === 'LIVE' ? 'LIVE' : t.private}
                       </span>
                     </div>
-                    <h3 className="text-ink font-serif text-xl md:text-2xl group-hover:text-amber transition-colors duration-300">{project.title}</h3>
-                    <p className="text-ink-muted text-[13px] leading-relaxed mt-2">
+                    <h3 className="font-sans font-medium text-[20px] tracking-[-0.01em] text-ink">{project.title}</h3>
+                    <p className="mt-2 text-[15px] leading-[1.3] text-ink-muted">
                       {project.description[lang] ?? project.description.en}
                     </p>
-                    <p className="text-amber/90 text-[11px] font-mono tracking-wide mt-3">
+                    <p className="mt-3 text-[13px] font-medium text-ink">
                       {project.highlight[lang] ?? project.highlight.en}
                     </p>
+                    {project.status !== 'PRIVATE' && (
+                      <span className="mt-4 inline-flex items-center gap-1.5 font-mono text-[11px] tracking-[0.08em] uppercase text-ink">
+                        {project.domain}
+                        <svg className="w-3.5 h-3.5 transition-transform duration-[400ms] ease-m group-hover:rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 17L17 7M7 7h10v10" /></svg>
+                      </span>
+                    )}
                   </div>
-                </>
+                </Rise>
               )
               return (
-                <FadeIn key={project.id} delay={(index % 2) * 100}>
+                <div key={project.id} className="border-b last:border-b-0 md:odd:border-r" style={{ borderColor: '#E8E3E0' }}>
                   {project.status !== 'PRIVATE' ? (
-                    <Link href={project.url} target="_blank" rel="noopener noreferrer" className="group block">
+                    <Link href={project.url} target="_blank" rel="noopener noreferrer" className="group block h-full p-6 transition-colors duration-[400ms] ease-m hover:bg-[#FAF7F5]">
                       {inner}
                     </Link>
                   ) : (
-                    <div className="group">{inner}</div>
+                    <div className="group h-full p-6 transition-colors duration-[400ms] ease-m hover:bg-[#FAF7F5]">{inner}</div>
                   )}
-                </FadeIn>
+                </div>
               )
             })}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* CTA */}
-        <section className="line-top px-6 md:px-12 lg:px-16 py-20 md:py-28 relative glow-amber" style={{ background: 'radial-gradient(ellipse 90% 130% at 50% 100%, #1B1B1B 0%, #131313 40%, #0D0D0D 85%)' }}>
-          <div className="max-w-2xl mx-auto text-center">
-            <RevealText>
-              <h2 className="font-serif italic text-[clamp(1.8rem,3.5vw,3rem)] text-ink mb-4">{t.cta.title}</h2>
-            </RevealText>
-            <FadeIn delay={200}>
-              <p className="text-ink-muted mb-8">{t.cta.body}</p>
-            </FadeIn>
-            <FadeIn delay={350}>
-              <Link href="mailto:contact@landings.md" className="inline-flex items-center gap-3 text-amber hover:text-amber-light text-sm tracking-wide transition-colors group">
-                {t.cta.button}
-                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+      {/* CTA */}
+      <section style={{ background: '#FFFFFF' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-16 md:py-20">
+          <div className="max-w-2xl mx-auto ">
+            <Rise>
+              <h2 className="font-serif font-light text-[clamp(2rem,3.5vw,2.5rem)] leading-[1.0] tracking-[-0.03em] text-ink">{t.cta.title}</h2>
+            </Rise>
+            <Rise delay={100}>
+              <p className="mt-4 text-[15px] leading-[1.3] text-ink-muted">{t.cta.body}</p>
+            </Rise>
+            <Rise delay={200}>
+              <div className="mt-8 flex justify-center">
+                <Link href="/#contact" className="btn-cta btn-cta--on-light">
+                  <span className="btn-fill-bg" aria-hidden />
+                  <span className="btn-fill-label">{t.cta.button}
+                    <span className="btn-chip" aria-hidden>
+                      <svg className="arrow-a" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 17L17 7M7 7h10v10" /></svg>
+                      <svg className="arrow-b" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 17L17 7M7 7h10v10" /></svg>
+                    </span>
+                  </span>
+                </Link>
+              </div>
+            </Rise>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t" style={{ background: '#FAF7F5', borderColor: '#E8E3E0' }}>
+        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-10">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
+            <div className="flex items-center gap-6">
+              <Link href="/" className="flex items-center">
+                <Image src="/images/logowhite.png" alt="landings.md" width={16} height={26} className="w-4 h-auto" style={{ filter: 'brightness(0)' }} />
               </Link>
-            </FadeIn>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="line-top px-6 md:px-12 lg:px-16 py-8 pb-28" style={{ background: 'linear-gradient(180deg, #101010 0%, #0A0A0A 100%)' }}>
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
-            <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-              <Link href="/" className="flex items-center"><Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="w-[22px] h-auto" /></Link>
-              <div className="flex items-center gap-6 text-sm text-ink-muted">
-                <Link href="/portfolio" className="hover:text-ink transition-colors">{t.nav.portfolio}</Link>
-                <Link href="/pricing" className="hover:text-ink transition-colors">{t.nav.pricing}</Link>
-                <Link href="/solutions" className="hover:text-ink transition-colors">{t.nav.solutions}</Link>
-                <Link href="/case-studies" className="hover:text-ink transition-colors">{t.nav.caseStudies}</Link>
+              <div className="hidden md:flex items-center gap-4 text-[14px] font-medium">
+                <Link href="/portfolio" className="text-ink/70 hover:text-ink hover:underline underline-offset-4 transition-colors duration-[400ms] ease-m">{t.nav.portfolio}</Link>
+                <Link href="/pricing" className="text-ink/70 hover:text-ink hover:underline underline-offset-4 transition-colors duration-[400ms] ease-m">{t.nav.pricing}</Link>
+                <Link href="/solutions" className="text-ink/70 hover:text-ink hover:underline underline-offset-4 transition-colors duration-[400ms] ease-m">{t.nav.solutions}</Link>
+                <Link href="/case-studies" className="text-ink/70 hover:text-ink hover:underline underline-offset-4 transition-colors duration-[400ms] ease-m">{t.nav.caseStudies}</Link>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <Link href="tel:+37368327082" className="text-ink-muted hover:text-ink text-xs tracking-wide transition-colors">+373 683 27 082</Link>
-              <span className="text-ink-muted text-xs tracking-wide">{t.footer.copy}</span>
-              <div className="flex items-center gap-3">
-                <Link href="mailto:contact@landings.md" className="text-ink-muted hover:text-ink transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0l-9.75 6.093L2.25 6.75" /></svg></Link>
-              </div>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-[13px] text-ink-muted">
+              <Link href="tel:+37368327082" className="hover:text-ink transition-colors duration-[400ms] ease-m">+373 683 27 082</Link>
+              <Link href="mailto:contact@landings.md" className="hover:text-ink transition-colors duration-[400ms] ease-m">contact@landings.md</Link>
+              <span>{t.footer.copy}</span>
             </div>
           </div>
-        </footer>
+        </div>
+      </footer>
 
-      </div>
-
-      <StickyContactPill language={language as 'en' | 'ro' | 'de' | 'fr' | 'es'} />
     </div>
   )
 }
