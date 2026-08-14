@@ -4,14 +4,14 @@
 
 /* ────────────────────────────────────────────────────────────────
    navarro-clone token system — landings.md
-   Ground #0d0d0d, ONE lime accent #6FF2CE, gradient hairlines,
+   Ground #0d0d0d, ONE lime accent #FF9E7A, gradient hairlines,
    metallic silver primaries, blur-up reveals. Geist only.
    ──────────────────────────────────────────────────────────────── */
 @layer base {
   :root {
     --nv-bg: #0d0d0d;
     --nv-curtain: #0f0f0f;
-    --lime: #6FF2CE;
+    --lime: #FF9E7A;
     --nv-text: #ffffff;
     --nv-soft: #e0e0e2;
     --nv-quote: #b8b8b9;
@@ -129,8 +129,8 @@ blockquote i, .nv-quote-lime i {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: var(--lime);
-  color: #071b14;
+  background: linear-gradient(180deg, #3f3f3f, #1c1c1c 55%, #141414);
+  color: #ffffff;
   border-radius: 999px;
   padding: 14px 28px;
   font-size: 0.9375rem;
@@ -138,12 +138,11 @@ blockquote i, .nv-quote-lime i {
   letter-spacing: -0.01em;
   line-height: 1;
   white-space: nowrap;
-  box-shadow: 0 8px 30px -8px rgba(111, 242, 206, 0.45);
-  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 10px 26px rgba(0, 0, 0, 0.5);
+  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 .btn-metal:hover {
-  filter: brightness(1.08);
-  box-shadow: 0 10px 40px -8px rgba(111, 242, 206, 0.6);
+  box-shadow: inset 0 -0.3px 0 1px var(--lime), inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 0 10px rgba(255, 158, 122, 0.55);
 }
 .btn-metal:active { transform: scale(0.98); }
 .btn-metal--sm { padding: 10px 20px; font-size: 0.875rem; }
@@ -189,11 +188,11 @@ blockquote i, .nv-quote-lime i {
 .chip--em {
   padding: 0;
   background: none;
-  border: 2px solid #2e5d4e;
-  box-shadow: 0 14px 44px -8px rgba(111, 242, 206, 0.28);
+  border: 2px solid #6d3f2e;
+  box-shadow: 0 14px 44px -8px rgba(255, 158, 122, 0.30);
 }
 .chip--em .chip-inner {
-  background: #101f1a;
+  background: #241512;
   color: #fff;
   padding: 12px 22px;
 }
@@ -202,7 +201,7 @@ blockquote i, .nv-quote-lime i {
   height: 6px;
   border-radius: 999px;
   background: var(--lime);
-  box-shadow: 0 0 10px rgba(111, 242, 206, 0.8);
+  box-shadow: 0 0 10px rgba(255, 158, 122, 0.8);
   flex: none;
   display: inline-block;
 }
@@ -263,15 +262,15 @@ blockquote i, .nv-quote-lime i {
   min-height: 60px;
   padding: 8px 8px 8px 22px;
   border-radius: 999px;
-  background: #6FF2CE33;
+  background: #FF9E7A33;
   border: 1px solid var(--lime);
-  box-shadow: 0 0 40px #6FF2CE33;
+  box-shadow: 0 0 40px #FF9E7A33;
   -webkit-backdrop-filter: blur(60px);
   backdrop-filter: blur(60px);
   color: #fff;
   transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
-.nv-pill:hover { box-shadow: 0 0 56px rgba(111, 242, 206, 0.45); }
+.nv-pill:hover { box-shadow: 0 0 56px rgba(255, 158, 122, 0.45); }
 .nv-pill:active { transform: translateX(-50%) scale(0.98); }
 .nv-pill-arrow {
   width: 44px;
@@ -359,7 +358,7 @@ blockquote i, .nv-quote-lime i {
   bottom: 0;
   height: 1px;
   background: var(--lime);
-  box-shadow: 0 0 12px rgba(111, 242, 206, 0.5);
+  box-shadow: 0 0 12px rgba(255, 158, 122, 0.5);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
@@ -367,4 +366,36 @@ blockquote i, .nv-quote-lime i {
 }
 .nv-field:focus-within::after {
   transform: scaleX(1);
+}
+
+/* ── Ribbed glass band, diagonal cut — the H1 sits on this ── */
+.ribbed {
+  position: relative;
+  -webkit-backdrop-filter: blur(30px);
+  backdrop-filter: blur(30px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background-image:
+    linear-gradient(100deg, #ffffff05, #0003 12%),
+    linear-gradient(100deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 140px 100%;
+}
+.ribbed::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, #ffffff05, #ffffff1a, #ffffff05);
+  pointer-events: none;
+}
+.ribbed::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 90px;
+  background: linear-gradient(180deg, transparent, #0d0d0d);
+  pointer-events: none;
 }

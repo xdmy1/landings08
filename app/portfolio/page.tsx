@@ -8,10 +8,10 @@ import { SiteNav } from '@/components/ui/site-nav'
 
 /* ────────────────────────────────────────────────────────────────
    navarro-clone inner page — portfolio grid.
-   Ground #0d0d0d · lime #6FF2CE · Geist · blur-up reveals.
+   Ground #0d0d0d · lime #FF9E7A · Geist · blur-up reveals.
    ──────────────────────────────────────────────────────────────── */
 
-const LIME = '#6FF2CE'
+const LIME = '#FF9E7A'
 
 /* Blur-up reveal — IntersectionObserver at 0.1 that REPLAYS:
    the .nv-hidden class returns when the block scrolls away. */
@@ -366,7 +366,7 @@ export default function PortfolioPage() {
                         </p>
                         {project.status !== 'PRIVATE' ? (
                           <span
-                            className="inline-flex flex-none items-center gap-2 rounded-full px-4 py-2 text-[13px] font-medium text-white transition-[box-shadow] duration-300 ease-in-out group-hover:[box-shadow:0_0_1px_1px_#6FF2CE]"
+                            className="inline-flex flex-none items-center gap-2 rounded-full px-4 py-2 text-[13px] font-medium text-white transition-[box-shadow] duration-300 ease-in-out group-hover:[box-shadow:0_0_1px_1px_#FF9E7A]"
                             style={{
                               border: '1px solid rgba(255,255,255,0.2)',
                               background: 'linear-gradient(120deg, rgba(30,30,30,0.65), rgba(10,10,10,0.55))',
@@ -439,7 +439,7 @@ export default function PortfolioPage() {
                 <div
                   aria-hidden
                   className="pointer-events-none absolute left-1/2 top-0 h-40 w-[440px] -translate-x-1/2 -translate-y-1/2"
-                  style={{ background: 'radial-gradient(closest-side, #6FF2CE33, transparent)' }}
+                  style={{ background: 'radial-gradient(closest-side, #FF9E7A33, transparent)' }}
                 />
                 <h2
                   className="font-bold"

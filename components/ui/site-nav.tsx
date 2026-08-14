@@ -59,7 +59,7 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string, to
           <span className="truncate" style={{ color: '#a4a4a4' }}>{a.short}</span>
           <span
             className="flex-shrink-0 underline underline-offset-4 font-medium"
-            style={{ color: '#6FF2CE', textDecorationColor: 'rgba(111,242,206,0.5)' }}
+            style={{ color: '#FF9E7A', textDecorationColor: 'rgba(255,158,122,0.5)' }}
           >
             {a.cta}
           </span>
@@ -128,7 +128,7 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string, to
                             key={lang}
                             onClick={() => { setLanguage(lang); setLangOpen(false) }}
                             className="block w-full text-left px-4 py-1.5 text-[12px] tracking-[0.08em] uppercase transition-colors duration-300 ease-in-out"
-                            style={{ color: language === lang ? '#6FF2CE' : '#a4a4a4' }}
+                            style={{ color: language === lang ? '#FF9E7A' : '#a4a4a4' }}
                           >
                             {lang}
                           </button>
@@ -208,7 +208,7 @@ export function SiteNav({ contactHref = "#contact" }: { contactHref?: string, to
                   key={lang}
                   onClick={() => { setLanguage(lang) }}
                   className="text-[12px] tracking-[0.08em] uppercase transition-colors"
-                  style={{ color: language === lang ? '#6FF2CE' : '#a4a4a4' }}
+                  style={{ color: language === lang ? '#FF9E7A' : '#a4a4a4' }}
                 >
                   {lang}
                 </button>
