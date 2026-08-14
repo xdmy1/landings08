@@ -5,44 +5,56 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
-import { BrowserFrame } from '@/components/ui/browser-frame'
 
-function useInView(threshold = 0.1) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
+/* ────────────────────────────────────────────────────────────────
+   Solutions — navarro-clone shell, landings.md content only.
+   Ground #0d0d0d · lime #c6ff69 · Geist · blur-up reveals.
+   ──────────────────────────────────────────────────────────────── */
+
+const LIME = '#c6ff69'
+
+/* Blur-up reveal — IntersectionObserver at 0.1 that REPLAYS:
+   the .nv-hidden class returns when the block scrolls away. */
+function Reveal({
+  children,
+  delay = 0,
+  className = '',
+}: {
+  children: React.ReactNode
+  delay?: number
+  className?: string
+}) {
+  const ref = useRef<HTMLDivElement | null>(null)
+  const [shown, setShown] = useState(false)
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setVisible(true); observer.disconnect() }
-    }, { threshold })
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [threshold])
-  return { ref, visible }
-}
-
-/* RISE — the element-level reveal verb: opacity + 30px rise, one easing */
-function Rise({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
-  const { ref, visible } = useInView(0.08)
+    const io = new IntersectionObserver(
+      ([entry]) => setShown(entry.isIntersecting),
+      { threshold: 0.1 }
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
   return (
     <div
       ref={ref}
-      className={`transition-[transform,opacity] duration-[400ms] ease-m ${className}`}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(30px)',
-        transitionDelay: `${delay}ms`,
-      }}
+      className={`nv-reveal ${shown ? '' : 'nv-hidden'} ${className}`}
+      style={delay ? { transitionDelay: `${delay}s` } : undefined}
     >
       {children}
     </div>
   )
 }
 
-const ArrowUpRight = ({ className = "w-4 h-4" }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 17L17 7M7 7h10v10" /></svg>
-)
+function Label({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-2 text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
+      <span className="dot-lime" />
+      {children}
+    </span>
+  )
+}
 
 /* Other systems we shipped — compact rows */
 const otherSystems = [
@@ -329,7 +341,7 @@ export default function SolutionsPage() {
   const t = text[language as keyof typeof text]
   const lang = language as 'en' | 'ro' | 'de' | 'fr' | 'es'
 
-  /* Real screenshots replace the old CSS mocks */
+  /* Real screenshots — full-bleed in hairline cards */
   const systemFrames = [
     { domain: "davo.md", src: "/images/shot-davo.jpg" },
     { domain: "inter-bus.md", src: "/images/shot-interbus.jpg" },
@@ -337,192 +349,282 @@ export default function SolutionsPage() {
   ]
 
   return (
-    <div className="min-h-screen text-ink" style={{ background: '#FFFFFF' }}>
+    <main style={{ background: '#0d0d0d' }}>
 
-      <SiteNav contactHref="/#contact" tone="light" />
+      <SiteNav contactHref="/#contact" />
 
-      {/* ── HERO on paper ── */}
-      <section style={{ background: '#FFFFFF' }}>
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-14 md:pt-20 pb-16 md:pb-20">
-          <Rise>
-            <h1 className="font-serif font-light text-[clamp(2.75rem,5.2vw,4.35rem)] leading-[0.9] tracking-[-0.06em] text-ink">
-              {t.hero.title1}<br />{t.hero.title2}
+      {/* ════════ HERO ════════ */}
+      <section className="pt-14 md:pt-20">
+        <div className="nv-container">
+          <Reveal>
+            <Label>{t.nav.solutions}</Label>
+          </Reveal>
+          <Reveal delay={0.06}>
+            <h1
+              className="mt-5 max-w-[900px] font-bold"
+              style={{ fontSize: 'clamp(2.625rem, 5.6vw, 4.5rem)', lineHeight: 1.01, letterSpacing: '-0.055em' }}
+            >
+              <span className="block">{t.hero.title1}</span>
+              <b>{t.hero.title2}</b>
             </h1>
-          </Rise>
-          <Rise delay={100}>
-            <p className="mt-8 text-[17px] leading-[1.3] text-ink-muted max-w-2xl">
+          </Reveal>
+          <Reveal delay={0.12}>
+            <p
+              className="mt-7 max-w-[820px] font-medium"
+              style={{ color: '#e0e0e2', fontSize: 'clamp(1.0625rem, 1.6vw, 1.25rem)', lineHeight: 1.35, letterSpacing: '-0.03em' }}
+            >
               {t.hero.description}
             </p>
-          </Rise>
-          <Rise delay={200}>
+          </Reveal>
+          <Reveal delay={0.18}>
             <div className="mt-9">
-              <Link href="/#contact" className="btn-cta btn-cta--on-light">
-                <span className="btn-fill-bg" aria-hidden />
-                <span className="btn-fill-label">
-                  {t.hero.cta}
-                  <span className="btn-chip" aria-hidden>
-                    <ArrowUpRight className="arrow-a" />
-                    <ArrowUpRight className="arrow-b" />
-                  </span>
-                </span>
+              <Link href="/#contact" className="btn-metal">
+                {t.hero.cta}
+                <span className="nv-arr" aria-hidden>&rarr;</span>
               </Link>
             </div>
-          </Rise>
-
-          {/* Stats row — bordered cells */}
-          <div className="grid grid-cols-2 md:grid-cols-4 border border-[#E8E3E0] mt-14 md:mt-16">
-            {stats.map((stat, i) => (
-              <Rise key={i} delay={i * 80} className={`p-7 ${i % 2 === 0 ? 'border-r border-[#E8E3E0]' : ''} ${i < 2 ? 'border-b md:border-b-0 border-[#E8E3E0]' : ''} ${i < 3 ? 'md:border-r md:border-[#E8E3E0]' : ''}`}>
-                <p className="font-sans font-medium text-[34px] md:text-[40px] leading-[1.05] tracking-[-0.02em] text-ink">{stat.value}</p>
-                <p className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light mt-4">{stat.label[lang]}</p>
-              </Rise>
-            ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* ── BUILT SYSTEMS on paper-2 — real screenshots ── */}
-      <section className="border-t border-[#E8E3E0]" style={{ background: '#FAF7F5' }}>
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-16 md:py-20">
-          <Rise>
-            <h2 className="font-serif font-light text-[32px] md:text-[40px] leading-[1.0] tracking-[-0.03em] text-ink mb-3">{t.built.heading}</h2>
-            <p className="text-[17px] leading-[1.3] text-ink-muted mb-14">{t.built.subheading}</p>
-          </Rise>
+      {/* ════════ BUILT SYSTEMS — landscape hairline cards, real screenshots ════════ */}
+      <section className="pt-16 md:pt-24">
+        <div className="nv-container">
+          <Reveal>
+            <h2 className="font-bold" style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}>
+              {t.built.heading}
+            </h2>
+          </Reveal>
+          <Reveal delay={0.06}>
+            <p className="mt-4 max-w-[560px] text-[1rem] font-medium" style={{ color: '#b8b8b9' }}>
+              {t.built.subheading}
+            </p>
+          </Reveal>
 
-          <div className="space-y-16 md:space-y-20">
+          <div className="mt-10 space-y-6 md:mt-12">
             {t.built.systems.map((sys, i) => {
               const reversed = i % 2 === 1
               return (
-                <div key={i} className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-                  <Rise delay={80} className={`order-1 ${reversed ? 'lg:order-2' : 'lg:order-1'}`}>
-                    <BrowserFrame domain={systemFrames[i].domain} ground="light">
-                      <div className="aspect-[16/10] overflow-hidden">
-                        <Image src={systemFrames[i].src} alt={`${systemFrames[i].domain} — business system by landings.md`} width={960} height={600} quality={85} className="w-full h-full object-cover object-top" />
+                <Reveal key={i} delay={0.05}>
+                  <div className={`nv-edge ${reversed ? 'nv-edge--alt' : ''}`}>
+                    <div className="nv-edge-inner grid items-center gap-8 p-6 md:grid-cols-[1.05fr_1fr] md:gap-12 md:p-10">
+                      {/* full-bleed screenshot in 1px rgba(73,73,73,0.6) border */}
+                      <div className={`${reversed ? 'md:order-2' : 'md:order-1'}`}>
+                        <div
+                          className="relative overflow-hidden rounded-[24px]"
+                          style={{ border: '1px solid rgba(73,73,73,0.6)', aspectRatio: '16 / 10' }}
+                        >
+                          <Image
+                            src={systemFrames[i].src}
+                            alt={`${systemFrames[i].domain} — business system by landings.md`}
+                            fill
+                            sizes="(min-width: 768px) 620px, 92vw"
+                            className="object-cover object-top"
+                          />
+                        </div>
                       </div>
-                    </BrowserFrame>
-                  </Rise>
-                  <Rise delay={160} className={`order-2 ${reversed ? 'lg:order-1' : 'lg:order-2'}`}>
-                    <div>
-                      <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light">{sys.client}</span>
-                      <h3 className="font-serif font-light text-[26px] md:text-[32px] leading-[1.05] tracking-[-0.03em] text-ink mt-3 mb-4">{sys.title}</h3>
-                      <p className="text-[15px] leading-[1.5] text-ink-muted mb-5 max-w-[52ch]">{sys.body}</p>
-                      <div className="flex flex-wrap gap-x-3 gap-y-1.5 mb-6">
-                        {sys.tags.map((tag) => (
-                          <span key={tag} className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light">{tag}</span>
-                        ))}
+                      {/* superlative caption + copy + feature chips */}
+                      <div className={`${reversed ? 'md:order-1' : 'md:order-2'}`}>
+                        <span className="inline-flex items-center gap-2 text-[12px] font-medium uppercase tracking-[0.12em]" style={{ color: '#909099' }}>
+                          <span className="dot-lime" />
+                          {sys.client}
+                        </span>
+                        <h3
+                          className="mt-4 font-semibold text-white"
+                          style={{ fontSize: 'clamp(1.5rem, 2.6vw, 1.75rem)', lineHeight: 1.15, letterSpacing: '-1.34px' }}
+                        >
+                          {sys.title}
+                        </h3>
+                        <p className="mt-4 max-w-[52ch] text-[0.9375rem] font-medium leading-relaxed" style={{ color: '#b8b8b9' }}>
+                          {sys.body}
+                        </p>
+                        <div className="mt-6 flex flex-wrap gap-2">
+                          {sys.tags.map((tag) => (
+                            <span key={tag} className="chip">
+                              <span className="chip-inner !px-3.5 !py-1.5 text-[12px]">{tag}</span>
+                            </span>
+                          ))}
+                        </div>
+                        {sys.url && (
+                          <a
+                            href={sys.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-7 inline-flex items-center gap-2 rounded-full px-4 py-2 text-[13px] font-medium text-white transition-[box-shadow] duration-300 ease-in-out hover:[box-shadow:0_0_1px_1px_#c6ff69]"
+                            style={{ border: '1px solid rgba(255,255,255,0.2)', background: 'linear-gradient(120deg, rgba(30,30,30,0.65), rgba(10,10,10,0.55))' }}
+                          >
+                            {t.built.visit}
+                            <span aria-hidden style={{ display: 'inline-block', transform: 'rotate(-45deg)', color: LIME }}>&rarr;</span>
+                          </a>
+                        )}
                       </div>
-                      {sys.url && (
-                        <Link href={sys.url} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-1.5 text-[12px] font-mono text-ink-light hover:text-ink transition-colors duration-[400ms] ease-m">
-                          {t.built.visit}
-                          <span className="inline-block -rotate-45 group-hover:rotate-0 transition-transform duration-[400ms] ease-m"><ArrowUpRight className="w-3 h-3" /></span>
-                        </Link>
-                      )}
                     </div>
-                  </Rise>
-                </div>
+                  </div>
+                </Reveal>
               )
             })}
           </div>
         </div>
       </section>
 
-      {/* ── OTHER SYSTEMS — ink band, numbered rows ── */}
-      <section className="ground-ink text-white" style={{ background: '#251109' }}>
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-14 md:pt-16">
-          <Rise>
-            <h2 className="font-serif font-light text-[32px] md:text-[40px] leading-[1.0] tracking-[-0.03em] text-white mb-3">{t.others.heading}</h2>
-            <p className="text-[15px] leading-[1.3] text-white/60 pb-10">{t.others.subheading}</p>
-          </Rise>
-        </div>
-        <div className="border-t border-[#57433B]">
-          {otherSystems.map((study, i) => (
-            <div key={study.id} className="group border-b border-[#57433B] transition-colors duration-[400ms] ease-m hover:bg-white">
-              <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-8 md:py-12 grid grid-cols-[2.5rem_1fr_auto] lg:grid-cols-[5rem_1.2fr_1fr_auto] gap-4 lg:gap-8 items-start">
-                <span className="text-[11px] font-bold tracking-[0.04em] pt-2 md:pt-4 text-white/30 group-hover:text-ink/30 transition-colors duration-[400ms] ease-m">0{i + 1}</span>
-                <div>
-                  <h3 className="font-serif font-light text-[28px] md:text-[40px] leading-[1.0] tracking-[-0.03em] text-white group-hover:text-ink transition-colors duration-[400ms] ease-m">{study.title[lang]}</h3>
-                  <span className="mt-3 block text-[10px] font-mono tracking-[0.08em] uppercase text-white/40 group-hover:text-ink/30 transition-colors duration-[400ms] ease-m">{study.badge[lang]} · {study.subtitle[lang]}</span>
-                </div>
-                <p className="hidden lg:block text-[15px] leading-[1.3] text-white/60 group-hover:text-ink-light max-w-[40ch] pt-1.5 transition-colors duration-[400ms] ease-m">{study.description[lang]}</p>
-                <span className="pt-1.5 text-white group-hover:text-ink transition-[color,transform] duration-[400ms] ease-m group-hover:rotate-45">
-                  <ArrowUpRight className="w-5 h-5" />
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* ════════ OTHER SYSTEMS — portrait hairline cards, feature chips ════════ */}
+      <section className="pt-20 md:pt-28">
+        <div className="nv-container">
+          <Reveal>
+            <h2 className="font-bold" style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}>
+              {t.others.heading}
+            </h2>
+          </Reveal>
+          <Reveal delay={0.06}>
+            <p className="mt-4 max-w-[560px] text-[1rem] font-medium" style={{ color: '#b8b8b9' }}>
+              {t.others.subheading}
+            </p>
+          </Reveal>
 
-      {/* ── SPEC / FEATURE LISTS on paper ── */}
-      <section style={{ background: '#FFFFFF' }}>
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-16 md:py-20">
-          <div className="grid grid-cols-1 md:grid-cols-3 md:divide-x md:divide-[#E8E3E0] gap-10 md:gap-0">
+          <div className="mt-10 grid gap-6 md:mt-12 md:grid-cols-3">
             {otherSystems.map((study, i) => (
-              <Rise key={study.id} delay={i * 80} className={i === 0 ? 'md:pr-10' : i === 2 ? 'md:pl-10' : 'md:px-10'}>
-                <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light">0{i + 1} — {study.badge[lang]}</span>
-                <h3 className="font-sans font-medium text-[20px] leading-[1.2] tracking-[-0.01em] text-ink mt-3 mb-1">{study.title[lang]}</h3>
-                <p className="lg:hidden text-[15px] leading-[1.5] text-ink-muted mt-2">{study.description[lang]}</p>
-                <ul className="mt-5">
-                  {study.features[lang].map((feature, fi) => (
-                    <li key={fi} className="border-t border-[#E8E3E0] py-2.5 text-[15px] leading-[1.3] text-ink-muted">{feature}</li>
-                  ))}
-                </ul>
-              </Rise>
+              <Reveal key={study.id} delay={i * 0.07} className="h-full">
+                <div className="nv-edge nv-edge--ring h-full">
+                  <div className="nv-edge-inner flex h-full flex-col p-7 md:p-8">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="text-[13px] font-semibold" style={{ color: LIME }}>0{i + 1}</span>
+                      <span className="text-[11px] font-medium uppercase tracking-[0.12em]" style={{ color: '#909099' }}>
+                        {study.badge[lang]}
+                      </span>
+                    </div>
+                    <h3 className="mt-5 text-[1.375rem] font-semibold text-white" style={{ letterSpacing: '-0.03em', lineHeight: 1.15 }}>
+                      {study.title[lang]}
+                    </h3>
+                    <span className="mt-1 block text-[0.8125rem] font-medium" style={{ color: '#909099' }}>
+                      {study.subtitle[lang]}
+                    </span>
+                    <p className="mt-4 flex-1 text-[0.9375rem] font-medium leading-relaxed" style={{ color: '#b8b8b9' }}>
+                      {study.description[lang]}
+                    </p>
+                    <div className="mt-6 flex flex-wrap gap-2">
+                      {study.features[lang].map((feature, fi) => (
+                        <span key={fi} className="chip">
+                          <span className="chip-inner !px-3.5 !py-1.5 text-[12px]">{feature}</span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── CLOSING CTA on paper-2 ── */}
-      <section className="border-t border-[#E8E3E0]" style={{ background: '#FAF7F5' }}>
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-16 md:py-20">
-          <div className="max-w-2xl">
-            <Rise>
-              <h2 className="font-serif font-light text-[32px] md:text-[40px] leading-[1.0] tracking-[-0.03em] text-ink mb-5">{t.cta.title}</h2>
-            </Rise>
-            <Rise delay={100}>
-              <p className="text-[15px] leading-[1.5] text-ink-muted mb-9">{t.cta.body}</p>
-            </Rise>
-            <Rise delay={200}>
-              <Link href="/#contact" className="btn-cta btn-cta--on-light">
-                <span className="btn-fill-bg" aria-hidden />
-                <span className="btn-fill-label">
-                  {t.cta.button}
-                  <span className="btn-chip" aria-hidden>
-                    <ArrowUpRight className="arrow-a" />
-                    <ArrowUpRight className="arrow-b" />
-                  </span>
-                </span>
-              </Link>
-            </Rise>
+      {/* ════════ STATS BENTO — .7fr 1fr .8fr, metallic CTA in the center ════════ */}
+      <section className="pt-20 md:pt-28">
+        <div className="nv-container">
+          <div className="nv-bento-stats">
+            {/* col 1 row 1 */}
+            <Reveal className="h-full">
+              <div className="nv-edge nv-edge--ring h-full">
+                <div className="nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
+                  <span className="font-semibold" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{stats[0].value}</span>
+                  <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{stats[0].label[lang]}</span>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* center CTA card — spans both rows */}
+            <Reveal delay={0.06} className="nv-bento-center h-full">
+              <div className="nv-edge nv-edge--alt h-full">
+                <div className="nv-edge-inner relative flex h-full flex-col items-center justify-center p-8 text-center md:p-10">
+                  {/* soft lime under-glow at the top edge */}
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute left-1/2 top-0 h-36 w-[360px] -translate-x-1/2 -translate-y-1/2"
+                    style={{ background: 'radial-gradient(closest-side, #c6ff6933, transparent)' }}
+                  />
+                  <Label>{t.nav.contact}</Label>
+                  <h2 className="mt-5 font-bold" style={{ fontSize: 'clamp(1.75rem, 3.2vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}>
+                    {t.cta.title}
+                  </h2>
+                  <p className="mx-auto mt-5 max-w-[420px] text-[0.9375rem] font-medium leading-relaxed" style={{ color: '#b8b8b9' }}>
+                    {t.cta.body}
+                  </p>
+                  <Link href="/#contact" className="btn-metal mt-8">
+                    {t.cta.button}
+                    <span className="nv-arr" aria-hidden>&rarr;</span>
+                  </Link>
+                  <a
+                    href="mailto:contact@landings.md"
+                    className="mt-5 text-[0.875rem] font-medium transition-colors duration-300 hover:!text-white"
+                    style={{ color: '#909099' }}
+                  >
+                    contact@landings.md
+                  </a>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* col 3 row 1 */}
+            <Reveal delay={0.1} className="h-full">
+              <div className="nv-edge nv-edge--ring h-full">
+                <div className="nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
+                  <span className="font-semibold" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{stats[1].value}</span>
+                  <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{stats[1].label[lang]}</span>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* col 1 row 2 */}
+            <Reveal delay={0.14} className="h-full">
+              <div className="nv-edge nv-edge--ring h-full">
+                <div className="nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
+                  <span className="font-semibold" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{stats[2].value}</span>
+                  <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{stats[2].label[lang]}</span>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* col 3 row 2 */}
+            <Reveal delay={0.18} className="h-full">
+              <div className="nv-edge nv-edge--ring h-full">
+                <div className="nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
+                  <span className="font-semibold" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{stats[3].value}</span>
+                  <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{stats[3].label[lang]}</span>
+                </div>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      {/* ── FOOTER on paper ── */}
-      <footer className="border-t border-[#E8E3E0]" style={{ background: '#FFFFFF' }}>
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-10">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
-            <div className="flex items-center gap-6">
-              <Link href="/" className="flex items-center">
-                <Image src="/images/logowhite.png" alt="landings.md" width={16} height={26} className="w-4 h-auto" style={{ filter: 'brightness(0)' }} />
+      {/* ════════ FOOTER ════════ */}
+      <footer style={{ margin: '100px 0 120px' }}>
+        <div className="nv-container">
+          <div
+            className="h-px w-full"
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)' }}
+          />
+          <div className="flex flex-col items-center justify-between gap-6 pt-10 md:flex-row">
+            <div className="flex items-center gap-5">
+              <Link href="/" className="flex items-center gap-3">
+                <Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="h-8 w-auto" />
+                <span className="text-[14px] font-medium text-white">landings.md</span>
               </Link>
-              <div className="flex flex-wrap items-center gap-4 text-[14px] font-medium">
-                <Link href="/portfolio" className="text-ink/70 hover:text-ink hover:underline underline-offset-4 transition-colors">{t.nav.portfolio}</Link>
-                <Link href="/pricing" className="text-ink/70 hover:text-ink hover:underline underline-offset-4 transition-colors">{t.nav.pricing}</Link>
-                <Link href="/solutions" className="text-ink/70 hover:text-ink hover:underline underline-offset-4 transition-colors">{t.nav.solutions}</Link>
-                <Link href="/case-studies" className="text-ink/70 hover:text-ink hover:underline underline-offset-4 transition-colors">{t.nav.caseStudies}</Link>
-              </div>
             </div>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-[13px] text-ink-muted">
-              <Link href="tel:+37368327082" className="hover:text-ink transition-colors">+373 683 27 082</Link>
-              <Link href="mailto:contact@landings.md" className="hover:text-ink transition-colors">contact@landings.md</Link>
-              <span>{t.footer.copy}</span>
+            <div className="flex flex-wrap items-center justify-center gap-5 text-[13px] font-medium">
+              <Link href="/portfolio" className="transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.portfolio}</Link>
+              <Link href="/pricing" className="transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.pricing}</Link>
+              <Link href="/solutions" className="transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.solutions}</Link>
+              <Link href="/case-studies" className="transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.caseStudies}</Link>
+            </div>
+            <div className="flex items-center gap-5 text-[13px] font-medium">
+              <a href="tel:+37368327082" className="transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>+373 683 27 082</a>
+              <a href="mailto:contact@landings.md" className="transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>contact@landings.md</a>
             </div>
           </div>
+          <p className="pt-8 text-center text-[12px] font-medium" style={{ color: '#909099' }}>
+            {t.footer.copy}
+          </p>
         </div>
       </footer>
-
-    </div>
+    </main>
   )
 }

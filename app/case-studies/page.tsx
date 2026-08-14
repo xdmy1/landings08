@@ -5,47 +5,90 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
-import { BrowserFrame } from '@/components/ui/browser-frame'
 
-function useInView(threshold = 0.1) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
+/* ────────────────────────────────────────────────────────────────
+   Case studies — navarro-language skin, landings.md content only.
+   Ground #0d0d0d · lime #c6ff69 at word/ring/glow scale · Geist ·
+   gradient-hairline bento cells · blur-up reveals that replay.
+   ──────────────────────────────────────────────────────────────── */
+
+const LIME = '#c6ff69'
+
+/* Blur-up reveal — IntersectionObserver at 0.1 that REPLAYS:
+   the .nv-hidden class returns when the block scrolls away. */
+function Reveal({
+  children,
+  delay = 0,
+  className = '',
+}: {
+  children: React.ReactNode
+  delay?: number
+  className?: string
+}) {
+  const ref = useRef<HTMLDivElement | null>(null)
+  const [shown, setShown] = useState(false)
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setVisible(true); observer.disconnect() }
-    }, { threshold })
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [threshold])
-  return { ref, visible }
-}
-
-/* RISE — the element-level reveal verb: opacity + 30px rise, one easing */
-function Rise({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) {
-  const { ref, visible } = useInView(0.08)
+    const io = new IntersectionObserver(
+      ([entry]) => setShown(entry.isIntersecting),
+      { threshold: 0.1 }
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
   return (
     <div
       ref={ref}
-      className={`transition-[transform,opacity] duration-[400ms] ease-m ${className}`}
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'translateY(0)' : 'translateY(30px)',
-        transitionDelay: `${delay}ms`,
-      }}
+      className={`nv-reveal ${shown ? '' : 'nv-hidden'} ${className}`}
+      style={delay ? { transitionDelay: `${delay}s` } : undefined}
     >
       {children}
     </div>
   )
 }
 
-const ArrowUpRight = ({ className = "w-4 h-4" }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 17L17 7M7 7h10v10" /></svg>
-)
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-2 text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
+      <span className="dot-lime" />
+      {children}
+    </span>
+  )
+}
 
-/* Language-neutral schedule grid for the GLG study (no screenshot exists).
-   Ink-ground styling: #57433B hairlines, white-alpha fills, sharp corners. */
+/* Lime the final word(s) of a heading — h1/h2 b renders lime via globals.
+   Copy stays verbatim; only the rendering adds the accent. */
+function LimeTail({ text }: { text: string }) {
+  const words = text.split(' ')
+  let i = words.length - 1
+  while (i > 0 && !/[a-z0-9]/i.test(words[i])) i--
+  if (i === 0) return <b>{text}</b>
+  return (
+    <>
+      {words.slice(0, i).join(' ')} <b>{words.slice(i).join(' ')}</b>
+    </>
+  )
+}
+
+/* Big claim line: lime <i> on the leading clause (blockquote i is lime).
+   Leads with the first sentence; falls back to the first comma clause. */
+function ClaimLime({ text }: { text: string }) {
+  const m = text.match(/^(.+?[.!?])\s+\S[\s\S]*$/)
+  let lead: string
+  if (m) {
+    lead = m[1]
+  } else {
+    const ci = text.indexOf(',')
+    lead = ci > 0 ? text.slice(0, ci) : text
+  }
+  return (
+    <>
+      <i>{lead}</i>
+      {text.slice(lead.length)}
+    </>
+  )
+}
 
 type Stat = { value: number, suffix: string, label: string }
 type CaseStudy = {
@@ -436,180 +479,223 @@ export default function CaseStudiesPage() {
   }, [])
 
   return (
-    <div className="min-h-screen text-ink" style={{ background: '#FFFFFF' }}>
+    <main style={{ background: '#0d0d0d' }}>
 
-      <SiteNav contactHref="/#contact" tone="light" />
+      <SiteNav contactHref="/#contact" />
 
-      {/* ── HERO — white opening band ── */}
-      <section className="text-ink" style={{ background: '#FFFFFF' }}>
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 pt-10 md:pt-16 pb-14 md:pb-20">
-          <Rise>
-            <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light block mb-6">{t.hero.label}</span>
-          </Rise>
-          <Rise delay={80}>
-            <h1 className="font-serif font-light text-[clamp(2.75rem,5.2vw,4.35rem)] leading-[0.9] tracking-[-0.06em] text-ink whitespace-pre-line">
-              {t.hero.headline}
+      {/* ════════ HERO ════════ */}
+      <section className="pt-10 md:pt-16">
+        <div className="nv-container">
+          <Reveal>
+            <SectionLabel>{t.hero.label}</SectionLabel>
+          </Reveal>
+          <Reveal delay={0.06}>
+            <h1
+              className="mt-6 max-w-[900px] font-bold"
+              style={{ fontSize: 'clamp(2.625rem, 5.6vw, 4.5rem)', lineHeight: 1.01, letterSpacing: '-0.055em' }}
+            >
+              {t.hero.headline.split('\n').map((line, i) => (
+                <span key={i} className="block">
+                  {i === 0 ? <LimeTail text={line} /> : line}
+                </span>
+              ))}
             </h1>
-          </Rise>
-          <Rise delay={160}>
-            <p className="mt-8 text-[17px] leading-[1.3] text-ink-muted max-w-xl">{t.hero.sub}</p>
-          </Rise>
+          </Reveal>
+          <Reveal delay={0.12}>
+            <p
+              className="mt-7 max-w-[640px] font-medium"
+              style={{ color: '#b8b8b9', fontSize: '1.125rem', lineHeight: 1.4, letterSpacing: '-0.02em' }}
+            >
+              {t.hero.sub}
+            </p>
+          </Reveal>
         </div>
       </section>
 
       {caseConfigs.map((c) => {
         const study = t[c.key]
         return (
-          <React.Fragment key={c.key}>
+          <section key={c.key} className="pt-20 md:pt-28">
+            <div className="nv-container">
 
-            {/* ── Study header — ink band ── */}
-            <section className="ground-ink text-white" style={{ background: '#251109' }}>
-              <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-16 md:py-20">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
-                  <div className="lg:col-span-7">
-                    <Rise>
-                      <p className="text-[11px] font-bold tracking-[0.04em] uppercase mb-5">
-                        <span className="text-white/30">{c.num}</span>
-                        <span className="text-white/40 ml-4">{study.tag}</span>
-                      </p>
-                    </Rise>
-                    <Rise delay={80}>
-                      <h2 className="font-serif font-light text-[40px] md:text-[clamp(2.5rem,4vw,3.25rem)] leading-[1.0] tracking-[-0.03em] text-white">{study.title}</h2>
-                      <p className="mt-4 text-[17px] leading-[1.3] text-white/60 max-w-xl">{study.subtitle}</p>
-                    </Rise>
-                    {/* Two-metric pair — the study lead */}
-                    <Rise delay={160}>
-                      <div className="mt-10 grid grid-cols-2 border-t border-[#57433B] max-w-md">
-                        {study.stats.slice(0, 2).map((stat, i) => (
-                          <div key={i} className={`pt-6 ${i === 0 ? 'pr-6 border-r border-[#57433B]' : 'pl-6'}`}>
-                            <p className="font-sans font-medium text-[40px] leading-[1.05] tracking-[-0.02em] text-white">{stat.value}{stat.suffix}</p>
-                            <p className="text-[11px] font-bold tracking-[0.04em] uppercase text-white/40 mt-3">{stat.label}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </Rise>
-                  </div>
-                  <Rise delay={160} className="lg:col-span-5">
-                    <BrowserFrame domain={c.domain} ground="ink">
-                      <div className="aspect-[16/10] overflow-hidden">
-                        <Image src={c.image} alt={c.alt ?? study.title} width={1100} height={688} quality={88} className="w-full h-full object-cover object-top" />
-                      </div>
-                    </BrowserFrame>
-                  </Rise>
-                </div>
-              </div>
-            </section>
-
-            {/* ── Study body — paper ── */}
-            <section className="text-ink" style={{ background: '#FFFFFF' }}>
-              <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-16 md:py-20">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
-                  <Rise>
-                    <div>
-                      <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light block mb-3">{t.labels.challenge}</span>
-                      <p className="text-[15px] leading-[1.5] text-ink-muted">{study.challenge}</p>
-                    </div>
-                  </Rise>
-                  <Rise delay={80}>
-                    <div>
-                      <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light block mb-3">{t.labels.approach}</span>
-                      <p className="text-[15px] leading-[1.5] text-ink-muted">{study.approach}</p>
-                    </div>
-                  </Rise>
-                </div>
-
-                <div className="mt-12 md:mt-14 pt-10 border-t border-[#E8E3E0] grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-                  <Rise className="lg:col-span-7">
-                    <span className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light block mb-4">{t.labels.results}</span>
-                    <p className="font-serif font-light italic text-[21px] leading-[1.35] text-ink max-w-[46ch]">{study.results}</p>
+              {/* study header — big claim with lime <i> + lime-glow media */}
+              <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
+                <div className="lg:col-span-7">
+                  <Reveal>
+                    <span className="inline-flex flex-wrap items-center gap-3 text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
+                      <span className="dot-lime" />
+                      <span style={{ color: LIME }}>{c.num}</span>
+                      <span>{study.tag}</span>
+                    </span>
+                  </Reveal>
+                  <Reveal delay={0.06}>
+                    <h2 className="mt-5 font-bold" style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}>
+                      {study.title}
+                    </h2>
+                    <p
+                      className="mt-4 max-w-[560px] font-medium"
+                      style={{ color: '#b8b8b9', fontSize: '1.0625rem', lineHeight: 1.4, letterSpacing: '-0.02em' }}
+                    >
+                      {study.subtitle}
+                    </p>
+                  </Reveal>
+                  <Reveal delay={0.12}>
+                    <span className="mt-8 block text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
+                      {t.labels.results}
+                    </span>
+                    <blockquote
+                      className="mt-4 max-w-[600px] font-medium text-white"
+                      style={{ fontSize: 'clamp(1.375rem, 2.3vw, 1.75rem)', lineHeight: 1.3, letterSpacing: '-1.34px' }}
+                    >
+                      <ClaimLime text={study.results} />
+                    </blockquote>
                     {c.url && (
-                      <Link href={c.url} target="_blank" rel="noopener noreferrer" className="group mt-7 inline-flex items-center gap-2 text-[14px] font-medium text-ink hover:underline underline-offset-4">
+                      <a
+                        href={c.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-7 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[13px] font-medium text-white transition-[box-shadow] duration-300 ease-in-out hover:[box-shadow:0_0_1px_1px_#c6ff69]"
+                        style={{ border: '1px solid rgba(255,255,255,0.2)' }}
+                      >
                         {t.labels.visit} {c.domain}
-                        <span className="inline-block transition-transform duration-[400ms] ease-m group-hover:rotate-45">
-                          <ArrowUpRight className="w-4 h-4" />
-                        </span>
-                      </Link>
+                        <span aria-hidden style={{ display: 'inline-block', transform: 'rotate(-45deg)', color: LIME }}>&rarr;</span>
+                      </a>
                     )}
-                  </Rise>
-                  <Rise delay={80} className="lg:col-span-5">
-                    <div className="grid grid-cols-2 border border-[#E8E3E0]">
-                      {study.stats.slice(2, 4).map((stat, i) => (
-                        <div key={i} className={`p-6 ${i === 0 ? 'border-r border-[#E8E3E0]' : ''}`}>
-                          <p className="font-sans font-medium text-[40px] leading-[1.05] tracking-[-0.02em] text-ink">{stat.value}{stat.suffix}</p>
-                          <p className="text-[11px] font-bold tracking-[0.04em] uppercase text-ink-light mt-3">{stat.label}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </Rise>
+                  </Reveal>
                 </div>
-
-                {/* Evidence strip — real analytics shots */}
-                {c.evidence && study.captions && (
-                  <div className={`mt-12 grid grid-cols-1 sm:grid-cols-2 ${c.evidence.length === 3 ? 'lg:grid-cols-3' : ''} gap-5`}>
-                    {c.evidence.map((src, ei) => (
-                      <Rise key={ei} delay={ei * 80}>
-                        <div className="aspect-[16/9] flex items-center justify-center p-3" style={{ background: '#FFFFFF', border: '1px solid rgba(37,17,9,0.1)' }}>
-                          <Image src={src} alt={study.captions?.[ei] ?? ""} width={720} height={405} quality={88} className="max-w-full max-h-full w-auto h-auto object-contain" />
-                        </div>
-                        <p className="mt-3 text-[12px] leading-[1.4] text-ink-light">{study.captions?.[ei]}</p>
-                      </Rise>
-                    ))}
+                <Reveal delay={0.12} className="lg:col-span-5">
+                  <div
+                    className="relative overflow-hidden rounded-[24px]"
+                    style={{
+                      border: '1px solid rgba(73,73,73,0.6)',
+                      boxShadow: '0 0 50px -9px rgba(198,255,105,0.3)',
+                      aspectRatio: '16 / 10',
+                    }}
+                  >
+                    <Image src={c.image} alt={c.alt ?? study.title} fill sizes="(min-width: 1024px) 520px, 92vw" className="object-cover object-top" />
                   </div>
-                )}
+                </Reveal>
               </div>
-            </section>
 
-          </React.Fragment>
+              {/* challenge / approach — gradient-hairline cells */}
+              <div className="mt-10 grid gap-5 md:grid-cols-2">
+                <Reveal className="h-full">
+                  <div className="nv-edge h-full">
+                    <div className="nv-edge-inner h-full p-7 md:p-8">
+                      <span className="text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>{t.labels.challenge}</span>
+                      <p className="mt-4 text-[0.9375rem] font-medium leading-relaxed" style={{ color: '#b8b8b9' }}>{study.challenge}</p>
+                    </div>
+                  </div>
+                </Reveal>
+                <Reveal delay={0.06} className="h-full">
+                  <div className="nv-edge nv-edge--alt h-full">
+                    <div className="nv-edge-inner h-full p-7 md:p-8">
+                      <span className="text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>{t.labels.approach}</span>
+                      <p className="mt-4 text-[0.9375rem] font-medium leading-relaxed" style={{ color: '#b8b8b9' }}>{study.approach}</p>
+                    </div>
+                  </div>
+                </Reveal>
+              </div>
+
+              {/* metrics — gradient-hairline bento cells */}
+              <div className="mt-5 grid grid-cols-2 gap-5 lg:grid-cols-4">
+                {study.stats.map((stat, i) => (
+                  <Reveal key={stat.label} delay={i * 0.05} className="h-full">
+                    <div className="nv-edge nv-edge--ring h-full">
+                      <div className="nv-edge-inner flex h-full min-h-[150px] flex-col justify-center p-6 text-center">
+                        <span className="font-semibold" style={{ fontSize: 'clamp(2rem, 3vw, 2.75rem)', letterSpacing: '-0.04em', lineHeight: 1 }}>
+                          {stat.value}{stat.suffix}
+                        </span>
+                        <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{stat.label}</span>
+                      </div>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+
+              {/* evidence — real analytics in lime-glow media cards */}
+              {c.evidence && study.captions && (
+                <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {c.evidence.map((src, ei) => (
+                    <Reveal key={src} delay={ei * 0.06}>
+                      <div
+                        className="relative overflow-hidden rounded-[20px]"
+                        style={{
+                          border: '1px solid rgba(73,73,73,0.6)',
+                          boxShadow: '0 0 50px -9px rgba(198,255,105,0.3)',
+                          aspectRatio: '16 / 10',
+                          background: '#0f0f0f',
+                        }}
+                      >
+                        <Image src={src} alt={study.captions?.[ei] ?? ''} fill sizes="(min-width: 1024px) 420px, 92vw" className="object-cover object-left-top" />
+                      </div>
+                      <p className="mt-3 text-[0.8125rem] font-medium leading-relaxed" style={{ color: '#909099' }}>{study.captions?.[ei]}</p>
+                    </Reveal>
+                  ))}
+                </div>
+              )}
+
+            </div>
+          </section>
         )
       })}
 
-      {/* ── CTA — paper-2 ── */}
-      <section className="text-ink" style={{ background: '#FAF7F5' }}>
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-16 md:py-20">
-          <Rise>
-            <h2 className="font-serif font-light text-[clamp(1.75rem,3.4vw,2.5rem)] leading-[1.0] tracking-[-0.03em] text-ink">{t.cta.headline}</h2>
-          </Rise>
-          <Rise delay={80}>
-            <p className="mt-5 text-[15px] leading-[1.3] text-ink-muted max-w-md">{t.cta.sub}</p>
-          </Rise>
-          <Rise delay={160}>
-            <div className="mt-9">
-              <Link href="/#contact" className="btn-cta btn-cta--on-light">
-                <span className="btn-fill-bg" aria-hidden />
-                <span className="btn-fill-label">
-                  {t.cta.button}
-                  <span className="btn-chip" aria-hidden>
-                    <ArrowUpRight className="arrow-a" />
-                    <ArrowUpRight className="arrow-b" />
-                  </span>
-                </span>
-              </Link>
+      {/* ════════ CTA — metallic pill on a hairline card ════════ */}
+      <section className="pt-20 md:pt-28">
+        <div className="nv-container">
+          <Reveal>
+            <div className="nv-edge">
+              <div className="nv-edge-inner relative p-8 text-center md:p-14">
+                {/* soft lime under-glow at the top edge */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute left-1/2 top-0 h-40 w-[440px] -translate-x-1/2 -translate-y-1/2"
+                  style={{ background: 'radial-gradient(closest-side, #c6ff6933, transparent)' }}
+                />
+                <h2 className="font-bold" style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}>
+                  <LimeTail text={t.cta.headline} />
+                </h2>
+                <p className="mx-auto mt-4 max-w-[480px] text-[1rem] font-medium" style={{ color: '#b8b8b9' }}>{t.cta.sub}</p>
+                <div className="mt-8 flex justify-center">
+                  <Link href="/#contact" className="btn-metal">
+                    {t.cta.button}
+                    <span className="nv-arr" aria-hidden>&rarr;</span>
+                  </Link>
+                </div>
+              </div>
             </div>
-          </Rise>
+          </Reveal>
         </div>
       </section>
 
-      {/* ── FOOTER — paper ── */}
-      <footer className="text-ink border-t border-[#E8E3E0]" style={{ background: '#FFFFFF' }}>
-        <div className="max-w-[1200px] mx-auto px-6 lg:px-10 py-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
-          <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center">
-              <Image src="/images/logowhite.png" alt="landings.md" width={16} height={26} className="w-4 h-auto" style={{ filter: 'brightness(0)' }} />
-            </Link>
-            <div className="hidden md:flex items-center gap-4 text-[14px] font-medium">
-              <Link href="/portfolio" className="text-ink-muted hover:text-ink hover:underline underline-offset-4 transition-colors duration-[400ms] ease-m">{t.nav.portfolio}</Link>
-              <Link href="/pricing" className="text-ink-muted hover:text-ink hover:underline underline-offset-4 transition-colors duration-[400ms] ease-m">{t.nav.pricing}</Link>
-              <Link href="/solutions" className="text-ink-muted hover:text-ink hover:underline underline-offset-4 transition-colors duration-[400ms] ease-m">{t.nav.solutions}</Link>
-              <Link href="/case-studies" className="text-ink-muted hover:text-ink hover:underline underline-offset-4 transition-colors duration-[400ms] ease-m">{t.nav.caseStudies}</Link>
+      {/* ════════ FOOTER ════════ */}
+      <footer className="pb-16 pt-24 md:pb-24">
+        <div className="nv-container">
+          <div
+            className="h-px w-full"
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)' }}
+          />
+          <div className="flex flex-col items-start justify-between gap-6 pt-10 md:flex-row md:items-center">
+            <div className="flex items-center gap-7">
+              <Link href="/" className="flex items-center gap-3">
+                <Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="h-8 w-auto" />
+                <span className="text-[14px] font-medium text-white">landings.md</span>
+              </Link>
+              <div className="hidden items-center gap-5 text-[13px] font-medium md:flex">
+                <Link href="/portfolio" className="transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.portfolio}</Link>
+                <Link href="/pricing" className="transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.pricing}</Link>
+                <Link href="/solutions" className="transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.solutions}</Link>
+                <Link href="/case-studies" className="transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.caseStudies}</Link>
+              </div>
             </div>
-          </div>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-[13px] text-ink-muted">
-            <Link href="tel:+37368327082" className="hover:text-ink transition-colors duration-[400ms] ease-m">+373 683 27 082</Link>
-            <span>{t.footer.copy}</span>
+            <div className="flex flex-col gap-2 text-[13px] font-medium sm:flex-row sm:items-center sm:gap-5" style={{ color: '#909099' }}>
+              <a href="tel:+37368327082" className="transition-colors duration-300 hover:!text-white">+373 683 27 082</a>
+              <span>{t.footer.copy}</span>
+            </div>
           </div>
         </div>
       </footer>
 
-    </div>
+    </main>
   )
 }

@@ -2,179 +2,387 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── mirabel-adaptation tokens ──
-   ink is the ONLY dark; every grey is an alpha step of it.
-   Hairlines are solid literal hexes re-derived per background. */
+/* ────────────────────────────────────────────────────────────────
+   navarro-clone token system — landings.md
+   Ground #0d0d0d, ONE lime accent #c6ff69, gradient hairlines,
+   metallic silver primaries, blur-up reveals. Geist only.
+   ──────────────────────────────────────────────────────────────── */
 @layer base {
   :root {
-    --ink: #251109;
-    --paper: #FFFFFF;
-    --paper-2: #FAF7F5;
-    --accent: #E8825A;
-    --accent-shade: #C96540;
-    --hairline-light: #E8E3E0;
-    --hairline-dark: #57433B;
-    --chrome-dark: #36241D;
-    --ease-m: cubic-bezier(0.6, 0, 0.4, 1);
+    --nv-bg: #0d0d0d;
+    --nv-curtain: #0f0f0f;
+    --lime: #c6ff69;
+    --nv-text: #ffffff;
+    --nv-soft: #e0e0e2;
+    --nv-quote: #b8b8b9;
+    --nv-muted: #909099;
+    --nv-headersub: #a4a4a4;
+    --nv-header-hairline: rgba(198, 198, 198, 0.15);
+    --nv-hairline: linear-gradient(140deg, rgba(255, 255, 255, 0.15) 0%, rgba(31, 31, 31, 0.8) 24%, rgba(255, 255, 255, 0.13) 80%, rgba(31, 31, 31, 0) 100%);
+    --nv-chipline: linear-gradient(90deg, #cccccc1a, #4545451a 59%, #6666661a);
+    --nv-surface: linear-gradient(120deg, #191919 0%, #0b0b0b 90%);
+    --nv-surface-alt: linear-gradient(-140deg, #191919 0%, #0b0b0b 90%);
+    --ease-nv: ease-in-out;
 
-    --background: 17 66% 9%;
+    /* shadcn HSL vars re-derived on the navarro ground */
+    --background: 0 0% 5%;
     --foreground: 0 0% 100%;
-    --card: 0 0% 100%;
-    --card-foreground: 17 66% 9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 17 66% 9%;
-    --primary: 17 66% 9%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 20 20% 96%;
-    --secondary-foreground: 17 66% 9%;
-    --muted: 20 20% 96%;
-    --muted-foreground: 17 66% 30%;
-    --accent-hsl: 17 76% 63%;
-    --accent-foreground: 17 66% 9%;
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 5%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 240 4% 58%;
+    --accent-hsl: 84 100% 71%;
+    --accent-foreground: 0 0% 5%;
     --destructive: 0 63% 31%;
     --destructive-foreground: 0 0% 100%;
-    --border: 20 15% 90%;
-    --input: 20 15% 90%;
-    --ring: 17 66% 9%;
-    --radius: 0px;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 84 100% 71%;
+    --radius: 30px;
   }
 }
 
-* {
-  border-color: var(--hairline-light);
+html {
+  background: var(--nv-bg);
 }
 
 body {
-  color: #FFFFFF;
-  background: var(--ink);
-  font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: 17px;
-  line-height: 1.3;
-}
-
-/* Display face — Inria Serif Light, mirabel's identity, re-tried in the
-   context it was designed for: mostly dark-ink-on-light, huge, at 0.9
-   leading. Never below 24px on light grounds or 40px on dark. */
-.font-serif {
-  font-family: 'Inria Serif', Georgia, serif;
+  color: var(--nv-text);
+  background: var(--nv-bg);
+  font-family: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-weight: 300;
-  letter-spacing: -0.03em;
-}
-
-.font-sans {
-  font-family: 'Satoshi', system-ui, sans-serif;
-}
-
-.font-mono {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-}
-
-/* Dark sections: antialias to stop light-on-dark bloom eating the serif */
-.ground-ink {
+  font-size: 1rem;
+  line-height: 1.4;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-  .ease-m {
-    transition-timing-function: var(--ease-m);
-  }
+strong, b { font-weight: 500; }
+
+/* Lime word inside headings — navarro's h1 b pattern */
+h1 b, h2 b, h3 b {
+  color: var(--lime);
+  font-weight: inherit;
+  font-style: normal;
 }
 
-/* ── CTA block — mirabel button anatomy ──
-   Sharp accent block, dark icon chip with a stacked arrow swap, and a
-   light sheet that slides up from the bottom edge on hover. */
-.btn-cta {
-  position: relative;
-  overflow: hidden;
-  display: inline-flex;
-  align-items: center;
-  gap: 16px;
-  background: var(--accent);
-  color: var(--ink);
-  padding: 20px 24px;
-  font-family: 'Satoshi', system-ui, sans-serif;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 1;
+/* Lime emphasis inside real-claim quotes */
+blockquote i, .nv-quote-lime i {
+  color: var(--lime);
+  font-style: italic;
 }
-.btn-cta .btn-fill-bg {
-  position: absolute;
-  inset: 0;
-  background: var(--paper);
-  transform: translateY(101%);
-  transition: transform 0.4s var(--ease-m);
-  pointer-events: none;
-}
-.btn-cta:hover .btn-fill-bg {
-  transform: translateY(0);
-}
-.btn-cta .btn-fill-label {
-  position: relative;
-  z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  gap: 16px;
-}
-.btn-cta .btn-chip {
-  position: relative;
-  width: 40px;
-  height: 40px;
-  margin: -10px -4px -10px 0;
-  background: var(--ink);
-  overflow: hidden;
-  flex-shrink: 0;
-}
-.btn-cta .btn-chip svg {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 14px;
-  height: 14px;
-  color: #FFFFFF;
-  transition: transform 0.4s var(--ease-m), opacity 0.4s var(--ease-m);
-}
-.btn-cta .btn-chip .arrow-a { transform: translate(-50%, -50%); opacity: 1; }
-.btn-cta .btn-chip .arrow-b { transform: translate(calc(-50% - 10px), calc(-50% + 10px)); opacity: 0; }
-.btn-cta:hover .btn-chip .arrow-a { transform: translate(calc(-50% + 10px), calc(-50% - 10px)); opacity: 0; }
-.btn-cta:hover .btn-chip .arrow-b { transform: translate(-50%, -50%); opacity: 1; }
-
-/* small variant — nav */
-.btn-cta--sm {
-  padding: 10px 14px;
-  font-size: 13px;
-  gap: 0;
-}
-
-/* ink variant — submit on the ember flood */
-.btn-cta--ink {
-  background: var(--ink);
-  color: #FFFFFF;
-}
-.btn-cta--ink .btn-chip { background: var(--accent); }
-.btn-cta--ink .btn-chip svg { color: var(--ink); }
-.btn-cta--ink:hover .btn-fill-label { color: var(--ink); }
-.btn-cta--ink .btn-fill-label { transition: color 0.4s var(--ease-m); }
-
-/* on light grounds the fill must be ink and the label flips to white */
-.btn-cta--on-light .btn-fill-bg { background: var(--ink); }
-.btn-cta--on-light .btn-fill-label { transition: color 0.4s var(--ease-m); }
-.btn-cta--on-light:hover .btn-fill-label { color: #FFFFFF; }
 
 ::selection {
-  background: var(--ink);
-  color: #FFFFFF;
-}
-.ground-ink ::selection,
-.ground-ink::selection {
-  background: #FFFFFF;
-  color: var(--ink);
+  background: var(--lime);
+  color: #0d0d0d;
 }
 
-/* Mobile nav overlay — solid ink, no blur */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 1px 1px var(--lime);
+  border-radius: 4px;
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .ease-nv { transition-timing-function: var(--ease-nv); }
+}
+
+/* ── Container — navarro 1300px / 12px gutters ── */
+.nv-container {
+  max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+/* ── Gradient hairline card (padding-trick) ──
+   <div class="nv-edge"><div class="nv-edge-inner">…</div></div> */
+.nv-edge {
+  padding: 1px;
+  border-radius: 30px;
+  background: var(--nv-hairline);
+  overflow: hidden;
+}
+.nv-edge-inner {
+  border-radius: inherit;
+  background: var(--nv-surface);
+  height: 100%;
+  overflow: hidden;
+}
+.nv-edge--pill { border-radius: 999px; }
+.nv-edge--alt > .nv-edge-inner { background: var(--nv-surface-alt); }
+/* lime hover ring — apply to the wrapper */
+.nv-edge--ring { transition: box-shadow 0.3s ease-in-out; }
+.nv-edge--ring:hover { box-shadow: 0 0 1px 1px var(--lime); }
+
+/* ── Metallic silver pill — the one primary button ── */
+.btn-metal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(180deg, #cdcdcd, #7a7a7a 48%, #6d6d6d);
+  color: #000;
+  border-radius: 999px;
+  padding: 14px 28px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 10px 26px rgba(0, 0, 0, 0.45);
+  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+.btn-metal:hover {
+  box-shadow: inset 0 -0.3px 0 1px var(--lime), 0 0 8px var(--lime);
+}
+.btn-metal:active { transform: scale(0.98); }
+.btn-metal--sm { padding: 10px 20px; font-size: 0.875rem; }
+
+/* header-CTA arrow: slides in from left -20px rotate(-135deg) → 0 */
+.btn-metal .nv-arr {
+  display: inline-block;
+  width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateX(-20px) rotate(-135deg);
+  transition: width 0.4s ease-out, opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+.btn-metal:hover .nv-arr {
+  width: 1em;
+  opacity: 1;
+  transform: translateX(0) rotate(0deg);
+}
+
+/* ── Gradient-border glass chip ──
+   <span class="chip"><span class="chip-inner">…</span></span> */
+.chip {
+  display: inline-block;
+  padding: 2px;
+  border-radius: 999px;
+  background: var(--nv-chipline);
+}
+.chip-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: inherit;
+  background: #0d0d0d;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  padding: 10px 18px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--nv-soft);
+  white-space: nowrap;
+}
+/* emphasized real-fact chip: lime-tinted glass with under-glow */
+.chip--em {
+  padding: 0;
+  background: none;
+  border: 2px solid #4d612d;
+  box-shadow: 0 14px 44px -8px rgba(198, 255, 105, 0.28);
+}
+.chip--em .chip-inner {
+  background: #181c12;
+  color: #fff;
+  padding: 12px 22px;
+}
+.dot-lime {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--lime);
+  box-shadow: 0 0 10px rgba(198, 255, 105, 0.8);
+  flex: none;
+  display: inline-block;
+}
+
+/* ── Fluted glass band — ribbed backdrop the H1 sits on ── */
+.fluted {
+  position: relative;
+  -webkit-backdrop-filter: blur(30px);
+  backdrop-filter: blur(30px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background-image:
+    linear-gradient(90deg, #ffffff05, #0003 10%),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 80px 100%;
+}
+/* 1px specular line across the top edge */
+.fluted::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, #ffffff05, #ffffff1a, #ffffff05);
+  pointer-events: none;
+}
+/* 90px fade into the ground at the bottom */
+.fluted::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 90px;
+  background: linear-gradient(180deg, transparent, #0d0d0d);
+  pointer-events: none;
+}
+
+/* ── Blur-up reveal pair (0.8s ease-in-out, replays) ──
+   JS toggles .nv-hidden off when intersecting, back on when away. */
+.nv-reveal {
+  transition: opacity 0.8s ease-in-out, filter 0.8s ease-in-out, transform 0.8s ease-in-out;
+  will-change: opacity, filter, transform;
+}
+.nv-hidden {
+  opacity: 0;
+  filter: blur(10px);
+  transform: translateY(20px);
+}
+
+/* ── Floating drift — desynced irrational durations ── */
+@keyframes nv-drift-1 {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(2px, -6px, 0) rotate(-0.7deg) scale(1.035); }
+}
+@keyframes nv-drift-2 {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(-3px, -5px, 0) rotate(0.4deg); }
+}
+@keyframes nv-drift-3 {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(1px, -8px, 0) rotate(-0.4deg) scale(1.02); }
+}
+@keyframes nv-drift-4 {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(-2px, -6px, 0) rotate(0.3deg) scale(1.025); }
+}
+.nv-float-1 { animation: nv-drift-1 3.73s linear -1.1s infinite; }
+.nv-float-2 { animation: nv-drift-2 4.61s linear -2.7s infinite; }
+.nv-float-3 { animation: nv-drift-3 5.27s linear -0.8s infinite; }
+.nv-float-4 { animation: nv-drift-4 6.19s linear -3.3s infinite; }
+
+/* ── Client logo row — 30% → 80% ── */
+.nv-logo {
+  opacity: 0.3;
+  filter: brightness(0) invert(1);
+  transition: opacity 0.3s ease-in-out;
+}
+.nv-logo:hover { opacity: 0.8; }
+
+/* ── Slider chrome ── */
+.nv-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.nv-scroll::-webkit-scrollbar { display: none; }
+.nv-navbtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--nv-surface);
+  color: #fff;
+  transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+.nv-navbtn:hover {
+  background: #e8e8e8;
+  color: #0d0d0d;
+}
+
+/* ── Fixed lime floating CTA pill ── */
+.nv-pill {
+  position: fixed;
+  left: 50%;
+  bottom: 4%;
+  transform: translateX(-50%);
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: min(433px, calc(100vw - 32px));
+  min-height: 60px;
+  padding: 8px 8px 8px 22px;
+  border-radius: 999px;
+  background: #c6ff6933;
+  border: 1px solid var(--lime);
+  box-shadow: 0 0 40px #c6ff6933;
+  -webkit-backdrop-filter: blur(60px);
+  backdrop-filter: blur(60px);
+  color: #fff;
+  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+.nv-pill:hover { box-shadow: 0 0 56px rgba(198, 255, 105, 0.45); }
+.nv-pill:active { transform: translateX(-50%) scale(0.98); }
+.nv-pill-arrow {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  margin-left: auto;
+  border-radius: 999px;
+  background: var(--lime);
+  color: #0d0d0d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease-in-out;
+}
+.nv-pill:hover .nv-pill-arrow { transform: rotate(45deg); }
+
+/* ── Stats bento — .7fr 1fr .8fr, center spans both rows ── */
+.nv-bento-stats {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 900px) {
+  .nv-bento-stats {
+    grid-template-columns: 0.7fr 1fr 0.8fr;
+    grid-auto-rows: minmax(250px, auto);
+  }
+  .nv-bento-center {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}
+
+/* ── About bento — named areas ── */
+.nv-bento-about {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 900px) {
+  .nv-bento-about {
+    grid-template-columns: 1fr 1.2fr 1.1fr;
+    grid-template-rows: 1.8fr 0.6fr 1.2fr;
+    grid-template-areas:
+      "div1 div3 div3"
+      "div1 div4 div4"
+      "div2 div5 div5";
+  }
+  .nv-a1 { grid-area: div1; }
+  .nv-a2 { grid-area: div2; }
+  .nv-a3 { grid-area: div3; }
+  .nv-a4 { grid-area: div4; }
+  .nv-a5 { grid-area: div5; }
+}
+
+/* ── Mobile nav overlay ── */
 @keyframes mobileNavIn {
   from { opacity: 0; }
   to   { opacity: 1; }
@@ -183,9 +391,13 @@ body {
   from { opacity: 0; transform: translateY(22px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.mobile-nav-overlay {
-  animation: mobileNavIn 0.4s var(--ease-m) forwards;
-}
-.mobile-nav-link {
-  animation: mobileNavLinkIn 0.4s var(--ease-m) both;
+.mobile-nav-overlay { animation: mobileNavIn 0.4s ease-in-out forwards; }
+.mobile-nav-link { animation: mobileNavLinkIn 0.4s ease-in-out both; }
+
+/* ── Reduced motion: final states, no drift ── */
+@media (prefers-reduced-motion: reduce) {
+  .nv-reveal { transition: none; }
+  .nv-hidden { opacity: 1; filter: none; transform: none; }
+  .nv-float-1, .nv-float-2, .nv-float-3, .nv-float-4 { animation: none; }
+  .mobile-nav-overlay, .mobile-nav-link { animation-duration: 0.01s; }
 }
