@@ -74,8 +74,7 @@ function MarkedQuote({ text }: { text: string }) {
 
 function Label({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-2 text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
-      <span className="dot-lime" />
+    <span className="inline-flex items-center text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
       {children}
     </span>
   )
@@ -83,13 +82,24 @@ function Label({ children }: { children: React.ReactNode }) {
 
 /* ── Fixed data: projects, accents, logos ── */
 const PROJECTS_META = [
-  { key: 'davo',     name: 'Davo.md',           url: 'davo.md',          accent: '#2456A6', shot: '/images/shot-davo.jpg',     logo: '/images/logos/davo.png' },
-  { key: 'interbus', name: 'Inter-Bus',         url: 'inter-bus.md',     accent: '#D23B33', shot: '/images/shot-interbus.jpg', logo: '/images/logos/interbus.png' },
-  { key: 'cmiea',    name: 'CMIEA.md',          url: 'cmiea.md',         accent: '#3E7BFA', shot: '/images/shot-cmiea.jpg',    logo: '/images/logos/cmiea.png' },
-  { key: 'glg',      name: 'Scoala Auto GLG',   url: 'scoalaautoglg.com', accent: '#2f7df6', shot: '/images/shot-glg.jpg',      logo: '/images/logos/glg.png' },
+  { key: 'davo',          name: 'Davo.md',         url: 'davo.md',           accent: '#2456A6', shot: '/images/tall-davo.jpg' },
+  { key: 'interbus',      name: 'Inter-Bus',       url: 'inter-bus.md',      accent: '#D23B33', shot: '/images/tall-interbus.jpg' },
+  { key: 'cmiea',         name: 'CMIEA.md',        url: 'cmiea.md',          accent: '#3E7BFA', shot: '/images/tall-cmiea.jpg' },
+  { key: 'glg',           name: 'Scoala Auto GLG', url: 'scoalaautoglg.com', accent: '#2f7df6', shot: '/images/tall-glg.jpg' },
+  { key: 'radx',          name: 'RADX Cooling',    url: 'radx.solutions',    accent: '#E23B3B', shot: '/images/tall-radx.jpg' },
+  { key: 'eliteprotocol', name: 'Elite Protocol',  url: 'eliteprotocol.md',  accent: '#C9A227', shot: '/images/tall-eliteprotocol.jpg' },
+  { key: 'rizzaclassic',  name: 'Rizza Classic',   url: 'rizzaclassic.com',  accent: '#B98F5A', shot: '/images/tall-rizzaclassic.jpg' },
+  { key: 'autohuse',      name: 'Auto Huse',       url: 'autohuse.md',       accent: '#F08A24', shot: '/images/tall-autohuse.jpg' },
 ] as const
 
-const LOGO_ROW = ['davo', 'interbus', 'cmiea', 'glg', 'radx', 'rizzaclassic', 'autohuse', 'udc', 'eurogard', 'droppack'] as const
+const LOGO_ROW = [
+  { k: 'davo', h: 'h-5 md:h-6' },
+  { k: 'interbus', h: 'h-6 md:h-7' },
+  { k: 'cmiea', h: 'h-8 md:h-9' },
+  { k: 'radx', h: 'h-5 md:h-6' },
+  { k: 'rizzaclassic', h: 'h-7 md:h-8' },
+  { k: 'glg', h: 'h-9 md:h-10' },
+] as const
 
 /* ── 5-language copy — real facts only, no diacritics ── */
 const T = {
@@ -112,6 +122,10 @@ const T = {
         interbus: { caption: 'Auto parts · Store + ERP',      line: 'Store + ERP running the whole business' },
         cmiea:    { caption: 'Education · Platform',          line: "The municipality's education platform" },
         glg:      { caption: 'Driving school · Bookings',     line: '15,000+ graduates, online scheduling' },
+        radx:          { caption: 'Industrial cooling · Site',  line: 'Page 1 on Google for industrial cooling' },
+        eliteprotocol: { caption: 'Etiquette · Premium site',   line: 'A premium brand, matched pixel for pixel' },
+        rizzaclassic:  { caption: 'Restoration · Italy',        line: 'Italian classics, international clients' },
+        autohuse:      { caption: 'Custom covers · Orders',     line: 'Made-to-order covers, ordered online' },
       },
     },
     proof: {
@@ -148,6 +162,7 @@ const T = {
         { n: '03', t: 'Growth', b: 'SEO, ads, ongoing optimisation' },
       ],
       contactLabel: 'Contact',
+      avail: 'Available for new projects',
     },
     contact: {
       label: 'Contact',
@@ -155,7 +170,7 @@ const T = {
       sub: "Tell us about your business. We'll show you how to rank on Google, what to automate, and what it would cost.",
       form: { name: 'Name', email: 'Email', message: 'Tell us about your business...', send: 'Send message' },
     },
-    footer: { tagline: 'We build the site. We take it to the top. We automate the rest.', copy: '© 2026 landings.md · Chisinau, Moldova' },
+    footer: { tagline: 'We build the site. We take it to the top. We automate the rest.', copy: '© 2026 landings.md · Chisinau, Moldova', nav: ['Portfolio', 'Pricing', 'Solutions', 'Case Studies'], pages: 'Pages', reach: 'Contact' },
     pill: { l1: 'Have a project in mind?', l2: 'Get a quote — from 350 EUR' },
   },
   ro: {
@@ -177,6 +192,10 @@ const T = {
         interbus: { caption: 'Piese auto · Magazin + ERP',   line: 'Magazin + ERP care conduce toata afacerea' },
         cmiea:    { caption: 'Educatie · Platforma',         line: 'Platforma de educatie a municipiului' },
         glg:      { caption: 'Scoala auto · Programari',     line: '15.000+ absolventi, programari online' },
+        radx:          { caption: 'Racire industriala · Site',  line: 'Prima pagina Google la racire industriala' },
+        eliteprotocol: { caption: 'Eticheta · Site premium',    line: 'Brand premium, aliniat pixel cu pixel' },
+        rizzaclassic:  { caption: 'Restaurari · Italia',        line: 'Clasice italiene, clienti internationali' },
+        autohuse:      { caption: 'Huse la comanda · Comenzi',  line: 'Huse la comanda, comandate online' },
       },
     },
     proof: {
@@ -213,6 +232,7 @@ const T = {
         { n: '03', t: 'Crestere', b: 'SEO, ads, optimizare continua' },
       ],
       contactLabel: 'Contact',
+      avail: 'Disponibil pentru proiecte noi',
     },
     contact: {
       label: 'Contact',
@@ -220,7 +240,7 @@ const T = {
       sub: 'Spune-ne despre afacerea ta. Iti aratam cum sa apari pe Google, ce merita automatizat si cat ar costa.',
       form: { name: 'Nume', email: 'Email', message: 'Spune-ne despre afacerea ta...', send: 'Trimite mesaj' },
     },
-    footer: { tagline: 'Construim site-ul. Il ducem in top. Automatizam restul.', copy: '© 2026 landings.md · Chisinau, Moldova' },
+    footer: { tagline: 'Construim site-ul. Il ducem in top. Automatizam restul.', copy: '© 2026 landings.md · Chisinau, Moldova', nav: ['Portofoliu', 'Preturi', 'Solutii', 'Studii de Caz'], pages: 'Pagini', reach: 'Contact' },
     pill: { l1: 'Ai un proiect in minte?', l2: 'Cere oferta — de la 350 EUR' },
   },
   de: {
@@ -242,6 +262,10 @@ const T = {
         interbus: { caption: 'Autoteile · Shop + ERP',       line: 'Shop + ERP fur das ganze Geschaft' },
         cmiea:    { caption: 'Bildung · Plattform',          line: 'Die Bildungsplattform der Stadt' },
         glg:      { caption: 'Fahrschule · Termine',         line: '15.000+ Absolventen, Online-Termine' },
+        radx:          { caption: 'Industriekuhlung · Site',    line: 'Seite 1 bei Google fur Industriekuhlung' },
+        eliteprotocol: { caption: 'Etikette · Premium-Site',    line: 'Premium-Marke, Pixel fur Pixel' },
+        rizzaclassic:  { caption: 'Restaurierung · Italien',    line: 'Italienische Klassiker, internationale Kunden' },
+        autohuse:      { caption: 'Massbezuge · Bestellungen',  line: 'Massanfertigungen, online bestellt' },
       },
     },
     proof: {
@@ -278,6 +302,7 @@ const T = {
         { n: '03', t: 'Wachstum', b: 'SEO, Ads, laufende Optimierung' },
       ],
       contactLabel: 'Kontakt',
+      avail: 'Verfugbar fur neue Projekte',
     },
     contact: {
       label: 'Kontakt',
@@ -285,7 +310,7 @@ const T = {
       sub: 'Erzahlen Sie uns von Ihrem Geschaft. Wir zeigen Ihnen, wie Sie bei Google ranken, was sich automatisieren lasst und was es kostet.',
       form: { name: 'Name', email: 'E-Mail', message: 'Erzahlen Sie uns von Ihrem Geschaft...', send: 'Nachricht senden' },
     },
-    footer: { tagline: 'Wir bauen die Website. Wir bringen sie nach oben. Wir automatisieren den Rest.', copy: '© 2026 landings.md · Chisinau, Moldawien' },
+    footer: { tagline: 'Wir bauen die Website. Wir bringen sie nach oben. Wir automatisieren den Rest.', copy: '© 2026 landings.md · Chisinau, Moldawien', nav: ['Portfolio', 'Preise', 'Losungen', 'Fallstudien'], pages: 'Seiten', reach: 'Kontakt' },
     pill: { l1: 'Ein Projekt im Kopf?', l2: 'Angebot anfordern — ab 350 EUR' },
   },
   fr: {
@@ -307,6 +332,10 @@ const T = {
         interbus: { caption: 'Pieces auto · Boutique + ERP', line: "Boutique + ERP qui gere toute l'entreprise" },
         cmiea:    { caption: 'Education · Plateforme',       line: 'La plateforme educative de la municipalite' },
         glg:      { caption: 'Auto-ecole · Rendez-vous',     line: '15 000+ diplomes, rendez-vous en ligne' },
+        radx:          { caption: 'Refroidissement · Site',     line: 'Page 1 sur Google — refroidissement industriel' },
+        eliteprotocol: { caption: 'Etiquette · Site premium',   line: 'Marque premium, au pixel pres' },
+        rizzaclassic:  { caption: 'Restauration · Italie',      line: 'Classiques italiennes, clients internationaux' },
+        autohuse:      { caption: 'Housses sur mesure',         line: 'Housses sur mesure, commandees en ligne' },
       },
     },
     proof: {
@@ -343,6 +372,7 @@ const T = {
         { n: '03', t: 'Croissance', b: 'SEO, ads, optimisation continue' },
       ],
       contactLabel: 'Contact',
+      avail: 'Disponible pour de nouveaux projets',
     },
     contact: {
       label: 'Contact',
@@ -350,7 +380,7 @@ const T = {
       sub: 'Parlez-nous de votre activite. On vous montre comment apparaitre sur Google, quoi automatiser et combien ca couterait.',
       form: { name: 'Nom', email: 'Email', message: 'Parlez-nous de votre activite...', send: 'Envoyer' },
     },
-    footer: { tagline: 'On construit le site. On le fait monter. On automatise le reste.', copy: '© 2026 landings.md · Chisinau, Moldavie' },
+    footer: { tagline: 'On construit le site. On le fait monter. On automatise le reste.', copy: '© 2026 landings.md · Chisinau, Moldavie', nav: ['Portfolio', 'Tarifs', 'Solutions', 'Etudes de Cas'], pages: 'Pages', reach: 'Contact' },
     pill: { l1: 'Un projet en tete ?', l2: 'Demandez un devis — des 350 EUR' },
   },
   es: {
@@ -372,6 +402,10 @@ const T = {
         interbus: { caption: 'Repuestos · Tienda + ERP',     line: 'Tienda + ERP que dirige todo el negocio' },
         cmiea:    { caption: 'Educacion · Plataforma',       line: 'La plataforma educativa del municipio' },
         glg:      { caption: 'Autoescuela · Citas',          line: '15.000+ graduados, citas online' },
+        radx:          { caption: 'Refrigeracion · Web',        line: 'Pagina 1 en Google en refrigeracion industrial' },
+        eliteprotocol: { caption: 'Etiqueta · Web premium',     line: 'Marca premium, pixel a pixel' },
+        rizzaclassic:  { caption: 'Restauracion · Italia',      line: 'Clasicos italianos, clientes internacionales' },
+        autohuse:      { caption: 'Fundas a medida · Pedidos',  line: 'Fundas a medida, pedidas online' },
       },
     },
     proof: {
@@ -408,6 +442,7 @@ const T = {
         { n: '03', t: 'Crecimiento', b: 'SEO, ads, optimizacion continua' },
       ],
       contactLabel: 'Contacto',
+      avail: 'Disponible para nuevos proyectos',
     },
     contact: {
       label: 'Contacto',
@@ -415,7 +450,7 @@ const T = {
       sub: 'Cuentanos sobre tu negocio. Te mostramos como posicionarte en Google, que automatizar y cuanto costaria.',
       form: { name: 'Nombre', email: 'Email', message: 'Cuentanos sobre tu negocio...', send: 'Enviar mensaje' },
     },
-    footer: { tagline: 'Creamos tu web. La llevamos arriba. Automatizamos el resto.', copy: '© 2026 landings.md · Chisinau, Moldavia' },
+    footer: { tagline: 'Creamos tu web. La llevamos arriba. Automatizamos el resto.', copy: '© 2026 landings.md · Chisinau, Moldavia', nav: ['Portafolio', 'Precios', 'Soluciones', 'Casos de Estudio'], pages: 'Paginas', reach: 'Contacto' },
     pill: { l1: 'Un proyecto en mente?', l2: 'Pide presupuesto — desde 350 EUR' },
   },
 }
@@ -464,28 +499,24 @@ export default function Home() {
         <div className="nv-container pt-8 md:pt-12">
           <Reveal>
             <div className="mx-auto flex max-w-[860px] flex-wrap items-center justify-center gap-3">
-              {t.badges.map((b, i) => (
-                <div key={b} className={`nv-float-${(i % 4) + 1}`}>
-                  <span className="chip">
-                    <span className="chip-inner">
-                      <span className="dot-lime" />
-                      {b}
-                    </span>
+              {t.badges.map((b) => (
+                <span key={b} className="chip">
+                  <span className="chip-inner">
+                    <span className="dot-lime" />
+                    {b}
                   </span>
-                </div>
+                </span>
               ))}
             </div>
           </Reveal>
           <Reveal delay={0.08}>
             <div className="mt-4 flex justify-center">
-              <div className="nv-float-2">
-                <span className="chip chip--em">
-                  <span className="chip-inner">
-                    <span className="dot-lime" />
-                    {t.badgeEm}
-                  </span>
+              <span className="chip chip--em">
+                <span className="chip-inner">
+                  <span className="dot-lime" />
+                  {t.badgeEm}
                 </span>
-              </div>
+              </span>
             </div>
           </Reveal>
 
@@ -493,8 +524,8 @@ export default function Home() {
           <Reveal delay={0.14}>
             <div className="mx-auto mt-12 flex max-w-[900px] flex-wrap items-center justify-center gap-x-10 gap-y-6 md:mt-14">
               {LOGO_ROW.map((l) => (
-                <span key={l} className="nv-logo">
-                  <Image src={`/images/logos/${l}.png`} alt={l} width={110} height={28} className="h-6 w-auto md:h-7" />
+                <span key={l.k} className="nv-logo">
+                  <Image src={`/images/logos/${l.k}.png`} alt={l.k} width={140} height={40} className={`w-auto ${l.h}`} />
                 </span>
               ))}
             </div>
@@ -587,7 +618,7 @@ export default function Home() {
           </Reveal>
           <Reveal delay={0.06}>
             <h2
-              className="mt-4 font-bold"
+              className="mt-4 font-semibold"
               style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}
             >
               <Marked text={t.work.heading} />
@@ -627,7 +658,7 @@ export default function Home() {
                     {/* top overlay: client + service caption */}
                     <div
                       className="absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-3 px-6 pb-12 pt-5"
-                      style={{ background: 'linear-gradient(180deg, rgba(8,8,8,0.85), rgba(8,8,8,0.4) 55%, transparent)' }}
+                      style={{ background: 'linear-gradient(180deg, rgba(8,8,8,0.72), rgba(8,8,8,0.28) 55%, transparent)' }}
                     >
                       <span className="text-[15px] font-medium text-white">{p.name}</span>
                       <span className="text-right text-[12px] font-medium uppercase tracking-[0.1em]" style={{ color: '#a4a4a4' }}>
@@ -637,7 +668,7 @@ export default function Home() {
                     {/* bottom overlay: superlative + view */}
                     <div
                       className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-4 px-6 pb-6 pt-16"
-                      style={{ background: 'linear-gradient(0deg, rgba(6,6,6,0.92), rgba(6,6,6,0.5) 55%, transparent)' }}
+                      style={{ background: 'linear-gradient(0deg, rgba(6,6,6,0.88), rgba(6,6,6,0.42) 55%, transparent)' }}
                     >
                       <p className="max-w-[68%] text-[0.9375rem] font-medium leading-snug text-white">{pt.line}</p>
                       <a
@@ -723,19 +754,19 @@ export default function Home() {
                   </p>
                 </div>
                 <div
-                  className="relative overflow-hidden rounded-[20px]"
+                  className="overflow-hidden rounded-[20px] bg-white p-3 md:p-4"
                   style={{
                     border: '1px solid rgba(73,73,73,0.6)',
                     boxShadow: '0 0 50px -9px rgba(198,255,105,0.3)',
-                    aspectRatio: '16 / 10',
                   }}
                 >
                   <Image
                     src="/images/davo-ahrefs.png"
                     alt="Ahrefs — davo.md: DR 50, 2.6K backlinks"
-                    fill
+                    width={2102}
+                    height={512}
                     sizes="(min-width: 768px) 600px, 90vw"
-                    className="object-cover object-left-top"
+                    className="h-auto w-full"
                   />
                 </div>
               </div>
@@ -751,8 +782,8 @@ export default function Home() {
             {/* col 1 row 1 */}
             <Reveal className="h-full">
               <div className="nv-edge nv-edge--ring h-full">
-                <div className="nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
-                  <span className="font-semibold" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{t.stats.cells[0].v}</span>
+                <div className="nv-edge-inner flex h-full flex-col justify-center p-7">
+                  <span className="font-medium" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{t.stats.cells[0].v}</span>
                   <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{t.stats.cells[0].l}</span>
                 </div>
               </div>
@@ -765,7 +796,7 @@ export default function Home() {
                   <span className="text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
                     {t.stats.offerLabel}
                   </span>
-                  <h3 className="mt-3 font-bold" style={{ fontSize: '2.5rem', letterSpacing: '-2.4px', lineHeight: 1 }}>
+                  <h3 className="mt-3 font-semibold" style={{ fontSize: '2.5rem', letterSpacing: '-2.4px', lineHeight: 1 }}>
                     <b>{t.stats.offerTitle}</b>
                   </h3>
                   <p className="mx-auto mt-3 max-w-[300px] text-[0.9375rem] font-medium" style={{ color: '#b8b8b9' }}>
@@ -779,32 +810,13 @@ export default function Home() {
                       style={{ border: '1px solid rgba(73,73,73,0.6)', aspectRatio: '16 / 12', maxHeight: 320 }}
                     >
                       <Image
-                        src="/images/shot-eliteprotocol.jpg"
+                        src="/images/tall-davo.jpg"
                         alt="Site custom-coded — landings.md"
                         fill
                         sizes="380px"
                         className="object-cover object-top"
                       />
                     </div>
-                    {t.stats.floats.map((f, i) => (
-                      <span
-                        key={f}
-                        className={`nv-float-${i + 1} absolute rounded-full px-3 py-1.5 text-[12px] font-semibold`}
-                        style={{
-                          background: LIME,
-                          color: '#0d0d0d',
-                          boxShadow: '0 6px 18px rgba(0,0,0,0.45)',
-                          ...( [
-                            { top: '-4%', left: '-3%' },
-                            { top: '18%', right: '-5%' },
-                            { bottom: '22%', left: '-6%' },
-                            { bottom: '-4%', right: '-2%' },
-                          ][i] as React.CSSProperties),
-                        }}
-                      >
-                        {f}
-                      </span>
-                    ))}
                   </div>
 
                   <p className="mt-6 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{t.stats.offerNote}</p>
@@ -818,8 +830,8 @@ export default function Home() {
             {/* col 3 row 1 */}
             <Reveal delay={0.1} className="h-full">
               <div className="nv-edge nv-edge--ring h-full">
-                <div className="nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
-                  <span className="font-semibold" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{t.stats.cells[1].v}</span>
+                <div className="nv-edge-inner flex h-full flex-col justify-center p-7">
+                  <span className="font-medium" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{t.stats.cells[1].v}</span>
                   <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{t.stats.cells[1].l}</span>
                 </div>
               </div>
@@ -828,8 +840,8 @@ export default function Home() {
             {/* col 1 row 2 */}
             <Reveal delay={0.14} className="h-full">
               <div className="nv-edge nv-edge--ring h-full">
-                <div className="nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
-                  <span className="font-semibold" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{t.stats.cells[2].v}</span>
+                <div className="nv-edge-inner flex h-full flex-col justify-center p-7">
+                  <span className="font-medium" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{t.stats.cells[2].v}</span>
                   <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{t.stats.cells[2].l}</span>
                 </div>
               </div>
@@ -838,8 +850,8 @@ export default function Home() {
             {/* col 3 row 2 */}
             <Reveal delay={0.18} className="h-full">
               <div className="nv-edge nv-edge--ring h-full">
-                <div className="nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
-                  <span className="font-semibold" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1, color: LIME }}>{t.stats.cells[3].v}</span>
+                <div className="nv-edge-inner flex h-full flex-col justify-center p-7">
+                  <span className="font-medium" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1, color: LIME }}>{t.stats.cells[3].v}</span>
                   <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{t.stats.cells[3].l}</span>
                 </div>
               </div>
@@ -861,6 +873,14 @@ export default function Home() {
                   <p className="mt-4 flex-1 text-[0.9375rem] font-medium leading-relaxed" style={{ color: '#b8b8b9' }}>
                     {t.about.aboutBody}
                   </p>
+                  <div className="mt-6 grid grid-cols-3 gap-3 border-t pt-5" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                    {t.stats.cells.slice(0, 3).map((c) => (
+                      <div key={c.v}>
+                        <p className="text-[1.25rem] font-medium" style={{ letterSpacing: '-0.02em' }}>{c.v}</p>
+                        <p className="mt-0.5 text-[11px] font-medium leading-tight" style={{ color: '#909099' }}>{c.l}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </Reveal>
@@ -869,14 +889,14 @@ export default function Home() {
             <Reveal delay={0.06} className="nv-a3 h-full">
               <div className="nv-edge nv-edge--alt h-full">
                 <div className="nv-edge-inner flex h-full min-h-[220px] flex-col justify-center p-7 text-center md:p-9">
-                  <h2 className="font-bold" style={{ fontSize: 'clamp(1.75rem, 3.4vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}>
+                  <h2 className="font-semibold" style={{ fontSize: 'clamp(1.75rem, 3.4vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}>
                     <Marked text={t.about.heading} />
                   </h2>
                   <p className="mx-auto mt-4 max-w-[480px] text-[0.9375rem] font-medium" style={{ color: '#b8b8b9' }}>
                     {t.about.headingSub}
                   </p>
                   <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-                    {t.about.stack.map((s) => (
+                    {[...t.about.stack, 'SEO', 'Meta Ads', 'Google Ads', 'ERP'].map((s) => (
                       <span key={s} className="chip">
                         <span className="chip-inner !px-3.5 !py-1.5 text-[12px]">{s}</span>
                       </span>
@@ -938,6 +958,10 @@ export default function Home() {
                   <a href="tel:+37368327082" className="text-[1rem] font-medium transition-colors duration-300 hover:!text-[#c6ff69]" style={{ color: '#b8b8b9' }}>
                     +373 683 27 082
                   </a>
+                  <p className="mt-3 inline-flex items-center gap-2 text-[13px] font-medium" style={{ color: '#909099' }}>
+                    <span className="dot-lime" />
+                    {t.about.avail}
+                  </p>
                 </div>
               </div>
             </Reveal>
@@ -961,7 +985,7 @@ export default function Home() {
                   <div>
                     <Label>{t.contact.label}</Label>
                     <h2
-                      className="mt-5 font-bold"
+                      className="mt-5 font-semibold"
                       style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}
                     >
                       <Marked text={t.contact.heading} />
@@ -984,38 +1008,53 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* simple mailto form */}
-                  <form onSubmit={submitForm} className="flex flex-col gap-5">
-                    <input
-                      type="text"
-                      required
-                      value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      placeholder={t.contact.form.name}
-                      className="bg-transparent pb-3 text-[1rem] font-medium text-white outline-none transition-colors duration-300 placeholder:text-[#909099] focus:border-[#c6ff69]"
-                      style={{ border: 'none', borderBottom: '1px solid rgba(255,255,255,0.15)', borderRadius: 0, boxShadow: 'none' }}
-                    />
-                    <input
-                      type="email"
-                      required
-                      value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      placeholder={t.contact.form.email}
-                      className="bg-transparent pb-3 text-[1rem] font-medium text-white outline-none transition-colors duration-300 placeholder:text-[#909099] focus:border-[#c6ff69]"
-                      style={{ border: 'none', borderBottom: '1px solid rgba(255,255,255,0.15)', borderRadius: 0, boxShadow: 'none' }}
-                    />
-                    <textarea
-                      required
-                      rows={4}
-                      value={form.message}
-                      onChange={(e) => setForm({ ...form, message: e.target.value })}
-                      placeholder={t.contact.form.message}
-                      className="resize-none bg-transparent pb-3 text-[1rem] font-medium text-white outline-none transition-colors duration-300 placeholder:text-[#909099] focus:border-[#c6ff69]"
-                      style={{ border: 'none', borderBottom: '1px solid rgba(255,255,255,0.15)', borderRadius: 0, boxShadow: 'none' }}
-                    />
-                    <button type="submit" className="btn-metal self-start">
-                      {t.contact.form.send}
-                    </button>
+                  {/* cinematic mailto form — staggered reveals, sweeping lime underlines */}
+                  <form onSubmit={submitForm} className="flex flex-col gap-6">
+                    <Reveal delay={0.1}>
+                      <div className="nv-field">
+                        <input
+                          type="text"
+                          required
+                          value={form.name}
+                          onChange={(e) => setForm({ ...form, name: e.target.value })}
+                          placeholder={t.contact.form.name}
+                          className="w-full bg-transparent pb-3 text-[1rem] font-medium text-white outline-none placeholder:text-[#909099]"
+                          style={{ border: 'none', borderBottom: '1px solid rgba(255,255,255,0.15)', borderRadius: 0, boxShadow: 'none' }}
+                        />
+                      </div>
+                    </Reveal>
+                    <Reveal delay={0.18}>
+                      <div className="nv-field">
+                        <input
+                          type="email"
+                          required
+                          value={form.email}
+                          onChange={(e) => setForm({ ...form, email: e.target.value })}
+                          placeholder={t.contact.form.email}
+                          className="w-full bg-transparent pb-3 text-[1rem] font-medium text-white outline-none placeholder:text-[#909099]"
+                          style={{ border: 'none', borderBottom: '1px solid rgba(255,255,255,0.15)', borderRadius: 0, boxShadow: 'none' }}
+                        />
+                      </div>
+                    </Reveal>
+                    <Reveal delay={0.26}>
+                      <div className="nv-field">
+                        <textarea
+                          required
+                          rows={4}
+                          value={form.message}
+                          onChange={(e) => setForm({ ...form, message: e.target.value })}
+                          placeholder={t.contact.form.message}
+                          className="w-full resize-none bg-transparent pb-3 text-[1rem] font-medium text-white outline-none placeholder:text-[#909099]"
+                          style={{ border: 'none', borderBottom: '1px solid rgba(255,255,255,0.15)', borderRadius: 0, boxShadow: 'none' }}
+                        />
+                      </div>
+                    </Reveal>
+                    <Reveal delay={0.34}>
+                      <button type="submit" className="btn-metal self-start">
+                        {t.contact.form.send}
+                        <span className="nv-arr" aria-hidden>&rarr;</span>
+                      </button>
+                    </Reveal>
                   </form>
                 </div>
               </div>
@@ -1031,26 +1070,55 @@ export default function Home() {
             className="h-px w-full"
             style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)' }}
           />
-          <div className="flex flex-col items-center justify-between gap-6 pt-10 md:flex-row">
-            <div className="flex items-center gap-3">
-              <Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="h-8 w-auto" />
-              <span className="text-[14px] font-medium text-white">landings.md</span>
+          <div className="grid gap-12 pt-14 md:grid-cols-[1.4fr_1fr_1fr] md:gap-8">
+            {/* brand block */}
+            <div>
+              <div className="flex items-center gap-3">
+                <Image src="/images/logowhite.png" alt="landings.md" width={26} height={44} className="h-10 w-auto" />
+                <span className="text-[1.125rem] font-semibold text-white" style={{ letterSpacing: '-0.02em' }}>landings.md</span>
+              </div>
+              <p className="mt-5 max-w-[340px] text-[0.9375rem] font-medium leading-relaxed" style={{ color: '#909099' }}>
+                {t.footer.tagline}
+              </p>
+              <p className="mt-5 inline-flex items-center gap-2 text-[13px] font-medium" style={{ color: '#b8b8b9' }}>
+                <span className="dot-lime" />
+                {t.about.avail}
+              </p>
             </div>
-            <p className="text-center text-[13px] font-medium" style={{ color: '#909099' }}>
-              {t.footer.tagline}
-            </p>
-            <div className="flex items-center gap-5 text-[13px] font-medium">
-              <a href="mailto:contact@landings.md" className="transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>
-                contact@landings.md
-              </a>
-              <a href="https://instagram.com/landings.md" target="_blank" rel="noopener noreferrer" className="transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>
-                Instagram
-              </a>
+            {/* pages */}
+            <div>
+              <p className="text-[12px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>{t.footer.pages}</p>
+              <div className="mt-5 flex flex-col gap-3 text-[0.9375rem] font-medium">
+                {(['/portfolio', '/pricing', '/solutions', '/case-studies'] as const).map((href, i) => (
+                  <a key={href} href={href} className="self-start transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>
+                    {t.footer.nav[i]}
+                  </a>
+                ))}
+              </div>
+            </div>
+            {/* contact */}
+            <div>
+              <p className="text-[12px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>{t.footer.reach}</p>
+              <div className="mt-5 flex flex-col gap-3 text-[0.9375rem] font-medium">
+                <a href="mailto:contact@landings.md" className="self-start transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>
+                  contact@landings.md
+                </a>
+                <a href="tel:+37368327082" className="self-start transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>
+                  +373 683 27 082
+                </a>
+                <a href="https://instagram.com/landings.md" target="_blank" rel="noopener noreferrer" className="self-start transition-colors duration-300 hover:!text-white" style={{ color: '#a4a4a4' }}>
+                  Instagram
+                </a>
+              </div>
             </div>
           </div>
-          <p className="pt-8 text-center text-[12px] font-medium" style={{ color: '#909099' }}>
-            {t.footer.copy}
-          </p>
+          <div
+            className="mt-12 flex flex-col items-center justify-between gap-3 border-t pt-7 md:flex-row"
+            style={{ borderColor: 'rgba(255,255,255,0.08)' }}
+          >
+            <p className="text-[12px] font-medium" style={{ color: '#909099' }}>{t.footer.copy}</p>
+            <p className="text-[12px] font-medium" style={{ color: '#6b6b73' }}>Next.js · React · Tailwind</p>
+          </div>
         </div>
       </footer>
 

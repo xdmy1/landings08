@@ -401,3 +401,25 @@ blockquote i, .nv-quote-lime i {
   .nv-float-1, .nv-float-2, .nv-float-3, .nv-float-4 { animation: none; }
   .mobile-nav-overlay, .mobile-nav-link { animation-duration: 0.01s; }
 }
+
+/* ── Cinematic form field — lime underline sweeps in on focus ── */
+.nv-field {
+  position: relative;
+}
+.nv-field::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--lime);
+  box-shadow: 0 0 12px rgba(198, 255, 105, 0.5);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.nv-field:focus-within::after {
+  transform: scaleX(1);
+}
