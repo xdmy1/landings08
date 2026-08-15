@@ -459,6 +459,20 @@ export default function Home() {
   const { language } = useLanguage()
   const t = T[language as keyof typeof T] ?? T.en
 
+  /* 3D tilt for the project stage: the card group leans toward the cursor */
+  const stageRef = useRef<HTMLDivElement | null>(null)
+  const [tilt, setTilt] = useState({ rx: 0, ry: 0 })
+  const onStageMove = (e: React.MouseEvent) => {
+    const el = stageRef.current
+    if (!el) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const r = el.getBoundingClientRect()
+    const px = (e.clientX - r.left) / r.width - 0.5
+    const py = (e.clientY - r.top) / r.height - 0.5
+    setTilt({ rx: -py * 7, ry: px * 9 })
+  }
+  const onStageLeave = () => setTilt({ rx: 0, ry: 0 })
+
   return (
     <main className="flex min-h-[100svh] flex-col md:h-[100svh] md:overflow-hidden" style={{ background: '#0d0d0d' }}>
       <SiteNav contactHref="mailto:contact@landings.md" />
@@ -574,11 +588,16 @@ export default function Home() {
           </div>
         </Reveal>
 
-        {/* ── PROJECTS mini-showcase ── */}
+        {/* ── PROJECTS — depth stage with floating metal-bezel cards ── */}
         <Reveal delay={0.14} className="col-span-2 md:col-span-4 md:row-span-4 md:min-h-0">
           <div className="nv-edge nv-edge--ring h-full">
-            <div className="nv-edge-inner flex h-full flex-col p-5 md:p-6">
-              <div className="flex items-baseline justify-between gap-3">
+            <div
+              ref={stageRef}
+              onMouseMove={onStageMove}
+              onMouseLeave={onStageLeave}
+              className="nv-edge-inner nv-stage flex h-full flex-col p-5 md:p-6"
+            >
+              <div className="relative z-[1] flex items-baseline justify-between gap-3">
                 <h2 className="font-semibold" style={{ fontSize: '1.125rem', letterSpacing: '-0.03em' }}>
                   <Marked text={t.work.heading} />
                 </h2>
@@ -586,23 +605,34 @@ export default function Home() {
                   {t.work.view} &rarr;
                 </a>
               </div>
-              <div className="mt-4 grid min-h-0 flex-1 grid-cols-3 gap-3">
-                {PROJECTS_META.slice(0, 3).map((p) => (
+              <div
+                className="relative z-[1] mt-4 grid min-h-0 flex-1 grid-cols-3 items-stretch gap-4 px-1 pb-3"
+                style={{
+                  transform: `perspective(800px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
+                  transition: 'transform 0.15s ease-out',
+                  transformStyle: 'preserve-3d',
+                }}
+              >
+                {PROJECTS_META.slice(0, 3).map((p, i) => (
                   <a
                     key={p.key}
                     href={`https://${p.url}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="nv-card3d group relative min-h-[110px] overflow-hidden"
-                    style={{ borderRadius: '999px 999px 14px 14px', border: '1px solid rgba(73,73,73,0.6)' }}
+                    className={`nv-bob-${i + 1}`}
+                    style={{ transform: `translateZ(${(i === 1 ? 26 : 12)}px)` }}
                   >
-                    <Image src={p.shot} alt={p.name} fill sizes="160px" className="object-cover object-top transition-transform duration-200 group-hover:scale-[1.05]" />
-                    <span
-                      className="absolute inset-x-0 bottom-0 px-2 pb-2 pt-6 text-center text-[10px] font-medium text-white"
-                      style={{ background: 'linear-gradient(0deg, rgba(6,6,6,0.92), transparent)' }}
-                    >
-                      {p.name}
-                    </span>
+                    <div className="nv-float-card h-full min-h-[110px]">
+                      <div className="nv-float-card-img">
+                        <Image src={p.shot} alt={p.name} fill sizes="160px" className="object-cover object-top" />
+                        <span
+                          className="absolute inset-x-0 bottom-0 px-2 pb-2 pt-6 text-center text-[10px] font-medium text-white"
+                          style={{ background: 'linear-gradient(0deg, rgba(6,6,6,0.92), transparent)' }}
+                        >
+                          {p.name}
+                        </span>
+                      </div>
+                    </div>
                   </a>
                 ))}
               </div>

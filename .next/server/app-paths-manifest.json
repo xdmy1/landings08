@@ -1,15 +1,15 @@
 {
-  "/page": "app/page.js",
-  "/preview/c/page": "app/preview/c/page.js",
-  "/preview/a/page": "app/preview/a/page.js",
   "/_not-found": "app/_not-found.js",
-  "/preview/b/page": "app/preview/b/page.js",
   "/apple-icon.png/route": "app/apple-icon.png/route.js",
-  "/sitemap.xml/route": "app/sitemap.xml/route.js",
   "/icon.png/route": "app/icon.png/route.js",
+  "/page": "app/page.js",
+  "/preview/b/page": "app/preview/b/page.js",
+  "/preview/c/page": "app/preview/c/page.js",
+  "/sitemap.xml/route": "app/sitemap.xml/route.js",
   "/robots.txt/route": "app/robots.txt/route.js",
+  "/preview/a/page": "app/preview/a/page.js",
+  "/case-studies/page": "app/case-studies/page.js",
   "/portfolio/page": "app/portfolio/page.js",
-  "/solutions/page": "app/solutions/page.js",
   "/pricing/page": "app/pricing/page.js",
-  "/case-studies/page": "app/case-studies/page.js"
+  "/solutions/page": "app/solutions/page.js"
 }
