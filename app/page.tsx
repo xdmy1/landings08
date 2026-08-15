@@ -475,6 +475,23 @@ export default function Home() {
   const { language } = useLanguage()
   const t = T[language as keyof typeof T] ?? T.en
 
+  /* pointer glow follows the cursor across the dashboard */
+  const glowRef = useRef<HTMLDivElement | null>(null)
+  useEffect(() => {
+    if (window.matchMedia('(pointer: coarse)').matches) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    let raf = 0, tx = -600, ty = -600, cx = -600, cy = -600
+    const loop = () => {
+      cx += (tx - cx) * 0.18
+      cy += (ty - cy) * 0.18
+      if (glowRef.current) glowRef.current.style.transform = `translate(${cx}px, ${cy}px)`
+      raf = requestAnimationFrame(loop)
+    }
+    const onMove = (e: MouseEvent) => { tx = e.clientX; ty = e.clientY; if (!raf) loop() }
+    window.addEventListener('mousemove', onMove, { passive: true })
+    return () => { window.removeEventListener('mousemove', onMove); if (raf) cancelAnimationFrame(raf) }
+  }, [])
+
   /* live dashboard state: counters, Chisinau clock, cycling lines */
   const [dr, setDr] = useState(0)
   const [traffic, setTraffic] = useState(0)
@@ -535,6 +552,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-[100svh] flex-col md:h-[100svh] md:overflow-hidden" style={{ background: '#0d0d0d' }}>
+      <div ref={glowRef} className="nv-glow-cursor" aria-hidden />
       <SiteNav contactHref="mailto:contact@landings.md" />
 
       <div className="nv-container grid w-full flex-1 grid-cols-2 gap-2 pb-2 pt-1 md:gap-3 md:pb-3 md:pt-2 md:min-h-0 md:grid-cols-12 md:grid-rows-[repeat(12,minmax(0,1fr))]">
@@ -542,11 +560,11 @@ export default function Home() {
         {/* ── HERO CELL : the loved ribbed graphic lives here ── */}
         <Reveal className="col-span-2 md:col-span-8 md:row-span-7 md:min-h-0">
           <div className="nv-edge h-full">
-            <div className="nv-edge-inner nv-inset relative flex h-full flex-col justify-center overflow-hidden p-5 md:p-10">
+            <div className="nv-edge-inner nv-inset--soft relative flex h-full flex-col justify-center overflow-hidden p-5 md:p-10">
               {/* arch glow behind the ribs */}
               <div
                 aria-hidden
-                className="absolute left-1/2 top-full h-[420px] w-[560px] -translate-x-1/2 -translate-y-1/3 rounded-full"
+                className="nv-blob-spin absolute left-1/2 top-full h-[420px] w-[560px] -translate-x-1/2 -translate-y-1/3 rounded-full"
                 style={{
                   background: 'conic-gradient(from 30deg, #FF9E7A, #f2d06f, #d23b33, #7a4df0, #FF9E7A)',
                   filter: 'saturate(1.1) blur(90px)',
@@ -559,7 +577,7 @@ export default function Home() {
                 style={{ background: '#fff', filter: 'blur(110px)', opacity: 0.22 }}
               />
               {/* the ribbed sheet */}
-              <div className="ribbed ribbed--flat absolute inset-0" aria-hidden style={{ borderTop: 'none' }} />
+              <div className="ribbed ribbed--flat absolute inset-0" aria-hidden style={{ borderTop: 'none' }}><span className="nv-sheen" /></div>
 
               <div className="relative z-[1]">
                 <span className="chip chip--em max-w-full">
@@ -688,9 +706,10 @@ export default function Home() {
                     href={`https://${p.url}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`nv-bob-${i + 1}`}
+                    className="relative block h-full"
                     style={{ transform: `translateZ(${(i === 1 ? 26 : 12)}px)` }}
                   >
+                    <div className={`nv-bobwrap nv-bob-${i + 1} h-full`}>
                     <div className="nv-float-card h-full min-h-[88px] md:min-h-[110px]">
                       <div className="nv-float-card-img">
                         <Image src={p.shot} alt={p.name} fill sizes="160px" className="object-cover object-top" />
@@ -701,6 +720,7 @@ export default function Home() {
                           {p.name}
                         </span>
                       </div>
+                    </div>
                     </div>
                   </a>
                 ))}
@@ -764,8 +784,8 @@ export default function Home() {
             <div className="nv-edge-inner nv-inset flex h-full items-center px-2 py-1.5">
               <div className="nv-marquee w-full">
                 <div className="nv-marquee-track">
-                  {[0, 1].map((half) => (
-                    <div key={half} className="flex items-center gap-10 pr-10" aria-hidden={half === 1}>
+                  {[0, 1, 2, 3].map((half) => (
+                    <div key={half} className="flex items-center gap-10 pr-10" aria-hidden={half !== 0}>
                       {ALL_LOGOS.map((l) => (
                         <span key={`${half}-${l.k}`} className="nv-logo shrink-0">
                           <Image src={`/images/logos/${l.k}.png`} alt={half === 0 ? l.k : ''} width={120} height={36} className={`w-auto ${l.h}`} style={LOGO_FILTERS[l.t]} />
