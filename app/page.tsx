@@ -560,7 +560,7 @@ export default function Home() {
         {/* ── HERO CELL : the loved ribbed graphic lives here ── */}
         <Reveal className="col-span-2 md:col-span-8 md:row-span-7 md:min-h-0">
           <div className="nv-edge h-full">
-            <div className="nv-edge-inner nv-inset--soft relative flex h-full flex-col justify-center overflow-hidden p-5 md:p-10">
+            <div className="nv-edge-inner nv-inset--soft relative flex h-full flex-col overflow-hidden p-5 md:p-9">
               {/* arch glow behind the ribs */}
               <div
                 aria-hidden
@@ -579,8 +579,8 @@ export default function Home() {
               {/* the ribbed sheet */}
               <div className="ribbed ribbed--flat absolute inset-0" aria-hidden style={{ borderTop: 'none' }} />
 
-              <div className="relative z-[1]">
-                <span className="chip chip--em max-w-full">
+              <div className="relative z-[1] flex h-full flex-col">
+                <span className="chip chip--em max-w-full self-start">
                   <span className="chip-inner max-w-full justify-center !whitespace-normal px-4 !py-2 text-center !text-[12px] leading-snug md:!whitespace-nowrap md:!text-[13px]">
                     {t.badgeEm}
                   </span>
@@ -594,6 +594,7 @@ export default function Home() {
                 <p className="mt-3 max-w-[560px] text-[0.8125rem] font-medium md:mt-4 md:text-[1.0625rem]" style={{ color: '#b8b8b9', lineHeight: 1.35 }}>
                   {t.hero.sub}
                 </p>
+                <div className="flex-1" />
                 <div className="mt-5 flex flex-wrap items-center gap-4 md:mt-6">
                   <a href="mailto:contact@landings.md" className="btn-metal">
                     {t.hero.cta}
