@@ -562,8 +562,8 @@ export default function Home() {
               <div className="ribbed ribbed--flat absolute inset-0" aria-hidden style={{ borderTop: 'none' }} />
 
               <div className="relative z-[1]">
-                <span className="chip chip--em">
-                  <span className="chip-inner !py-2 !text-[13px]">
+                <span className="chip chip--em max-w-full">
+                  <span className="chip-inner max-w-full justify-center !whitespace-normal px-4 !py-2 text-center !text-[12px] leading-snug md:!whitespace-nowrap md:!text-[13px]">
                     {t.badgeEm}
                   </span>
                 </span>
