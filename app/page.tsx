@@ -500,7 +500,7 @@ export default function Home() {
     const t0 = performance.now()
     let raf = 0
     const tick = (now: number) => {
-      const p = Math.min((now - t0) / 700, 1)
+      const p = Math.min((now - t0) / 1300, 1)
       const e = 1 - Math.pow(1 - p, 3)
       setDr(Math.round(e * 50))
       setTraffic(Math.round(e * 300))
@@ -577,7 +577,7 @@ export default function Home() {
                 style={{ background: '#fff', filter: 'blur(110px)', opacity: 0.22 }}
               />
               {/* the ribbed sheet */}
-              <div className="ribbed ribbed--flat absolute inset-0" aria-hidden style={{ borderTop: 'none' }}><span className="nv-sheen" /></div>
+              <div className="ribbed ribbed--flat absolute inset-0" aria-hidden style={{ borderTop: 'none' }} />
 
               <div className="relative z-[1]">
                 <span className="chip chip--em max-w-full">
