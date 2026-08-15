@@ -90,6 +90,26 @@ const PROJECTS_META = [
   { key: 'eliteprotocol', name: 'Elite Protocol',  url: 'eliteprotocol.md',  accent: '#C9A227', shot: '/images/tall-eliteprotocol.jpg' },
 ] as const
 
+const ALL_LOGOS = [
+  { k: 'davo', h: 'h-4 md:h-5', t: 'solid' },
+  { k: 'interbus', h: 'h-5 md:h-6', t: 'solid' },
+  { k: 'cmiea', h: 'h-6 md:h-7', t: 'solid' },
+  { k: 'glg', h: 'h-7 md:h-8', t: 'solid' },
+  { k: 'radx', h: 'h-4 md:h-5', t: 'solid' },
+  { k: 'rizzaclassic', h: 'h-5 md:h-6', t: 'solid' },
+  { k: 'eurogard', h: 'h-6 md:h-7', t: 'solid' },
+  { k: 'autohuse', h: 'h-6 md:h-7', t: 'mono' },
+  { k: 'udc', h: 'h-6 md:h-7', t: 'mono' },
+  { k: 'droppack', h: 'h-6 md:h-7', t: 'mono' },
+  { k: 'automarga', h: 'h-6 md:h-7', t: 'white' },
+] as const
+
+const LOGO_FILTERS: Record<string, React.CSSProperties> = {
+  solid: { filter: 'brightness(0) invert(1)' },
+  mono: { filter: 'grayscale(1) brightness(1.6) contrast(0.9)' },
+  white: {},
+}
+
 const LOGO_ROW = [
   { k: 'davo', h: 'h-5 md:h-6' },
   { k: 'interbus', h: 'h-6 md:h-7' },
@@ -477,12 +497,12 @@ export default function Home() {
     <main className="flex min-h-[100svh] flex-col md:h-[100svh] md:overflow-hidden" style={{ background: '#0d0d0d' }}>
       <SiteNav contactHref="mailto:contact@landings.md" />
 
-      <div className="nv-container grid w-full flex-1 grid-cols-2 gap-3 pb-3 pt-2 md:min-h-0 md:grid-cols-12 md:grid-rows-[repeat(12,minmax(0,1fr))]">
+      <div className="nv-container grid w-full flex-1 grid-cols-2 gap-2 pb-2 pt-1 md:gap-3 md:pb-3 md:pt-2 md:min-h-0 md:grid-cols-12 md:grid-rows-[repeat(12,minmax(0,1fr))]">
 
         {/* ── HERO CELL — the loved ribbed graphic lives here ── */}
         <Reveal className="col-span-2 md:col-span-8 md:row-span-7 md:min-h-0">
           <div className="nv-edge h-full">
-            <div className="nv-edge-inner relative flex h-full flex-col justify-center overflow-hidden p-7 md:p-10">
+            <div className="nv-edge-inner nv-inset relative flex h-full flex-col justify-center overflow-hidden p-5 md:p-10">
               {/* arch glow behind the ribs */}
               <div
                 aria-hidden
@@ -510,11 +530,11 @@ export default function Home() {
                 </span>
                 <h1
                   className="mt-5 font-bold"
-                  style={{ fontSize: 'clamp(2.1rem, 3.6vw, 3.4rem)', lineHeight: 1.01, letterSpacing: '-0.05em' }}
+                  style={{ fontSize: 'clamp(1.55rem, 3.6vw, 3.4rem)', lineHeight: 1.01, letterSpacing: '-0.05em' }}
                 >
                   <Marked text={t.hero.headline} />
                 </h1>
-                <p className="mt-4 max-w-[560px] text-[0.9375rem] font-medium md:text-[1.0625rem]" style={{ color: '#b8b8b9', lineHeight: 1.35 }}>
+                <p className="mt-3 max-w-[560px] text-[0.8125rem] font-medium md:mt-4 md:text-[1.0625rem]" style={{ color: '#b8b8b9', lineHeight: 1.35 }}>
                   {t.hero.sub}
                 </p>
                 <div className="mt-6 flex flex-wrap items-center gap-4">
@@ -532,7 +552,7 @@ export default function Home() {
         {/* ── DR 50 ring ── */}
         <Reveal delay={0.05} className="col-span-1 md:col-span-4 md:row-span-3 md:min-h-0">
           <div className="nv-edge nv-edge--ring nv-cell h-full">
-            <div className="nv-edge-inner flex h-full items-center gap-4 p-5 md:p-6">
+            <div className="nv-edge-inner nv-inset flex h-full items-center gap-4 p-4 md:p-6">
               <svg width="58" height="58" viewBox="0 0 96 96" aria-hidden className="shrink-0">
                 <circle cx="48" cy="48" r="42" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
                 <circle
@@ -546,7 +566,8 @@ export default function Home() {
               <div className="min-w-0">
                 <span className="block font-medium" style={{ fontSize: 'clamp(1.6rem, 2vw, 2.1rem)', letterSpacing: '-0.04em', lineHeight: 1, color: '#FF9E7A' }}>{t.stats.cells[3].v}</span>
                 <span className="mt-1 block truncate text-[0.8125rem] font-medium" style={{ color: '#909099' }}>{t.stats.cells[3].l}</span>
-                <span className="nv-cell-detail mt-1 block text-[11px] font-medium" style={{ color: '#FF9E7A' }}>Ahrefs</span>
+                <span className="mt-1 block text-[11px] font-medium" style={{ color: '#b8b8b9' }}>2.6K backlinks · 348 ref. domains</span>
+                <span className="block text-[11px] font-medium" style={{ color: '#FF9E7A' }}>Ahrefs · live</span>
               </div>
             </div>
           </div>
@@ -555,10 +576,11 @@ export default function Home() {
         {/* ── 300% bars ── */}
         <Reveal delay={0.08} className="col-span-1 md:col-span-4 md:row-span-2 md:min-h-0">
           <div className="nv-edge nv-edge--ring nv-cell h-full">
-            <div className="nv-edge-inner flex h-full items-center justify-between gap-4 p-5 md:p-6">
+            <div className="nv-edge-inner nv-inset flex h-full items-center justify-between gap-4 p-4 md:p-6">
               <div className="min-w-0">
                 <span className="block font-medium" style={{ fontSize: 'clamp(1.5rem, 1.8vw, 1.9rem)', letterSpacing: '-0.04em', lineHeight: 1 }}>{t.stats.cells[1].v}</span>
                 <span className="mt-1 block text-[0.75rem] font-medium leading-tight" style={{ color: '#909099' }}>{t.stats.cells[1].l}</span>
+                <span className="mt-0.5 block text-[10px] font-medium" style={{ color: '#FF9E7A' }}>Google Analytics · organic</span>
               </div>
               <div className="flex h-10 w-24 shrink-0 items-end gap-1" aria-hidden>
                 {[30, 44, 58, 74, 100].map((h, i) => (
@@ -572,10 +594,11 @@ export default function Home() {
         {/* ── 10+ systems nodes ── */}
         <Reveal delay={0.11} className="col-span-1 md:col-span-4 md:row-span-2 md:min-h-0">
           <div className="nv-edge nv-edge--ring nv-cell h-full">
-            <div className="nv-edge-inner flex h-full items-center justify-between gap-4 p-5 md:p-6">
+            <div className="nv-edge-inner nv-inset flex h-full items-center justify-between gap-4 p-4 md:p-6">
               <div className="min-w-0">
                 <span className="block font-medium" style={{ fontSize: 'clamp(1.5rem, 1.8vw, 1.9rem)', letterSpacing: '-0.04em', lineHeight: 1 }}>{t.stats.cells[2].v}</span>
                 <span className="mt-1 block text-[0.75rem] font-medium leading-tight" style={{ color: '#909099' }}>{t.stats.cells[2].l}</span>
+                <span className="mt-0.5 block text-[10px] font-medium" style={{ color: '#FF9E7A' }}>Booking · ERP · CRM · Facturare</span>
               </div>
               <div className="flex w-24 shrink-0 items-center" aria-hidden>
                 <span className="nv-node h-2 w-2 rounded-full" style={{ background: '#FF9E7A' }} />
@@ -595,7 +618,7 @@ export default function Home() {
               ref={stageRef}
               onMouseMove={onStageMove}
               onMouseLeave={onStageLeave}
-              className="nv-edge-inner nv-stage flex h-full flex-col p-5 md:p-6"
+              className="nv-edge-inner nv-well nv-stage flex h-full flex-col p-4 md:p-6"
             >
               <div className="relative z-[1] flex items-baseline justify-between gap-3">
                 <h2 className="font-semibold" style={{ fontSize: '1.125rem', letterSpacing: '-0.03em' }}>
@@ -622,7 +645,7 @@ export default function Home() {
                     className={`nv-bob-${i + 1}`}
                     style={{ transform: `translateZ(${(i === 1 ? 26 : 12)}px)` }}
                   >
-                    <div className="nv-float-card h-full min-h-[110px]">
+                    <div className="nv-float-card h-full min-h-[88px] md:min-h-[110px]">
                       <div className="nv-float-card-img">
                         <Image src={p.shot} alt={p.name} fill sizes="160px" className="object-cover object-top" />
                         <span
@@ -643,7 +666,7 @@ export default function Home() {
         {/* ── OFERTA ── */}
         <Reveal delay={0.17} className="col-span-1 md:col-span-4 md:row-span-4 md:min-h-0">
           <div className="nv-edge nv-edge--alt nv-cell h-full">
-            <div className="nv-edge-inner flex h-full flex-col justify-center p-5 text-center md:p-6">
+            <div className="nv-edge-inner nv-inset flex h-full flex-col justify-center p-4 text-center md:p-6">
               <span className="text-[11px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>{t.stats.offerLabel}</span>
               <span className="mt-2 font-semibold" style={{ fontSize: 'clamp(1.6rem, 2.2vw, 2.2rem)', letterSpacing: '-0.04em', lineHeight: 1, color: '#FF9E7A' }}>
                 {t.stats.offerTitle}
@@ -661,7 +684,7 @@ export default function Home() {
         {/* ── CONTACT ── */}
         <Reveal delay={0.2} className="col-span-1 md:col-span-4 md:row-span-4 md:min-h-0">
           <div className="nv-edge nv-edge--ring nv-cell h-full">
-            <div className="nv-edge-inner flex h-full flex-col justify-center gap-2.5 p-5 md:p-6">
+            <div className="nv-edge-inner nv-inset flex h-full flex-col justify-center gap-1.5 p-4 md:p-6">
               <span className="text-[11px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>{t.contact.label}</span>
               <a href="mailto:contact@landings.md" className="truncate text-[0.9375rem] font-medium text-white transition-colors duration-150 hover:!text-[#FF9E7A]">
                 contact@landings.md
@@ -669,23 +692,37 @@ export default function Home() {
               <a href="tel:+37368327082" className="text-[0.9375rem] font-medium transition-colors duration-150 hover:!text-[#FF9E7A]" style={{ color: '#b8b8b9' }}>
                 +373 683 27 082
               </a>
-              <p className="mt-1 inline-flex items-center gap-2 text-[0.75rem] font-medium" style={{ color: '#909099' }}>
-                <span className="dot-lime" />
-                {t.about.avail}
-              </p>
+              <a href="https://instagram.com/landings.md" target="_blank" rel="noopener noreferrer" className="text-[0.8125rem] font-medium transition-colors duration-150 hover:!text-[#FF9E7A]" style={{ color: '#b8b8b9' }}>
+                Instagram · @landings.md
+              </a>
+              <div className="mt-1 flex items-center justify-between gap-2">
+                <p className="inline-flex items-center gap-2 text-[0.75rem] font-medium" style={{ color: '#909099' }}>
+                  <span className="dot-lime" />
+                  {t.about.avail}
+                </p>
+                <span className="text-[0.75rem] font-semibold" style={{ color: '#FF9E7A' }}>24h</span>
+              </div>
             </div>
           </div>
         </Reveal>
 
-        {/* ── LOGO STRIP ── */}
+        {/* ── LOGO MARQUEE — all clients, GLG readable ── */}
         <Reveal delay={0.23} className="col-span-2 md:col-span-8 md:row-span-1 md:min-h-0">
           <div className="nv-edge h-full">
-            <div className="nv-edge-inner flex h-full flex-wrap items-center justify-around gap-x-6 gap-y-2 px-5 py-2.5">
-              {LOGO_ROW.map((l) => (
-                <span key={l.k} className="nv-logo">
-                  <Image src={`/images/logos/${l.k}.png`} alt={l.k} width={110} height={30} className="h-4 w-auto md:h-5" />
-                </span>
-              ))}
+            <div className="nv-edge-inner nv-inset flex h-full items-center px-2 py-1.5">
+              <div className="nv-marquee w-full">
+                <div className="nv-marquee-track">
+                  {[0, 1].map((half) => (
+                    <div key={half} className="flex items-center gap-10 pr-10" aria-hidden={half === 1}>
+                      {ALL_LOGOS.map((l) => (
+                        <span key={`${half}-${l.k}`} className="nv-logo shrink-0">
+                          <Image src={`/images/logos/${l.k}.png`} alt={half === 0 ? l.k : ''} width={120} height={36} className={`w-auto ${l.h}`} style={LOGO_FILTERS[l.t]} />
+                        </span>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </Reveal>
@@ -693,7 +730,7 @@ export default function Home() {
         {/* ── FOOTER MICRO ── */}
         <Reveal delay={0.26} className="col-span-2 md:col-span-4 md:row-span-1 md:min-h-0">
           <div className="nv-edge h-full">
-            <div className="nv-edge-inner flex h-full items-center justify-between gap-3 px-5 py-2.5">
+            <div className="nv-edge-inner nv-inset flex h-full items-center justify-between gap-3 px-4 py-2">
               <span className="truncate text-[11px] font-medium" style={{ color: '#909099' }}>{t.footer.copy}</span>
               <a href="https://instagram.com/landings.md" target="_blank" rel="noopener noreferrer" className="text-[11px] font-medium transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>
                 Instagram

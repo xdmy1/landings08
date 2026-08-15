@@ -511,7 +511,7 @@ blockquote i, .nv-quote-lime i {
 /* metal-bezel floating card — the button materiality, applied to objects */
 .nv-float-card {
   padding: 4px;
-  border-radius: 999px 999px 16px 16px;
+  border-radius: 16px;
   background: linear-gradient(180deg, #3f3f3f, #1c1c1c 55%, #141414);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.22),
@@ -531,7 +531,7 @@ blockquote i, .nv-quote-lime i {
 .nv-float-card > .nv-float-card-img {
   position: relative;
   overflow: hidden;
-  border-radius: 999px 999px 12px 12px;
+  border-radius: 12px;
   height: 100%;
 }
 
@@ -547,4 +547,42 @@ blockquote i, .nv-quote-lime i {
 @media (prefers-reduced-motion: reduce) {
   .nv-bob-1, .nv-bob-2, .nv-bob-3 { animation: none; }
   .nv-float-card:hover { transform: none; }
+}
+
+/* ── Recessed depth: inner shadows + inner hairline on every bento cell ── */
+.nv-inset {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.045),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 -26px 44px -18px rgba(0, 0, 0, 0.6),
+    inset 0 22px 40px -20px rgba(0, 0, 0, 0.45);
+}
+/* deeper well for the projects card: content reads as INSIDE */
+.nv-well {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 2px 2px rgba(0, 0, 0, 0.5),
+    inset 0 26px 48px -12px rgba(0, 0, 0, 0.72),
+    inset 0 -30px 52px -12px rgba(0, 0, 0, 0.78),
+    inset 26px 0 48px -18px rgba(0, 0, 0, 0.62),
+    inset -26px 0 48px -18px rgba(0, 0, 0, 0.62);
+}
+
+/* ── Logo marquee carousel ── */
+.nv-marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 10%, black 90%, transparent);
+}
+.nv-marquee-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: nv-marq 30s linear infinite;
+  will-change: transform;
+}
+.nv-marquee:hover .nv-marquee-track { animation-play-state: paused; }
+@keyframes nv-marq { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .nv-marquee-track { animation: none; }
 }
