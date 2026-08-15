@@ -586,3 +586,37 @@ blockquote i, .nv-quote-lime i {
 @media (prefers-reduced-motion: reduce) {
   .nv-marquee-track { animation: none; }
 }
+
+/* ── Live-dashboard mechanics ── */
+/* data packet traveling along a connector */
+@keyframes nv-packet-run {
+  0% { left: 0%; opacity: 0; }
+  8% { opacity: 1; }
+  92% { opacity: 1; }
+  100% { left: calc(100% - 5px); opacity: 0; }
+}
+.nv-packet {
+  position: absolute;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  margin-top: -2.5px;
+  border-radius: 999px;
+  background: #FF9E7A;
+  box-shadow: 0 0 8px rgba(255, 158, 122, 0.9);
+  animation: nv-packet-run 2.4s linear infinite;
+}
+/* clock colon blink */
+@keyframes nv-blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0.25; } }
+.nv-blink { animation: nv-blink 1s steps(1) infinite; }
+/* cycling line swap */
+.nv-swap {
+  transition: opacity 0.22s ease-out, transform 0.22s ease-out;
+}
+.nv-swap--out { opacity: 0; transform: translateY(6px); }
+/* ribbed variant without the top specular (inside cells) */
+.ribbed--flat::before { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nv-packet, .nv-blink { animation: none; }
+}

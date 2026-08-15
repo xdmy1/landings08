@@ -98,10 +98,6 @@ const ALL_LOGOS = [
   { k: 'radx', h: 'h-4 md:h-5', t: 'solid' },
   { k: 'rizzaclassic', h: 'h-5 md:h-6', t: 'solid' },
   { k: 'eurogard', h: 'h-6 md:h-7', t: 'solid' },
-  { k: 'autohuse', h: 'h-6 md:h-7', t: 'mono' },
-  { k: 'udc', h: 'h-6 md:h-7', t: 'mono' },
-  { k: 'droppack', h: 'h-6 md:h-7', t: 'mono' },
-  { k: 'automarga', h: 'h-6 md:h-7', t: 'white' },
 ] as const
 
 const LOGO_FILTERS: Record<string, React.CSSProperties> = {
@@ -479,6 +475,50 @@ export default function Home() {
   const { language } = useLanguage()
   const t = T[language as keyof typeof T] ?? T.en
 
+  /* live dashboard state: counters, Chisinau clock, cycling lines */
+  const [dr, setDr] = useState(0)
+  const [traffic, setTraffic] = useState(0)
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setDr(50); setTraffic(300); return }
+    const t0 = performance.now()
+    let raf = 0
+    const tick = (now: number) => {
+      const p = Math.min((now - t0) / 700, 1)
+      const e = 1 - Math.pow(1 - p, 3)
+      setDr(Math.round(e * 50))
+      setTraffic(Math.round(e * 300))
+      if (p < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [])
+
+  const [clock, setClock] = useState<string | null>(null)
+  useEffect(() => {
+    const update = () => setClock(new Date().toLocaleTimeString('ro-RO', { timeZone: 'Europe/Chisinau', hour12: false }))
+    update()
+    const id = setInterval(update, 1000)
+    return () => clearInterval(id)
+  }, [])
+
+  const FACTS = ['davo.md · #1 Google transport', 'inter-bus.md · ERP live', 'scoalaautoglg.com · programari online', 'cmiea.md · platforma educatie', 'radx.solutions · page 1 Google'] as const
+  const WORDS = ['Design', 'Code', 'SEO', 'Ads', 'Systems'] as const
+  const [factIdx, setFactIdx] = useState(0)
+  const [wordIdx, setWordIdx] = useState(0)
+  const [swapping, setSwapping] = useState(false)
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const id = setInterval(() => {
+      setSwapping(true)
+      setTimeout(() => {
+        setFactIdx((i) => (i + 1) % FACTS.length)
+        setWordIdx((i) => (i + 1) % WORDS.length)
+        setSwapping(false)
+      }, 220)
+    }, 2600)
+    return () => clearInterval(id)
+  }, [])
+
   /* 3D tilt for the project stage: the card group leans toward the cursor */
   const stageRef = useRef<HTMLDivElement | null>(null)
   const [tilt, setTilt] = useState({ rx: 0, ry: 0 })
@@ -499,7 +539,7 @@ export default function Home() {
 
       <div className="nv-container grid w-full flex-1 grid-cols-2 gap-2 pb-2 pt-1 md:gap-3 md:pb-3 md:pt-2 md:min-h-0 md:grid-cols-12 md:grid-rows-[repeat(12,minmax(0,1fr))]">
 
-        {/* ── HERO CELL — the loved ribbed graphic lives here ── */}
+        {/* ── HERO CELL : the loved ribbed graphic lives here ── */}
         <Reveal className="col-span-2 md:col-span-8 md:row-span-7 md:min-h-0">
           <div className="nv-edge h-full">
             <div className="nv-edge-inner nv-inset relative flex h-full flex-col justify-center overflow-hidden p-5 md:p-10">
@@ -519,12 +559,11 @@ export default function Home() {
                 style={{ background: '#fff', filter: 'blur(110px)', opacity: 0.22 }}
               />
               {/* the ribbed sheet */}
-              <div className="ribbed absolute inset-0" aria-hidden style={{ borderTop: 'none' }} />
+              <div className="ribbed ribbed--flat absolute inset-0" aria-hidden style={{ borderTop: 'none' }} />
 
               <div className="relative z-[1]">
                 <span className="chip chip--em">
                   <span className="chip-inner !py-2 !text-[13px]">
-                    <span className="dot-lime" />
                     {t.badgeEm}
                   </span>
                 </span>
@@ -537,12 +576,15 @@ export default function Home() {
                 <p className="mt-3 max-w-[560px] text-[0.8125rem] font-medium md:mt-4 md:text-[1.0625rem]" style={{ color: '#b8b8b9', lineHeight: 1.35 }}>
                   {t.hero.sub}
                 </p>
-                <div className="mt-6 flex flex-wrap items-center gap-4">
+                <div className="mt-5 flex flex-wrap items-center gap-4 md:mt-6">
                   <a href="mailto:contact@landings.md" className="btn-metal">
                     {t.hero.cta}
                     <span className="nv-arr" aria-hidden>&rarr;</span>
                   </a>
                   <span className="text-[0.8125rem] font-medium" style={{ color: '#909099' }}>{t.hero.note}</span>
+                </div>
+                <div className="mt-4 flex items-center gap-2 text-[11px] font-medium md:mt-5" style={{ color: '#909099' }}>
+                  <span className={`nv-swap ${swapping ? 'nv-swap--out' : ''}`} style={{ color: '#b8b8b9' }}>{FACTS[factIdx]}</span>
                 </div>
               </div>
             </div>
@@ -550,7 +592,7 @@ export default function Home() {
         </Reveal>
 
         {/* ── DR 50 ring ── */}
-        <Reveal delay={0.05} className="col-span-1 md:col-span-4 md:row-span-3 md:min-h-0">
+        <Reveal delay={0.05} className="col-span-2 md:col-span-4 md:row-span-3 md:min-h-0">
           <div className="nv-edge nv-edge--ring nv-cell h-full">
             <div className="nv-edge-inner nv-inset flex h-full items-center gap-4 p-4 md:p-6">
               <svg width="58" height="58" viewBox="0 0 96 96" aria-hidden className="shrink-0">
@@ -564,7 +606,7 @@ export default function Home() {
                 />
               </svg>
               <div className="min-w-0">
-                <span className="block font-medium" style={{ fontSize: 'clamp(1.6rem, 2vw, 2.1rem)', letterSpacing: '-0.04em', lineHeight: 1, color: '#FF9E7A' }}>{t.stats.cells[3].v}</span>
+                <span className="block font-medium" style={{ fontSize: 'clamp(1.6rem, 2vw, 2.1rem)', letterSpacing: '-0.04em', lineHeight: 1, color: '#FF9E7A', whiteSpace: 'nowrap' }}>DR {dr}</span>
                 <span className="mt-1 block truncate text-[0.8125rem] font-medium" style={{ color: '#909099' }}>{t.stats.cells[3].l}</span>
                 <span className="mt-1 block text-[11px] font-medium" style={{ color: '#b8b8b9' }}>2.6K backlinks · 348 ref. domains</span>
                 <span className="block text-[11px] font-medium" style={{ color: '#FF9E7A' }}>Ahrefs · live</span>
@@ -574,11 +616,11 @@ export default function Home() {
         </Reveal>
 
         {/* ── 300% bars ── */}
-        <Reveal delay={0.08} className="col-span-1 md:col-span-4 md:row-span-2 md:min-h-0">
+        <Reveal delay={0.08} className="col-span-2 md:col-span-4 md:row-span-2 md:min-h-0">
           <div className="nv-edge nv-edge--ring nv-cell h-full">
             <div className="nv-edge-inner nv-inset flex h-full items-center justify-between gap-4 p-4 md:p-6">
               <div className="min-w-0">
-                <span className="block font-medium" style={{ fontSize: 'clamp(1.5rem, 1.8vw, 1.9rem)', letterSpacing: '-0.04em', lineHeight: 1 }}>{t.stats.cells[1].v}</span>
+                <span className="block font-medium" style={{ fontSize: 'clamp(1.5rem, 1.8vw, 1.9rem)', letterSpacing: '-0.04em', lineHeight: 1 }}>{traffic}%</span>
                 <span className="mt-1 block text-[0.75rem] font-medium leading-tight" style={{ color: '#909099' }}>{t.stats.cells[1].l}</span>
                 <span className="mt-0.5 block text-[10px] font-medium" style={{ color: '#FF9E7A' }}>Google Analytics · organic</span>
               </div>
@@ -592,7 +634,7 @@ export default function Home() {
         </Reveal>
 
         {/* ── 10+ systems nodes ── */}
-        <Reveal delay={0.11} className="col-span-1 md:col-span-4 md:row-span-2 md:min-h-0">
+        <Reveal delay={0.11} className="col-span-2 md:col-span-4 md:row-span-2 md:min-h-0">
           <div className="nv-edge nv-edge--ring nv-cell h-full">
             <div className="nv-edge-inner nv-inset flex h-full items-center justify-between gap-4 p-4 md:p-6">
               <div className="min-w-0">
@@ -602,16 +644,20 @@ export default function Home() {
               </div>
               <div className="flex w-24 shrink-0 items-center" aria-hidden>
                 <span className="nv-node h-2 w-2 rounded-full" style={{ background: '#FF9E7A' }} />
-                <span className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }} />
+                <span className="relative h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }}>
+                  <span className="nv-packet" />
+                </span>
                 <span className="nv-node h-2 w-2 rounded-full" style={{ background: '#FF9E7A' }} />
-                <span className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }} />
+                <span className="relative h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }}>
+                  <span className="nv-packet" style={{ animationDelay: '-1.2s' }} />
+                </span>
                 <span className="nv-node h-2 w-2 rounded-full" style={{ background: '#FF9E7A' }} />
               </div>
             </div>
           </div>
         </Reveal>
 
-        {/* ── PROJECTS — depth stage with floating metal-bezel cards ── */}
+        {/* ── PROJECTS : depth stage with floating metal-bezel cards ── */}
         <Reveal delay={0.14} className="col-span-2 md:col-span-4 md:row-span-4 md:min-h-0">
           <div className="nv-edge nv-edge--ring h-full">
             <div
@@ -673,6 +719,9 @@ export default function Home() {
               </span>
               <p className="mx-auto mt-2 max-w-[240px] text-[0.8125rem] font-medium" style={{ color: '#b8b8b9' }}>{t.stats.offerSub}</p>
               <p className="mt-1 text-[0.75rem] font-medium" style={{ color: '#909099' }}>{t.stats.offerNote}</p>
+              <p className="mt-1 text-[0.8125rem] font-semibold" aria-hidden>
+                <span className={`nv-swap inline-block ${swapping ? 'nv-swap--out' : ''}`} style={{ color: '#FF9E7A' }}>{WORDS[wordIdx]}</span>
+              </p>
               <a href="mailto:contact@landings.md" className="btn-metal btn-metal--sm mx-auto mt-4">
                 {t.hero.cta}
                 <span className="nv-arr" aria-hidden>&rarr;</span>
@@ -697,16 +746,19 @@ export default function Home() {
               </a>
               <div className="mt-1 flex items-center justify-between gap-2">
                 <p className="inline-flex items-center gap-2 text-[0.75rem] font-medium" style={{ color: '#909099' }}>
-                  <span className="dot-lime" />
                   {t.about.avail}
                 </p>
-                <span className="text-[0.75rem] font-semibold" style={{ color: '#FF9E7A' }}>24h</span>
+                <span className="text-[0.75rem] font-semibold tabular-nums" style={{ color: '#FF9E7A' }}>
+                  {clock ? (
+                    <>Chisinau {clock.slice(0, 2)}<span className="nv-blink">:</span>{clock.slice(3, 5)}<span className="nv-blink">:</span>{clock.slice(6, 8)}</>
+                  ) : '24h'}
+                </span>
               </div>
             </div>
           </div>
         </Reveal>
 
-        {/* ── LOGO MARQUEE — all clients, GLG readable ── */}
+        {/* ── LOGO MARQUEE : curated clients, GLG readable ── */}
         <Reveal delay={0.23} className="col-span-2 md:col-span-8 md:row-span-1 md:min-h-0">
           <div className="nv-edge h-full">
             <div className="nv-edge-inner nv-inset flex h-full items-center px-2 py-1.5">
@@ -727,17 +779,54 @@ export default function Home() {
           </div>
         </Reveal>
 
-        {/* ── FOOTER MICRO ── */}
+        {/* ── FOOTER MICRO: © + icon links ── */}
         <Reveal delay={0.26} className="col-span-2 md:col-span-4 md:row-span-1 md:min-h-0">
           <div className="nv-edge h-full">
             <div className="nv-edge-inner nv-inset flex h-full items-center justify-between gap-3 px-4 py-2">
               <span className="truncate text-[11px] font-medium" style={{ color: '#909099' }}>{t.footer.copy}</span>
-              <a href="https://instagram.com/landings.md" target="_blank" rel="noopener noreferrer" className="text-[11px] font-medium transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>
-                Instagram
-              </a>
+              <span className="flex items-center gap-1.5">
+                <a
+                  href="mailto:contact@landings.md"
+                  aria-label="Email"
+                  className="flex h-7 w-7 items-center justify-center rounded-full transition-[color,box-shadow] duration-150 hover:!text-[#FF9E7A] hover:[box-shadow:0_0_1px_1px_#FF9E7A]"
+                  style={{ color: '#a4a4a4', border: '1px solid rgba(255,255,255,0.14)' }}
+                >
+                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+                    <rect x="3" y="5" width="18" height="14" rx="2" />
+                    <path d="M3 7l9 6 9-6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
+                <a
+                  href="https://wa.me/37368327082"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="WhatsApp"
+                  className="flex h-7 w-7 items-center justify-center rounded-full transition-[color,box-shadow] duration-150 hover:!text-[#FF9E7A] hover:[box-shadow:0_0_1px_1px_#FF9E7A]"
+                  style={{ color: '#a4a4a4', border: '1px solid rgba(255,255,255,0.14)' }}
+                >
+                  <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.6-6.1c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.6.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-2-1.2 7.4 7.4 0 0 1-1.4-1.7c-.1-.3 0-.4.1-.5l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.7 4.3 3.8.6.3 1.1.4 1.5.6.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.6-.3z" />
+                  </svg>
+                </a>
+                <a
+                  href="https://instagram.com/landings.md"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="flex h-7 w-7 items-center justify-center rounded-full transition-[color,box-shadow] duration-150 hover:!text-[#FF9E7A] hover:[box-shadow:0_0_1px_1px_#FF9E7A]"
+                  style={{ color: '#a4a4a4', border: '1px solid rgba(255,255,255,0.14)' }}
+                >
+                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="18" height="18" rx="5" />
+                    <circle cx="12" cy="12" r="4" />
+                    <circle cx="17.2" cy="6.8" r="0.8" fill="currentColor" stroke="none" />
+                  </svg>
+                </a>
+              </span>
             </div>
           </div>
         </Reveal>
+
       </div>
     </main>
   )

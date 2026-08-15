@@ -53,6 +53,25 @@ function Reveal({
    chips use universal tech terms readable in all 5 languages. */
 const projects = [
   {
+    id: 10, title: "StarterPlus", domain: "starterplus.md",
+    chips: ["SITE", "RO / RU", "LOCAL"],
+    description: {
+      en: "Auto electrician in Chisinau: starter and alternator repair with new, used and reconditioned stock, 12-month written warranty. A bilingual RO/RU site built to make the phone ring.",
+      ro: "Electrician auto in Chisinau: reparatia starterelor si generatoarelor, stoc de piese noi, uzate si reconditionate, garantie scrisa pana la 12 luni. Site bilingv RO/RU construit sa aduca apeluri.",
+      de: "Autoelektriker in Chisinau: Reparatur von Anlassern und Lichtmaschinen, Lager mit neuen und aufbereiteten Teilen, 12 Monate schriftliche Garantie. Zweisprachige RO/RU-Website, gebaut fur Anrufe.",
+      fr: "Electricien auto a Chisinau : reparation de demarreurs et alternateurs, stock neuf et reconditionne, garantie ecrite de 12 mois. Site bilingue RO/RU concu pour faire sonner le telephone.",
+      es: "Electricista de autos en Chisinau: reparacion de motores de arranque y alternadores, stock nuevo y reacondicionado, garantia escrita de 12 meses. Web bilingue RO/RU hecha para generar llamadas."
+    },
+    highlight: {
+      en: "Fresh launch: a local site built around one action, the call",
+      ro: "Lansare noua: un site local construit in jurul unei actiuni, apelul",
+      de: "Neuer Launch: eine lokale Site, gebaut um eine Aktion, den Anruf",
+      fr: "Lancement recent : un site local construit autour d'une action, l'appel",
+      es: "Lanzamiento nuevo: una web local construida alrededor de una accion, la llamada"
+    },
+    image: "/images/tall-starterplus.jpg", url: "https://starterplus.md", status: "LIVE"
+  },
+  {
     id: 1, title: "Davo.md", domain: "davo.md",
     chips: ["SITE", "BOOKING", "SEO", "META ADS"],
     description: {
@@ -420,7 +439,7 @@ export default function PortfolioPage() {
                           ))}
                         </div>
                         <span className="inline-flex flex-shrink-0 items-center gap-2 pt-1 text-[11px] font-medium uppercase tracking-[0.08em]" style={{ color: '#909099' }}>
-                          {project.status === 'LIVE' && <span className="dot-lime" style={{ width: 5, height: 5 }} />}
+                          
                           {project.status === 'LIVE' ? 'LIVE' : t.private}
                         </span>
                       </div>
