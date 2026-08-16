@@ -4,6 +4,18 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
+import {
+  Sparkline,
+  SegmentMeter,
+  Gauge,
+  HeatGrid,
+  DonutSplit,
+  Odometer,
+  Orbit,
+  WaveLine,
+  StackBars,
+  Concentric,
+} from '@/components/ui/data-viz'
 
 type Lang = 'en' | 'ro' | 'de' | 'fr' | 'es'
 type Tier = 'starter' | 'business' | 'ecommerce' | 'custom'
@@ -201,6 +213,30 @@ const customNoteText: Record<Lang, string> = {
   es: "Depende de la complejidad. Respondemos en 24h con una estimacion concreta.",
 }
 
+/* delivery window per tier, shown under the estimate ring */
+const deliveryPlan: Record<Tier, { range: string, cells: number }> = {
+  starter: { range: '5-7', cells: 7 },
+  business: { range: '10-14', cells: 14 },
+  ecommerce: { range: '14-21', cells: 18 },
+  custom: { range: '21+', cells: 20 },
+}
+
+const deliveryText: Record<Lang, { label: string, unit: string }> = {
+  en: { label: 'Estimated delivery', unit: 'working days' },
+  ro: { label: 'Livrare estimata', unit: 'zile lucratoare' },
+  de: { label: 'Geschatzte Lieferung', unit: 'Werktage' },
+  fr: { label: 'Livraison estimee', unit: 'jours ouvres' },
+  es: { label: 'Entrega estimada', unit: 'dias laborables' },
+}
+
+const breakdownText: Record<Lang, { base: string, langs: string, total: string }> = {
+  en: { base: 'Base package', langs: 'Extra languages', total: 'Total estimate' },
+  ro: { base: 'Pachet de baza', langs: 'Limbi in plus', total: 'Total estimat' },
+  de: { base: 'Basispaket', langs: 'Zusatzliche Sprachen', total: 'Gesamtschatzung' },
+  fr: { base: 'Forfait de base', langs: 'Langues supplementaires', total: 'Estimation totale' },
+  es: { base: 'Paquete base', langs: 'Idiomas extra', total: 'Estimacion total' },
+}
+
 const packagesText: Record<Lang, { heading: string, sub: string, popular: string }> = {
   en: { heading: "Or pick a package directly", sub: "All packages include custom design, 1 year of hosting and SSL. Prices are starting points, always negotiable.", popular: "MOST POPULAR" },
   ro: { heading: "Sau alege direct un pachet", sub: "Toate pachetele includ design custom, hosting 1 an si SSL. Preturile sunt puncte de pornire, mereu negociabile.", popular: "CEL MAI ALES" },
@@ -357,23 +393,6 @@ export default function PricingPage() {
   const basePrice = BASE_PRICES[recommendation]
   const totalPrice = basePrice !== null ? basePrice + addon : null
 
-  /* the estimate counts up on the result screen, entrance only */
-  const [countPrice, setCountPrice] = useState(0)
-  useEffect(() => {
-    if (!showResult || totalPrice === null) { setCountPrice(0); return }
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setCountPrice(totalPrice); return }
-    const t0 = performance.now()
-    let raf = 0
-    const tick = (now: number) => {
-      const p = Math.min((now - t0) / 1300, 1)
-      const e = 1 - Math.pow(1 - p, 3)
-      setCountPrice(Math.round(e * totalPrice))
-      if (p < 1) raf = requestAnimationFrame(tick)
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [showResult, totalPrice])
-
   const getContactURL = () => {
     const subject = totalPrice !== null ? `${result.name} (€${totalPrice})` : result.name
     return `mailto:contact@landings.md?subject=${encodeURIComponent(subject)}`
@@ -390,24 +409,16 @@ export default function PricingPage() {
   const tierIndex = tiers.indexOf(recommendation)
   /* the result ring visualises where the recommended tier sits in the range */
   const ringOffset = Math.round(264 - 264 * ((tierIndex + 1) / tiers.length))
+  const delivery = deliveryPlan[recommendation]
+  const dl = deliveryText[lang]
+  const bd = breakdownText[lang]
 
-  /* 4-bar level meter used on every package card */
-  const LevelBars = ({ level }: { level: number }) => (
-    <span className="flex h-7 w-14 shrink-0 items-end gap-1" aria-hidden>
-      {[34, 56, 78, 100].map((h, i) => (
-        <span
-          key={i}
-          className="nv-bar flex-1 rounded-[2px]"
-          style={{
-            height: `${h}%`,
-            ['--i' as string]: i,
-            background: i <= level ? LIME : 'rgba(255,255,255,0.14)',
-            boxShadow: i <= level ? '0 0 8px rgba(255,158,122,0.35)' : undefined,
-          } as React.CSSProperties}
-        />
-      ))}
-    </span>
-  )
+  /* every package tier wears its own visual, never the same one twice */
+  const tierVisual: Record<'starter' | 'business' | 'ecommerce', React.ReactNode> = {
+    starter: <Gauge value={0.58} className="shrink-0" />,
+    business: <Concentric className="shrink-0" />,
+    ecommerce: <DonutSplit parts={[0.46, 0.32, 0.22]} className="shrink-0" />,
+  }
 
   return (
     <main className="min-h-screen text-white" style={{ background: '#0d0d0d' }}>
@@ -459,11 +470,11 @@ export default function PricingPage() {
                   </span>
                   <div className="mt-8 flex flex-wrap items-center gap-4">
                     <a href="#wizard" className="btn-metal">
-                      {r.starter.cta}
+                      <span>{r.starter.cta}</span>
                       <span className="nv-arr" aria-hidden>&rarr;</span>
                     </a>
-                    <a href="#packages" className="btn-metal btn-metal--sm">
-                      {packagesLabelText[lang]}
+                    <a href="#packages" className="btn-metal">
+                      <span>{packagesLabelText[lang]}</span>
                       <span className="nv-arr" aria-hidden>&rarr;</span>
                     </a>
                   </div>
@@ -472,7 +483,7 @@ export default function PricingPage() {
             </div>
           </Reveal>
 
-          {/* package range, bars */}
+          {/* package range, proportion bars comparing the three tiers */}
           <Reveal delay={0.05} className="min-w-0 md:col-span-4">
             <div className="nv-edge nv-edge--ring nv-cell h-full">
               <div className="nv-edge-inner nv-inset flex h-full items-center justify-between gap-4 p-5 md:p-6">
@@ -487,26 +498,16 @@ export default function PricingPage() {
                     <span className="mr-1.5 text-[12px] font-medium" style={{ color: '#909099', letterSpacing: 0 }}>{fromText[lang]}</span>
                     €350
                   </span>
-                  <span className="mt-1.5 block text-[11px] font-medium" style={{ color: '#b8b8b9' }}>€350 · €550 · €850</span>
+                  <span className="mt-1.5 block whitespace-nowrap text-[11px] font-medium" style={{ color: '#b8b8b9' }}>€350 · €550 · €850</span>
                 </div>
-                <div className="flex h-12 w-20 shrink-0 items-end gap-1.5" aria-hidden>
-                  {[46, 64, 82, 100].map((h, i) => (
-                    <span
-                      key={i}
-                      className="nv-bar flex-1 rounded-[3px]"
-                      style={{
-                        height: `${h}%`,
-                        ['--i' as string]: i,
-                        background: i === 3 ? LIME : 'rgba(255,255,255,0.14)',
-                      } as React.CSSProperties}
-                    />
-                  ))}
+                <div className="w-24 shrink-0">
+                  <StackBars rows={[0.41, 0.65, 1]} />
                 </div>
               </div>
             </div>
           </Reveal>
 
-          {/* languages, nodes + travelling packets */}
+          {/* languages, one charged segment per language */}
           <Reveal delay={0.08} className="min-w-0 md:col-span-4">
             <div className="nv-edge nv-edge--ring nv-cell h-full">
               <div className="nv-edge-inner nv-inset flex h-full items-center justify-between gap-4 p-5 md:p-6">
@@ -521,35 +522,16 @@ export default function PricingPage() {
                     {langNoteText[lang](1, LANG_ADDON)}
                   </span>
                 </div>
-                <div className="flex w-20 shrink-0 items-center" aria-hidden>
-                  <span className="nv-node h-2 w-2 rounded-full" style={{ background: LIME }} />
-                  <span className="relative h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }}>
-                    <span className="nv-packet" />
-                  </span>
-                  <span className="nv-node h-2 w-2 rounded-full" style={{ background: LIME }} />
-                  <span className="relative h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }}>
-                    <span className="nv-packet" style={{ animationDelay: '-1.2s' }} />
-                  </span>
-                  <span className="nv-node h-2 w-2 rounded-full" style={{ background: LIME }} />
-                </div>
+                <SegmentMeter total={5} filled={5} className="shrink-0" />
               </div>
             </div>
           </Reveal>
 
-          {/* 24h reply, ring */}
+          {/* 24h reply, a single orbit sweep, one day, one lap */}
           <Reveal delay={0.11} className="min-w-0 md:col-span-4">
             <div className="nv-edge nv-edge--ring nv-cell h-full">
               <div className="nv-edge-inner nv-inset flex h-full items-center gap-4 p-5 md:p-6">
-                <svg width="52" height="52" viewBox="0 0 96 96" aria-hidden className="shrink-0">
-                  <circle cx="48" cy="48" r="42" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
-                  <circle
-                    cx="48" cy="48" r="42" fill="none"
-                    stroke={LIME} strokeWidth="8" strokeLinecap="round"
-                    strokeDasharray="264" strokeDashoffset="66"
-                    transform="rotate(-90 48 48)"
-                    className="nv-ring-main"
-                  />
-                </svg>
+                <Orbit className="shrink-0" />
                 <div className="min-w-0">
                   <span
                     className="block font-semibold"
@@ -718,7 +700,7 @@ export default function PricingPage() {
                                     className="font-semibold tabular-nums"
                                     style={{ fontSize: 'clamp(1.75rem, 3.4vw, 2.4rem)', letterSpacing: '-0.05em', lineHeight: 1, color: LIME }}
                                   >
-                                    €{countPrice}
+                                    <Odometer key={totalPrice} value={totalPrice} prefix="€" />
                                   </span>
                                 </>
                               ) : (
@@ -735,13 +717,42 @@ export default function PricingPage() {
                             </div>
                           </div>
 
-                          {!isCustom && extraCount > 0 && (
-                            <p className="mt-5 text-[12px] font-medium tracking-[0.08em]" style={{ color: '#909099' }}>
-                              {langNoteText[lang](extraCount, addon)}
-                            </p>
+                          {/* what the estimate is made of, only when there is something to break down */}
+                          {!isCustom && basePrice !== null && totalPrice !== null && extraCount > 0 && (
+                            <div className="mt-6 w-full border-t border-white/[0.07] pt-5 text-left">
+                              <div className="flex items-baseline justify-between gap-3 text-[12px] font-medium">
+                                <span style={{ color: '#909099' }}>{bd.base}</span>
+                                <span className="tabular-nums" style={{ color: '#e0e0e2' }}>€{basePrice}</span>
+                              </div>
+                              <div className="mt-2 flex items-baseline justify-between gap-3 text-[12px] font-medium">
+                                <span style={{ color: '#909099' }}>{bd.langs} ({extraCount})</span>
+                                <span className="tabular-nums" style={{ color: '#e0e0e2' }}>+€{addon}</span>
+                              </div>
+                              <div className="mt-3 flex items-baseline justify-between gap-3 border-t border-white/[0.07] pt-3 text-[12px] font-semibold">
+                                <span style={{ color: '#b8b8b9' }}>{bd.total}</span>
+                                <span className="tabular-nums" style={{ color: LIME }}>€{totalPrice}</span>
+                              </div>
+                            </div>
                           )}
 
-                          <p className="mt-3 text-[12px] font-medium leading-[1.35]" style={{ color: '#909099' }}>
+                          {/* estimated delivery, one lit cell per working day */}
+                          <div className="mt-6 w-full border-t border-white/[0.07] pt-5 text-left">
+                            <span className="block text-[11px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
+                              {dl.label}
+                            </span>
+                            <p className="mt-1.5 text-[13px] font-medium leading-[1.3]">
+                              <span className="font-semibold tabular-nums" style={{ color: LIME, letterSpacing: '-0.02em' }}>{delivery.range}</span>
+                              <span style={{ color: '#909099' }}> {dl.unit}</span>
+                            </p>
+                            <HeatGrid
+                              cols={10}
+                              rows={2}
+                              lit={Array.from({ length: delivery.cells }, (_, i) => i)}
+                              className="mt-3 w-full"
+                            />
+                          </div>
+
+                          <p className="mt-5 text-[12px] font-medium leading-[1.35]" style={{ color: '#909099' }}>
                             {isCustom ? customNoteText[lang] : negotiableText[lang]}
                           </p>
                         </div>
@@ -754,7 +765,9 @@ export default function PricingPage() {
                             <h2 className="font-bold text-[clamp(1.75rem,3vw,2.25rem)] leading-[1.0] text-white" style={{ letterSpacing: '-0.06em' }}>
                               {result.name}
                             </h2>
-                            <LevelBars level={tierIndex} />
+                            <span className="mt-1 shrink-0 text-[11px] font-medium tabular-nums tracking-[0.14em]" style={{ color: '#909099' }}>
+                              {String(tierIndex + 1).padStart(2, '0')} / {String(tiers.length).padStart(2, '0')}
+                            </span>
                           </div>
 
                           <p className="mt-3 text-[15px] font-medium leading-[1.4]" style={{ color: '#b8b8b9' }}>
@@ -787,7 +800,7 @@ export default function PricingPage() {
 
                           <div className="mt-7 flex flex-wrap items-center gap-4">
                             <Link href={getContactURL()} className="btn-metal">
-                              {result.cta}
+                              <span>{result.cta}</span>
                               <span className="nv-arr" aria-hidden>&rarr;</span>
                             </Link>
                             <button
@@ -850,7 +863,7 @@ export default function PricingPage() {
                       )}
                       <h3 className="mt-2 text-[20px] font-medium text-white" style={{ letterSpacing: '-0.02em' }}>{tr.name}</h3>
                     </div>
-                    <LevelBars level={ti} />
+                    {tierVisual[tier as 'starter' | 'business' | 'ecommerce']}
                   </div>
 
                   <div className="mt-4">
@@ -862,7 +875,7 @@ export default function PricingPage() {
 
                   <p className="mt-4 text-[13px] font-medium leading-[1.4]" style={{ color: '#909099' }}>{tr.why}</p>
 
-                  <div className={`mt-5 mb-7 flex-1 border-t ${isPopular ? 'border-white/10' : 'border-white/[0.07]'}`}>
+                  <div className={`mt-5 flex-1 border-t ${isPopular ? 'border-white/10' : 'border-white/[0.07]'}`}>
                     {tr.features.map((f, fi) => (
                       <div key={fi} className={`border-b py-2.5 text-[14px] font-medium leading-[1.3] ${isPopular ? 'border-white/10' : 'border-white/[0.07]'}`} style={{ color: '#b8b8b9' }}>
                         {f}
@@ -870,8 +883,15 @@ export default function PricingPage() {
                     ))}
                   </div>
 
-                  <Link href={mailHref} className={`btn-metal w-full ${isPopular ? '' : 'btn-metal--sm'}`}>
-                    {tr.cta}
+                  <div className="mb-6 mt-5 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-[12px] font-medium">
+                    <span style={{ color: '#909099' }}>{dl.label}</span>
+                    <span style={{ color: '#e0e0e2' }}>
+                      <span className="tabular-nums">{deliveryPlan[tier].range}</span> {dl.unit}
+                    </span>
+                  </div>
+
+                  <Link href={mailHref} className="btn-metal w-full">
+                    <span>{tr.cta}</span>
                     <span className="nv-arr" aria-hidden>&rarr;</span>
                   </Link>
                 </>
@@ -915,24 +935,15 @@ export default function PricingPage() {
                   <p className="mt-3 font-semibold text-[1.5rem] leading-[1.15] text-white" style={{ letterSpacing: '-0.04em' }}>
                     {priceOnRequestText[lang]}
                   </p>
-                  <div className="mt-4 flex w-full max-w-[200px] items-center" aria-hidden>
-                    <span className="nv-node h-2 w-2 rounded-full" style={{ background: LIME }} />
-                    <span className="relative h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }}>
-                      <span className="nv-packet" />
-                    </span>
-                    <span className="nv-node h-2 w-2 rounded-full" style={{ background: LIME }} />
-                    <span className="relative h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }}>
-                      <span className="nv-packet" style={{ animationDelay: '-1.2s' }} />
-                    </span>
-                    <span className="nv-node h-2 w-2 rounded-full" style={{ background: LIME }} />
-                  </div>
+                  {/* a live system in motion, not another node chain */}
+                  <WaveLine className="mt-4" />
                   <p className="mt-4 text-[13px] font-medium leading-[1.4]" style={{ color: '#909099' }}>{r.custom.why}</p>
                   <div className="flex-1" />
                   <Link
                     href={`mailto:contact@landings.md?subject=${encodeURIComponent(r.custom.name)}`}
                     className="btn-metal mt-6 self-start"
                   >
-                    {r.custom.cta}
+                    <span>{r.custom.cta}</span>
                     <span className="nv-arr" aria-hidden>&rarr;</span>
                   </Link>
                 </div>
@@ -940,10 +951,10 @@ export default function PricingPage() {
                 <div className="grid min-w-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2">
                   {r.custom.features.map((f, fi) => (
                     <div key={fi} className="nv-edge h-full">
-                      <div className="nv-edge-inner nv-inset flex h-full items-start gap-3 px-4 py-3.5">
+                      <div className="nv-edge-inner nv-inset flex h-full items-center justify-center gap-3 p-5 text-center md:p-6">
                         <svg
                           aria-hidden
-                          className="mt-[3px] h-4 w-4 flex-none"
+                          className="h-4 w-4 flex-none"
                           fill="none"
                           stroke={LIME}
                           strokeWidth={2.2}
@@ -964,20 +975,7 @@ export default function PricingPage() {
           <Reveal delay={0.24}>
             <div className="nv-edge nv-edge--ring mt-4">
               <div className="nv-edge-inner nv-inset flex flex-col gap-6 p-6 md:flex-row md:items-center md:gap-10 md:p-9">
-                <div className="hidden h-16 w-28 shrink-0 items-end gap-1.5 md:flex" aria-hidden>
-                  {[26, 40, 52, 68, 84, 100].map((h, i) => (
-                    <span
-                      key={i}
-                      className="nv-bar flex-1 rounded-sm"
-                      style={{
-                        height: `${h}%`,
-                        ['--i' as string]: i,
-                        background: i >= 4 ? LIME : 'rgba(255,255,255,0.14)',
-                        boxShadow: i >= 4 ? '0 0 10px rgba(255,158,122,0.35)' : undefined,
-                      } as React.CSSProperties}
-                    />
-                  ))}
-                </div>
+                <Sparkline points={[6, 9, 8, 14, 12, 19, 26, 24, 35, 46]} className="hidden shrink-0 md:block" />
                 <div className="min-w-0 flex-1">
                   <h3 className="mb-2 text-[clamp(1.25rem,2.2vw,1.5rem)] font-semibold leading-[1.15] text-white" style={{ letterSpacing: '-0.04em' }}>{growth.title}</h3>
                   <p className="max-w-2xl text-[15px] font-medium leading-[1.4]" style={{ color: '#909099' }}>{growth.body}</p>
@@ -986,7 +984,7 @@ export default function PricingPage() {
                   href={`mailto:contact@landings.md?subject=${encodeURIComponent('SEO & Ads')}`}
                   className="btn-metal flex-shrink-0 self-start md:self-auto"
                 >
-                  {growth.cta}
+                  <span>{growth.cta}</span>
                   <span className="nv-arr" aria-hidden>&rarr;</span>
                 </Link>
               </div>

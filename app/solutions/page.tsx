@@ -5,6 +5,18 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
+import {
+  Sparkline,
+  SegmentMeter,
+  Gauge,
+  HeatGrid,
+  DonutSplit,
+  Odometer,
+  Orbit,
+  WaveLine,
+  StackBars,
+  Concentric,
+} from '@/components/ui/data-viz'
 
 /* ────────────────────────────────────────────────────────────────
    Solutions, systems dashboard shell.
@@ -50,29 +62,6 @@ function Reveal({
   )
 }
 
-/* Entrance count-up, ~1.3s, once, reduced-motion safe */
-function useCountUp(target: number, decimals = 0) {
-  const [n, setN] = useState(0)
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setN(target)
-      return
-    }
-    const t0 = performance.now()
-    let raf = 0
-    const tick = (now: number) => {
-      const p = Math.min((now - t0) / 1300, 1)
-      const e = 1 - Math.pow(1 - p, 3)
-      setN(Number((e * target).toFixed(decimals)))
-      if (p < 1) raf = requestAnimationFrame(tick)
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [target, decimals])
-  return n
-}
-
 /* Plain letter-spaced caps label, no dot */
 function Label({ children }: { children: React.ReactNode }) {
   return (
@@ -91,26 +80,11 @@ function Seam() {
   )
 }
 
-/* ── Shared stat visuals ── */
-
-/* staggered bars that grow on load */
-function Bars({ heights, hot = -1, className = '' }: { heights: number[]; hot?: number; className?: string }) {
-  return (
-    <div className={`flex items-end gap-1 ${className}`} aria-hidden>
-      {heights.map((h, i) => (
-        <span
-          key={i}
-          className="nv-bar flex-1 rounded-[2px]"
-          style={{
-            height: `${h}%`,
-            ['--i' as string]: i,
-            background: (hot < 0 ? i === heights.length - 1 : i >= hot) ? LIME : 'rgba(255,255,255,0.14)',
-          }}
-        />
-      ))}
-    </div>
-  )
-}
+/* ── Stat visuals ──
+   Everything else on this page comes from components/ui/data-viz, one
+   distinct visual per card. The node line below is the single survivor,
+   kept only for the cross-border package transit card where it is
+   literally what the system does. */
 
 /* nodes joined by connectors with travelling coral packets */
 function NodeLine({ nodes = 3, className = '' }: { nodes?: number; className?: string }) {
@@ -130,28 +104,26 @@ function NodeLine({ nodes = 3, className = '' }: { nodes?: number; className?: s
   )
 }
 
-/* single ring that fills once on entrance */
-function Ring({ pct, size = 56, children }: { pct: number; size?: number; children?: React.ReactNode }) {
-  const offset = 264 - 264 * pct
-  return (
-    <div className="relative shrink-0" style={{ width: size, height: size }} aria-hidden>
-      <svg width={size} height={size} viewBox="0 0 96 96">
-        <circle cx="48" cy="48" r="42" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
-        <circle
-          cx="48" cy="48" r="42" fill="none"
-          stroke={LIME} strokeWidth="8" strokeLinecap="round"
-          strokeDasharray="264" strokeDashoffset={offset}
-          transform="rotate(-90 48 48)"
-          className="nv-ring-main"
-        />
-      </svg>
-      {children && (
-        <span className="absolute inset-0 flex items-center justify-center text-[11px] font-semibold" style={{ color: LIME }}>
-          {children}
-        </span>
-      )}
-    </div>
-  )
+/* Deterministic activity map for the header strip: density rises to the
+   right, so the grid reads as workload absorbed by the systems. */
+const ACTIVITY_COLS = 20
+const ACTIVITY_ROWS = 3
+const activityLit: number[] = (() => {
+  const out: number[] = []
+  for (let r = 0; r < ACTIVITY_ROWS; r += 1) {
+    for (let c = 0; c < ACTIVITY_COLS; c += 1) {
+      const density = 0.16 + (c / (ACTIVITY_COLS - 1)) * 0.74
+      if (((c * 7 + r * 4) % 10) / 10 < density) out.push(r * ACTIVITY_COLS + c)
+    }
+  }
+  return out
+})()
+
+/* One visual per built system, never the same twice */
+function SystemViz({ index }: { index: number }) {
+  if (index === 0) return <SegmentMeter total={10} filled={7} className="shrink-0" />
+  if (index === 1) return <WaveLine className="shrink-0" />
+  return <DonutSplit parts={[0.42, 0.24, 0.12]} className="shrink-0 origin-right scale-[0.72]" />
 }
 
 /* Other systems we shipped, compact rows */
@@ -248,9 +220,6 @@ export default function SolutionsPage() {
     history.scrollRestoration = 'manual'
     window.scrollTo(0, 0)
   }, [])
-
-  const uptime = useCountUp(99.9, 1)
-  const faster = useCountUp(3)
 
   const text = {
     en: {
@@ -460,9 +429,9 @@ export default function SolutionsPage() {
 
   /* Real portrait screenshots, dual-vignette overlays carry the text */
   const systemFrames = [
-    { domain: "davo.md", src: "/images/tall-davo.jpg", bars: [26, 38, 32, 50, 44, 62, 56, 74, 68, 86, 78, 100] },
-    { domain: "inter-bus.md", src: "/images/tall-interbus.jpg", bars: [22, 34, 46, 40, 58, 52, 70, 64, 80, 74, 90, 100] },
-    { domain: "scoalaautoglg.com", src: "/images/tall-glg.jpg", bars: [18, 30, 42, 36, 54, 48, 66, 60, 78, 72, 88, 100] },
+    { domain: "davo.md", src: "/images/tall-davo.jpg" },
+    { domain: "inter-bus.md", src: "/images/tall-interbus.jpg" },
+    { domain: "scoalaautoglg.com", src: "/images/tall-glg.jpg" },
   ]
 
   const ctaShots = [
@@ -516,7 +485,7 @@ export default function SolutionsPage() {
                         <span>{t.hero.cta}</span>
                         <span className="nv-arr" aria-hidden>&rarr;</span>
                       </Link>
-                      <Link href="/case-studies" className="btn-metal btn-metal--sm">
+                      <Link href="/case-studies" className="btn-metal">
                         <span>{t.nav.caseStudies}</span>
                         <span className="nv-arr" aria-hidden>&rarr;</span>
                       </Link>
@@ -524,20 +493,18 @@ export default function SolutionsPage() {
 
                     <div className="flex-1" />
 
-                    {/* live pipeline strip, packets moving between systems */}
-                    <div className="mt-8 rounded-[22px] p-4 nv-well" aria-hidden>
-                      <NodeLine nodes={6} />
-                      <div className="mt-3 flex items-end justify-between" style={{ height: 30 }}>
-                        {Array.from({ length: 42 }).map((_, i) => {
-                          const h = 14 + (i / 41) * 72 + (i % 3 === 0 ? 12 : i % 3 === 1 ? -6 : 0)
-                          return (
-                            <span
-                              key={i}
-                              className="nv-bar w-[5px] shrink-0 rounded-[1px]"
-                              style={{ height: `${Math.max(8, Math.min(100, h))}%`, ['--i' as string]: i % 12, background: i > 35 ? LIME : 'rgba(255,255,255,0.13)' }}
-                            />
-                          )
-                        })}
+                    {/* workload map: every lit cell is work the systems absorb */}
+                    <div className="mt-8 rounded-[22px] p-5 nv-well">
+                      <HeatGrid cols={ACTIVITY_COLS} rows={ACTIVITY_ROWS} lit={activityLit} className="w-full" />
+                      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+                        <span className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.1em]" style={{ color: '#909099' }}>
+                          <span className="dot-lime" aria-hidden />
+                          LIVE
+                        </span>
+                        <span className="h-4 w-px shrink-0" style={{ background: 'rgba(255,255,255,0.14)' }} aria-hidden />
+                        {['davo.md', 'inter-bus.md', 'scoalaautoglg.com'].map((d) => (
+                          <span key={d} className="text-[12px] font-medium" style={{ color: '#e0e0e2' }}>{d}</span>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -545,15 +512,13 @@ export default function SolutionsPage() {
                   {/* ── live stat bento, floating cells inside a well ── */}
                   <div className="nv-well rounded-[26px] p-3 md:p-4">
                     <div className="grid h-full grid-cols-2 gap-3 md:gap-4">
-                      {/* uptime ring */}
+                      {/* uptime, a dial: the needle swings to the reading */}
                       <div className="nv-edge nv-edge--ring nv-cell h-full">
-                        <div className="nv-edge-inner nv-inset flex h-full min-h-[132px] flex-col justify-between gap-3 p-4">
-                          <div className="flex items-center gap-3">
-                            <Ring pct={0.999} size={48} />
-                            <span className="font-semibold" style={{ fontSize: '1.5rem', letterSpacing: '-0.04em', lineHeight: 1, color: LIME }}>
-                              {uptime.toFixed(1)}%
-                            </span>
-                          </div>
+                        <div className="nv-edge-inner nv-inset flex h-full min-h-[150px] flex-col justify-between gap-4 p-4 md:p-5">
+                          <span className="font-semibold" style={{ fontSize: '1.5rem', letterSpacing: '-0.04em', lineHeight: 1, color: LIME }}>
+                            {stats[0].value}
+                          </span>
+                          <Gauge value={0.999} />
                           <div>
                             <span className="block text-[0.8125rem] font-medium" style={{ color: '#e0e0e2' }}>{stats[0].label[lang]}</span>
                             <span className="nv-cell-detail mt-1 block text-[11px] font-medium leading-tight" style={{ color: LIME }}>{stats[0].detail[lang]}</span>
@@ -561,15 +526,13 @@ export default function SolutionsPage() {
                         </div>
                       </div>
 
-                      {/* faster operations bars */}
+                      {/* faster operations, a throughput line that draws itself */}
                       <div className="nv-edge nv-edge--ring nv-cell h-full">
-                        <div className="nv-edge-inner nv-inset flex h-full min-h-[132px] flex-col justify-between gap-3 p-4">
-                          <div className="flex items-end justify-between gap-3">
-                            <span className="font-semibold" style={{ fontSize: '1.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>
-                              {faster}x
-                            </span>
-                            <Bars heights={[28, 44, 60, 78, 100]} className="h-9 w-16 shrink-0" />
-                          </div>
+                        <div className="nv-edge-inner nv-inset flex h-full min-h-[150px] flex-col justify-between gap-4 p-4 md:p-5">
+                          <span className="font-semibold" style={{ fontSize: '1.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>
+                            {stats[1].value}
+                          </span>
+                          <Sparkline points={[9, 13, 12, 19, 24, 31, 44]} className="max-w-full" />
                           <div>
                             <span className="block text-[0.8125rem] font-medium" style={{ color: '#e0e0e2' }}>{stats[1].label[lang]}</span>
                             <span className="nv-cell-detail mt-1 block text-[11px] font-medium leading-tight" style={{ color: LIME }}>{stats[1].detail[lang]}</span>
@@ -577,15 +540,13 @@ export default function SolutionsPage() {
                         </div>
                       </div>
 
-                      {/* zero paper, bars falling away */}
+                      {/* zero paper, proportion bars shrinking toward nothing */}
                       <div className="nv-edge nv-edge--ring nv-cell h-full">
-                        <div className="nv-edge-inner nv-inset flex h-full min-h-[132px] flex-col justify-between gap-3 p-4">
-                          <div className="flex items-end justify-between gap-3">
-                            <span className="font-semibold" style={{ fontSize: '1.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>
-                              {stats[2].value}
-                            </span>
-                            <Bars heights={[100, 78, 56, 34, 16]} hot={3} className="h-9 w-16 shrink-0" />
-                          </div>
+                        <div className="nv-edge-inner nv-inset flex h-full min-h-[150px] flex-col justify-between gap-4 p-4 md:p-5">
+                          <span className="font-semibold" style={{ fontSize: '1.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>
+                            {stats[2].value}
+                          </span>
+                          <StackBars rows={[0.88, 0.4, 0.06]} />
                           <div>
                             <span className="block text-[0.8125rem] font-medium" style={{ color: '#e0e0e2' }}>{stats[2].label[lang]}</span>
                             <span className="nv-cell-detail mt-1 block text-[11px] font-medium leading-tight" style={{ color: LIME }}>{stats[2].detail[lang]}</span>
@@ -593,15 +554,13 @@ export default function SolutionsPage() {
                         </div>
                       </div>
 
-                      {/* 24/7 access, nodes + packets */}
+                      {/* 24/7 access, a satellite that keeps circling the core */}
                       <div className="nv-edge nv-edge--ring nv-cell h-full">
-                        <div className="nv-edge-inner nv-inset flex h-full min-h-[132px] flex-col justify-between gap-3 p-4">
-                          <div className="flex flex-col gap-3">
-                            <span className="font-semibold" style={{ fontSize: '1.75rem', letterSpacing: '-0.04em', lineHeight: 1, color: LIME }}>
-                              {stats[3].value}
-                            </span>
-                            <NodeLine nodes={4} className="w-full" />
-                          </div>
+                        <div className="nv-edge-inner nv-inset flex h-full min-h-[150px] flex-col justify-between gap-4 p-4 md:p-5">
+                          <span className="font-semibold" style={{ fontSize: '1.75rem', letterSpacing: '-0.04em', lineHeight: 1, color: LIME }}>
+                            {stats[3].value}
+                          </span>
+                          <Orbit />
                           <div>
                             <span className="block text-[0.8125rem] font-medium" style={{ color: '#e0e0e2' }}>{stats[3].label[lang]}</span>
                             <span className="nv-cell-detail mt-1 block text-[11px] font-medium leading-tight" style={{ color: LIME }}>{stats[3].detail[lang]}</span>
@@ -690,7 +649,7 @@ export default function SolutionsPage() {
                         <div className="flex items-center gap-4">
                           <span className="text-[13px] font-semibold tabular-nums" style={{ color: LIME }}>0{i + 1}</span>
                           <span className="h-px flex-1" style={{ background: 'linear-gradient(90deg, rgba(255,158,122,0.4), transparent)' }} />
-                          <Bars heights={frame.bars} className="h-7 w-28 shrink-0" />
+                          <SystemViz index={i} />
                         </div>
 
                         <h3
@@ -765,26 +724,18 @@ export default function SolutionsPage() {
                       </span>
                     </div>
 
-                    {/* per-card data visual inside its own well */}
-                    <div className="nv-well mt-5 flex h-[86px] items-center rounded-[20px] px-4" aria-hidden>
+                    {/* per-card data visual inside its own well, one per card, never repeated */}
+                    <div className="nv-well mt-5 flex h-[92px] items-center justify-center rounded-[20px] px-5">
+                      {/* packages hopping between depots, the one place a node chain is the system */}
                       {i === 0 && <NodeLine nodes={4} className="w-full" />}
+                      {/* the album counts to eighteen */}
                       {i === 1 && (
-                        <div className="flex h-12 w-full items-end gap-[3px]">
-                          {[10, 16, 22, 27, 33, 38, 44, 49, 55, 60, 66, 71, 77, 82, 88, 93, 96, 100].map((h, bi) => (
-                            <span
-                              key={bi}
-                              className="nv-bar flex-1 rounded-[2px]"
-                              style={{ height: `${h}%`, ['--i' as string]: bi, background: bi === 17 ? LIME : 'rgba(255,255,255,0.13)' }}
-                            />
-                          ))}
-                        </div>
+                        <span className="text-[2.75rem] font-semibold leading-none tracking-[-0.05em]" style={{ color: LIME }}>
+                          <Odometer value={18} />
+                        </span>
                       )}
-                      {i === 2 && (
-                        <div className="flex w-full items-end justify-between gap-2">
-                          <Bars heights={[34, 52, 40, 66, 48, 74, 56, 88, 62, 80, 70, 96, 84, 100]} className="h-12 flex-1" />
-                          <Ring pct={0.72} size={44} />
-                        </div>
-                      )}
+                      {/* one dashboard at the center, every module reporting into it */}
+                      {i === 2 && <Concentric />}
                     </div>
 
                     <h3
@@ -851,13 +802,29 @@ export default function SolutionsPage() {
                         <span>{t.cta.button}</span>
                         <span className="nv-arr" aria-hidden>&rarr;</span>
                       </Link>
-                      <a href="mailto:contact@landings.md" className="btn-metal btn-metal--sm">
+                      <a href="mailto:contact@landings.md" className="btn-metal">
                         <span>contact@landings.md</span>
                         <span className="nv-arr" aria-hidden>&rarr;</span>
                       </a>
                     </div>
-                    <div className="mt-8 rounded-[22px] p-4 nv-well" aria-hidden>
-                      <NodeLine nodes={5} />
+                    {/* direct lines instead of a decorative strip */}
+                    <div className="mt-8 rounded-[22px] p-5 nv-well">
+                      <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+                        <a
+                          href="tel:+37368327082"
+                          className="text-[0.9375rem] font-medium text-white transition-colors duration-200 hover:!text-[#FF9E7A]"
+                        >
+                          +373 683 27 082
+                        </a>
+                        <span className="h-4 w-px shrink-0" style={{ background: 'rgba(255,255,255,0.14)' }} aria-hidden />
+                        <a
+                          href="mailto:contact@landings.md"
+                          className="text-[0.9375rem] font-medium transition-colors duration-200 hover:!text-white"
+                          style={{ color: '#b8b8b9' }}
+                        >
+                          contact@landings.md
+                        </a>
+                      </div>
                     </div>
                   </div>
 

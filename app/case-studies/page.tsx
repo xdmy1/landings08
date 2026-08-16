@@ -5,14 +5,29 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
+import {
+  Sparkline,
+  SegmentMeter,
+  Gauge,
+  HeatGrid,
+  DonutSplit,
+  Odometer,
+  Orbit,
+  WaveLine,
+  StackBars,
+  Concentric,
+} from '@/components/ui/data-viz'
 
 /* ────────────────────────────────────────────────────────────────
    Case studies, home-page language. Ground #0d0d0d · coral #FF9E7A
    at word/ring/glow scale · Space Grotesk (inherited).
    Every block is a gradient hairline card with .nv-inset depth,
-   every link is a 3D metal button, every number gets a bar / ring /
-   node visual, screenshots float in metal bezels inside .nv-well
-   stages. Reveals 0.45s, hovers 0.15-0.2s.
+   every link is a 3D metal button, and every metric wears its own
+   visual from components/ui/data-viz: no study repeats a visual
+   inside its quartet, and the legacy bar row / node chain / ring
+   each appear exactly once on the page, where they fit best.
+   Screenshots float in metal bezels inside .nv-well stages.
+   Reveals 0.45s, hovers 0.15-0.2s.
    ──────────────────────────────────────────────────────────────── */
 
 const LIME = '#FF9E7A'
@@ -51,45 +66,6 @@ function Reveal({
   )
 }
 
-/* Count-up, entrance only: fires once when the cell first enters view,
-   ~1.3s ease-out, honours reduced motion. */
-function Counter({ to, className, style }: { to: number, className?: string, style?: React.CSSProperties }) {
-  const ref = useRef<HTMLSpanElement | null>(null)
-  const rafRef = useRef(0)
-  const firedRef = useRef(false)
-  const [value, setValue] = useState(0)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    if (to === 0) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setValue(to)
-      return
-    }
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting || firedRef.current) return
-        firedRef.current = true
-        const t0 = performance.now()
-        const tick = (now: number) => {
-          const p = Math.min((now - t0) / 1300, 1)
-          const e = 1 - Math.pow(1 - p, 3)
-          setValue(Math.round(e * to))
-          if (p < 1) rafRef.current = requestAnimationFrame(tick)
-        }
-        rafRef.current = requestAnimationFrame(tick)
-      },
-      { threshold: 0.35 }
-    )
-    io.observe(el)
-    return () => {
-      io.disconnect()
-      if (rafRef.current) cancelAnimationFrame(rafRef.current)
-    }
-  }, [to])
-  return <span ref={ref} className={className} style={style}>{value}</span>
-}
-
 /* Lime the final word(s) of a heading, h1/h2 b renders coral via globals.
    Copy stays verbatim; only the rendering adds the accent. */
 function LimeTail({ text }: { text: string }) {
@@ -123,12 +99,43 @@ function ClaimLead({ text }: { text: string }) {
   )
 }
 
-/* ── Stat visuals: bars, ring, nodes. Entrance only, no infinite loops
-   except the node pulse / packet travel that the language already uses. ── */
+/* ── Stat visuals. Ten come from the shared data-viz library, three are
+   the house originals kept for the single metric each one describes best:
+   the falling bar row for "zero paper", the node chain for a parcel
+   pipeline, the full ring for "100% online". ── */
 type Viz =
+  | { kind: 'sparkline', points: number[] }
+  | { kind: 'meter', total: number, filled: number }
+  | { kind: 'gauge', value: number }
+  | { kind: 'heat', cols: number, rows: number, lit: number[] }
+  | { kind: 'donut', parts: number[] }
+  | { kind: 'orbit' }
+  | { kind: 'wave' }
+  | { kind: 'stack', rows: number[] }
+  | { kind: 'concentric' }
   | { kind: 'ring', pct: number }
   | { kind: 'bars', heights: number[], accent: number }
   | { kind: 'nodes', count: number }
+
+/* round visuals sit beside the number, wide ones sit under it */
+const SIDE_VIZ = new Set(['gauge', 'donut', 'orbit', 'concentric', 'ring'])
+
+function renderViz(v: Viz) {
+  switch (v.kind) {
+    case 'sparkline': return <Sparkline points={v.points} />
+    case 'meter': return <SegmentMeter total={v.total} filled={v.filled} />
+    case 'gauge': return <Gauge value={v.value} />
+    case 'heat': return <HeatGrid cols={v.cols} rows={v.rows} lit={v.lit} className="w-full max-w-[152px]" />
+    case 'donut': return <DonutSplit parts={v.parts} />
+    case 'orbit': return <Orbit />
+    case 'wave': return <WaveLine />
+    case 'stack': return <StackBars rows={v.rows} />
+    case 'concentric': return <Concentric />
+    case 'ring': return <Ring pct={v.pct} />
+    case 'bars': return <Bars heights={v.heights} accent={v.accent} />
+    case 'nodes': return <Nodes count={v.count} />
+  }
+}
 
 function Bars({ heights, accent }: { heights: number[], accent: number }) {
   return (
@@ -185,9 +192,7 @@ function Ring({ pct }: { pct: number }) {
   )
 }
 
-/* shared bar shapes: growth curve, plateau, decline to zero */
-const RISE = [10, 17, 24, 33, 43, 54, 66, 82, 100]
-const CLIMB = [28, 38, 47, 55, 63, 72, 81, 91, 100]
+/* the one surviving bar shape: paper stack falling away to nothing */
 const FALL = [100, 84, 69, 56, 45, 34, 24, 14, 4]
 
 type Stat = { value: number, suffix: string, label: string }
@@ -220,11 +225,13 @@ const caseConfigs: {
     tall: '/images/tall-davo.jpg',
     alt: 'Davo.md, international transport platform with seat-selection bookings, SEO and Meta Ads by landings.md',
     evidence: ['/images/davo-ga.png', '/images/davo-ga2.png', '/images/davo-ahrefs.png'],
+    /* DR is a score → gauge · backlinks are volume → heat grid ·
+       referring domains are reach → concentric · growth → sparkline */
     viz: [
-      { kind: 'ring', pct: 0.5 },
-      { kind: 'bars', heights: RISE, accent: RISE.length - 1 },
-      { kind: 'nodes', count: 4 },
-      { kind: 'bars', heights: CLIMB, accent: CLIMB.length - 1 },
+      { kind: 'gauge', value: 0.5 },
+      { kind: 'heat', cols: 10, rows: 3, lit: [3, 5, 7, 8, 9, 12, 14, 15, 16, 17, 18, 19, 21, 23, 24, 25, 26, 27, 28, 29] },
+      { kind: 'concentric' },
+      { kind: 'sparkline', points: [8, 12, 11, 17, 21, 26, 33, 39, 48] },
     ],
   },
   {
@@ -232,33 +239,39 @@ const caseConfigs: {
     image: '/images/shot-interbus.jpg',
     tall: '/images/tall-interbus.jpg',
     alt: 'Inter-Bus, international parts store with automated invoicing, stock and accounting by landings.md',
+    /* full meter for full automation · the one falling bar row for zero
+       paper · donut for the country mix · wave for round-the-clock orders */
     viz: [
-      { kind: 'ring', pct: 1 },
+      { kind: 'meter', total: 7, filled: 7 },
       { kind: 'bars', heights: FALL, accent: FALL.length - 1 },
-      { kind: 'bars', heights: CLIMB, accent: CLIMB.length - 1 },
-      { kind: 'nodes', count: 3 },
+      { kind: 'donut', parts: [0.46, 0.31, 0.23] },
+      { kind: 'wave' },
     ],
   },
   {
     key: 'glg', num: '03', domain: 'scoalaautoglg.com', url: 'https://scoalaautoglg.com',
     image: '/images/shot-glg.jpg',
     tall: '/images/tall-glg.jpg',
+    /* the one full ring for 100% online · calendar grid where no two
+       lessons share a column · three bars for three roles · orbit for 24/7 */
     viz: [
       { kind: 'ring', pct: 1 },
-      { kind: 'bars', heights: FALL, accent: FALL.length - 1 },
-      { kind: 'nodes', count: 3 },
-      { kind: 'bars', heights: CLIMB, accent: CLIMB.length - 1 },
+      { kind: 'heat', cols: 8, rows: 3, lit: [0, 3, 6, 9, 12, 15, 18, 21] },
+      { kind: 'stack', rows: [0.92, 0.64, 0.41] },
+      { kind: 'orbit' },
     ],
   },
   {
     key: 'droppack', num: '04', domain: 'droppack.vercel.app', url: 'https://droppack.vercel.app',
     image: '/images/shot-droppack.jpg',
     alt: 'DropPack, parcel logistics app for Moldova–Europe transport companies, built by landings.md',
+    /* the one node chain for the five-status parcel pipeline · donut for the
+       RO/RU split · one ping for one click · line falling to zero paper */
     viz: [
-      { kind: 'bars', heights: RISE, accent: RISE.length - 1 },
-      { kind: 'nodes', count: 2 },
-      { kind: 'ring', pct: 1 },
-      { kind: 'bars', heights: FALL, accent: FALL.length - 1 },
+      { kind: 'nodes', count: 5 },
+      { kind: 'donut', parts: [0.56, 0.44] },
+      { kind: 'concentric' },
+      { kind: 'sparkline', points: [48, 36, 27, 19, 12, 6, 2, 0] },
     ],
   },
 ]
@@ -267,8 +280,10 @@ const caseConfigs: {
 const CASE_LOGOS = [
   { k: 'davo', h: 'h-5 md:h-6' },
   { k: 'interbus', h: 'h-6 md:h-7' },
+  { k: 'cmiea', h: 'h-6 md:h-7' },
   { k: 'glg', h: 'h-8 md:h-9' },
-  { k: 'droppack', h: 'h-5 md:h-6' },
+  { k: 'radx', h: 'h-5 md:h-6' },
+  { k: 'rizzaclassic', h: 'h-6 md:h-7' },
 ] as const
 
 export default function CaseStudiesPage() {
@@ -669,8 +684,10 @@ export default function CaseStudiesPage() {
               <div className="mt-9 flex flex-wrap items-center gap-3">
                 {caseConfigs.map((c) => (
                   <a key={c.key} href={`#${c.key}`} className="btn-metal btn-metal--sm">
-                    <span className="font-semibold" style={{ color: LIME }}>{c.num}</span>
-                    <span>{t[c.key].title}</span>
+                    <span className="inline-flex items-center justify-center gap-2">
+                      <span className="font-semibold" style={{ color: LIME }}>{c.num}</span>
+                      <span>{t[c.key].title}</span>
+                    </span>
                     <span className="nv-arr" aria-hidden>&rarr;</span>
                   </a>
                 ))}
@@ -778,7 +795,7 @@ export default function CaseStudiesPage() {
                             rel="noopener noreferrer"
                             className="btn-metal btn-metal--sm mt-7 self-start"
                           >
-                            {t.labels.visit} {c.domain}
+                            <span>{t.labels.visit} {c.domain}</span>
                             <span className="nv-arr" aria-hidden>&rarr;</span>
                           </a>
                         )}
@@ -832,47 +849,44 @@ export default function CaseStudiesPage() {
                 </Reveal>
               </div>
 
-              {/* ── ROW 2: metrics bento, every number gets a visual ── */}
+              {/* ── ROW 2: metrics bento, every number wears its own visual ── */}
               <div className="mt-5 grid grid-cols-2 gap-5 lg:grid-cols-4">
                 {study.stats.map((stat, i) => {
                   const viz = c.viz[i]
+                  const side = SIDE_VIZ.has(viz.kind)
+                  const figure = (
+                    <div className="min-w-0">
+                      <span
+                        className="block font-semibold"
+                        style={{
+                          fontSize: side ? 'clamp(1.6rem, 2.2vw, 2.1rem)' : 'clamp(1.8rem, 2.6vw, 2.4rem)',
+                          letterSpacing: '-0.04em',
+                          lineHeight: 1,
+                        }}
+                      >
+                        <Odometer value={stat.value} />
+                        <span style={{ color: LIME }}>{stat.suffix}</span>
+                      </span>
+                      <span className="mt-2 block text-[0.8125rem] font-medium leading-tight" style={{ color: '#909099' }}>
+                        {stat.label}
+                      </span>
+                    </div>
+                  )
                   return (
                     <Reveal key={stat.label} delay={i * 0.05} className="h-full">
                       <div className="nv-edge nv-edge--ring nv-cell h-full">
-                        <div className="nv-edge-inner nv-inset flex h-full min-h-[168px] flex-col justify-between gap-5 p-5 md:p-6">
-                          {viz.kind === 'ring' ? (
-                            <div className="flex h-full items-center gap-4">
-                              <Ring pct={viz.pct} />
-                              <div className="min-w-0">
-                                <span
-                                  className="block font-semibold"
-                                  style={{ fontSize: 'clamp(1.6rem, 2.2vw, 2.1rem)', letterSpacing: '-0.04em', lineHeight: 1 }}
-                                >
-                                  <Counter to={stat.value} />
-                                  <span style={{ color: LIME }}>{stat.suffix}</span>
-                                </span>
-                                <span className="mt-2 block text-[0.8125rem] font-medium leading-tight" style={{ color: '#909099' }}>
-                                  {stat.label}
-                                </span>
-                              </div>
+                        <div className="nv-edge-inner nv-inset flex h-full min-h-[176px] flex-col justify-between gap-5 p-5 md:p-6">
+                          {side ? (
+                            <div className="flex h-full flex-wrap items-center gap-x-4 gap-y-3">
+                              <div className="shrink-0">{renderViz(viz)}</div>
+                              {figure}
                             </div>
                           ) : (
                             <>
-                              <div className="min-w-0">
-                                <span
-                                  className="block font-semibold"
-                                  style={{ fontSize: 'clamp(1.8rem, 2.6vw, 2.4rem)', letterSpacing: '-0.04em', lineHeight: 1 }}
-                                >
-                                  <Counter to={stat.value} />
-                                  <span style={{ color: LIME }}>{stat.suffix}</span>
-                                </span>
-                                <span className="mt-2 block text-[0.8125rem] font-medium leading-tight" style={{ color: '#909099' }}>
-                                  {stat.label}
-                                </span>
+                              {figure}
+                              <div className="flex min-h-[44px] w-full items-end">
+                                {renderViz(viz)}
                               </div>
-                              {viz.kind === 'bars'
-                                ? <Bars heights={viz.heights} accent={viz.accent} />
-                                : <Nodes count={viz.count} />}
                             </>
                           )}
                         </div>
@@ -985,7 +999,7 @@ export default function CaseStudiesPage() {
                 <p className="relative z-[1] mx-auto mt-4 max-w-[480px] text-[1rem] font-medium" style={{ color: '#b8b8b9' }}>{t.cta.sub}</p>
                 <div className="relative z-[1] mt-8 flex justify-center">
                   <Link href="/#contact" className="btn-metal">
-                    {t.cta.button}
+                    <span>{t.cta.button}</span>
                     <span className="nv-arr" aria-hidden>&rarr;</span>
                   </Link>
                 </div>

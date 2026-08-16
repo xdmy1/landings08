@@ -5,13 +5,15 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
+import { Sparkline, SegmentMeter, Gauge, HeatGrid, Odometer } from '@/components/ui/data-viz'
 
 /* ────────────────────────────────────────────────────────────────
    Portfolio, rebuilt on the home-page language.
    Ground #0d0d0d · coral #FF9E7A · Space Grotesk (inherited).
    Gradient hairline cards + nv-inset depth everywhere, metal-bezel
-   float cards for every screenshot, bars / ring / nodes for the
-   real numbers, 3D metal buttons for every action.
+   float cards for every screenshot, and four DIFFERENT entrance-only
+   data visuals for the four real numbers (sparkline, segment meter,
+   gauge, heat grid), 3D metal buttons for every action.
    ──────────────────────────────────────────────────────────────── */
 
 const LIME = '#FF9E7A'
@@ -280,29 +282,6 @@ export default function PortfolioPage() {
     window.scrollTo(0, 0)
   }, [])
 
-  /* counters: traffic 300, DR 50, backlinks 2.6K, all entrance-only */
-  const [traffic, setTraffic] = useState(0)
-  const [dr, setDr] = useState(0)
-  const [links, setLinks] = useState(0)
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setTraffic(300); setDr(50); setLinks(26)
-      return
-    }
-    const t0 = performance.now()
-    let raf = 0
-    const tick = (now: number) => {
-      const p = Math.min((now - t0) / 1300, 1)
-      const e = 1 - Math.pow(1 - p, 3)
-      setTraffic(Math.round(e * 300))
-      setDr(Math.round(e * 50))
-      setLinks(Math.round(e * 26))
-      if (p < 1) raf = requestAnimationFrame(tick)
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [])
-
   const text = {
     en: {
       nav: { portfolio: "Portfolio", pricing: "Pricing", solutions: "Solutions", caseStudies: "Case Studies", contact: "Contact" },
@@ -364,73 +343,46 @@ export default function PortfolioPage() {
   const t = text[language as keyof typeof text] ?? text.en
   const lang = language as keyof typeof projects[0]['description']
 
-  /* the four header stats, each with its own entrance-only visual */
-  const statCells = [
+  /* Four header stats, four DIFFERENT entrance-only visuals.
+     Nothing repeats: a line for growth, a meter for capacity,
+     a dial for a score, a calendar grid for the delivery window. */
+  const statCells: {
+    value: React.ReactNode
+    label: string
+    note: string
+    coral?: boolean
+    visual: React.ReactNode
+  }[] = [
     {
-      value: `+${traffic}%`,
+      /* traffic growth → sparkline, the only shape that reads as "over time" */
+      value: <Odometer value={300} prefix="+" suffix="%" />,
       label: stats[0].label[lang] ?? stats[0].label.en,
       note: 'Google Analytics · organic',
-      visual: (
-        <div className="flex h-9 w-20 shrink-0 items-end gap-1" aria-hidden>
-          {[30, 44, 58, 74, 100].map((h, i) => (
-            <span
-              key={i}
-              className="nv-bar flex-1 rounded-sm"
-              style={{ height: `${h}%`, ['--i' as string]: i, background: i === 4 ? LIME : 'rgba(255,255,255,0.14)' }}
-            />
-          ))}
-        </div>
-      ),
+      visual: <Sparkline points={[6, 9, 8, 14, 19, 17, 26, 33, 44]} />,
     },
     {
+      /* systems live → segment meter, one segment per system, charging up */
       value: stats[1].value,
       label: stats[1].label[lang] ?? stats[1].label.en,
       note: 'Booking · ERP · CRM · Facturare',
-      visual: (
-        <div className="flex w-20 shrink-0 items-center" aria-hidden>
-          <span className="nv-node h-2 w-2 rounded-full" style={{ background: LIME }} />
-          <span className="relative h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }}>
-            <span className="nv-packet" />
-          </span>
-          <span className="nv-node h-2 w-2 rounded-full" style={{ background: LIME }} />
-          <span className="relative h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }}>
-            <span className="nv-packet" style={{ animationDelay: '-1.2s' }} />
-          </span>
-          <span className="nv-node h-2 w-2 rounded-full" style={{ background: LIME }} />
-        </div>
-      ),
+      visual: <SegmentMeter total={12} filled={10} />,
     },
     {
-      value: `DR ${dr}`,
+      /* domain rating → gauge, a score on a dial, DR 50 of 100 */
+      value: 'DR 50',
       label: stats[2].label[lang] ?? stats[2].label.en,
-      note: `${(links / 10).toFixed(1)}K backlinks · Ahrefs`,
+      note: '2.6K backlinks · Ahrefs',
       coral: true,
-      visual: (
-        <svg width="46" height="46" viewBox="0 0 96 96" aria-hidden className="shrink-0">
-          <circle cx="48" cy="48" r="42" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="9" />
-          <circle
-            cx="48" cy="48" r="42" fill="none"
-            stroke={LIME} strokeWidth="9" strokeLinecap="round"
-            strokeDasharray="264" strokeDashoffset="132"
-            transform="rotate(-90 48 48)"
-            className="nv-ring-main"
-          />
-        </svg>
-      ),
+      visual: <Gauge value={0.5} />,
     },
     {
+      /* delivery window → heat grid, four weeks of build igniting in a wave */
       value: stats[3].value,
       label: stats[3].label[lang] ?? stats[3].label.en,
       note: 'W1 · W2 · W3 · W4',
       visual: (
-        <div className="flex h-9 w-20 shrink-0 items-end gap-1.5" aria-hidden>
-          {[38, 62, 84, 100].map((h, i) => (
-            <span
-              key={i}
-              className="nv-bar flex-1 rounded-sm"
-              style={{ height: `${h}%`, ['--i' as string]: i, background: i === 3 ? LIME : 'rgba(255,255,255,0.14)' }}
-            />
-          ))}
+        <div className="w-[86px]">
+          <HeatGrid cols={4} rows={3} lit={[8, 5, 9, 2, 6, 10, 3, 7, 11]} />
         </div>
       ),
     },
@@ -480,7 +432,7 @@ export default function PortfolioPage() {
                           {t.cta.button}
                           <span className="nv-arr" aria-hidden>&rarr;</span>
                         </Link>
-                        <Link href="/pricing" className="btn-metal btn-metal--sm">
+                        <Link href="/pricing" className="btn-metal">
                           {t.nav.pricing}
                           <span className="nv-arr" aria-hidden>&rarr;</span>
                         </Link>
@@ -516,12 +468,12 @@ export default function PortfolioPage() {
                     </div>
                   </div>
 
-                  {/* stat row: bars, nodes, ring, timeline, all inside a deep well */}
+                  {/* stat row: sparkline, segment meter, gauge, heat grid, inside a deep well */}
                   <div className="nv-well mt-7 rounded-[26px] p-3 md:mt-9 md:p-4">
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
                       {statCells.map((s, i) => (
                         <div key={i} className={`nv-edge nv-edge--ring nv-cell ${i % 2 === 1 ? 'nv-edge--alt' : ''}`}>
-                          <div className="nv-edge-inner nv-inset flex h-full items-center justify-between gap-3 p-4">
+                          <div className="nv-edge-inner nv-inset flex h-full flex-col justify-between gap-5 p-5 md:p-6">
                             <div className="min-w-0">
                               <span
                                 className="block whitespace-nowrap font-medium"
@@ -529,14 +481,16 @@ export default function PortfolioPage() {
                               >
                                 {s.value}
                               </span>
-                              <span className="mt-1.5 block text-[0.75rem] font-medium leading-tight" style={{ color: '#909099' }}>
+                              <span className="mt-2 block text-[0.75rem] font-medium leading-tight" style={{ color: '#909099' }}>
                                 {s.label}
                               </span>
-                              <span className="mt-1 block truncate text-[10px] font-medium" style={{ color: LIME }}>
+                              <span className="mt-1.5 block truncate text-[10px] font-medium" style={{ color: LIME }}>
                                 {s.note}
                               </span>
                             </div>
-                            {s.visual}
+                            <div className="flex h-12 items-end">
+                              {s.visual}
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -550,7 +504,7 @@ export default function PortfolioPage() {
           {/* ════════ CLIENT MARQUEE ════════ */}
           <Reveal delay={0.06} className="mt-3">
             <div className="nv-edge">
-              <div className="nv-edge-inner nv-inset flex flex-col items-center gap-2 overflow-hidden px-3 py-3 md:flex-row md:gap-6 md:py-2.5">
+              <div className="nv-edge-inner nv-inset flex flex-col items-center gap-2 overflow-hidden px-5 py-3.5 md:flex-row md:gap-6 md:py-3">
                 <span className="shrink-0 text-[11px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
                   {t.trusted}
                 </span>
@@ -593,7 +547,7 @@ export default function PortfolioPage() {
                     <div
                       className={`nv-edge nv-edge--ring h-full transition-[transform,box-shadow] duration-200 ease-out group-hover:-translate-y-1.5 ${index % 2 === 1 ? 'nv-edge--alt' : ''}`}
                     >
-                      <div className="nv-edge-inner nv-inset flex h-full flex-col p-4 md:p-5">
+                      <div className="nv-edge-inner nv-inset flex h-full flex-col p-5 md:p-6">
 
                         {/* stage well: the screenshot floats inside it, never bare */}
                         <div className="nv-well nv-stage rounded-[22px] p-3">
@@ -676,15 +630,17 @@ export default function PortfolioPage() {
                               >
                                 {t.view}
                                 <span
-                                  className="nv-arr group-hover:!w-[1em] group-hover:!opacity-100 group-hover:!translate-x-0 group-hover:!rotate-0"
+                                  className="nv-arr group-hover:!ml-2 group-hover:!w-[1em] group-hover:!opacity-100 group-hover:!translate-x-0 group-hover:!rotate-0"
                                   aria-hidden
                                 >
                                   &rarr;
                                 </span>
                               </a>
                             ) : (
+                              /* same height as the .btn-metal--sm the other cards carry,
+                                 so nothing in the grid row looks mismatched */
                               <span className="chip">
-                                <span className="chip-inner !px-3.5 !py-1.5 !text-[11px]" style={{ color: '#909099' }}>
+                                <span className="chip-inner flex min-h-[36px] items-center justify-center !px-5 !py-2.5 !text-[11px]" style={{ color: '#909099' }}>
                                   {t.private}
                                 </span>
                               </span>
@@ -730,7 +686,7 @@ export default function PortfolioPage() {
                       {t.cta.button}
                       <span className="nv-arr" aria-hidden>&rarr;</span>
                     </Link>
-                    <a href="mailto:contact@landings.md" className="btn-metal btn-metal--sm">
+                    <a href="mailto:contact@landings.md" className="btn-metal">
                       contact@landings.md
                       <span className="nv-arr" aria-hidden>&rarr;</span>
                     </a>

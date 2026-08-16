@@ -10,6 +10,6 @@
   "/apple-icon.png/route": "app/apple-icon.png/route.js",
   "/case-studies/page": "app/case-studies/page.js",
   "/portfolio/page": "app/portfolio/page.js",
-  "/pricing/page": "app/pricing/page.js",
-  "/solutions/page": "app/solutions/page.js"
+  "/solutions/page": "app/solutions/page.js",
+  "/pricing/page": "app/pricing/page.js"
 }
