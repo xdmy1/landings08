@@ -739,10 +739,10 @@ export default function Home() {
                 <span className="mt-1 block whitespace-nowrap font-semibold md:mt-2" style={{ fontSize: 'clamp(1.5rem, 2.2vw, 2.2rem)', letterSpacing: '-0.04em', lineHeight: 1.1, color: '#FF9E7A' }}>
                   {t.stats.offerTitle}
                 </span>
-                <p className="mx-auto mt-1.5 max-w-[240px] text-[0.8125rem] font-medium md:mt-2" style={{ color: '#b8b8b9' }}>{t.stats.offerSub}</p>
-                <p className="mt-1 text-[0.75rem] font-medium" style={{ color: '#909099' }}>{t.stats.offerNote}</p>
-                <p className="mt-1 text-[0.8125rem] font-semibold" aria-hidden>
-                  <span className={`nv-swap inline-block ${swapping ? 'nv-swap--out' : ''}`} style={{ color: '#FF9E7A' }}>{WORDS[wordIdx]}</span>
+                <p className="mx-auto mt-1.5 max-w-none text-[0.8125rem] font-medium md:mt-2 md:max-w-[240px]" style={{ color: '#b8b8b9' }}>{t.stats.offerSub}</p>
+                <p className="mt-1 flex flex-wrap items-center justify-center gap-x-2 text-[0.75rem] font-medium" style={{ color: '#909099' }}>
+                  {t.stats.offerNote}
+                  <span aria-hidden className={`nv-swap inline-block font-semibold ${swapping ? 'nv-swap--out' : ''}`} style={{ color: '#FF9E7A' }}>{WORDS[wordIdx]}</span>
                 </p>
               </div>
               <a href="mailto:contact@landings.md" className="btn-metal btn-metal--sm mx-auto mt-3 md:mt-4">
