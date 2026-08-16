@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
+import { SiteFooter } from '@/components/ui/site-footer'
 import {
   Sparkline,
   SegmentMeter,
@@ -1002,6 +1003,8 @@ export default function PricingPage() {
           * { animation-duration: 0.01s !important; }
         }
       `}</style>
+      <SiteFooter />
+
     </main>
   )
 }

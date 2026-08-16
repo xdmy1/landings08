@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { SiteNav } from '@/components/ui/site-nav'
+import { SiteFooter } from '@/components/ui/site-footer'
 import { useLanguage } from '@/hooks/useLanguage'
 
 /* ────────────────────────────────────────────────────────────────
@@ -98,6 +99,7 @@ const ALL_LOGOS = [
   { k: 'radx', h: 'h-4 md:h-5', t: 'solid' },
   { k: 'rizzaclassic', h: 'h-5 md:h-6', t: 'solid' },
   { k: 'eurogard', h: 'h-6 md:h-7', t: 'solid' },
+  { k: 'mobo', h: 'h-6 md:h-7', t: 'mono' },
 ] as const
 
 const LOGO_FILTERS: Record<string, React.CSSProperties> = {
@@ -802,52 +804,9 @@ export default function Home() {
           </div>
         </Reveal>
 
-        {/* ── FOOTER MICRO: © + icon links ── */}
+        {/* ── FOOTER: the shared site footer, compact for the bento cell ── */}
         <Reveal delay={0.26} className="col-span-2 min-w-0 md:col-span-4 md:row-span-1 md:min-h-0">
-          <div className="nv-edge h-full">
-            <div className="nv-edge-inner nv-inset flex h-full items-center justify-between gap-3 px-4 py-2">
-              <span className="truncate text-[11px] font-medium" style={{ color: '#909099' }}>{t.footer.copy}</span>
-              <span className="flex items-center gap-1.5">
-                <a
-                  href="mailto:contact@landings.md"
-                  aria-label="Email"
-                  className="flex h-7 w-7 items-center justify-center rounded-full transition-[color,box-shadow] duration-150 hover:!text-[#FF9E7A] hover:[box-shadow:0_0_1px_1px_#FF9E7A]"
-                  style={{ color: '#a4a4a4', border: '1px solid rgba(255,255,255,0.14)' }}
-                >
-                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-                    <rect x="3" y="5" width="18" height="14" rx="2" />
-                    <path d="M3 7l9 6 9-6" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </a>
-                <a
-                  href="https://wa.me/37368327082"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="WhatsApp"
-                  className="flex h-7 w-7 items-center justify-center rounded-full transition-[color,box-shadow] duration-150 hover:!text-[#FF9E7A] hover:[box-shadow:0_0_1px_1px_#FF9E7A]"
-                  style={{ color: '#a4a4a4', border: '1px solid rgba(255,255,255,0.14)' }}
-                >
-                  <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.6-6.1c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.6.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-2-1.2 7.4 7.4 0 0 1-1.4-1.7c-.1-.3 0-.4.1-.5l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.7 4.3 3.8.6.3 1.1.4 1.5.6.6.2 1.2.2 1.6.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.6-.3z" />
-                  </svg>
-                </a>
-                <a
-                  href="https://instagram.com/landings.md"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram"
-                  className="flex h-7 w-7 items-center justify-center rounded-full transition-[color,box-shadow] duration-150 hover:!text-[#FF9E7A] hover:[box-shadow:0_0_1px_1px_#FF9E7A]"
-                  style={{ color: '#a4a4a4', border: '1px solid rgba(255,255,255,0.14)' }}
-                >
-                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-                    <rect x="3" y="3" width="18" height="18" rx="5" />
-                    <circle cx="12" cy="12" r="4" />
-                    <circle cx="17.2" cy="6.8" r="0.8" fill="currentColor" stroke="none" />
-                  </svg>
-                </a>
-              </span>
-            </div>
-          </div>
+          <SiteFooter compact />
         </Reveal>
 
       </div>

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
+import { SiteFooter } from '@/components/ui/site-footer'
 import {
   Sparkline,
   SegmentMeter,
@@ -849,35 +850,8 @@ export default function SolutionsPage() {
       </section>
 
       {/* ════════ FOOTER ════════ */}
-      <footer style={{ margin: '90px 0 110px' }}>
-        <div className="nv-container">
-          <div
-            className="h-px w-full"
-            style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)' }}
-          />
-          <div className="flex flex-col items-center justify-between gap-6 pt-10 md:flex-row">
-            <div className="flex items-center gap-5">
-              <Link href="/" className="flex items-center gap-3">
-                <Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="h-8 w-auto" />
-                <span className="text-[14px] font-medium text-white">landings.md</span>
-              </Link>
-            </div>
-            <div className="flex flex-wrap items-center justify-center gap-5 text-[13px] font-medium">
-              <Link href="/portfolio" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.portfolio}</Link>
-              <Link href="/pricing" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.pricing}</Link>
-              <Link href="/solutions" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.solutions}</Link>
-              <Link href="/case-studies" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.caseStudies}</Link>
-            </div>
-            <div className="flex items-center gap-5 text-[13px] font-medium">
-              <a href="tel:+37368327082" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>+373 683 27 082</a>
-              <a href="mailto:contact@landings.md" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>contact@landings.md</a>
-            </div>
-          </div>
-          <p className="pt-8 text-center text-[12px] font-medium" style={{ color: '#909099' }}>
-            {t.footer.copy}
-          </p>
-        </div>
-      </footer>
+      <SiteFooter />
+
     </main>
   )
 }

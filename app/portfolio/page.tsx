@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
+import { SiteFooter } from '@/components/ui/site-footer'
 import { Sparkline, SegmentMeter, Gauge, HeatGrid, Odometer } from '@/components/ui/data-viz'
 
 /* ────────────────────────────────────────────────────────────────
@@ -272,6 +273,7 @@ const MARQUEE_LOGOS = [
   { k: 'radx', h: 'h-4 md:h-5' },
   { k: 'rizzaclassic', h: 'h-5 md:h-6' },
   { k: 'eurogard', h: 'h-6 md:h-7' },
+  { k: 'mobo', h: 'h-6 md:h-7' },
 ] as const
 
 export default function PortfolioPage() {
@@ -699,33 +701,8 @@ export default function PortfolioPage() {
       </section>
 
       {/* ════════ FOOTER, one more hairline card ════════ */}
-      <footer className="pb-10 pt-10 md:pb-14 md:pt-14">
-        <div className="nv-container">
-          <Reveal>
-            <div className="nv-edge">
-              <div className="nv-edge-inner nv-inset flex flex-col items-start justify-between gap-5 px-5 py-4 md:flex-row md:items-center">
-                <div className="flex flex-wrap items-center gap-5">
-                  <Link href="/" className="flex items-center gap-3">
-                    <Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="h-7 w-auto" />
-                    <span className="text-[14px] font-medium text-white">landings.md</span>
-                  </Link>
-                  <div className="flex flex-wrap items-center gap-4 text-[13px] font-medium">
-                    <Link href="/portfolio" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.portfolio}</Link>
-                    <Link href="/pricing" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.pricing}</Link>
-                    <Link href="/solutions" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.solutions}</Link>
-                    <Link href="/case-studies" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.caseStudies}</Link>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1.5 text-[13px] font-medium sm:flex-row sm:items-center sm:gap-5">
-                  <Link href="tel:+37368327082" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>+373 683 27 082</Link>
-                  <Link href="mailto:contact@landings.md" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>contact@landings.md</Link>
-                  <span style={{ color: '#909099' }}>{t.footer.copy}</span>
-                </div>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </footer>
+      <SiteFooter />
+
 
     </main>
   )

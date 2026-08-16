@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
+import { SiteFooter } from '@/components/ui/site-footer'
 import {
   Sparkline,
   SegmentMeter,
@@ -284,6 +285,7 @@ const CASE_LOGOS = [
   { k: 'glg', h: 'h-8 md:h-9' },
   { k: 'radx', h: 'h-5 md:h-6' },
   { k: 'rizzaclassic', h: 'h-6 md:h-7' },
+  { k: 'mobo', h: 'h-6 md:h-7' },
 ] as const
 
 export default function CaseStudiesPage() {
@@ -1010,30 +1012,8 @@ export default function CaseStudiesPage() {
       </section>
 
       {/* ════════ FOOTER, hairline depth card ════════ */}
-      <footer className="pb-16 pt-16 md:pb-20 md:pt-20">
-        <div className="nv-container">
-          <div className="nv-edge">
-            <div className="nv-edge-inner nv-inset flex flex-col items-start justify-between gap-6 p-6 md:flex-row md:items-center md:p-7">
-              <div className="flex flex-wrap items-center gap-7">
-                <Link href="/" className="flex items-center gap-3">
-                  <Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="h-8 w-auto" />
-                  <span className="text-[14px] font-medium text-white">landings.md</span>
-                </Link>
-                <div className="hidden items-center gap-5 text-[13px] font-medium md:flex">
-                  <Link href="/portfolio" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.portfolio}</Link>
-                  <Link href="/pricing" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.pricing}</Link>
-                  <Link href="/solutions" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.solutions}</Link>
-                  <Link href="/case-studies" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.caseStudies}</Link>
-                </div>
-              </div>
-              <div className="flex flex-col gap-2 text-[13px] font-medium sm:flex-row sm:items-center sm:gap-5" style={{ color: '#909099' }}>
-                <a href="tel:+37368327082" className="transition-colors duration-150 hover:!text-white">+373 683 27 082</a>
-                <span>{t.footer.copy}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
+
 
     </main>
   )
