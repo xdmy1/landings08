@@ -558,7 +558,7 @@ export default function Home() {
       <div className="nv-container grid w-full flex-1 grid-cols-2 gap-2 pb-2 pt-1 md:gap-3 md:pb-3 md:pt-2 md:min-h-0 md:grid-cols-12 md:grid-rows-[repeat(12,minmax(0,1fr))]">
 
         {/* ── HERO CELL : the loved ribbed graphic lives here ── */}
-        <Reveal className="col-span-2 md:col-span-8 md:row-span-7 md:min-h-0">
+        <Reveal className="col-span-2 min-w-0 md:col-span-8 md:row-span-7 md:min-h-0">
           <div className="nv-edge h-full">
             <div className="nv-edge-inner nv-inset--soft relative flex h-full flex-col overflow-hidden p-5 md:p-9">
               {/* arch glow behind the ribs */}
@@ -611,7 +611,7 @@ export default function Home() {
         </Reveal>
 
         {/* ── DR 50 ring ── */}
-        <Reveal delay={0.05} className="col-span-2 md:col-span-4 md:row-span-3 md:min-h-0">
+        <Reveal delay={0.05} className="col-span-2 min-w-0 md:col-span-4 md:row-span-3 md:min-h-0">
           <div className="nv-edge nv-edge--ring nv-cell h-full">
             <div className="nv-edge-inner nv-inset flex h-full items-center gap-4 p-4 md:p-6">
               <svg width="58" height="58" viewBox="0 0 96 96" aria-hidden className="shrink-0">
@@ -635,7 +635,7 @@ export default function Home() {
         </Reveal>
 
         {/* ── 300% bars ── */}
-        <Reveal delay={0.08} className="col-span-2 md:col-span-4 md:row-span-2 md:min-h-0">
+        <Reveal delay={0.08} className="col-span-2 min-w-0 md:col-span-4 md:row-span-2 md:min-h-0">
           <div className="nv-edge nv-edge--ring nv-cell h-full">
             <div className="nv-edge-inner nv-inset flex h-full items-center justify-between gap-4 p-4 md:p-6">
               <div className="min-w-0">
@@ -653,7 +653,7 @@ export default function Home() {
         </Reveal>
 
         {/* ── 10+ systems nodes ── */}
-        <Reveal delay={0.11} className="col-span-2 md:col-span-4 md:row-span-2 md:min-h-0">
+        <Reveal delay={0.11} className="col-span-2 min-w-0 md:col-span-4 md:row-span-2 md:min-h-0">
           <div className="nv-edge nv-edge--ring nv-cell h-full">
             <div className="nv-edge-inner nv-inset flex h-full items-center justify-between gap-4 p-4 md:p-6">
               <div className="min-w-0">
@@ -677,7 +677,7 @@ export default function Home() {
         </Reveal>
 
         {/* ── PROJECTS : depth stage with floating metal-bezel cards ── */}
-        <Reveal delay={0.14} className="col-span-2 md:col-span-4 md:row-span-4 md:min-h-0">
+        <Reveal delay={0.14} className="col-span-2 min-w-0 md:col-span-4 md:row-span-4 md:min-h-0">
           <div className="nv-edge nv-edge--ring h-full">
             <div
               ref={stageRef}
@@ -715,8 +715,8 @@ export default function Home() {
                       <div className="nv-float-card-img">
                         <Image src={p.shot} alt={p.name} fill sizes="160px" className="object-cover object-top" />
                         <span
-                          className="absolute inset-x-0 bottom-0 px-2 pb-2 pt-6 text-center text-[10px] font-medium text-white"
-                          style={{ background: 'linear-gradient(0deg, rgba(6,6,6,0.92), transparent)' }}
+                          className="absolute inset-x-0 bottom-0 px-1.5 pb-1.5 pt-8 text-center text-[9px] font-medium leading-tight text-white md:px-2 md:pb-2 md:text-[10px]"
+                          style={{ background: 'linear-gradient(0deg, rgba(6,6,6,0.96) 32%, transparent)' }}
                         >
                           {p.name}
                         </span>
@@ -731,19 +731,21 @@ export default function Home() {
         </Reveal>
 
         {/* ── OFERTA ── */}
-        <Reveal delay={0.17} className="col-span-1 md:col-span-4 md:row-span-4 md:min-h-0">
+        <Reveal delay={0.17} className="col-span-2 min-w-0 md:col-span-4 md:row-span-4 md:min-h-0">
           <div className="nv-edge nv-edge--alt nv-cell h-full">
-            <div className="nv-edge-inner nv-inset flex h-full flex-col justify-center p-4 text-center md:p-6">
-              <span className="text-[11px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>{t.stats.offerLabel}</span>
-              <span className="mt-2 font-semibold" style={{ fontSize: 'clamp(1.6rem, 2.2vw, 2.2rem)', letterSpacing: '-0.04em', lineHeight: 1, color: '#FF9E7A' }}>
-                {t.stats.offerTitle}
-              </span>
-              <p className="mx-auto mt-2 max-w-[240px] text-[0.8125rem] font-medium" style={{ color: '#b8b8b9' }}>{t.stats.offerSub}</p>
-              <p className="mt-1 text-[0.75rem] font-medium" style={{ color: '#909099' }}>{t.stats.offerNote}</p>
-              <p className="mt-1 text-[0.8125rem] font-semibold" aria-hidden>
-                <span className={`nv-swap inline-block ${swapping ? 'nv-swap--out' : ''}`} style={{ color: '#FF9E7A' }}>{WORDS[wordIdx]}</span>
-              </p>
-              <a href="mailto:contact@landings.md" className="btn-metal btn-metal--sm mx-auto mt-4">
+            <div className="nv-edge-inner nv-inset flex h-full flex-col justify-center gap-1 p-4 text-center md:gap-0 md:p-6">
+              <div className="min-w-0">
+                <span className="block text-[11px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>{t.stats.offerLabel}</span>
+                <span className="mt-1 block whitespace-nowrap font-semibold md:mt-2" style={{ fontSize: 'clamp(1.5rem, 2.2vw, 2.2rem)', letterSpacing: '-0.04em', lineHeight: 1.1, color: '#FF9E7A' }}>
+                  {t.stats.offerTitle}
+                </span>
+                <p className="mx-auto mt-1.5 max-w-[240px] text-[0.8125rem] font-medium md:mt-2" style={{ color: '#b8b8b9' }}>{t.stats.offerSub}</p>
+                <p className="mt-1 text-[0.75rem] font-medium" style={{ color: '#909099' }}>{t.stats.offerNote}</p>
+                <p className="mt-1 text-[0.8125rem] font-semibold" aria-hidden>
+                  <span className={`nv-swap inline-block ${swapping ? 'nv-swap--out' : ''}`} style={{ color: '#FF9E7A' }}>{WORDS[wordIdx]}</span>
+                </p>
+              </div>
+              <a href="mailto:contact@landings.md" className="btn-metal btn-metal--sm mx-auto mt-3 md:mt-4">
                 {t.hero.cta}
                 <span className="nv-arr" aria-hidden>&rarr;</span>
               </a>
@@ -752,24 +754,24 @@ export default function Home() {
         </Reveal>
 
         {/* ── CONTACT ── */}
-        <Reveal delay={0.2} className="col-span-1 md:col-span-4 md:row-span-4 md:min-h-0">
+        <Reveal delay={0.2} className="col-span-2 min-w-0 md:col-span-4 md:row-span-4 md:min-h-0">
           <div className="nv-edge nv-edge--ring nv-cell h-full">
             <div className="nv-edge-inner nv-inset flex h-full flex-col justify-center gap-1.5 p-4 md:p-6">
               <span className="text-[11px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>{t.contact.label}</span>
-              <a href="mailto:contact@landings.md" className="truncate text-[0.9375rem] font-medium text-white transition-colors duration-150 hover:!text-[#FF9E7A]">
+              <a href="mailto:contact@landings.md" className="text-[0.875rem] font-medium text-white transition-colors duration-150 hover:!text-[#FF9E7A] md:text-[0.9375rem]">
                 contact@landings.md
               </a>
               <a href="tel:+37368327082" className="text-[0.9375rem] font-medium transition-colors duration-150 hover:!text-[#FF9E7A]" style={{ color: '#b8b8b9' }}>
                 +373 683 27 082
               </a>
               <a href="https://instagram.com/landings.md" target="_blank" rel="noopener noreferrer" className="text-[0.8125rem] font-medium transition-colors duration-150 hover:!text-[#FF9E7A]" style={{ color: '#b8b8b9' }}>
-                Instagram · @landings.md
+                @landings.md
               </a>
-              <div className="mt-1 flex items-center justify-between gap-2">
-                <p className="inline-flex items-center gap-2 text-[0.75rem] font-medium" style={{ color: '#909099' }}>
+              <div className="mt-1 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                <p className="text-[0.75rem] font-medium" style={{ color: '#909099' }}>
                   {t.about.avail}
                 </p>
-                <span className="text-[0.75rem] font-semibold tabular-nums" style={{ color: '#FF9E7A' }}>
+                <span className="whitespace-nowrap text-[0.75rem] font-semibold tabular-nums" style={{ color: '#FF9E7A' }}>
                   {clock ? (
                     <>Chisinau {clock.slice(0, 2)}<span className="nv-blink">:</span>{clock.slice(3, 5)}<span className="nv-blink">:</span>{clock.slice(6, 8)}</>
                   ) : '24h'}
@@ -780,9 +782,9 @@ export default function Home() {
         </Reveal>
 
         {/* ── LOGO MARQUEE : curated clients, GLG readable ── */}
-        <Reveal delay={0.23} className="col-span-2 md:col-span-8 md:row-span-1 md:min-h-0">
+        <Reveal delay={0.23} className="col-span-2 min-w-0 md:col-span-8 md:row-span-1 md:min-h-0">
           <div className="nv-edge h-full">
-            <div className="nv-edge-inner nv-inset flex h-full items-center px-2 py-1.5">
+            <div className="nv-edge-inner nv-inset flex h-full items-center overflow-hidden px-2 py-1.5">
               <div className="nv-marquee w-full">
                 <div className="nv-marquee-track">
                   {[0, 1, 2, 3].map((half) => (
@@ -801,7 +803,7 @@ export default function Home() {
         </Reveal>
 
         {/* ── FOOTER MICRO: © + icon links ── */}
-        <Reveal delay={0.26} className="col-span-2 md:col-span-4 md:row-span-1 md:min-h-0">
+        <Reveal delay={0.26} className="col-span-2 min-w-0 md:col-span-4 md:row-span-1 md:min-h-0">
           <div className="nv-edge h-full">
             <div className="nv-edge-inner nv-inset flex h-full items-center justify-between gap-3 px-4 py-2">
               <span className="truncate text-[11px] font-medium" style={{ color: '#909099' }}>{t.footer.copy}</span>
