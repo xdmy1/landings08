@@ -577,7 +577,7 @@ export default function Home() {
                 style={{ background: '#fff', filter: 'blur(110px)', opacity: 0.22 }}
               />
               {/* the ribbed sheet */}
-              <div className="ribbed ribbed--flat absolute inset-0" aria-hidden style={{ borderTop: 'none' }} />
+              <div className="ribbed ribbed--flat" aria-hidden style={{ position: 'absolute', inset: 0, borderTop: 'none' }} />
 
               <div className="relative z-[1] flex h-full flex-col">
                 <span className="chip chip--em max-w-full self-start">
