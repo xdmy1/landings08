@@ -7,10 +7,11 @@ import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
 
 /* ────────────────────────────────────────────────────────────────
-   navarro-clone inner page, portfolio grid.
-   Ground #0d0d0d · lime #FF9E7A · Geist · blur-up reveals.
-   Ribbed header band, arch motif, portrait tall-* cards with
-   dual vignettes and nv-card3d depth.
+   Portfolio, rebuilt on the home-page language.
+   Ground #0d0d0d · coral #FF9E7A · Space Grotesk (inherited).
+   Gradient hairline cards + nv-inset depth everywhere, metal-bezel
+   float cards for every screenshot, bars / ring / nodes for the
+   real numbers, 3D metal buttons for every action.
    ──────────────────────────────────────────────────────────────── */
 
 const LIME = '#FF9E7A'
@@ -46,6 +47,21 @@ function Reveal({
     >
       {children}
     </div>
+  )
+}
+
+/* "*word.*" markers → coral <b> (h1/h2/h3 b is coral via globals); \n → line break */
+function Marked({ text }: { text: string }) {
+  return (
+    <>
+      {text.split('\n').map((line, i) => (
+        <span key={i} className="block">
+          {line.split(/\*(.*?)\*/g).map((part, j) =>
+            j % 2 === 1 ? <b key={j}>{part}</b> : <React.Fragment key={j}>{part}</React.Fragment>
+          )}
+        </span>
+      ))}
+    </>
   )
 }
 
@@ -245,6 +261,17 @@ const stats = [
   },
 ]
 
+/* client logo strip, same curated set as the home marquee */
+const MARQUEE_LOGOS = [
+  { k: 'davo', h: 'h-4 md:h-5' },
+  { k: 'interbus', h: 'h-5 md:h-6' },
+  { k: 'cmiea', h: 'h-6 md:h-7' },
+  { k: 'glg', h: 'h-7 md:h-8' },
+  { k: 'radx', h: 'h-4 md:h-5' },
+  { k: 'rizzaclassic', h: 'h-5 md:h-6' },
+  { k: 'eurogard', h: 'h-6 md:h-7' },
+] as const
+
 export default function PortfolioPage() {
   const { language } = useLanguage()
 
@@ -253,271 +280,299 @@ export default function PortfolioPage() {
     window.scrollTo(0, 0)
   }, [])
 
+  /* counters: traffic 300, DR 50, backlinks 2.6K, all entrance-only */
+  const [traffic, setTraffic] = useState(0)
+  const [dr, setDr] = useState(0)
+  const [links, setLinks] = useState(0)
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setTraffic(300); setDr(50); setLinks(26)
+      return
+    }
+    const t0 = performance.now()
+    let raf = 0
+    const tick = (now: number) => {
+      const p = Math.min((now - t0) / 1300, 1)
+      const e = 1 - Math.pow(1 - p, 3)
+      setTraffic(Math.round(e * 300))
+      setDr(Math.round(e * 50))
+      setLinks(Math.round(e * 26))
+      if (p < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [])
+
   const text = {
     en: {
       nav: { portfolio: "Portfolio", pricing: "Pricing", solutions: "Solutions", caseStudies: "Case Studies", contact: "Contact" },
       title: "Portfolio.",
+      headline: "Portfolio.\nProjects that *sell.*",
+      kicker: "Selected work",
+      trusted: "Trusted by businesses across Moldova and Europe",
       subtitle: "Fewer projects, heavier work. Websites, stores and business systems, all custom coded, no WordPress, no templates.",
-      visitSite: "Visit site", private: "Private system",
-      cta: { title: "Have a project in mind?", body: "Reach out and we'll respond within hours.", button: "Let's talk" },
+      visitSite: "Visit site", private: "Private system", view: "View", newest: "Newest",
+      cta: { title: "Have a project in mind?", titleMarked: "Have a project in *mind?*", body: "Reach out and we'll respond within hours.", button: "Let's talk" },
       footer: { copy: "© 2026 All rights reserved." }
     },
     ro: {
       nav: { portfolio: "Portofoliu", pricing: "Preturi", solutions: "Solutii", caseStudies: "Studii de Caz", contact: "Contact" },
       title: "Portofoliu.",
+      headline: "Portofoliu.\nProiecte care *vand.*",
+      kicker: "Lucrari selectate",
+      trusted: "De incredere pentru afaceri din Moldova si Europa",
       subtitle: "Mai putine proiecte, lucrari mai grele. Site-uri, magazine si sisteme pentru afaceri, toate scrise manual, fara WordPress, fara template-uri.",
-      visitSite: "Acceseaza site-ul", private: "Sistem privat",
-      cta: { title: "Ai un proiect in minte?", body: "Contacteaza-ne si iti vom raspunde in cateva ore.", button: "Hai sa vorbim" },
+      visitSite: "Acceseaza site-ul", private: "Sistem privat", view: "Vezi", newest: "Cel mai nou",
+      cta: { title: "Ai un proiect in minte?", titleMarked: "Ai un proiect in *minte?*", body: "Contacteaza-ne si iti vom raspunde in cateva ore.", button: "Hai sa vorbim" },
       footer: { copy: "© 2026 Toate drepturile rezervate." }
     },
     de: {
       nav: { portfolio: "Portfolio", pricing: "Preise", solutions: "Losungen", caseStudies: "Fallstudien", contact: "Kontakt" },
       title: "Portfolio.",
+      headline: "Portfolio.\nProjekte, die *verkaufen.*",
+      kicker: "Ausgewahlte Arbeiten",
+      trusted: "Vertraut von Unternehmen in Moldawien und Europa",
       subtitle: "Weniger Projekte, gewichtigere Arbeit. Websites, Shops und Business-Systeme, alle individuell entwickelt, kein WordPress, keine Templates.",
-      visitSite: "Website besuchen", private: "Privates System",
-      cta: { title: "Haben Sie ein Projekt?", body: "Kontaktieren Sie uns, wir antworten innerhalb von Stunden.", button: "Kontaktieren Sie uns" },
+      visitSite: "Website besuchen", private: "Privates System", view: "Ansehen", newest: "Neuestes",
+      cta: { title: "Haben Sie ein Projekt?", titleMarked: "Haben Sie ein *Projekt?*", body: "Kontaktieren Sie uns, wir antworten innerhalb von Stunden.", button: "Kontaktieren Sie uns" },
       footer: { copy: "© 2026 Alle Rechte vorbehalten." }
     },
     fr: {
       nav: { portfolio: "Portfolio", pricing: "Tarifs", solutions: "Solutions", caseStudies: "Etudes de Cas", contact: "Contact" },
       title: "Portfolio.",
+      headline: "Portfolio.\nDes projets qui *vendent.*",
+      kicker: "Travaux selectionnes",
+      trusted: "La confiance d'entreprises en Moldavie et en Europe",
       subtitle: "Moins de projets, plus de poids. Sites, boutiques et systemes metier, tous codes sur mesure, pas de WordPress, pas de templates.",
-      visitSite: "Visiter le site", private: "Systeme prive",
-      cta: { title: "Vous avez un projet ?", body: "Contactez-nous et nous repondrons en quelques heures.", button: "Parlons-en" },
+      visitSite: "Visiter le site", private: "Systeme prive", view: "Voir", newest: "Le plus recent",
+      cta: { title: "Vous avez un projet ?", titleMarked: "Vous avez un *projet ?*", body: "Contactez-nous et nous repondrons en quelques heures.", button: "Parlons-en" },
       footer: { copy: "© 2026 Tous droits reserves." }
     },
     es: {
       nav: { portfolio: "Portafolio", pricing: "Precios", solutions: "Soluciones", caseStudies: "Casos de Estudio", contact: "Contacto" },
       title: "Portafolio.",
+      headline: "Portafolio.\nProyectos que *venden.*",
+      kicker: "Trabajos seleccionados",
+      trusted: "Confianza de empresas en Moldavia y Europa",
       subtitle: "Menos proyectos, mas peso. Webs, tiendas y sistemas de negocio, todos codificados a medida, sin WordPress, sin plantillas.",
-      visitSite: "Visitar sitio", private: "Sistema privado",
-      cta: { title: "Tienes un proyecto?", body: "Contactanos y te responderemos en horas.", button: "Hablemos" },
+      visitSite: "Visitar sitio", private: "Sistema privado", view: "Ver", newest: "Lo mas nuevo",
+      cta: { title: "Tienes un proyecto?", titleMarked: "Tienes un *proyecto?*", body: "Contactanos y te responderemos en horas.", button: "Hablemos" },
       footer: { copy: "© 2026 Todos los derechos reservados." }
     }
   }
 
-  const t = text[language as keyof typeof text]
+  const t = text[language as keyof typeof text] ?? text.en
   const lang = language as keyof typeof projects[0]['description']
+
+  /* the four header stats, each with its own entrance-only visual */
+  const statCells = [
+    {
+      value: `+${traffic}%`,
+      label: stats[0].label[lang] ?? stats[0].label.en,
+      note: 'Google Analytics · organic',
+      visual: (
+        <div className="flex h-9 w-20 shrink-0 items-end gap-1" aria-hidden>
+          {[30, 44, 58, 74, 100].map((h, i) => (
+            <span
+              key={i}
+              className="nv-bar flex-1 rounded-sm"
+              style={{ height: `${h}%`, ['--i' as string]: i, background: i === 4 ? LIME : 'rgba(255,255,255,0.14)' }}
+            />
+          ))}
+        </div>
+      ),
+    },
+    {
+      value: stats[1].value,
+      label: stats[1].label[lang] ?? stats[1].label.en,
+      note: 'Booking · ERP · CRM · Facturare',
+      visual: (
+        <div className="flex w-20 shrink-0 items-center" aria-hidden>
+          <span className="nv-node h-2 w-2 rounded-full" style={{ background: LIME }} />
+          <span className="relative h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }}>
+            <span className="nv-packet" />
+          </span>
+          <span className="nv-node h-2 w-2 rounded-full" style={{ background: LIME }} />
+          <span className="relative h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }}>
+            <span className="nv-packet" style={{ animationDelay: '-1.2s' }} />
+          </span>
+          <span className="nv-node h-2 w-2 rounded-full" style={{ background: LIME }} />
+        </div>
+      ),
+    },
+    {
+      value: `DR ${dr}`,
+      label: stats[2].label[lang] ?? stats[2].label.en,
+      note: `${(links / 10).toFixed(1)}K backlinks · Ahrefs`,
+      coral: true,
+      visual: (
+        <svg width="46" height="46" viewBox="0 0 96 96" aria-hidden className="shrink-0">
+          <circle cx="48" cy="48" r="42" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="9" />
+          <circle
+            cx="48" cy="48" r="42" fill="none"
+            stroke={LIME} strokeWidth="9" strokeLinecap="round"
+            strokeDasharray="264" strokeDashoffset="132"
+            transform="rotate(-90 48 48)"
+            className="nv-ring-main"
+          />
+        </svg>
+      ),
+    },
+    {
+      value: stats[3].value,
+      label: stats[3].label[lang] ?? stats[3].label.en,
+      note: 'W1 · W2 · W3 · W4',
+      visual: (
+        <div className="flex h-9 w-20 shrink-0 items-end gap-1.5" aria-hidden>
+          {[38, 62, 84, 100].map((h, i) => (
+            <span
+              key={i}
+              className="nv-bar flex-1 rounded-sm"
+              style={{ height: `${h}%`, ['--i' as string]: i, background: i === 3 ? LIME : 'rgba(255,255,255,0.14)' }}
+            />
+          ))}
+        </div>
+      ),
+    },
+  ]
 
   return (
     <main className="min-h-screen" style={{ background: '#0d0d0d', color: '#fff' }}>
 
       <SiteNav contactHref="/#contact" />
 
-      {/* ════════ HEADER, ribbed glass band + arch motif ════════ */}
-      <section className="relative overflow-hidden">
-        <div className="ribbed">
-          <div className="nv-container relative z-[1]">
-            <div className="flex flex-col gap-10 pb-12 pt-14 md:flex-row md:items-end md:justify-between md:pb-16 md:pt-20">
-              <div className="max-w-[640px]">
-                <Reveal>
-                  <h1
-                    className="font-bold"
-                    style={{ fontSize: 'clamp(2.625rem, 5.5vw, 4.25rem)', lineHeight: 1.01, letterSpacing: '-0.05em' }}
-                  >
-                    {t.title.endsWith('.') ? (<>{t.title.slice(0, -1)}<b>.</b></>) : t.title}
-                  </h1>
-                </Reveal>
-                <Reveal delay={0.08}>
-                  <p
-                    className="mt-5 max-w-[560px] font-medium"
-                    style={{ fontSize: '1.0625rem', lineHeight: 1.4, letterSpacing: '-0.02em', color: '#b8b8b9' }}
-                  >
-                    {t.subtitle}
-                  </p>
-                </Reveal>
-              </div>
-
-              {/* arch-cropped screenshot, coral under-glow */}
-              <Reveal delay={0.14} className="hidden flex-none md:block">
-                <div className="relative mr-3">
-                  <div
-                    aria-hidden
-                    className="absolute -inset-10 rounded-full"
-                    style={{ background: 'radial-gradient(closest-side, rgba(255,158,122,0.30), transparent)', filter: 'blur(28px)' }}
-                  />
-                  <div
-                    className="relative overflow-hidden"
-                    style={{ width: 190, aspectRatio: '430 / 560', borderRadius: '999px 999px 24px 24px', border: '1px solid rgba(73,73,73,0.6)' }}
-                  >
-                    <Image
-                      src="/images/tall-cmiea.jpg"
-                      alt="CMIEA.md, proiect landings.md"
-                      fill
-                      sizes="190px"
-                      className="object-cover object-top"
-                      priority
-                    />
-                  </div>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ════════ PROJECT GRID, portrait tall-* cards, nv-edge + nv-card3d ════════ */}
-      <section className="pt-8 md:pt-12">
-        <div className="nv-container">
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-            {projects.map((project, index) => {
-              const card = (
-                <div className={`nv-edge nv-card3d h-full ${index % 2 === 1 ? 'nv-edge--alt' : ''}`}>
-                  <div className="nv-edge-inner flex h-full flex-col">
-                    {/* portrait screenshot, dual vignettes, captions top / superlative + view bottom */}
-                    <div
-                      className="relative overflow-hidden"
-                      style={{ aspectRatio: '3 / 4', borderBottom: '1px solid rgba(73,73,73,0.6)' }}
-                    >
-                      <Image
-                        src={project.image}
-                        alt={`${project.title}, ${project.description.en}`}
-                        fill
-                        sizes="(min-width: 1280px) 320px, (min-width: 640px) 50vw, 100vw"
-                        quality={85}
-                        className="object-cover transition-transform duration-200 ease-out group-hover:scale-[1.03]"
-                        style={{ objectPosition: project.status === 'PRIVATE' ? 'left top' : 'top' }}
-                      />
-                      {/* top vignette: client + domain caption */}
-                      <div
-                        className="absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-3 px-5 pb-10 pt-4"
-                        style={{ background: 'linear-gradient(180deg, rgba(8,8,8,0.72), rgba(8,8,8,0.28) 55%, transparent)' }}
-                      >
-                        <span className="text-[14px] font-medium text-white">{project.title}</span>
-                        <span className="pt-0.5 text-right text-[11px] font-medium uppercase tracking-[0.1em]" style={{ color: '#a4a4a4' }}>
-                          {project.domain}
-                        </span>
-                      </div>
-                      {/* bottom vignette: superlative + view */}
-                      <div
-                        className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-3 px-5 pb-5 pt-14"
-                        style={{ background: 'linear-gradient(0deg, rgba(8,8,8,0.72), rgba(8,8,8,0.28) 55%, transparent)' }}
-                      >
-                        <p className="max-w-[62%] text-[13px] font-medium leading-snug text-white" style={{ letterSpacing: '-0.01em' }}>
-                          {project.highlight[lang] ?? project.highlight.en}
-                        </p>
-                        {project.status !== 'PRIVATE' ? (
-                          <span
-                            className="inline-flex flex-none items-center gap-2 rounded-full px-3.5 py-1.5 text-[12px] font-medium text-white transition-[box-shadow] duration-200 ease-out group-hover:[box-shadow:0_0_1px_1px_#FF9E7A]"
-                            style={{
-                              border: '1px solid rgba(255,255,255,0.2)',
-                              background: 'linear-gradient(120deg, rgba(30,30,30,0.65), rgba(10,10,10,0.55))',
-                              backdropFilter: 'blur(8px)',
-                              WebkitBackdropFilter: 'blur(8px)',
-                            }}
-                          >
-                            {t.visitSite}
-                            <span aria-hidden style={{ display: 'inline-block', transform: 'rotate(-45deg)', color: LIME }}>&rarr;</span>
-                          </span>
-                        ) : (
-                          <span
-                            className="inline-flex flex-none items-center rounded-full px-3.5 py-1.5 text-[12px] font-medium transition-[box-shadow] duration-200 ease-out group-hover:[box-shadow:0_0_1px_1px_rgba(255,255,255,0.35)]"
-                            style={{
-                              border: '1px solid rgba(255,255,255,0.14)',
-                              background: 'linear-gradient(120deg, rgba(30,30,30,0.65), rgba(10,10,10,0.55))',
-                              backdropFilter: 'blur(8px)',
-                              WebkitBackdropFilter: 'blur(8px)',
-                              color: '#b8b8b9',
-                            }}
-                          >
-                            {t.private}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* body: chips + status, description */}
-                    <div className="flex flex-1 flex-col p-5">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex flex-wrap gap-1.5">
-                          {project.chips.map((chip) => (
-                            <span key={chip} className="chip">
-                              <span className="chip-inner !px-2.5 !py-1 !text-[10px] uppercase tracking-[0.08em]" style={{ color: '#a4a4a4' }}>
-                                {chip}
-                              </span>
-                            </span>
-                          ))}
-                        </div>
-                        <span className="inline-flex flex-shrink-0 items-center gap-2 pt-1 text-[11px] font-medium uppercase tracking-[0.08em]" style={{ color: '#909099' }}>
-                          
-                          {project.status === 'LIVE' ? 'LIVE' : t.private}
-                        </span>
-                      </div>
-                      <p className="mt-4 text-[0.875rem] font-medium leading-[1.45]" style={{ color: '#b8b8b9', letterSpacing: '-0.01em' }}>
-                        {project.description[lang] ?? project.description.en}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )
-              return (
-                <Reveal key={project.id} delay={(index % 4) * 0.06} className="h-full">
-                  {project.status !== 'PRIVATE' ? (
-                    <Link href={project.url} target="_blank" rel="noopener noreferrer" className="group block h-full">
-                      {card}
-                    </Link>
-                  ) : (
-                    <div className="group h-full">{card}</div>
-                  )}
-                </Reveal>
-              )
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════ STATS STRIP, real numbers, coral seam handoff ════════ */}
-      <section className="pt-16 md:pt-24">
-        <div className="nv-container">
-          <div className="nv-seam" />
-          <div className="grid grid-cols-2 gap-5 pt-10 md:grid-cols-4 md:pt-14">
-            {stats.map((s, i) => (
-              <Reveal key={s.value} delay={i * 0.06} className="h-full">
-                <div className={`nv-edge nv-edge--ring h-full ${i % 2 === 1 ? 'nv-edge--alt' : ''}`}>
-                  <div className="nv-edge-inner flex h-full flex-col justify-between gap-6 p-6">
-                    <span
-                      className="font-medium text-white"
-                      style={{ fontSize: '2.75rem', lineHeight: 1, letterSpacing: '-0.04em', color: s.value === 'DR 50' ? LIME : undefined }}
-                    >
-                      {s.value}
-                    </span>
-                    <span className="text-[13px] font-medium" style={{ color: '#909099' }}>
-                      {s.label[lang] ?? s.label.en}
-                    </span>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════ CTA CLOSE, graphite metal pill ════════ */}
-      <section className="pt-16 md:pt-24">
+      {/* ════════ HEADER CARD, gradient hairline + inset depth ════════ */}
+      <section className="pt-4 md:pt-6">
         <div className="nv-container">
           <Reveal>
-            <div className="nv-edge">
-              <div className="nv-edge-inner relative p-8 text-center md:p-14">
-                {/* soft lime under-glow at the top edge */}
+            <div className="nv-edge nv-edge--ring">
+              <div className="nv-edge-inner nv-inset relative overflow-hidden p-5 md:p-9">
+                {/* ribbed sheet + coral horizon glow, same material as home */}
+                <div className="ribbed ribbed--flat" aria-hidden style={{ position: 'absolute', inset: 0, borderTop: 'none' }} />
                 <div
                   aria-hidden
-                  className="pointer-events-none absolute left-1/2 top-0 h-40 w-[440px] -translate-x-1/2 -translate-y-1/2"
-                  style={{ background: 'radial-gradient(closest-side, #FF9E7A33, transparent)' }}
+                  className="pointer-events-none absolute left-1/2 top-full h-[320px] w-[620px] -translate-x-1/2 -translate-y-1/2 rounded-full"
+                  style={{ background: 'radial-gradient(closest-side, rgba(255,158,122,0.34), transparent)', filter: 'blur(60px)' }}
                 />
-                <h2
-                  className="font-bold"
-                  style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}
-                >
-                  {t.cta.title}
-                </h2>
-                <p className="mx-auto mt-4 max-w-[440px] text-[1rem] font-medium leading-relaxed" style={{ color: '#b8b8b9' }}>
-                  {t.cta.body}
-                </p>
-                <div className="mt-8 flex justify-center">
-                  <Link href="/#contact" className="btn-metal">
-                    {t.cta.button}
-                    <span className="nv-arr" aria-hidden>&rarr;</span>
-                  </Link>
+
+                <div className="relative z-[1]">
+                  <div className="flex flex-col gap-7 md:flex-row md:items-end md:justify-between md:gap-10">
+                    <div className="min-w-0 max-w-[680px]">
+                      <span className="chip chip--em inline-block">
+                        <span className="chip-inner !py-2 !text-[12px] uppercase tracking-[0.14em] md:!text-[13px]">
+                          {t.kicker}
+                        </span>
+                      </span>
+                      <h1
+                        className="mt-4 font-bold"
+                        style={{ fontSize: 'clamp(2.1rem, 4.6vw, 3.5rem)', lineHeight: 1.02, letterSpacing: '-0.05em' }}
+                      >
+                        <Marked text={t.headline} />
+                      </h1>
+                      <p
+                        className="mt-4 max-w-[560px] font-medium"
+                        style={{ fontSize: '1.0625rem', lineHeight: 1.4, letterSpacing: '-0.02em', color: '#b8b8b9' }}
+                      >
+                        {t.subtitle}
+                      </p>
+                      <div className="mt-6 flex flex-wrap items-center gap-4">
+                        <Link href="/#contact" className="btn-metal">
+                          {t.cta.button}
+                          <span className="nv-arr" aria-hidden>&rarr;</span>
+                        </Link>
+                        <Link href="/pricing" className="btn-metal btn-metal--sm">
+                          {t.nav.pricing}
+                          <span className="nv-arr" aria-hidden>&rarr;</span>
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* floating metal-bezel screenshot in its own well */}
+                    <div className="hidden flex-none md:block">
+                      <div className="nv-well rounded-[26px] p-4">
+                        <div className="relative w-[190px]">
+                          <div className="nv-bobwrap nv-bob-2">
+                            <div className="nv-float-card">
+                              <div className="nv-float-card-img" style={{ aspectRatio: '430 / 560', height: 'auto' }}>
+                                <Image
+                                  src="/images/tall-cmiea.jpg"
+                                  alt="CMIEA.md, proiect landings.md"
+                                  fill
+                                  sizes="190px"
+                                  className="object-cover object-top"
+                                  priority
+                                />
+                                <span
+                                  className="absolute inset-x-0 bottom-0 px-2 pb-2 pt-10 text-center text-[10px] font-medium leading-tight text-white"
+                                  style={{ background: 'linear-gradient(0deg, rgba(6,6,6,0.96) 32%, transparent)' }}
+                                >
+                                  cmiea.md
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* stat row: bars, nodes, ring, timeline, all inside a deep well */}
+                  <div className="nv-well mt-7 rounded-[26px] p-3 md:mt-9 md:p-4">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                      {statCells.map((s, i) => (
+                        <div key={i} className={`nv-edge nv-edge--ring nv-cell ${i % 2 === 1 ? 'nv-edge--alt' : ''}`}>
+                          <div className="nv-edge-inner nv-inset flex h-full items-center justify-between gap-3 p-4">
+                            <div className="min-w-0">
+                              <span
+                                className="block whitespace-nowrap font-medium"
+                                style={{ fontSize: 'clamp(1.5rem, 2vw, 1.95rem)', lineHeight: 1, letterSpacing: '-0.04em', color: s.coral ? LIME : '#fff' }}
+                              >
+                                {s.value}
+                              </span>
+                              <span className="mt-1.5 block text-[0.75rem] font-medium leading-tight" style={{ color: '#909099' }}>
+                                {s.label}
+                              </span>
+                              <span className="mt-1 block truncate text-[10px] font-medium" style={{ color: LIME }}>
+                                {s.note}
+                              </span>
+                            </div>
+                            {s.visual}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
+          {/* ════════ CLIENT MARQUEE ════════ */}
+          <Reveal delay={0.06} className="mt-3">
+            <div className="nv-edge">
+              <div className="nv-edge-inner nv-inset flex flex-col items-center gap-2 overflow-hidden px-3 py-3 md:flex-row md:gap-6 md:py-2.5">
+                <span className="shrink-0 text-[11px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
+                  {t.trusted}
+                </span>
+                <div className="nv-marquee w-full min-w-0">
+                  <div className="nv-marquee-track">
+                    {[0, 1, 2, 3].map((half) => (
+                      <div key={half} className="flex items-center gap-10 pr-10" aria-hidden={half !== 0}>
+                        {MARQUEE_LOGOS.map((l) => (
+                          <span key={`${half}-${l.k}`} className="nv-logo shrink-0">
+                            <Image
+                              src={`/images/logos/${l.k}.png`}
+                              alt={half === 0 ? l.k : ''}
+                              width={120}
+                              height={36}
+                              className={`w-auto ${l.h}`}
+                              style={{ filter: 'brightness(0) invert(1)' }}
+                            />
+                          </span>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -525,32 +580,194 @@ export default function PortfolioPage() {
         </div>
       </section>
 
-      {/* ════════ FOOTER ════════ */}
-      <footer className="mt-20 pb-16 md:mt-28">
+      {/* ════════ PROJECT GRID, gradient hairline cards + metal-bezel shots ════════ */}
+      <section className="pt-10 md:pt-14">
         <div className="nv-container">
-          <div
-            className="h-px w-full"
-            style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)' }}
-          />
-          <div className="flex flex-col items-start justify-between gap-6 pt-10 md:flex-row md:items-center">
-            <div className="flex items-center gap-6">
-              <Link href="/" className="flex items-center gap-3">
-                <Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="h-8 w-auto" />
-                <span className="text-[14px] font-medium text-white">landings.md</span>
-              </Link>
-              <div className="hidden items-center gap-4 text-[13px] font-medium md:flex">
-                <Link href="/portfolio" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.portfolio}</Link>
-                <Link href="/pricing" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.pricing}</Link>
-                <Link href="/solutions" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.solutions}</Link>
-                <Link href="/case-studies" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.caseStudies}</Link>
+          <div className="nv-seam" />
+          <div className="grid grid-cols-1 gap-4 pt-8 sm:grid-cols-2 xl:grid-cols-3 md:pt-10">
+            {projects.map((project, index) => {
+              const isPrivate = project.status === 'PRIVATE'
+              return (
+                <Reveal key={project.id} delay={(index % 3) * 0.06} className="h-full">
+                  <div className="group h-full">
+                    <div
+                      className={`nv-edge nv-edge--ring h-full transition-[transform,box-shadow] duration-200 ease-out group-hover:-translate-y-1.5 ${index % 2 === 1 ? 'nv-edge--alt' : ''}`}
+                    >
+                      <div className="nv-edge-inner nv-inset flex h-full flex-col p-4 md:p-5">
+
+                        {/* stage well: the screenshot floats inside it, never bare */}
+                        <div className="nv-well nv-stage rounded-[22px] p-3">
+                          <div className="relative">
+                            <div className="nv-float-card transition-transform duration-200 ease-out group-hover:-translate-y-1 group-hover:scale-[1.015]">
+                              <div className="nv-float-card-img" style={{ aspectRatio: '4 / 5', height: 'auto' }}>
+                                <Image
+                                  src={project.image}
+                                  alt={`${project.title}, ${project.description.en}`}
+                                  fill
+                                  sizes="(min-width: 1280px) 400px, (min-width: 640px) 50vw, 100vw"
+                                  quality={85}
+                                  className="object-cover transition-transform duration-200 ease-out group-hover:scale-[1.03]"
+                                  style={{ objectPosition: isPrivate ? 'left top' : 'top' }}
+                                />
+                                {/* top vignette: client + domain */}
+                                <div
+                                  className="absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-3 px-4 pb-10 pt-3"
+                                  style={{ background: 'linear-gradient(180deg, rgba(6,6,6,0.9), rgba(6,6,6,0.32) 60%, transparent)' }}
+                                >
+                                  <span className="text-[13px] font-medium text-white">{project.title}</span>
+                                  <span className="pt-0.5 text-right text-[10px] font-medium uppercase tracking-[0.1em]" style={{ color: '#a4a4a4' }}>
+                                    {project.domain}
+                                  </span>
+                                </div>
+                                {/* bottom vignette: the real claim, upright, coral-free */}
+                                <div
+                                  className="absolute inset-x-0 bottom-0 z-10 px-4 pb-4 pt-14"
+                                  style={{ background: 'linear-gradient(0deg, rgba(6,6,6,0.94) 30%, rgba(6,6,6,0.3) 70%, transparent)' }}
+                                >
+                                  <p className="text-[12.5px] font-medium leading-snug text-white" style={{ letterSpacing: '-0.01em' }}>
+                                    {project.highlight[lang] ?? project.highlight.en}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* body: chips, description */}
+                        <div className="flex flex-1 flex-col pt-4">
+                          <div className="flex flex-wrap gap-1.5">
+                            {project.chips.map((chip) => (
+                              <span key={chip} className="chip">
+                                <span className="chip-inner !px-2.5 !py-1 !text-[10px] uppercase tracking-[0.08em]" style={{ color: '#a4a4a4' }}>
+                                  {chip}
+                                </span>
+                              </span>
+                            ))}
+                            {index === 0 && (
+                              <span className="chip chip--em">
+                                <span className="chip-inner !px-2.5 !py-1 !text-[10px] uppercase tracking-[0.08em]">
+                                  {t.newest}
+                                </span>
+                              </span>
+                            )}
+                          </div>
+                          <p className="mt-3 text-[0.875rem] font-medium leading-[1.45]" style={{ color: '#b8b8b9', letterSpacing: '-0.01em' }}>
+                            {project.description[lang] ?? project.description.en}
+                          </p>
+                          <div className="flex-1" />
+
+                          {/* action row: live status + 3D metal button */}
+                          <div className="mt-5 flex items-center justify-between gap-3">
+                            {!isPrivate ? (
+                              <span className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.1em]" style={{ color: '#909099' }}>
+                                <span className="dot-lime" aria-hidden />
+                                LIVE
+                              </span>
+                            ) : (
+                              <span aria-hidden />
+                            )}
+                            {!isPrivate ? (
+                              <a
+                                href={project.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={`${t.visitSite}: ${project.title}`}
+                                className="btn-metal btn-metal--sm"
+                              >
+                                {t.view}
+                                <span
+                                  className="nv-arr group-hover:!w-[1em] group-hover:!opacity-100 group-hover:!translate-x-0 group-hover:!rotate-0"
+                                  aria-hidden
+                                >
+                                  &rarr;
+                                </span>
+                              </a>
+                            ) : (
+                              <span className="chip">
+                                <span className="chip-inner !px-3.5 !py-1.5 !text-[11px]" style={{ color: '#909099' }}>
+                                  {t.private}
+                                </span>
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </Reveal>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════ CTA CLOSE, full-width gradient card ════════ */}
+      <section className="pt-12 md:pt-16">
+        <div className="nv-container">
+          <div className="nv-seam" />
+          <Reveal className="pt-8 md:pt-12">
+            <div className="nv-edge nv-edge--ring nv-edge--alt">
+              <div className="nv-edge-inner nv-inset relative overflow-hidden p-7 text-center md:p-14">
+                <div className="ribbed ribbed--flat" aria-hidden style={{ position: 'absolute', inset: 0, borderTop: 'none' }} />
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute left-1/2 top-0 h-40 w-[440px] -translate-x-1/2 -translate-y-1/2"
+                  style={{ background: 'radial-gradient(closest-side, #FF9E7A55, transparent)' }}
+                />
+                <div className="relative z-[1]">
+                  <h2
+                    className="font-bold"
+                    style={{ fontSize: 'clamp(1.9rem, 4vw, 2.6rem)', letterSpacing: '-0.05em', lineHeight: 1.05 }}
+                  >
+                    <Marked text={t.cta.titleMarked} />
+                  </h2>
+                  <p className="mx-auto mt-4 max-w-[460px] text-[1rem] font-medium leading-relaxed" style={{ color: '#b8b8b9' }}>
+                    {t.cta.body}
+                  </p>
+                  <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+                    <Link href="/#contact" className="btn-metal">
+                      {t.cta.button}
+                      <span className="nv-arr" aria-hidden>&rarr;</span>
+                    </Link>
+                    <a href="mailto:contact@landings.md" className="btn-metal btn-metal--sm">
+                      contact@landings.md
+                      <span className="nv-arr" aria-hidden>&rarr;</span>
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="flex flex-col gap-2 text-[13px] font-medium sm:flex-row sm:items-center sm:gap-5">
-              <Link href="tel:+37368327082" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>+373 683 27 082</Link>
-              <Link href="mailto:contact@landings.md" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>contact@landings.md</Link>
-              <span style={{ color: '#909099' }}>{t.footer.copy}</span>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ════════ FOOTER, one more hairline card ════════ */}
+      <footer className="pb-10 pt-10 md:pb-14 md:pt-14">
+        <div className="nv-container">
+          <Reveal>
+            <div className="nv-edge">
+              <div className="nv-edge-inner nv-inset flex flex-col items-start justify-between gap-5 px-5 py-4 md:flex-row md:items-center">
+                <div className="flex flex-wrap items-center gap-5">
+                  <Link href="/" className="flex items-center gap-3">
+                    <Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="h-7 w-auto" />
+                    <span className="text-[14px] font-medium text-white">landings.md</span>
+                  </Link>
+                  <div className="flex flex-wrap items-center gap-4 text-[13px] font-medium">
+                    <Link href="/portfolio" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.portfolio}</Link>
+                    <Link href="/pricing" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.pricing}</Link>
+                    <Link href="/solutions" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.solutions}</Link>
+                    <Link href="/case-studies" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.caseStudies}</Link>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1.5 text-[13px] font-medium sm:flex-row sm:items-center sm:gap-5">
+                  <Link href="tel:+37368327082" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>+373 683 27 082</Link>
+                  <Link href="mailto:contact@landings.md" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>contact@landings.md</Link>
+                  <span style={{ color: '#909099' }}>{t.footer.copy}</span>
+                </div>
+              </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </footer>
 

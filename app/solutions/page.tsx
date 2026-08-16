@@ -7,9 +7,11 @@ import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
 
 /* ────────────────────────────────────────────────────────────────
-   Solutions, navarro-clone shell, landings.md content only.
-   Ground #0d0d0d · lime #FF9E7A · Geist · blur-up reveals.
-   Arch header · card3d system cards · white-fill rows · nv-cell stats.
+   Solutions, systems dashboard shell.
+   Ground #0d0d0d · coral #FF9E7A · Space Grotesk (inherited).
+   Gradient hairline cards + nv-inset depth everywhere, metal-bezel
+   floating screenshots inside nv-well stages, bars/nodes/rings for
+   every stat, 3D metal buttons for every link. Copy untouched.
    ──────────────────────────────────────────────────────────────── */
 
 const LIME = '#FF9E7A'
@@ -48,6 +50,29 @@ function Reveal({
   )
 }
 
+/* Entrance count-up, ~1.3s, once, reduced-motion safe */
+function useCountUp(target: number, decimals = 0) {
+  const [n, setN] = useState(0)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setN(target)
+      return
+    }
+    const t0 = performance.now()
+    let raf = 0
+    const tick = (now: number) => {
+      const p = Math.min((now - t0) / 1300, 1)
+      const e = 1 - Math.pow(1 - p, 3)
+      setN(Number((e * target).toFixed(decimals)))
+      if (p < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [target, decimals])
+  return n
+}
+
 /* Plain letter-spaced caps label, no dot */
 function Label({ children }: { children: React.ReactNode }) {
   return (
@@ -60,8 +85,71 @@ function Label({ children }: { children: React.ReactNode }) {
 /* Section seam hairline */
 function Seam() {
   return (
-    <div className="nv-container pt-16 md:pt-24">
+    <div className="nv-container overflow-hidden pt-12 md:pt-16">
       <div className="nv-seam" />
+    </div>
+  )
+}
+
+/* ── Shared stat visuals ── */
+
+/* staggered bars that grow on load */
+function Bars({ heights, hot = -1, className = '' }: { heights: number[]; hot?: number; className?: string }) {
+  return (
+    <div className={`flex items-end gap-1 ${className}`} aria-hidden>
+      {heights.map((h, i) => (
+        <span
+          key={i}
+          className="nv-bar flex-1 rounded-[2px]"
+          style={{
+            height: `${h}%`,
+            ['--i' as string]: i,
+            background: (hot < 0 ? i === heights.length - 1 : i >= hot) ? LIME : 'rgba(255,255,255,0.14)',
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
+/* nodes joined by connectors with travelling coral packets */
+function NodeLine({ nodes = 3, className = '' }: { nodes?: number; className?: string }) {
+  return (
+    <div className={`flex items-center ${className}`} aria-hidden>
+      {Array.from({ length: nodes }).map((_, i) => (
+        <React.Fragment key={i}>
+          <span className="nv-node h-2 w-2 shrink-0 rounded-full" style={{ background: LIME }} />
+          {i < nodes - 1 && (
+            <span className="relative h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }}>
+              <span className="nv-packet" style={{ animationDelay: `${-1.1 * i}s` }} />
+            </span>
+          )}
+        </React.Fragment>
+      ))}
+    </div>
+  )
+}
+
+/* single ring that fills once on entrance */
+function Ring({ pct, size = 56, children }: { pct: number; size?: number; children?: React.ReactNode }) {
+  const offset = 264 - 264 * pct
+  return (
+    <div className="relative shrink-0" style={{ width: size, height: size }} aria-hidden>
+      <svg width={size} height={size} viewBox="0 0 96 96">
+        <circle cx="48" cy="48" r="42" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
+        <circle
+          cx="48" cy="48" r="42" fill="none"
+          stroke={LIME} strokeWidth="8" strokeLinecap="round"
+          strokeDasharray="264" strokeDashoffset={offset}
+          transform="rotate(-90 48 48)"
+          className="nv-ring-main"
+        />
+      </svg>
+      {children && (
+        <span className="absolute inset-0 flex items-center justify-center text-[11px] font-semibold" style={{ color: LIME }}>
+          {children}
+        </span>
+      )}
     </div>
   )
 }
@@ -160,6 +248,9 @@ export default function SolutionsPage() {
     history.scrollRestoration = 'manual'
     window.scrollTo(0, 0)
   }, [])
+
+  const uptime = useCountUp(99.9, 1)
+  const faster = useCountUp(3)
 
   const text = {
     en: {
@@ -369,9 +460,15 @@ export default function SolutionsPage() {
 
   /* Real portrait screenshots, dual-vignette overlays carry the text */
   const systemFrames = [
-    { domain: "davo.md", src: "/images/tall-davo.jpg" },
-    { domain: "inter-bus.md", src: "/images/tall-interbus.jpg" },
-    { domain: "scoalaautoglg.com", src: "/images/tall-glg.jpg" },
+    { domain: "davo.md", src: "/images/tall-davo.jpg", bars: [26, 38, 32, 50, 44, 62, 56, 74, 68, 86, 78, 100] },
+    { domain: "inter-bus.md", src: "/images/tall-interbus.jpg", bars: [22, 34, 46, 40, 58, 52, 70, 64, 80, 74, 90, 100] },
+    { domain: "scoalaautoglg.com", src: "/images/tall-glg.jpg", bars: [18, 30, 42, 36, 54, 48, 66, 60, 78, 72, 88, 100] },
+  ]
+
+  const ctaShots = [
+    { src: "/images/tall-autohuse.jpg", alt: "autohuse.md, made-to-order system by landings.md", bob: 'nv-bob-1' },
+    { src: "/images/tall-radx.jpg", alt: "radx.solutions, a landings.md project", bob: 'nv-bob-2' },
+    { src: "/images/tall-cmiea.jpg", alt: "cmiea.md, a landings.md project", bob: 'nv-bob-3' },
   ]
 
   return (
@@ -379,89 +476,151 @@ export default function SolutionsPage() {
 
       <SiteNav contactHref="/#contact" />
 
-      {/* ════════ HERO, text left, ARCH-cropped system screenshot right ════════ */}
-      <section className="relative overflow-hidden pt-14 md:pt-20">
+      {/* ════════ HEADER CARD, copy + live systems bento inside one depth card ════════ */}
+      <section className="pt-6 md:pt-8">
         <div className="nv-container">
-          <div className="grid items-center gap-12 md:grid-cols-[1.15fr_0.7fr] md:gap-10">
-            <div>
-              <Reveal>
-                <Label>{t.nav.solutions}</Label>
-              </Reveal>
-              <Reveal delay={0.06}>
-                <h1
-                  className="mt-5 max-w-[900px] font-bold"
-                  style={{ fontSize: 'clamp(2.625rem, 5.6vw, 4.5rem)', lineHeight: 1.01, letterSpacing: '-0.055em' }}
-                >
-                  <span className="block">{t.hero.title1}</span>
-                  <b>{t.hero.title2}</b>
-                </h1>
-              </Reveal>
-              <Reveal delay={0.12}>
-                <p
-                  className="mt-7 max-w-[720px] font-medium"
-                  style={{ color: '#e0e0e2', fontSize: 'clamp(1.0625rem, 1.6vw, 1.25rem)', lineHeight: 1.35, letterSpacing: '-0.03em' }}
-                >
-                  {t.hero.description}
-                </p>
-              </Reveal>
-              <Reveal delay={0.18}>
-                <div className="mt-9">
-                  <Link href="/#contact" className="btn-metal">
-                    {t.hero.cta}
-                    <span className="nv-arr" aria-hidden>&rarr;</span>
-                  </Link>
-                </div>
-              </Reveal>
-            </div>
-
-            {/* the ARCH, signature shape, real order system inside */}
-            <Reveal delay={0.1} className="justify-self-center md:justify-self-end">
-              <div className="relative" style={{ width: 'min(320px, 74vw)', aspectRatio: '320 / 410' }}>
-                {/* warm saturated blob */}
+          <Reveal>
+            <div className="nv-edge nv-edge--ring">
+              <div className="nv-edge-inner nv-inset relative overflow-hidden p-5 md:p-9">
+                {/* ambient warm glow, low and behind everything */}
                 <div
                   aria-hidden
-                  className="absolute -inset-12 rounded-full"
+                  className="nv-blob-spin pointer-events-none absolute -left-24 top-full h-[420px] w-[560px] -translate-y-1/2 rounded-full"
                   style={{
                     background: 'conic-gradient(from 30deg, #FF9E7A, #f2d06f, #d23b33, #7a4df0, #FF9E7A)',
-                    filter: 'saturate(1.1) blur(70px)',
-                    opacity: 0.32,
+                    filter: 'saturate(1.1) blur(100px)',
+                    opacity: 0.34,
                   }}
                 />
-                <div
-                  className="group relative h-full w-full overflow-hidden"
-                  style={{ borderRadius: '999px 999px 26px 26px', border: '1px solid rgba(73,73,73,0.6)' }}
-                >
-                  <Image
-                    src="/images/tall-autohuse.jpg"
-                    alt="Auto Huse, made-to-order system by landings.md"
-                    fill
-                    sizes="320px"
-                    className="object-cover object-top transition-transform duration-200 ease-out group-hover:scale-[1.03]"
-                    priority
-                  />
-                  {/* dual vignettes, text sits on the shot */}
-                  <div
-                    aria-hidden
-                    className="absolute inset-x-0 top-0 z-10 h-24"
-                    style={{ background: 'linear-gradient(180deg, rgba(8,8,8,0.72), transparent)' }}
-                  />
-                  <div
-                    className="absolute inset-x-0 bottom-0 z-10 flex items-end px-5 pb-5 pt-14"
-                    style={{ background: 'linear-gradient(0deg, rgba(8,8,8,0.72), transparent)' }}
-                  >
-                    <span className="text-[13px] font-medium text-white">autohuse.md</span>
+
+                <div className="relative z-[1] grid items-stretch gap-8 md:grid-cols-[1.05fr_0.95fr] md:gap-10">
+                  {/* ── copy column ── */}
+                  <div className="flex flex-col">
+                    <Label>{t.nav.solutions}</Label>
+                    <h1
+                      className="mt-5 max-w-[640px] font-bold"
+                      style={{ fontSize: 'clamp(2.25rem, 4.4vw, 3.6rem)', lineHeight: 1.01, letterSpacing: '-0.055em' }}
+                    >
+                      <span className="block">{t.hero.title1}</span>
+                      <b>{t.hero.title2}</b>
+                    </h1>
+                    <p
+                      className="mt-6 max-w-[560px] font-medium"
+                      style={{ color: '#b8b8b9', fontSize: 'clamp(0.9375rem, 1.3vw, 1.0625rem)', lineHeight: 1.4 }}
+                    >
+                      {t.hero.description}
+                    </p>
+
+                    <div className="mt-7 flex flex-wrap items-center gap-3">
+                      <Link href="/#contact" className="btn-metal">
+                        <span>{t.hero.cta}</span>
+                        <span className="nv-arr" aria-hidden>&rarr;</span>
+                      </Link>
+                      <Link href="/case-studies" className="btn-metal btn-metal--sm">
+                        <span>{t.nav.caseStudies}</span>
+                        <span className="nv-arr" aria-hidden>&rarr;</span>
+                      </Link>
+                    </div>
+
+                    <div className="flex-1" />
+
+                    {/* live pipeline strip, packets moving between systems */}
+                    <div className="mt-8 rounded-[22px] p-4 nv-well" aria-hidden>
+                      <NodeLine nodes={6} />
+                      <div className="mt-3 flex items-end justify-between" style={{ height: 30 }}>
+                        {Array.from({ length: 42 }).map((_, i) => {
+                          const h = 14 + (i / 41) * 72 + (i % 3 === 0 ? 12 : i % 3 === 1 ? -6 : 0)
+                          return (
+                            <span
+                              key={i}
+                              className="nv-bar w-[5px] shrink-0 rounded-[1px]"
+                              style={{ height: `${Math.max(8, Math.min(100, h))}%`, ['--i' as string]: i % 12, background: i > 35 ? LIME : 'rgba(255,255,255,0.13)' }}
+                            />
+                          )
+                        })}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ── live stat bento, floating cells inside a well ── */}
+                  <div className="nv-well rounded-[26px] p-3 md:p-4">
+                    <div className="grid h-full grid-cols-2 gap-3 md:gap-4">
+                      {/* uptime ring */}
+                      <div className="nv-edge nv-edge--ring nv-cell h-full">
+                        <div className="nv-edge-inner nv-inset flex h-full min-h-[132px] flex-col justify-between gap-3 p-4">
+                          <div className="flex items-center gap-3">
+                            <Ring pct={0.999} size={48} />
+                            <span className="font-semibold" style={{ fontSize: '1.5rem', letterSpacing: '-0.04em', lineHeight: 1, color: LIME }}>
+                              {uptime.toFixed(1)}%
+                            </span>
+                          </div>
+                          <div>
+                            <span className="block text-[0.8125rem] font-medium" style={{ color: '#e0e0e2' }}>{stats[0].label[lang]}</span>
+                            <span className="nv-cell-detail mt-1 block text-[11px] font-medium leading-tight" style={{ color: LIME }}>{stats[0].detail[lang]}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* faster operations bars */}
+                      <div className="nv-edge nv-edge--ring nv-cell h-full">
+                        <div className="nv-edge-inner nv-inset flex h-full min-h-[132px] flex-col justify-between gap-3 p-4">
+                          <div className="flex items-end justify-between gap-3">
+                            <span className="font-semibold" style={{ fontSize: '1.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>
+                              {faster}x
+                            </span>
+                            <Bars heights={[28, 44, 60, 78, 100]} className="h-9 w-16 shrink-0" />
+                          </div>
+                          <div>
+                            <span className="block text-[0.8125rem] font-medium" style={{ color: '#e0e0e2' }}>{stats[1].label[lang]}</span>
+                            <span className="nv-cell-detail mt-1 block text-[11px] font-medium leading-tight" style={{ color: LIME }}>{stats[1].detail[lang]}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* zero paper, bars falling away */}
+                      <div className="nv-edge nv-edge--ring nv-cell h-full">
+                        <div className="nv-edge-inner nv-inset flex h-full min-h-[132px] flex-col justify-between gap-3 p-4">
+                          <div className="flex items-end justify-between gap-3">
+                            <span className="font-semibold" style={{ fontSize: '1.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>
+                              {stats[2].value}
+                            </span>
+                            <Bars heights={[100, 78, 56, 34, 16]} hot={3} className="h-9 w-16 shrink-0" />
+                          </div>
+                          <div>
+                            <span className="block text-[0.8125rem] font-medium" style={{ color: '#e0e0e2' }}>{stats[2].label[lang]}</span>
+                            <span className="nv-cell-detail mt-1 block text-[11px] font-medium leading-tight" style={{ color: LIME }}>{stats[2].detail[lang]}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 24/7 access, nodes + packets */}
+                      <div className="nv-edge nv-edge--ring nv-cell h-full">
+                        <div className="nv-edge-inner nv-inset flex h-full min-h-[132px] flex-col justify-between gap-3 p-4">
+                          <div className="flex flex-col gap-3">
+                            <span className="font-semibold" style={{ fontSize: '1.75rem', letterSpacing: '-0.04em', lineHeight: 1, color: LIME }}>
+                              {stats[3].value}
+                            </span>
+                            <NodeLine nodes={4} className="w-full" />
+                          </div>
+                          <div>
+                            <span className="block text-[0.8125rem] font-medium" style={{ color: '#e0e0e2' }}>{stats[3].label[lang]}</span>
+                            <span className="nv-cell-detail mt-1 block text-[11px] font-medium leading-tight" style={{ color: LIME }}>{stats[3].detail[lang]}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </Reveal>
-          </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
       <Seam />
 
-      {/* ════════ BUILT SYSTEMS, card3d hairline cards, tall shots, dual vignettes ════════ */}
-      <section className="pt-16 md:pt-20">
+      {/* ════════ BUILT SYSTEMS, wide depth cards, bezel screenshots in wells ════════ */}
+      <section className="pt-12 md:pt-16">
         <div className="nv-container">
           <Reveal>
             <h2 className="font-bold" style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}>
@@ -474,53 +633,73 @@ export default function SolutionsPage() {
             </p>
           </Reveal>
 
-          <div className="mt-10 space-y-6 md:mt-12">
+          <div className="mt-9 space-y-5 md:mt-12 md:space-y-6">
             {t.built.systems.map((sys, i) => {
               const reversed = i % 2 === 1
+              const frame = systemFrames[i]
+              const href = sys.url ?? '/#contact'
               return (
                 <Reveal key={i} delay={0.05}>
-                  <div className={`group nv-edge nv-card3d ${reversed ? 'nv-edge--alt' : ''}`}>
-                    <div className="nv-edge-inner grid items-center gap-8 p-6 md:grid-cols-[0.85fr_1.15fr] md:gap-12 md:p-10">
-                      {/* portrait screenshot, top + bottom vignette overlays carry the text */}
-                      <div className={`${reversed ? 'md:order-2' : 'md:order-1'}`}>
-                        <div
-                          className="relative mx-auto w-full max-w-[400px] overflow-hidden rounded-[24px]"
-                          style={{ border: '1px solid rgba(73,73,73,0.6)', aspectRatio: '4 / 5' }}
-                        >
-                          <Image
-                            src={systemFrames[i].src}
-                            alt={`${systemFrames[i].domain}, business system by landings.md`}
-                            fill
-                            sizes="(min-width: 768px) 400px, 92vw"
-                            className="object-cover object-top transition-transform duration-200 ease-out group-hover:scale-[1.03]"
-                          />
-                          {/* top vignette: client eyebrow */}
-                          <div
-                            className="absolute inset-x-0 top-0 z-10 px-5 pb-10 pt-4"
-                            style={{ background: 'linear-gradient(180deg, rgba(8,8,8,0.72), transparent)' }}
+                  <div className={`nv-edge nv-edge--ring ${reversed ? 'nv-edge--alt' : ''}`}>
+                    <div className="nv-edge-inner nv-inset grid items-center gap-6 p-4 md:grid-cols-[0.8fr_1.2fr] md:gap-10 md:p-8">
+
+                      {/* metal-bezel portrait screenshot floating inside a well stage */}
+                      <div className={reversed ? 'md:order-2' : 'md:order-1'}>
+                        <div className="nv-well nv-stage rounded-[26px] p-4 md:p-6">
+                          <a
+                            href={href}
+                            target={sys.url ? '_blank' : undefined}
+                            rel={sys.url ? 'noopener noreferrer' : undefined}
+                            className="relative z-[1] mx-auto block w-full max-w-[300px]"
                           >
-                            <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-white">
-                              {sys.client}
-                            </span>
-                          </div>
-                          {/* bottom vignette: domain */}
-                          <div
-                            className="absolute inset-x-0 bottom-0 z-10 flex items-end px-5 pb-4 pt-12"
-                            style={{ background: 'linear-gradient(0deg, rgba(8,8,8,0.72), transparent)' }}
-                          >
-                            <span className="text-[13px] font-medium text-white">{systemFrames[i].domain}</span>
-                          </div>
+                            <div className={`nv-bobwrap nv-bob-${i + 1}`}>
+                              <div className="nv-float-card">
+                                <div className="nv-float-card-img" style={{ aspectRatio: '4 / 5' }}>
+                                  <Image
+                                    src={frame.src}
+                                    alt={`${frame.domain}, business system by landings.md`}
+                                    fill
+                                    sizes="(min-width: 768px) 300px, 80vw"
+                                    className="object-cover object-top"
+                                  />
+                                  <div
+                                    aria-hidden
+                                    className="absolute inset-x-0 top-0 z-10 h-16"
+                                    style={{ background: 'linear-gradient(180deg, rgba(6,6,6,0.85), transparent)' }}
+                                  />
+                                  <span
+                                    className="absolute inset-x-0 top-0 z-20 block px-3 pt-3 text-[10px] font-medium uppercase leading-tight tracking-[0.12em] text-white"
+                                  >
+                                    {sys.client}
+                                  </span>
+                                  <span
+                                    className="absolute inset-x-0 bottom-0 z-10 block px-3 pb-2.5 pt-10 text-[12px] font-medium text-white"
+                                    style={{ background: 'linear-gradient(0deg, rgba(6,6,6,0.92) 30%, transparent)' }}
+                                  >
+                                    {frame.domain}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </a>
                         </div>
                       </div>
-                      {/* copy + feature chips */}
-                      <div className={`${reversed ? 'md:order-1' : 'md:order-2'}`}>
+
+                      {/* copy, feature chips, metal button */}
+                      <div className={reversed ? 'md:order-1' : 'md:order-2'}>
+                        <div className="flex items-center gap-4">
+                          <span className="text-[13px] font-semibold tabular-nums" style={{ color: LIME }}>0{i + 1}</span>
+                          <span className="h-px flex-1" style={{ background: 'linear-gradient(90deg, rgba(255,158,122,0.4), transparent)' }} />
+                          <Bars heights={frame.bars} className="h-7 w-28 shrink-0" />
+                        </div>
+
                         <h3
-                          className="font-semibold text-white"
-                          style={{ fontSize: 'clamp(1.5rem, 2.6vw, 1.75rem)', lineHeight: 1.15, letterSpacing: '-1.34px' }}
+                          className="mt-5 font-semibold text-white"
+                          style={{ fontSize: 'clamp(1.375rem, 2.4vw, 1.75rem)', lineHeight: 1.15, letterSpacing: '-1.34px' }}
                         >
                           {sys.title}
                         </h3>
-                        <p className="mt-4 max-w-[52ch] text-[0.9375rem] font-medium leading-relaxed" style={{ color: '#b8b8b9' }}>
+                        <p className="mt-4 max-w-[54ch] text-[0.9375rem] font-medium leading-relaxed" style={{ color: '#b8b8b9' }}>
                           {sys.body}
                         </p>
                         <div className="mt-6 flex flex-wrap gap-2">
@@ -530,25 +709,21 @@ export default function SolutionsPage() {
                             </span>
                           ))}
                         </div>
-                        {sys.url && (
-                          <a
-                            href={sys.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="group/visit mt-7 inline-flex items-center gap-2 rounded-full px-4 py-2 text-[13px] font-medium text-white transition-[box-shadow] duration-200 ease-out hover:[box-shadow:0_0_1px_1px_#FF9E7A]"
-                            style={{ border: '1px solid rgba(255,255,255,0.2)', background: 'linear-gradient(120deg, rgba(30,30,30,0.65), rgba(10,10,10,0.55))' }}
-                          >
-                            {t.built.visit}
-                            <span
-                              aria-hidden
-                              className="inline-block -rotate-45 transition-transform duration-200 ease-out group-hover/visit:rotate-0"
-                              style={{ color: LIME }}
-                            >
-                              &rarr;
-                            </span>
-                          </a>
-                        )}
+                        <div className="mt-7">
+                          {sys.url ? (
+                            <a href={sys.url} target="_blank" rel="noopener noreferrer" className="btn-metal btn-metal--sm">
+                              <span>{t.built.visit}</span>
+                              <span className="nv-arr" aria-hidden>&rarr;</span>
+                            </a>
+                          ) : (
+                            <Link href="/#contact" className="btn-metal btn-metal--sm">
+                              <span>{t.hero.cta}</span>
+                              <span className="nv-arr" aria-hidden>&rarr;</span>
+                            </Link>
+                          )}
+                        </div>
                       </div>
+
                     </div>
                   </div>
                 </Reveal>
@@ -560,8 +735,8 @@ export default function SolutionsPage() {
 
       <Seam />
 
-      {/* ════════ OTHER SYSTEMS, numbered rows, fast white-fill hover ════════ */}
-      <section className="pt-16 md:pt-20">
+      {/* ════════ OTHER SYSTEMS, gradient depth cards with node / bar visuals ════════ */}
+      <section className="pt-12 md:pt-16">
         <div className="nv-container">
           <Reveal>
             <h2 className="font-bold" style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}>
@@ -574,150 +749,140 @@ export default function SolutionsPage() {
             </p>
           </Reveal>
 
-          <div className="mt-8 md:mt-10">
+          <div className="mt-9 grid gap-5 md:mt-12 md:grid-cols-3 md:gap-6">
             {otherSystems.map((study, i) => (
-              <Reveal key={study.id} delay={i * 0.06}>
-                <div>
-                  <div
-                    className="h-px w-full"
-                    style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)' }}
-                  />
-                  <div className="group my-2 rounded-[22px] px-4 py-6 transition-colors duration-200 ease-out hover:bg-white md:px-6 md:py-7">
-                    <div className="grid gap-4 md:grid-cols-[64px_1fr_1.25fr] md:gap-8">
-                      <span className="text-[15px] font-semibold" style={{ color: LIME }}>0{i + 1}</span>
-                      <div>
-                        <span
-                          className="block text-[11px] font-medium uppercase tracking-[0.12em] transition-colors duration-200 group-hover:!text-[#6b6b73]"
-                          style={{ color: '#909099' }}
-                        >
-                          {study.badge[lang]}
-                        </span>
-                        <h3
-                          className="mt-2 text-[1.25rem] font-semibold text-white transition-colors duration-200 group-hover:!text-[#0d0d0d]"
-                          style={{ letterSpacing: '-0.03em', lineHeight: 1.15 }}
-                        >
-                          {study.title[lang]}
-                        </h3>
-                        <span
-                          className="mt-1 block text-[0.8125rem] font-medium transition-colors duration-200 group-hover:!text-[#52525b]"
-                          style={{ color: '#909099' }}
-                        >
-                          {study.subtitle[lang]}
-                        </span>
-                      </div>
-                      <div>
-                        <p
-                          className="text-[0.9375rem] font-medium leading-relaxed transition-colors duration-200 group-hover:!text-[#3f3f46]"
-                          style={{ color: '#b8b8b9' }}
-                        >
-                          {study.description[lang]}
-                        </p>
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          {study.features[lang].map((feature, fi) => (
-                            <span key={fi} className="chip">
-                              <span className="chip-inner !px-3.5 !py-1.5 text-[12px]">{feature}</span>
-                            </span>
+              <Reveal key={study.id} delay={i * 0.06} className="h-full">
+                <div className={`nv-edge nv-edge--ring h-full ${i === 1 ? 'nv-edge--alt' : ''}`}>
+                  <div className="nv-edge-inner nv-inset flex h-full flex-col p-5 md:p-6">
+
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-[13px] font-semibold tabular-nums" style={{ color: LIME }}>0{i + 1}</span>
+                      <span
+                        className="text-[10px] font-medium uppercase tracking-[0.12em]"
+                        style={{ color: '#909099' }}
+                      >
+                        {study.badge[lang]}
+                      </span>
+                    </div>
+
+                    {/* per-card data visual inside its own well */}
+                    <div className="nv-well mt-5 flex h-[86px] items-center rounded-[20px] px-4" aria-hidden>
+                      {i === 0 && <NodeLine nodes={4} className="w-full" />}
+                      {i === 1 && (
+                        <div className="flex h-12 w-full items-end gap-[3px]">
+                          {[10, 16, 22, 27, 33, 38, 44, 49, 55, 60, 66, 71, 77, 82, 88, 93, 96, 100].map((h, bi) => (
+                            <span
+                              key={bi}
+                              className="nv-bar flex-1 rounded-[2px]"
+                              style={{ height: `${h}%`, ['--i' as string]: bi, background: bi === 17 ? LIME : 'rgba(255,255,255,0.13)' }}
+                            />
                           ))}
                         </div>
-                      </div>
+                      )}
+                      {i === 2 && (
+                        <div className="flex w-full items-end justify-between gap-2">
+                          <Bars heights={[34, 52, 40, 66, 48, 74, 56, 88, 62, 80, 70, 96, 84, 100]} className="h-12 flex-1" />
+                          <Ring pct={0.72} size={44} />
+                        </div>
+                      )}
+                    </div>
+
+                    <h3
+                      className="mt-5 text-[1.1875rem] font-semibold text-white"
+                      style={{ letterSpacing: '-0.03em', lineHeight: 1.15 }}
+                    >
+                      {study.title[lang]}
+                    </h3>
+                    <span className="mt-1.5 block text-[0.8125rem] font-medium" style={{ color: LIME }}>
+                      {study.subtitle[lang]}
+                    </span>
+                    <p className="mt-4 text-[0.875rem] font-medium leading-relaxed" style={{ color: '#b8b8b9' }}>
+                      {study.description[lang]}
+                    </p>
+
+                    <div className="flex-1" />
+
+                    <div className="mt-5 flex flex-wrap gap-1.5">
+                      {study.features[lang].map((feature, fi) => (
+                        <span key={fi} className="chip">
+                          <span className="chip-inner !px-3 !py-1.5 !text-[11px]">{feature}</span>
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="mt-6">
+                      <Link href="/#contact" className="btn-metal btn-metal--sm">
+                        <span>{t.hero.cta}</span>
+                        <span className="nv-arr" aria-hidden>&rarr;</span>
+                      </Link>
                     </div>
                   </div>
                 </div>
               </Reveal>
             ))}
-            <div
-              className="h-px w-full"
-              style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)' }}
-            />
           </div>
         </div>
       </section>
 
-      {/* ════════ STATS BENTO, nv-cell hover detail, metallic CTA in the center ════════ */}
-      <section className="pt-20 md:pt-28">
+      <Seam />
+
+      {/* ════════ CTA CARD, copy + floating bezel shots in a well stage ════════ */}
+      <section className="pt-12 md:pt-16">
         <div className="nv-container">
-          <div className="nv-bento-stats">
-            {/* col 1 row 1 */}
-            <Reveal className="h-full">
-              <div className="nv-edge nv-edge--ring h-full">
-                <div className="nv-cell nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
-                  <span className="font-semibold" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{stats[0].value}</span>
-                  <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{stats[0].label[lang]}</span>
-                  <span className="nv-cell-detail mt-2 text-[12px] font-medium" style={{ color: LIME }}>{stats[0].detail[lang]}</span>
-                </div>
-              </div>
-            </Reveal>
+          <Reveal>
+            <div className="nv-edge nv-edge--alt nv-edge--ring">
+              <div className="nv-edge-inner nv-inset relative overflow-hidden p-5 md:p-9">
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute left-1/2 top-0 h-40 w-[420px] -translate-x-1/2 -translate-y-1/2"
+                  style={{ background: 'radial-gradient(closest-side, #FF9E7A33, transparent)' }}
+                />
+                <div className="relative z-[1] grid items-center gap-8 md:grid-cols-[1.05fr_0.95fr] md:gap-12">
+                  <div>
+                    <Label>{t.nav.contact}</Label>
+                    <h2 className="mt-5 max-w-[520px] font-bold" style={{ fontSize: 'clamp(1.75rem, 3.2vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}>
+                      {t.cta.title}
+                    </h2>
+                    <p className="mt-5 max-w-[480px] text-[0.9375rem] font-medium leading-relaxed" style={{ color: '#b8b8b9' }}>
+                      {t.cta.body}
+                    </p>
+                    <div className="mt-8 flex flex-wrap items-center gap-3">
+                      <Link href="/#contact" className="btn-metal">
+                        <span>{t.cta.button}</span>
+                        <span className="nv-arr" aria-hidden>&rarr;</span>
+                      </Link>
+                      <a href="mailto:contact@landings.md" className="btn-metal btn-metal--sm">
+                        <span>contact@landings.md</span>
+                        <span className="nv-arr" aria-hidden>&rarr;</span>
+                      </a>
+                    </div>
+                    <div className="mt-8 rounded-[22px] p-4 nv-well" aria-hidden>
+                      <NodeLine nodes={5} />
+                    </div>
+                  </div>
 
-            {/* center CTA card, spans both rows */}
-            <Reveal delay={0.06} className="nv-bento-center h-full">
-              <div className="nv-edge nv-edge--alt h-full">
-                <div className="nv-edge-inner relative flex h-full flex-col items-center justify-center p-8 text-center md:p-10">
-                  {/* soft lime under-glow at the top edge */}
-                  <div
-                    aria-hidden
-                    className="pointer-events-none absolute left-1/2 top-0 h-36 w-[360px] -translate-x-1/2 -translate-y-1/2"
-                    style={{ background: 'radial-gradient(closest-side, #FF9E7A33, transparent)' }}
-                  />
-                  <Label>{t.nav.contact}</Label>
-                  <h2 className="mt-5 font-bold" style={{ fontSize: 'clamp(1.75rem, 3.2vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}>
-                    {t.cta.title}
-                  </h2>
-                  <p className="mx-auto mt-5 max-w-[420px] text-[0.9375rem] font-medium leading-relaxed" style={{ color: '#b8b8b9' }}>
-                    {t.cta.body}
-                  </p>
-                  <Link href="/#contact" className="btn-metal mt-8">
-                    {t.cta.button}
-                    <span className="nv-arr" aria-hidden>&rarr;</span>
-                  </Link>
-                  <a
-                    href="mailto:contact@landings.md"
-                    className="mt-5 text-[0.875rem] font-medium transition-colors duration-200 hover:!text-white"
-                    style={{ color: '#909099' }}
-                  >
-                    contact@landings.md
-                  </a>
+                  <div className="nv-well nv-stage rounded-[26px] p-4 md:p-6">
+                    <div className="relative z-[1] grid grid-cols-3 gap-3 md:gap-4">
+                      {ctaShots.map((s) => (
+                        <div key={s.src} className={s.bob}>
+                          <div className="nv-float-card">
+                            <div className="nv-float-card-img" style={{ aspectRatio: '3 / 4' }}>
+                              <Image src={s.src} alt={s.alt} fill sizes="(min-width: 768px) 140px, 28vw" className="object-cover object-top" />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </Reveal>
-
-            {/* col 3 row 1 */}
-            <Reveal delay={0.1} className="h-full">
-              <div className="nv-edge nv-edge--ring h-full">
-                <div className="nv-cell nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
-                  <span className="font-semibold" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{stats[1].value}</span>
-                  <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{stats[1].label[lang]}</span>
-                  <span className="nv-cell-detail mt-2 text-[12px] font-medium" style={{ color: LIME }}>{stats[1].detail[lang]}</span>
-                </div>
-              </div>
-            </Reveal>
-
-            {/* col 1 row 2 */}
-            <Reveal delay={0.14} className="h-full">
-              <div className="nv-edge nv-edge--ring h-full">
-                <div className="nv-cell nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
-                  <span className="font-semibold" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1 }}>{stats[2].value}</span>
-                  <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{stats[2].label[lang]}</span>
-                  <span className="nv-cell-detail mt-2 text-[12px] font-medium" style={{ color: LIME }}>{stats[2].detail[lang]}</span>
-                </div>
-              </div>
-            </Reveal>
-
-            {/* col 3 row 2 */}
-            <Reveal delay={0.18} className="h-full">
-              <div className="nv-edge nv-edge--ring h-full">
-                <div className="nv-cell nv-edge-inner flex h-full flex-col justify-center p-7 text-center">
-                  <span className="font-semibold" style={{ fontSize: '2.75rem', letterSpacing: '-0.04em', lineHeight: 1, color: LIME }}>{stats[3].value}</span>
-                  <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{stats[3].label[lang]}</span>
-                  <span className="nv-cell-detail mt-2 text-[12px] font-medium" style={{ color: LIME }}>{stats[3].detail[lang]}</span>
-                </div>
-              </div>
-            </Reveal>
-          </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
       {/* ════════ FOOTER ════════ */}
-      <footer style={{ margin: '100px 0 120px' }}>
+      <footer style={{ margin: '90px 0 110px' }}>
         <div className="nv-container">
           <div
             className="h-px w-full"

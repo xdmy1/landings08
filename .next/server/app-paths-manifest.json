@@ -1,15 +1,15 @@
 {
   "/_not-found": "app/_not-found.js",
-  "/page": "app/page.js",
-  "/icon.png/route": "app/icon.png/route.js",
   "/preview/a/page": "app/preview/a/page.js",
   "/preview/b/page": "app/preview/b/page.js",
-  "/preview/c/page": "app/preview/c/page.js",
+  "/page": "app/page.js",
   "/robots.txt/route": "app/robots.txt/route.js",
+  "/preview/c/page": "app/preview/c/page.js",
   "/sitemap.xml/route": "app/sitemap.xml/route.js",
+  "/icon.png/route": "app/icon.png/route.js",
   "/apple-icon.png/route": "app/apple-icon.png/route.js",
   "/case-studies/page": "app/case-studies/page.js",
   "/portfolio/page": "app/portfolio/page.js",
-  "/solutions/page": "app/solutions/page.js",
-  "/pricing/page": "app/pricing/page.js"
+  "/pricing/page": "app/pricing/page.js",
+  "/solutions/page": "app/solutions/page.js"
 }

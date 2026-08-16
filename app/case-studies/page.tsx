@@ -7,10 +7,12 @@ import { useLanguage } from '@/hooks/useLanguage'
 import { SiteNav } from '@/components/ui/site-nav'
 
 /* ────────────────────────────────────────────────────────────────
-   Case studies, navarro-language skin, landings.md content only.
-   Ground #0d0d0d · coral #FF9E7A at word/ring/glow scale · Geist ·
-   ribbed page header · arch media · gradient-hairline cells ·
-   blur-up reveals that replay, 0.45s. Hovers 0.15-0.2s.
+   Case studies, home-page language. Ground #0d0d0d · coral #FF9E7A
+   at word/ring/glow scale · Space Grotesk (inherited).
+   Every block is a gradient hairline card with .nv-inset depth,
+   every link is a 3D metal button, every number gets a bar / ring /
+   node visual, screenshots float in metal bezels inside .nv-well
+   stages. Reveals 0.45s, hovers 0.15-0.2s.
    ──────────────────────────────────────────────────────────────── */
 
 const LIME = '#FF9E7A'
@@ -49,13 +51,43 @@ function Reveal({
   )
 }
 
-/* Plain letter-spaced caps label, no dot. */
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
-      {children}
-    </span>
-  )
+/* Count-up, entrance only: fires once when the cell first enters view,
+   ~1.3s ease-out, honours reduced motion. */
+function Counter({ to, className, style }: { to: number, className?: string, style?: React.CSSProperties }) {
+  const ref = useRef<HTMLSpanElement | null>(null)
+  const rafRef = useRef(0)
+  const firedRef = useRef(false)
+  const [value, setValue] = useState(0)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    if (to === 0) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setValue(to)
+      return
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || firedRef.current) return
+        firedRef.current = true
+        const t0 = performance.now()
+        const tick = (now: number) => {
+          const p = Math.min((now - t0) / 1300, 1)
+          const e = 1 - Math.pow(1 - p, 3)
+          setValue(Math.round(e * to))
+          if (p < 1) rafRef.current = requestAnimationFrame(tick)
+        }
+        rafRef.current = requestAnimationFrame(tick)
+      },
+      { threshold: 0.35 }
+    )
+    io.observe(el)
+    return () => {
+      io.disconnect()
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
+  }, [to])
+  return <span ref={ref} className={className} style={style}>{value}</span>
 }
 
 /* Lime the final word(s) of a heading, h1/h2 b renders coral via globals.
@@ -72,9 +104,9 @@ function LimeTail({ text }: { text: string }) {
   )
 }
 
-/* Big claim line: coral <i> on the leading clause (blockquote i is coral).
+/* Big claim line: UPRIGHT, the lead clause simply takes the coral color.
    Leads with the first sentence; falls back to the first comma clause. */
-function ClaimLime({ text }: { text: string }) {
+function ClaimLead({ text }: { text: string }) {
   const m = text.match(/^(.+?[.!?])\s+\S[\s\S]*$/)
   let lead: string
   if (m) {
@@ -85,11 +117,78 @@ function ClaimLime({ text }: { text: string }) {
   }
   return (
     <>
-      <i>{lead}</i>
+      <span style={{ color: LIME }}>{lead}</span>
       {text.slice(lead.length)}
     </>
   )
 }
+
+/* ── Stat visuals: bars, ring, nodes. Entrance only, no infinite loops
+   except the node pulse / packet travel that the language already uses. ── */
+type Viz =
+  | { kind: 'ring', pct: number }
+  | { kind: 'bars', heights: number[], accent: number }
+  | { kind: 'nodes', count: number }
+
+function Bars({ heights, accent }: { heights: number[], accent: number }) {
+  return (
+    <div className="flex h-11 w-full items-end gap-[3px]" aria-hidden>
+      {heights.map((h, i) => (
+        <span
+          key={i}
+          className="nv-bar flex-1 rounded-[2px]"
+          style={{
+            height: `${h}%`,
+            ['--i' as string]: i,
+            background: i === accent ? LIME : 'rgba(255,255,255,0.14)',
+            boxShadow: i === accent ? '0 0 12px rgba(255,158,122,0.45)' : 'none',
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
+function Nodes({ count }: { count: number }) {
+  const items: React.ReactNode[] = []
+  for (let i = 0; i < count; i++) {
+    if (i > 0) {
+      items.push(
+        <span key={`c${i}`} className="relative h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }}>
+          <span className="nv-packet" style={{ animationDelay: `${-0.8 * i}s` }} />
+        </span>
+      )
+    }
+    items.push(
+      <span
+        key={`n${i}`}
+        className="nv-node h-2 w-2 shrink-0 rounded-full"
+        style={{ background: LIME, boxShadow: '0 0 10px rgba(255,158,122,0.7)', animationDelay: `${i * 0.45}s` }}
+      />
+    )
+  }
+  return <div className="flex h-11 w-full items-center" aria-hidden>{items}</div>
+}
+
+function Ring({ pct }: { pct: number }) {
+  return (
+    <svg width="58" height="58" viewBox="0 0 96 96" aria-hidden className="shrink-0">
+      <circle cx="48" cy="48" r="42" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
+      <circle
+        cx="48" cy="48" r="42" fill="none"
+        stroke={LIME} strokeWidth="8" strokeLinecap="round"
+        strokeDasharray="264" strokeDashoffset={264 * (1 - pct)}
+        transform="rotate(-90 48 48)"
+        className="nv-ring-main"
+      />
+    </svg>
+  )
+}
+
+/* shared bar shapes: growth curve, plateau, decline to zero */
+const RISE = [10, 17, 24, 33, 43, 54, 66, 82, 100]
+const CLIMB = [28, 38, 47, 55, 63, 72, 81, 91, 100]
+const FALL = [100, 84, 69, 56, 45, 34, 24, 14, 4]
 
 type Stat = { value: number, suffix: string, label: string }
 type CaseStudy = {
@@ -104,31 +203,73 @@ type CaseStudy = {
 }
 type CaseKey = 'davo' | 'interbus' | 'glg' | 'droppack'
 
-const caseConfigs: { key: CaseKey, num: string, domain: string, url?: string, image: string, tall?: string, alt?: string, evidence?: string[] }[] = [
+const caseConfigs: {
+  key: CaseKey
+  num: string
+  domain: string
+  url?: string
+  image: string
+  tall?: string
+  alt?: string
+  evidence?: string[]
+  viz: Viz[]
+}[] = [
   {
     key: 'davo', num: '01', domain: 'davo.md', url: 'https://davo.md',
     image: '/images/shot-davo.jpg',
     tall: '/images/tall-davo.jpg',
     alt: 'Davo.md, international transport platform with seat-selection bookings, SEO and Meta Ads by landings.md',
     evidence: ['/images/davo-ga.png', '/images/davo-ga2.png', '/images/davo-ahrefs.png'],
+    viz: [
+      { kind: 'ring', pct: 0.5 },
+      { kind: 'bars', heights: RISE, accent: RISE.length - 1 },
+      { kind: 'nodes', count: 4 },
+      { kind: 'bars', heights: CLIMB, accent: CLIMB.length - 1 },
+    ],
   },
   {
     key: 'interbus', num: '02', domain: 'inter-bus.md', url: 'https://inter-bus.md',
     image: '/images/shot-interbus.jpg',
     tall: '/images/tall-interbus.jpg',
     alt: 'Inter-Bus, international parts store with automated invoicing, stock and accounting by landings.md',
+    viz: [
+      { kind: 'ring', pct: 1 },
+      { kind: 'bars', heights: FALL, accent: FALL.length - 1 },
+      { kind: 'bars', heights: CLIMB, accent: CLIMB.length - 1 },
+      { kind: 'nodes', count: 3 },
+    ],
   },
   {
     key: 'glg', num: '03', domain: 'scoalaautoglg.com', url: 'https://scoalaautoglg.com',
     image: '/images/shot-glg.jpg',
     tall: '/images/tall-glg.jpg',
+    viz: [
+      { kind: 'ring', pct: 1 },
+      { kind: 'bars', heights: FALL, accent: FALL.length - 1 },
+      { kind: 'nodes', count: 3 },
+      { kind: 'bars', heights: CLIMB, accent: CLIMB.length - 1 },
+    ],
   },
   {
     key: 'droppack', num: '04', domain: 'droppack.vercel.app', url: 'https://droppack.vercel.app',
     image: '/images/shot-droppack.jpg',
     alt: 'DropPack, parcel logistics app for Moldova–Europe transport companies, built by landings.md',
+    viz: [
+      { kind: 'bars', heights: RISE, accent: RISE.length - 1 },
+      { kind: 'nodes', count: 2 },
+      { kind: 'ring', pct: 1 },
+      { kind: 'bars', heights: FALL, accent: FALL.length - 1 },
+    ],
   },
 ]
+
+/* client logos, marquee under the page header */
+const CASE_LOGOS = [
+  { k: 'davo', h: 'h-5 md:h-6' },
+  { k: 'interbus', h: 'h-6 md:h-7' },
+  { k: 'glg', h: 'h-8 md:h-9' },
+  { k: 'droppack', h: 'h-5 md:h-6' },
+] as const
 
 export default function CaseStudiesPage() {
   const { language } = useLanguage()
@@ -491,7 +632,7 @@ export default function CaseStudiesPage() {
       {/* ════════ HERO, ribbed glass band page header ════════ */}
       <section className="relative overflow-hidden">
         <div className="ribbed relative">
-          <div className="relative z-[1] nv-container pb-16 pt-12 md:pb-24 md:pt-16">
+          <div className="relative z-[1] nv-container pb-16 pt-12 md:pb-20 md:pt-16">
             {/* soft coral under-glow behind the headline */}
             <div
               aria-hidden
@@ -499,7 +640,9 @@ export default function CaseStudiesPage() {
               style={{ background: 'radial-gradient(closest-side, #FF9E7A26, transparent)' }}
             />
             <Reveal>
-              <SectionLabel>{t.hero.label}</SectionLabel>
+              <span className="text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
+                {t.hero.label}
+              </span>
             </Reveal>
             <Reveal delay={0.06}>
               <h1
@@ -521,19 +664,14 @@ export default function CaseStudiesPage() {
                 {t.hero.sub}
               </p>
             </Reveal>
-            {/* study index, gradient-border glass chips, coral number, fast hover */}
+            {/* study index: 3D metal buttons, coral number, no plain links */}
             <Reveal delay={0.18}>
               <div className="mt-9 flex flex-wrap items-center gap-3">
                 {caseConfigs.map((c) => (
-                  <a
-                    key={c.key}
-                    href={`#${c.key}`}
-                    className="chip transition-shadow duration-200 ease-out hover:[box-shadow:0_0_1px_1px_#FF9E7A]"
-                  >
-                    <span className="chip-inner !px-4 !py-2 text-[13px]">
-                      <span className="font-semibold" style={{ color: LIME }}>{c.num}</span>
-                      {t[c.key].title}
-                    </span>
+                  <a key={c.key} href={`#${c.key}`} className="btn-metal btn-metal--sm">
+                    <span className="font-semibold" style={{ color: LIME }}>{c.num}</span>
+                    <span>{t[c.key].title}</span>
+                    <span className="nv-arr" aria-hidden>&rarr;</span>
                   </a>
                 ))}
               </div>
@@ -542,8 +680,39 @@ export default function CaseStudiesPage() {
         </div>
       </section>
 
+      {/* ════════ CLIENT LOGO MARQUEE, inside a hairline card ════════ */}
+      <section className="nv-container -mt-4 md:-mt-2">
+        <Reveal>
+          <div className="nv-edge">
+            <div className="nv-edge-inner nv-inset flex items-center overflow-hidden px-3 py-3 md:py-4">
+              <div className="nv-marquee w-full">
+                <div className="nv-marquee-track">
+                  {[0, 1, 2, 3].map((half) => (
+                    <div key={half} className="flex items-center gap-12 pr-12" aria-hidden={half !== 0}>
+                      {CASE_LOGOS.map((l) => (
+                        <span key={`${half}-${l.k}`} className="nv-logo shrink-0">
+                          <Image
+                            src={`/images/logos/${l.k}.png`}
+                            alt={half === 0 ? l.k : ''}
+                            width={140}
+                            height={40}
+                            className={`w-auto ${l.h}`}
+                            style={{ filter: 'brightness(0) invert(1)' }}
+                          />
+                        </span>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
       {caseConfigs.map((c, ci) => {
         const study = t[c.key]
+        const flip = ci % 2 === 1
         return (
           <section key={c.key} id={c.key} className="scroll-mt-24 pt-14 md:pt-16">
             <div className="nv-container">
@@ -551,186 +720,245 @@ export default function CaseStudiesPage() {
               {/* coral horizon seam between studies */}
               {ci > 0 && <div className="nv-seam mb-14 md:mb-16" aria-hidden />}
 
-              {/* study header: plain caps eyebrow (coral number, NO dot) +
-                  coral claim line + arch media with vignettes */}
-              <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
-                <div className="lg:col-span-7">
-                  <Reveal>
-                    <span className="inline-flex flex-wrap items-center gap-3 text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
-                      <span style={{ color: LIME }}>{c.num}</span>
-                      <span>{study.tag}</span>
-                    </span>
-                  </Reveal>
-                  <Reveal delay={0.06}>
-                    <h2 className="mt-5 font-bold" style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}>
-                      {study.title}
-                    </h2>
-                    <p
-                      className="mt-4 max-w-[560px] font-medium"
-                      style={{ color: '#b8b8b9', fontSize: '1.0625rem', lineHeight: 1.4, letterSpacing: '-0.02em' }}
-                    >
-                      {study.subtitle}
-                    </p>
-                  </Reveal>
-                  <Reveal delay={0.12}>
-                    <span className="mt-8 block text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
-                      {t.labels.results}
-                    </span>
-                    <blockquote
-                      className="mt-4 max-w-[600px] font-medium text-white"
-                      style={{ fontSize: 'clamp(1.375rem, 2.3vw, 1.75rem)', lineHeight: 1.3, letterSpacing: '-1.34px' }}
-                    >
-                      <ClaimLime text={study.results} />
-                    </blockquote>
-                    {c.url && (
+              {/* ── ROW 1: claim card + screenshot stage ── */}
+              <div className="grid gap-5 lg:grid-cols-12 lg:items-stretch">
+
+                {/* claim card: eyebrow chip, title, subtitle, upright coral claim, metal CTA */}
+                <Reveal className={`h-full lg:col-span-7 ${flip ? 'lg:order-last' : ''}`}>
+                  <div className="nv-edge nv-edge--ring h-full">
+                    <div className="nv-edge-inner nv-inset relative flex h-full flex-col p-6 md:p-9">
+                      <div
+                        aria-hidden
+                        className="pointer-events-none absolute -left-10 -top-16 h-52 w-[420px]"
+                        style={{ background: 'radial-gradient(closest-side, rgba(255,158,122,0.16), transparent)' }}
+                      />
+                      <div className="relative z-[1] flex h-full flex-col">
+                        <span className="chip max-w-full self-start">
+                          <span
+                            className="chip-inner max-w-full !whitespace-normal !px-4 !py-2 !text-[11px] font-medium uppercase tracking-[0.14em] md:!text-[12px]"
+                            style={{ color: '#909099' }}
+                          >
+                            <span className="font-semibold" style={{ color: LIME }}>{c.num}</span>
+                            {study.tag}
+                          </span>
+                        </span>
+
+                        <h2 className="mt-6 font-bold" style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}>
+                          {study.title}
+                        </h2>
+                        <p
+                          className="mt-4 max-w-[560px] font-medium"
+                          style={{ color: '#b8b8b9', fontSize: '1.0625rem', lineHeight: 1.4, letterSpacing: '-0.02em' }}
+                        >
+                          {study.subtitle}
+                        </p>
+
+                        <div className="min-h-[24px] flex-1" />
+
+                        <div
+                          className="mt-8 h-px w-full"
+                          aria-hidden
+                          style={{ background: 'linear-gradient(90deg, rgba(255,158,122,0.45), rgba(255,255,255,0.06) 60%, transparent)' }}
+                        />
+                        <span className="mt-6 block text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
+                          {t.labels.results}
+                        </span>
+                        {/* claim: upright, the lead phrase just takes the coral color */}
+                        <p
+                          className="mt-4 max-w-[620px] font-medium text-white"
+                          style={{ fontSize: 'clamp(1.3rem, 2.1vw, 1.6rem)', lineHeight: 1.3, letterSpacing: '-1.1px' }}
+                        >
+                          <ClaimLead text={study.results} />
+                        </p>
+
+                        {c.url && (
+                          <a
+                            href={c.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn-metal btn-metal--sm mt-7 self-start"
+                          >
+                            {t.labels.visit} {c.domain}
+                            <span className="nv-arr" aria-hidden>&rarr;</span>
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </Reveal>
+
+                {/* screenshot: metal-bezel floating card inside a .nv-well stage */}
+                <Reveal delay={0.06} className="h-full lg:col-span-5">
+                  <div className="nv-edge nv-edge--ring h-full">
+                    <div className="nv-edge-inner nv-well nv-stage flex h-full items-center justify-center p-6 md:p-8">
                       <a
                         href={c.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group mt-7 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[13px] font-medium text-white transition-[box-shadow] duration-200 ease-out hover:[box-shadow:0_0_1px_1px_#FF9E7A]"
-                        style={{ border: '1px solid rgba(255,255,255,0.2)' }}
+                        className="relative block w-full"
+                        style={{ maxWidth: c.tall ? 'min(300px, 72vw)' : '100%' }}
                       >
-                        {t.labels.visit} {c.domain}
-                        <span
-                          aria-hidden
-                          className="inline-block -rotate-45 transition-transform duration-200 ease-out group-hover:translate-x-0.5 group-hover:rotate-0"
-                          style={{ color: LIME }}
-                        >
-                          &rarr;
-                        </span>
+                        <div className={`nv-bobwrap ${flip ? 'nv-bob-2' : 'nv-bob-1'}`}>
+                          <div
+                            className="nv-float-card w-full"
+                            style={{ aspectRatio: c.tall ? '340 / 450' : '16 / 10' }}
+                          >
+                            <div className="nv-float-card-img">
+                              <Image
+                                src={c.tall ?? c.image}
+                                alt={c.alt ?? study.title}
+                                fill
+                                sizes="(min-width: 1024px) 460px, 88vw"
+                                className="object-cover object-top"
+                              />
+                              <span
+                                aria-hidden
+                                className="absolute inset-x-0 top-0 z-10 block h-16"
+                                style={{ background: 'linear-gradient(180deg, rgba(6,6,6,0.75), transparent)' }}
+                              />
+                              <span
+                                className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-3 px-4 pb-3 pt-14 text-[13px] font-medium text-white"
+                                style={{ background: 'linear-gradient(0deg, rgba(6,6,6,0.94) 30%, transparent)' }}
+                              >
+                                {c.domain}
+                                <span aria-hidden style={{ color: LIME }}>&rarr;</span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
                       </a>
-                    )}
-                  </Reveal>
-                </div>
-
-                {/* media: ARCH portrait when a tall capture exists, 16/10 otherwise.
-                    nv-card3d depth, coral glow, top + bottom vignettes under the text. */}
-                <Reveal delay={0.12} className={`lg:col-span-5 ${ci % 2 === 1 ? 'lg:order-first' : ''}`}>
-                  {c.tall ? (
-                    <div
-                      className="nv-card3d group relative mx-auto overflow-hidden [box-shadow:0_0_60px_-12px_rgba(255,158,122,0.35)]"
-                      style={{
-                        width: 'min(340px, 78vw)',
-                        aspectRatio: '340 / 450',
-                        borderRadius: '999px 999px 24px 24px',
-                        border: '1px solid rgba(73,73,73,0.6)',
-                      }}
-                    >
-                      <Image
-                        src={c.tall}
-                        alt={c.alt ?? study.title}
-                        fill
-                        sizes="340px"
-                        className="object-cover object-top transition-transform duration-200 ease-out group-hover:scale-[1.03]"
-                      />
-                      <div
-                        aria-hidden
-                        className="absolute inset-x-0 top-0 z-10 h-24"
-                        style={{ background: 'linear-gradient(180deg, rgba(8,8,8,0.72), transparent)' }}
-                      />
-                      <div
-                        className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-3 px-6 pb-5 pt-16"
-                        style={{ background: 'linear-gradient(0deg, rgba(8,8,8,0.72), transparent)' }}
-                      >
-                        <span className="text-[14px] font-medium text-white">{c.domain}</span>
-                        <span aria-hidden className="inline-block -rotate-45 transition-transform duration-200 ease-out group-hover:rotate-0" style={{ color: LIME }}>
-                          &rarr;
-                        </span>
-                      </div>
                     </div>
-                  ) : (
-                    <div
-                      className="nv-card3d group relative overflow-hidden rounded-[24px] [box-shadow:0_0_60px_-12px_rgba(255,158,122,0.35)]"
-                      style={{ border: '1px solid rgba(73,73,73,0.6)', aspectRatio: '16 / 10' }}
-                    >
-                      <Image
-                        src={c.image}
-                        alt={c.alt ?? study.title}
-                        fill
-                        sizes="(min-width: 1024px) 520px, 92vw"
-                        className="object-cover object-top transition-transform duration-200 ease-out group-hover:scale-[1.03]"
-                      />
-                      <div
-                        aria-hidden
-                        className="absolute inset-x-0 top-0 z-10 h-16"
-                        style={{ background: 'linear-gradient(180deg, rgba(8,8,8,0.72), transparent)' }}
-                      />
-                      <div
-                        className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-3 px-6 pb-4 pt-12"
-                        style={{ background: 'linear-gradient(0deg, rgba(8,8,8,0.72), transparent)' }}
-                      >
-                        <span className="text-[14px] font-medium text-white">{c.domain}</span>
-                        <span aria-hidden className="inline-block -rotate-45 transition-transform duration-200 ease-out group-hover:rotate-0" style={{ color: LIME }}>
-                          &rarr;
-                        </span>
-                      </div>
-                    </div>
-                  )}
+                  </div>
                 </Reveal>
               </div>
 
-              {/* challenge / approach, gradient-hairline cells, fast coral ring hover */}
-              <div className="mt-10 grid gap-5 md:grid-cols-2">
+              {/* ── ROW 2: metrics bento, every number gets a visual ── */}
+              <div className="mt-5 grid grid-cols-2 gap-5 lg:grid-cols-4">
+                {study.stats.map((stat, i) => {
+                  const viz = c.viz[i]
+                  return (
+                    <Reveal key={stat.label} delay={i * 0.05} className="h-full">
+                      <div className="nv-edge nv-edge--ring nv-cell h-full">
+                        <div className="nv-edge-inner nv-inset flex h-full min-h-[168px] flex-col justify-between gap-5 p-5 md:p-6">
+                          {viz.kind === 'ring' ? (
+                            <div className="flex h-full items-center gap-4">
+                              <Ring pct={viz.pct} />
+                              <div className="min-w-0">
+                                <span
+                                  className="block font-semibold"
+                                  style={{ fontSize: 'clamp(1.6rem, 2.2vw, 2.1rem)', letterSpacing: '-0.04em', lineHeight: 1 }}
+                                >
+                                  <Counter to={stat.value} />
+                                  <span style={{ color: LIME }}>{stat.suffix}</span>
+                                </span>
+                                <span className="mt-2 block text-[0.8125rem] font-medium leading-tight" style={{ color: '#909099' }}>
+                                  {stat.label}
+                                </span>
+                              </div>
+                            </div>
+                          ) : (
+                            <>
+                              <div className="min-w-0">
+                                <span
+                                  className="block font-semibold"
+                                  style={{ fontSize: 'clamp(1.8rem, 2.6vw, 2.4rem)', letterSpacing: '-0.04em', lineHeight: 1 }}
+                                >
+                                  <Counter to={stat.value} />
+                                  <span style={{ color: LIME }}>{stat.suffix}</span>
+                                </span>
+                                <span className="mt-2 block text-[0.8125rem] font-medium leading-tight" style={{ color: '#909099' }}>
+                                  {stat.label}
+                                </span>
+                              </div>
+                              {viz.kind === 'bars'
+                                ? <Bars heights={viz.heights} accent={viz.accent} />
+                                : <Nodes count={viz.count} />}
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </Reveal>
+                  )
+                })}
+              </div>
+
+              {/* ── ROW 3: challenge / approach, gradient depth cards ── */}
+              <div className="mt-5 grid gap-5 md:grid-cols-2">
                 <Reveal className="h-full">
                   <div className="nv-edge nv-edge--ring h-full">
-                    <div className="nv-edge-inner h-full p-7 md:p-8">
+                    <div className="nv-edge-inner nv-inset h-full p-6 md:p-8">
                       <span className="text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>{t.labels.challenge}</span>
+                      <div
+                        aria-hidden
+                        className="mt-4 h-px w-full"
+                        style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.14), transparent)' }}
+                      />
                       <p className="mt-4 text-[0.9375rem] font-medium leading-relaxed" style={{ color: '#b8b8b9' }}>{study.challenge}</p>
                     </div>
                   </div>
                 </Reveal>
                 <Reveal delay={0.06} className="h-full">
                   <div className="nv-edge nv-edge--alt nv-edge--ring h-full">
-                    <div className="nv-edge-inner h-full p-7 md:p-8">
+                    <div className="nv-edge-inner nv-inset h-full p-6 md:p-8">
                       <span className="text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>{t.labels.approach}</span>
+                      <div
+                        aria-hidden
+                        className="mt-4 h-px w-full"
+                        style={{ background: 'linear-gradient(90deg, rgba(255,158,122,0.45), transparent)' }}
+                      />
                       <p className="mt-4 text-[0.9375rem] font-medium leading-relaxed" style={{ color: '#b8b8b9' }}>{study.approach}</p>
                     </div>
                   </div>
                 </Reveal>
               </div>
 
-              {/* metrics, gradient-hairline cells, coral suffix, fast ring hover */}
-              <div className="mt-5 grid grid-cols-2 gap-5 lg:grid-cols-4">
-                {study.stats.map((stat, i) => (
-                  <Reveal key={stat.label} delay={i * 0.05} className="h-full">
-                    <div className="nv-edge nv-edge--ring h-full">
-                      <div className="nv-edge-inner flex h-full min-h-[140px] flex-col justify-center p-6 text-center">
-                        <span className="font-semibold" style={{ fontSize: 'clamp(2rem, 3vw, 2.75rem)', letterSpacing: '-0.04em', lineHeight: 1 }}>
-                          {stat.value}
-                          <span style={{ color: LIME }}>{stat.suffix}</span>
+              {/* ── ROW 4: analytics evidence, metal bezels with coral glow inside a well ── */}
+              {c.evidence && study.captions && (
+                <Reveal className="mt-5">
+                  <div className="nv-edge nv-edge--ring">
+                    <div className="nv-edge-inner nv-well nv-stage p-6 md:p-8">
+                      <div className="relative z-[1]">
+                        <span className="chip chip--em self-start">
+                          <span className="chip-inner !px-4 !py-2 !text-[12px] font-medium uppercase tracking-[0.14em]">
+                            Google Analytics · Ahrefs
+                          </span>
                         </span>
-                        <span className="mt-3 text-[0.875rem] font-medium" style={{ color: '#909099' }}>{stat.label}</span>
+                        <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                          {c.evidence.map((src, ei) => (
+                            <div key={src}>
+                              <div className="rounded-[16px] [box-shadow:0_0_60px_-16px_rgba(255,158,122,0.55)]">
+                                <div className="nv-float-card w-full" style={{ aspectRatio: '16 / 10' }}>
+                                  <div className="nv-float-card-img">
+                                    <Image
+                                      src={src}
+                                      alt={study.captions?.[ei] ?? ''}
+                                      fill
+                                      sizes="(min-width: 1024px) 380px, 88vw"
+                                      className="object-cover object-left-top"
+                                    />
+                                    <span
+                                      aria-hidden
+                                      className="absolute inset-x-0 top-0 z-10 block h-10"
+                                      style={{ background: 'linear-gradient(180deg, rgba(6,6,6,0.55), transparent)' }}
+                                    />
+                                    <span
+                                      aria-hidden
+                                      className="absolute inset-x-0 bottom-0 z-10 block h-12"
+                                      style={{ background: 'linear-gradient(0deg, rgba(6,6,6,0.75), transparent)' }}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                              <p className="mt-4 text-[0.8125rem] font-medium leading-relaxed" style={{ color: '#909099' }}>
+                                {study.captions?.[ei]}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </Reveal>
-                ))}
-              </div>
-
-              {/* evidence, real analytics in coral-glow media cards with depth */}
-              {c.evidence && study.captions && (
-                <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {c.evidence.map((src, ei) => (
-                    <Reveal key={src} delay={ei * 0.06}>
-                      <div
-                        className="nv-card3d group relative overflow-hidden rounded-[20px] [box-shadow:0_0_50px_-9px_rgba(255,158,122,0.3)]"
-                        style={{
-                          border: '1px solid rgba(73,73,73,0.6)',
-                          aspectRatio: '16 / 10',
-                          background: '#0f0f0f',
-                        }}
-                      >
-                        <Image
-                          src={src}
-                          alt={study.captions?.[ei] ?? ''}
-                          fill
-                          sizes="(min-width: 1024px) 420px, 92vw"
-                          className="object-cover object-left-top transition-transform duration-200 ease-out group-hover:scale-[1.02]"
-                        />
-                      </div>
-                      <p className="mt-3 text-[0.8125rem] font-medium leading-relaxed" style={{ color: '#909099' }}>{study.captions?.[ei]}</p>
-                    </Reveal>
-                  ))}
-                </div>
+                  </div>
+                </Reveal>
               )}
 
             </div>
@@ -738,24 +966,24 @@ export default function CaseStudiesPage() {
         )
       })}
 
-      {/* ════════ CTA, metallic pill on a hairline card ════════ */}
+      {/* ════════ CTA, metal button on a hairline depth card ════════ */}
       <section className="pt-16 md:pt-20">
         <div className="nv-container">
           <div className="nv-seam mb-14 md:mb-16" aria-hidden />
           <Reveal>
-            <div className="nv-edge">
-              <div className="nv-edge-inner relative p-8 text-center md:p-14">
+            <div className="nv-edge nv-edge--ring">
+              <div className="nv-edge-inner nv-inset relative p-8 text-center md:p-14">
                 {/* soft coral under-glow at the top edge */}
                 <div
                   aria-hidden
                   className="pointer-events-none absolute left-1/2 top-0 h-40 w-[440px] -translate-x-1/2 -translate-y-1/2"
                   style={{ background: 'radial-gradient(closest-side, #FF9E7A33, transparent)' }}
                 />
-                <h2 className="font-bold" style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}>
+                <h2 className="relative z-[1] font-bold" style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', letterSpacing: '-2.4px', lineHeight: 1.05 }}>
                   <LimeTail text={t.cta.headline} />
                 </h2>
-                <p className="mx-auto mt-4 max-w-[480px] text-[1rem] font-medium" style={{ color: '#b8b8b9' }}>{t.cta.sub}</p>
-                <div className="mt-8 flex justify-center">
+                <p className="relative z-[1] mx-auto mt-4 max-w-[480px] text-[1rem] font-medium" style={{ color: '#b8b8b9' }}>{t.cta.sub}</p>
+                <div className="relative z-[1] mt-8 flex justify-center">
                   <Link href="/#contact" className="btn-metal">
                     {t.cta.button}
                     <span className="nv-arr" aria-hidden>&rarr;</span>
@@ -767,29 +995,27 @@ export default function CaseStudiesPage() {
         </div>
       </section>
 
-      {/* ════════ FOOTER ════════ */}
-      <footer className="pb-16 pt-24 md:pb-24">
+      {/* ════════ FOOTER, hairline depth card ════════ */}
+      <footer className="pb-16 pt-16 md:pb-20 md:pt-20">
         <div className="nv-container">
-          <div
-            className="h-px w-full"
-            style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent)' }}
-          />
-          <div className="flex flex-col items-start justify-between gap-6 pt-10 md:flex-row md:items-center">
-            <div className="flex items-center gap-7">
-              <Link href="/" className="flex items-center gap-3">
-                <Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="h-8 w-auto" />
-                <span className="text-[14px] font-medium text-white">landings.md</span>
-              </Link>
-              <div className="hidden items-center gap-5 text-[13px] font-medium md:flex">
-                <Link href="/portfolio" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.portfolio}</Link>
-                <Link href="/pricing" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.pricing}</Link>
-                <Link href="/solutions" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.solutions}</Link>
-                <Link href="/case-studies" className="transition-colors duration-200 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.caseStudies}</Link>
+          <div className="nv-edge">
+            <div className="nv-edge-inner nv-inset flex flex-col items-start justify-between gap-6 p-6 md:flex-row md:items-center md:p-7">
+              <div className="flex flex-wrap items-center gap-7">
+                <Link href="/" className="flex items-center gap-3">
+                  <Image src="/images/logowhite.png" alt="landings.md" width={22} height={36} className="h-8 w-auto" />
+                  <span className="text-[14px] font-medium text-white">landings.md</span>
+                </Link>
+                <div className="hidden items-center gap-5 text-[13px] font-medium md:flex">
+                  <Link href="/portfolio" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.portfolio}</Link>
+                  <Link href="/pricing" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.pricing}</Link>
+                  <Link href="/solutions" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.solutions}</Link>
+                  <Link href="/case-studies" className="transition-colors duration-150 hover:!text-white" style={{ color: '#a4a4a4' }}>{t.nav.caseStudies}</Link>
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col gap-2 text-[13px] font-medium sm:flex-row sm:items-center sm:gap-5" style={{ color: '#909099' }}>
-              <a href="tel:+37368327082" className="transition-colors duration-200 hover:!text-white">+373 683 27 082</a>
-              <span>{t.footer.copy}</span>
+              <div className="flex flex-col gap-2 text-[13px] font-medium sm:flex-row sm:items-center sm:gap-5" style={{ color: '#909099' }}>
+                <a href="tel:+37368327082" className="transition-colors duration-150 hover:!text-white">+373 683 27 082</a>
+                <span>{t.footer.copy}</span>
+              </div>
             </div>
           </div>
         </div>

@@ -4,8 +4,8 @@
 
 /* ────────────────────────────────────────────────────────────────
    navarro-clone token system — landings.md
-   Ground #0d0d0d, ONE lime accent #FF9E7A, gradient hairlines,
-   metallic silver primaries, blur-up reveals. Geist only.
+   Ground #0d0d0d, ONE coral accent #FF9E7A, gradient hairlines,
+   graphite metal primaries, blur-up reveals. Space Grotesk only.
    ──────────────────────────────────────────────────────────────── */
 @layer base {
   :root {
@@ -55,8 +55,8 @@ html {
 body {
   color: var(--nv-text);
   background: var(--nv-bg);
-  font-family: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  font-weight: 300;
+  font-family: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-weight: 400;
   font-size: 1rem;
   line-height: 1.4;
   -webkit-font-smoothing: antialiased;
@@ -125,6 +125,7 @@ blockquote i, .nv-quote-lime i {
 
 /* ── Metallic silver pill — the one primary button ── */
 .btn-metal {
+  font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
   display: inline-flex;
   align-items: center;
   justify-content: center;

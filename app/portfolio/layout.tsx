@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Web Design Portfolio | 50+ Websites Delivered',
+  title: 'Web Design Portfolio | Real Projects, Real Results',
   description: 'See our web design work for small businesses across Europe. Real projects, real results, 300% traffic increase, Page 1 Google rankings. Automotive, e-commerce, healthcare, education and more.',
   keywords: [
     'professional website design', 'small business web design', 'website designer for small business',
@@ -13,14 +13,14 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: 'Web Design Portfolio | landings.md',
-    description: '50+ websites delivered for small businesses across Europe. Real projects, real results.',
+    description: 'Websites, stores and business systems delivered for small businesses across Europe. Real projects, real results.',
     url: 'https://landings.md/portfolio',
     type: 'website',
   },
   twitter: {
     card: 'summary',
     title: 'Web Design Portfolio | landings.md',
-    description: '50+ websites delivered. Real projects, real results for small businesses.',
+    description: 'Real projects, real results for small businesses across Europe.',
   },
   alternates: {
     canonical: 'https://landings.md/portfolio',

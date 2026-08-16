@@ -357,6 +357,23 @@ export default function PricingPage() {
   const basePrice = BASE_PRICES[recommendation]
   const totalPrice = basePrice !== null ? basePrice + addon : null
 
+  /* the estimate counts up on the result screen, entrance only */
+  const [countPrice, setCountPrice] = useState(0)
+  useEffect(() => {
+    if (!showResult || totalPrice === null) { setCountPrice(0); return }
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setCountPrice(totalPrice); return }
+    const t0 = performance.now()
+    let raf = 0
+    const tick = (now: number) => {
+      const p = Math.min((now - t0) / 1300, 1)
+      const e = 1 - Math.pow(1 - p, 3)
+      setCountPrice(Math.round(e * totalPrice))
+      if (p < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [showResult, totalPrice])
+
   const getContactURL = () => {
     const subject = totalPrice !== null ? `${result.name} (€${totalPrice})` : result.name
     return `mailto:contact@landings.md?subject=${encodeURIComponent(subject)}`
@@ -364,69 +381,218 @@ export default function PricingPage() {
 
   const startOverText: Record<Lang, string> = { en: "Start over", ro: "Reincepe", de: "Neu starten", fr: "Recommencer", es: "Empezar de nuevo" }
 
+
   const progressPercent = showResult ? 100 : (step / TOTAL_STEPS) * 100
   const hdr = headerText[lang]
   const pk = packagesText[lang]
   const growth = growthText[lang]
   const tiers: Tier[] = ['starter', 'business', 'ecommerce', 'custom']
+  const tierIndex = tiers.indexOf(recommendation)
+  /* the result ring visualises where the recommended tier sits in the range */
+  const ringOffset = Math.round(264 - 264 * ((tierIndex + 1) / tiers.length))
+
+  /* 4-bar level meter used on every package card */
+  const LevelBars = ({ level }: { level: number }) => (
+    <span className="flex h-7 w-14 shrink-0 items-end gap-1" aria-hidden>
+      {[34, 56, 78, 100].map((h, i) => (
+        <span
+          key={i}
+          className="nv-bar flex-1 rounded-[2px]"
+          style={{
+            height: `${h}%`,
+            ['--i' as string]: i,
+            background: i <= level ? LIME : 'rgba(255,255,255,0.14)',
+            boxShadow: i <= level ? '0 0 8px rgba(255,158,122,0.35)' : undefined,
+          } as React.CSSProperties}
+        />
+      ))}
+    </span>
+  )
 
   return (
     <main className="min-h-screen text-white" style={{ background: '#0d0d0d' }}>
 
-      <SiteNav contactHref="/#contact" tone="dark" />
+      <SiteNav contactHref="/#contact" />
 
-      {/* ════════ PAGE HEADER, ribbed glass band with coral horizon ════════ */}
-      <section className="relative overflow-hidden">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute left-1/2 top-[-140px] -translate-x-1/2 rounded-full"
-          style={{ width: 620, height: 380, background: 'radial-gradient(closest-side, rgba(255,158,122,0.30), transparent)', filter: 'blur(70px)' }}
-        />
-        <div className="ribbed">
-          <div className="nv-container relative z-[1] pb-12 pt-14 text-center md:pb-16 md:pt-20">
-            <Reveal>
-              <Label>{hdr.label}</Label>
-            </Reveal>
-            <Reveal delay={0.06}>
-              <h1
-                className="mx-auto mt-4 max-w-[820px] font-bold"
-                style={{ fontSize: 'clamp(2.5rem, 5.5vw, 4.25rem)', lineHeight: 1.02, letterSpacing: '-0.055em' }}
-              >
-                <Marked text={hdr.heading} />
-              </h1>
-            </Reveal>
-            <Reveal delay={0.12}>
-              <p
-                className="mx-auto mt-5 max-w-[640px] font-medium"
-                style={{ color: '#a4a4a4', fontSize: 'clamp(1rem, 1.8vw, 1.1875rem)', lineHeight: 1.35, letterSpacing: '-0.02em' }}
-              >
-                {hdr.sub}
-              </p>
-            </Reveal>
-          </div>
+      {/* ════════ HEADER BENTO : hero cell + three live stat cells ════════ */}
+      <section className="nv-container pb-8 pt-3 md:pb-12 md:pt-5">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-12 md:grid-rows-3">
+
+          {/* hero cell */}
+          <Reveal className="min-w-0 md:col-span-8 md:row-span-3">
+            <div className="nv-edge h-full">
+              <div className="nv-edge-inner nv-inset--soft relative flex h-full flex-col overflow-hidden p-6 md:p-10">
+                <div
+                  aria-hidden
+                  className="nv-blob-spin absolute left-1/2 top-full h-[420px] w-[560px] -translate-x-1/2 -translate-y-1/3 rounded-full"
+                  style={{
+                    background: 'conic-gradient(from 30deg, #FF9E7A, #f2d06f, #d23b33, #7a4df0, #FF9E7A)',
+                    filter: 'saturate(1.1) blur(90px)',
+                    opacity: 0.45,
+                  }}
+                />
+                <div
+                  aria-hidden
+                  className="absolute left-1/2 bottom-0 h-40 w-[70%] -translate-x-1/2 translate-y-1/2 rounded-full"
+                  style={{ background: '#fff', filter: 'blur(110px)', opacity: 0.18 }}
+                />
+                <div className="ribbed ribbed--flat" aria-hidden style={{ position: 'absolute', inset: 0, borderTop: 'none' }} />
+
+                <div className="relative z-[1] flex h-full flex-col justify-center">
+                  <Label>{hdr.label}</Label>
+                  <h1
+                    className="mt-4 font-bold"
+                    style={{ fontSize: 'clamp(2rem, 4.4vw, 3.6rem)', lineHeight: 1.02, letterSpacing: '-0.055em' }}
+                  >
+                    <Marked text={hdr.heading} />
+                  </h1>
+                  <p
+                    className="mt-4 max-w-[620px] font-medium"
+                    style={{ color: '#b8b8b9', fontSize: 'clamp(0.9375rem, 1.5vw, 1.0625rem)', lineHeight: 1.4, letterSpacing: '-0.02em' }}
+                  >
+                    {hdr.sub}
+                  </p>
+                  <span className="chip chip--em mt-6 max-w-full self-start">
+                    <span className="chip-inner max-w-full justify-center !whitespace-normal px-4 !py-2 text-center !text-[12px] leading-snug md:!whitespace-nowrap md:!text-[13px]">
+                      {negotiableText[lang]}
+                    </span>
+                  </span>
+                  <div className="mt-8 flex flex-wrap items-center gap-4">
+                    <a href="#wizard" className="btn-metal">
+                      {r.starter.cta}
+                      <span className="nv-arr" aria-hidden>&rarr;</span>
+                    </a>
+                    <a href="#packages" className="btn-metal btn-metal--sm">
+                      {packagesLabelText[lang]}
+                      <span className="nv-arr" aria-hidden>&rarr;</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
+          {/* package range, bars */}
+          <Reveal delay={0.05} className="min-w-0 md:col-span-4">
+            <div className="nv-edge nv-edge--ring nv-cell h-full">
+              <div className="nv-edge-inner nv-inset flex h-full items-center justify-between gap-4 p-5 md:p-6">
+                <div className="min-w-0">
+                  <span className="block text-[11px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
+                    {packagesLabelText[lang]}
+                  </span>
+                  <span
+                    className="mt-2 block whitespace-nowrap font-semibold"
+                    style={{ fontSize: 'clamp(1.5rem, 2vw, 1.9rem)', letterSpacing: '-0.04em', lineHeight: 1, color: LIME }}
+                  >
+                    <span className="mr-1.5 text-[12px] font-medium" style={{ color: '#909099', letterSpacing: 0 }}>{fromText[lang]}</span>
+                    €350
+                  </span>
+                  <span className="mt-1.5 block text-[11px] font-medium" style={{ color: '#b8b8b9' }}>€350 · €550 · €850</span>
+                </div>
+                <div className="flex h-12 w-20 shrink-0 items-end gap-1.5" aria-hidden>
+                  {[46, 64, 82, 100].map((h, i) => (
+                    <span
+                      key={i}
+                      className="nv-bar flex-1 rounded-[3px]"
+                      style={{
+                        height: `${h}%`,
+                        ['--i' as string]: i,
+                        background: i === 3 ? LIME : 'rgba(255,255,255,0.14)',
+                      } as React.CSSProperties}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
+          {/* languages, nodes + travelling packets */}
+          <Reveal delay={0.08} className="min-w-0 md:col-span-4">
+            <div className="nv-edge nv-edge--ring nv-cell h-full">
+              <div className="nv-edge-inner nv-inset flex h-full items-center justify-between gap-4 p-5 md:p-6">
+                <div className="min-w-0">
+                  <span
+                    className="block whitespace-nowrap font-semibold"
+                    style={{ fontSize: 'clamp(0.9375rem, 1.3vw, 1.125rem)', letterSpacing: '-0.03em', lineHeight: 1 }}
+                  >
+                    EN · RO · DE · FR · ES
+                  </span>
+                  <span className="mt-2 block text-[12px] font-medium" style={{ color: '#909099' }}>
+                    {langNoteText[lang](1, LANG_ADDON)}
+                  </span>
+                </div>
+                <div className="flex w-20 shrink-0 items-center" aria-hidden>
+                  <span className="nv-node h-2 w-2 rounded-full" style={{ background: LIME }} />
+                  <span className="relative h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }}>
+                    <span className="nv-packet" />
+                  </span>
+                  <span className="nv-node h-2 w-2 rounded-full" style={{ background: LIME }} />
+                  <span className="relative h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }}>
+                    <span className="nv-packet" style={{ animationDelay: '-1.2s' }} />
+                  </span>
+                  <span className="nv-node h-2 w-2 rounded-full" style={{ background: LIME }} />
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
+          {/* 24h reply, ring */}
+          <Reveal delay={0.11} className="min-w-0 md:col-span-4">
+            <div className="nv-edge nv-edge--ring nv-cell h-full">
+              <div className="nv-edge-inner nv-inset flex h-full items-center gap-4 p-5 md:p-6">
+                <svg width="52" height="52" viewBox="0 0 96 96" aria-hidden className="shrink-0">
+                  <circle cx="48" cy="48" r="42" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
+                  <circle
+                    cx="48" cy="48" r="42" fill="none"
+                    stroke={LIME} strokeWidth="8" strokeLinecap="round"
+                    strokeDasharray="264" strokeDashoffset="66"
+                    transform="rotate(-90 48 48)"
+                    className="nv-ring-main"
+                  />
+                </svg>
+                <div className="min-w-0">
+                  <span
+                    className="block font-semibold"
+                    style={{ fontSize: 'clamp(1.25rem, 1.6vw, 1.6rem)', letterSpacing: '-0.04em', lineHeight: 1, color: LIME }}
+                  >
+                    24h
+                  </span>
+                  <span className="mt-1.5 block text-[11px] font-medium leading-tight" style={{ color: '#909099' }}>
+                    {customNoteText[lang]}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
         </div>
       </section>
 
-      {/* ════════ QUIZ, one nv-edge machine with a coral top glow ════════ */}
-      <section>
-        <div className="nv-container flex justify-center pb-16 pt-8 md:pb-20 md:pt-10">
-          <Reveal className="w-full max-w-3xl">
+      {/* coral horizon seam into the wizard */}
+      <div className="nv-container">
+        <div className="nv-seam" />
+      </div>
+
+      {/* ════════ WIZARD, one deep well with a bar-row progress meter ════════ */}
+      <section id="wizard">
+        <div className="nv-container flex justify-center pb-14 pt-10 md:pb-20 md:pt-14">
+          <Reveal className="w-full max-w-4xl">
             <div className="nv-edge">
-              <div className="nv-edge-inner relative p-6 md:p-10">
+              <div className="nv-edge-inner nv-well relative p-5 md:p-10">
                 <div
                   aria-hidden
                   className="pointer-events-none absolute left-1/2 top-0 h-36 w-[420px] -translate-x-1/2 -translate-y-1/2"
                   style={{ background: 'radial-gradient(closest-side, rgba(255,158,122,0.20), transparent)' }}
                 />
 
-                {/* Progress */}
-                <div className="relative mb-10">
-                  <div className="mb-3 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                {/* Progress: bar row that fills coral as steps complete */}
+                <div className="relative mb-9">
+                  <div className="mb-3 flex items-end justify-between gap-4">
+                    <div className="flex flex-1 items-end gap-3">
                       {(step > 0 || showResult) && (
                         <button
                           onClick={() => showResult ? goToStep(TOTAL_STEPS - 1) : goToStep(step - 1)}
-                          className="mr-1 text-[#909099] transition-colors duration-150 ease-out hover:text-white"
+                          className="mb-0.5 text-[#909099] transition-colors duration-150 ease-out hover:text-white"
                           aria-label="Go back"
                         >
                           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -434,38 +600,38 @@ export default function PricingPage() {
                           </svg>
                         </button>
                       )}
-                      <div className="flex items-center gap-2">
+                      <div className="flex h-8 flex-1 items-end gap-1.5 md:max-w-[420px]">
                         {Array.from({ length: TOTAL_STEPS }).map((_, i) => {
                           const isCompleted = answers[i] !== null && (i < step || showResult)
                           const isCurrent = i === step && !showResult
+                          const done = showResult || isCompleted
                           return (
                             <button
                               key={i}
                               onClick={() => isCompleted ? goToStep(i) : undefined}
-                              className={`h-1.5 w-1.5 rounded-full transition-all duration-200 ease-out ${
-                                showResult
-                                  ? 'bg-[#FF9E7A]'
-                                  : isCompleted
-                                    ? 'bg-[#FF9E7A] cursor-pointer hover:opacity-70'
-                                    : isCurrent
-                                      ? 'bg-white/40'
-                                      : 'bg-white/10'
-                              }`}
-                              style={showResult || isCompleted ? { boxShadow: '0 0 8px rgba(255, 158, 122, 0.6)' } : undefined}
+                              className="nv-bar flex-1 rounded-[3px]"
+                              style={{
+                                height: `${44 + i * 9}%`,
+                                ['--i' as string]: i,
+                                background: done ? LIME : isCurrent ? 'rgba(255,255,255,0.42)' : 'rgba(255,255,255,0.1)',
+                                boxShadow: done ? '0 0 10px rgba(255,158,122,0.45)' : undefined,
+                                cursor: isCompleted ? 'pointer' : 'default',
+                                transition: 'background 0.18s ease-out, box-shadow 0.18s ease-out',
+                              } as React.CSSProperties}
                               aria-label={`Step ${i + 1}`}
                             />
                           )
                         })}
                       </div>
                     </div>
-                    <span className="text-[12px] font-medium tracking-[0.14em]" style={{ color: '#909099' }}>
+                    <span className="shrink-0 text-[12px] font-medium tabular-nums tracking-[0.14em]" style={{ color: '#909099' }}>
                       {showResult ? String(TOTAL_STEPS).padStart(2, '0') : String(step + 1).padStart(2, '0')} / {String(TOTAL_STEPS).padStart(2, '0')}
                     </span>
                   </div>
                   <div className="h-px w-full bg-white/10">
                     <div
-                      className="h-full bg-[#FF9E7A] transition-[width] duration-300 ease-out"
-                      style={{ width: `${progressPercent}%`, boxShadow: '0 0 8px rgba(255, 158, 122, 0.5)' }}
+                      className="h-full transition-[width] duration-300 ease-out"
+                      style={{ width: `${progressPercent}%`, background: LIME, boxShadow: '0 0 8px rgba(255, 158, 122, 0.5)' }}
                     />
                   </div>
                 </div>
@@ -476,7 +642,7 @@ export default function PricingPage() {
                   {!showResult ? (
                     <>
                       <h2
-                        className="mb-10 text-center font-bold text-[clamp(1.75rem,3vw,2.25rem)] leading-[1.05] text-white"
+                        className="mb-8 text-center font-bold text-[clamp(1.5rem,3vw,2.25rem)] leading-[1.05] text-white md:mb-10"
                         style={{ letterSpacing: '-0.05em' }}
                       >
                         {q[step].question}
@@ -489,15 +655,22 @@ export default function PricingPage() {
                             <button
                               key={i}
                               onClick={() => selectAnswer(i)}
-                              className={`nv-edge group text-left transition-[transform,box-shadow] duration-[180ms] ease-out hover:-translate-y-[2px] hover:[box-shadow:0_0_1px_1px_#FF9E7A]${q[step].options.length % 2 !== 0 && i === q[step].options.length - 1 ? ' sm:col-span-2' : ''}`}
+                              className={`nv-edge nv-edge--ring group text-left transition-[transform,box-shadow] duration-[180ms] ease-out hover:-translate-y-[2px]${q[step].options.length % 2 !== 0 && i === q[step].options.length - 1 ? ' sm:col-span-2' : ''}`}
                               style={isSelected ? { boxShadow: '0 0 1px 1px #FF9E7A, 0 12px 34px -12px rgba(255, 158, 122, 0.35)' } : undefined}
                             >
                               <span
-                                className={`nv-edge-inner flex items-center gap-3 px-6 py-4 text-[15px] font-medium leading-[1.3] transition-colors duration-150 ease-out ${
+                                className={`nv-edge-inner nv-inset flex h-full items-center gap-3 px-5 py-4 text-[15px] font-medium leading-[1.3] transition-colors duration-150 ease-out ${
                                   isSelected ? 'text-white' : 'text-[#b8b8b9] group-hover:text-white'
                                 }`}
                                 style={isSelected ? { background: '#241512' } : undefined}
                               >
+                                <span
+                                  aria-hidden
+                                  className="flex-none text-[11px] font-semibold tabular-nums tracking-[0.1em] transition-colors duration-150 ease-out"
+                                  style={{ color: isSelected ? LIME : '#6a6a72' }}
+                                >
+                                  {String(i + 1).padStart(2, '0')}
+                                </span>
                                 <span className="min-w-0 flex-1">{option}</span>
                                 <span
                                   aria-hidden
@@ -515,74 +688,117 @@ export default function PricingPage() {
                       </div>
                     </>
                   ) : (
-                    <div className="text-center">
-                      <span className="mb-6 inline-block text-[11px] font-medium uppercase tracking-[0.14em] text-[#909099]">
-                        {r.label}
-                      </span>
+                    <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-[minmax(0,300px)_1fr]">
 
-                      <h2 className="mb-4 font-bold text-[40px] leading-[1.0] text-white" style={{ letterSpacing: '-0.06em' }}>
-                        {result.name}
-                      </h2>
+                      {/* the estimate: counted number inside a tier ring */}
+                      <div className="nv-edge nv-edge--ring">
+                        <div className="nv-edge-inner nv-inset flex flex-col items-center p-6 text-center">
+                          <span className="text-[11px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
+                            {r.label}
+                          </span>
 
-                      <div
-                        className="mb-2 font-semibold leading-[1.05]"
-                        style={{ fontSize: 'clamp(2.75rem, 5vw, 3.5rem)', letterSpacing: '-0.04em', color: LIME }}
-                      >
-                        {totalPrice !== null
-                          ? `${isMinimum ? `${fromText[lang]} ` : ''}€${totalPrice}`
-                          : priceOnRequestText[lang]}
-                      </div>
-
-                      {!isCustom && extraCount > 0 && (
-                        <p className="mb-4 text-[12px] font-medium tracking-[0.08em] text-[#909099]">
-                          {langNoteText[lang](extraCount, addon)}
-                        </p>
-                      )}
-
-                      {(isCustom || extraCount === 0) && <div className="mb-4" />}
-
-                      <p className="mb-8 text-[12px] font-medium text-[#909099]">
-                        {isCustom ? customNoteText[lang] : negotiableText[lang]}
-                      </p>
-
-                      <p className="mx-auto mb-10 max-w-md text-[15px] font-medium leading-[1.4] text-[#b8b8b9]">
-                        {result.why}
-                      </p>
-
-                      <div className="mx-auto mb-10 max-w-md space-y-3 text-left">
-                        {result.features.map((feature, i) => (
-                          <div
-                            key={i}
-                            className="flex items-start gap-3"
-                            style={{ animation: `fadeInUp 300ms ease-out ${i * 45}ms both` }}
-                          >
-                            <svg
-                              aria-hidden
-                              className="mt-[3px] h-4 w-4 flex-none"
-                              fill="none"
-                              stroke={LIME}
-                              strokeWidth={2.2}
-                              viewBox="0 0 24 24"
-                            >
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          <div className="relative mt-5 h-[152px] w-[152px]">
+                            <svg width="152" height="152" viewBox="0 0 96 96" aria-hidden>
+                              <circle cx="48" cy="48" r="42" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="6" />
+                              <circle
+                                cx="48" cy="48" r="42" fill="none"
+                                stroke={LIME} strokeWidth="6" strokeLinecap="round"
+                                strokeDasharray="264" strokeDashoffset={ringOffset}
+                                transform="rotate(-90 48 48)"
+                                className="nv-ring-main"
+                              />
                             </svg>
-                            <span className="text-[15px] font-medium leading-[1.3] text-[#e0e0e2]">{feature}</span>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
+                              {totalPrice !== null ? (
+                                <>
+                                  {isMinimum && (
+                                    <span className="text-[11px] font-medium" style={{ color: '#909099' }}>{fromText[lang]}</span>
+                                  )}
+                                  <span
+                                    className="font-semibold tabular-nums"
+                                    style={{ fontSize: 'clamp(1.75rem, 3.4vw, 2.4rem)', letterSpacing: '-0.05em', lineHeight: 1, color: LIME }}
+                                  >
+                                    €{countPrice}
+                                  </span>
+                                </>
+                              ) : (
+                                <span
+                                  className="font-semibold"
+                                  style={{ fontSize: '1.0625rem', letterSpacing: '-0.03em', lineHeight: 1.15, color: LIME }}
+                                >
+                                  {priceOnRequestText[lang]}
+                                </span>
+                              )}
+                              <span className="mt-2 text-[11px] font-medium tabular-nums" style={{ color: '#909099' }}>
+                                {String(tierIndex + 1).padStart(2, '0')} / {String(tiers.length).padStart(2, '0')}
+                              </span>
+                            </div>
                           </div>
-                        ))}
+
+                          {!isCustom && extraCount > 0 && (
+                            <p className="mt-5 text-[12px] font-medium tracking-[0.08em]" style={{ color: '#909099' }}>
+                              {langNoteText[lang](extraCount, addon)}
+                            </p>
+                          )}
+
+                          <p className="mt-3 text-[12px] font-medium leading-[1.35]" style={{ color: '#909099' }}>
+                            {isCustom ? customNoteText[lang] : negotiableText[lang]}
+                          </p>
+                        </div>
                       </div>
 
-                      <Link href={getContactURL()} className="btn-metal">
-                        {result.cta}
-                        <span className="nv-arr" aria-hidden>&rarr;</span>
-                      </Link>
+                      {/* what you get */}
+                      <div className="nv-edge h-full">
+                        <div className="nv-edge-inner nv-inset flex h-full flex-col p-6 md:p-8">
+                          <div className="flex items-start justify-between gap-4">
+                            <h2 className="font-bold text-[clamp(1.75rem,3vw,2.25rem)] leading-[1.0] text-white" style={{ letterSpacing: '-0.06em' }}>
+                              {result.name}
+                            </h2>
+                            <LevelBars level={tierIndex} />
+                          </div>
 
-                      <div className="mt-6">
-                        <button
-                          onClick={resetInterview}
-                          className="text-[12px] font-medium text-[#909099] transition-colors duration-150 ease-out hover:text-white"
-                        >
-                          {startOverText[lang]}
-                        </button>
+                          <p className="mt-3 text-[15px] font-medium leading-[1.4]" style={{ color: '#b8b8b9' }}>
+                            {result.why}
+                          </p>
+
+                          <div className="mt-6 border-t border-white/[0.07]">
+                            {result.features.map((feature, i) => (
+                              <div
+                                key={i}
+                                className="flex items-start gap-3 border-b border-white/[0.07] py-2.5"
+                                style={{ animation: `fadeInUp 300ms ease-out ${i * 45}ms both` }}
+                              >
+                                <svg
+                                  aria-hidden
+                                  className="mt-[3px] h-4 w-4 flex-none"
+                                  fill="none"
+                                  stroke={LIME}
+                                  strokeWidth={2.2}
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span className="text-[14px] font-medium leading-[1.3]" style={{ color: '#e0e0e2' }}>{feature}</span>
+                              </div>
+                            ))}
+                          </div>
+
+                          <div className="flex-1" />
+
+                          <div className="mt-7 flex flex-wrap items-center gap-4">
+                            <Link href={getContactURL()} className="btn-metal">
+                              {result.cta}
+                              <span className="nv-arr" aria-hidden>&rarr;</span>
+                            </Link>
+                            <button
+                              onClick={resetInterview}
+                              className="text-[12px] font-medium transition-colors duration-150 ease-out hover:text-white"
+                              style={{ color: '#909099' }}
+                            >
+                              {startOverText[lang]}
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -593,26 +809,27 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* coral horizon seam between quiz and packages */}
+      {/* coral horizon seam between wizard and packages */}
       <div className="nv-container">
         <div className="nv-seam" />
       </div>
 
-      {/* ════════ PACKAGES, tier cards with depth ════════ */}
-      <section>
-        <div className="nv-container py-16 md:py-24">
+      {/* ════════ PACKAGES, gradient depth cards in a bento ════════ */}
+      <section id="packages">
+        <div className="nv-container py-14 md:py-20">
           <Reveal>
-            <div className="mb-12 text-center md:mb-16">
+            <div className="mb-10 text-center md:mb-14">
               <Label>{packagesLabelText[lang]}</Label>
-              <h2 className="mx-auto mt-4 mb-4 font-bold text-[clamp(2rem,3.4vw,2.5rem)] leading-[1.05] text-white" style={{ letterSpacing: '-0.055em' }}>
+              <h2 className="mx-auto mt-4 mb-4 font-bold text-[clamp(1.75rem,3.4vw,2.5rem)] leading-[1.05] text-white" style={{ letterSpacing: '-0.055em' }}>
                 {pk.heading}
               </h2>
-              <p className="mx-auto max-w-xl text-[15px] font-medium leading-[1.4] text-[#909099]">{pk.sub}</p>
+              <p className="mx-auto max-w-xl text-[15px] font-medium leading-[1.4]" style={{ color: '#909099' }}>{pk.sub}</p>
             </div>
           </Reveal>
 
-          <div className="grid grid-cols-1 items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {tiers.map((tier, ti) => {
+          {/* three priced tiers */}
+          <div className="grid grid-cols-1 items-stretch gap-4 md:grid-cols-3">
+            {(['starter', 'business', 'ecommerce'] as Tier[]).map((tier, ti) => {
               const tr = r[tier]
               const price = BASE_PRICES[tier]
               const isPopular = tier === 'business'
@@ -620,29 +837,39 @@ export default function PricingPage() {
 
               const inner = (
                 <>
-                  {isPopular && (
-                    <span className="mb-4 text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: LIME }}>
-                      {pk.popular}
-                    </span>
-                  )}
-                  <h3 className="mb-1 text-[20px] font-medium text-white" style={{ letterSpacing: '-0.02em' }}>{tr.name}</h3>
-                  <div className="mb-5">
-                    {price !== null ? (
-                      <p className="font-semibold text-[2.75rem] leading-[1.05] text-white" style={{ letterSpacing: '-0.04em' }}>
-                        <span className="mr-1.5 text-[13px] font-normal text-[#909099]" style={{ letterSpacing: '0' }}>{fromText[lang]}</span>€{price}
-                      </p>
-                    ) : (
-                      <p className="font-semibold text-[24px] leading-[1.2] text-white" style={{ letterSpacing: '-0.03em' }}>{priceOnRequestText[lang]}</p>
-                    )}
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      {isPopular ? (
+                        <span className="block text-[11px] font-semibold uppercase tracking-[0.14em]" style={{ color: LIME }}>
+                          {pk.popular}
+                        </span>
+                      ) : (
+                        <span className="block text-[11px] font-medium tabular-nums tracking-[0.14em]" style={{ color: '#909099' }}>
+                          {String(ti + 1).padStart(2, '0')} / {String(tiers.length).padStart(2, '0')}
+                        </span>
+                      )}
+                      <h3 className="mt-2 text-[20px] font-medium text-white" style={{ letterSpacing: '-0.02em' }}>{tr.name}</h3>
+                    </div>
+                    <LevelBars level={ti} />
                   </div>
-                  <p className="mb-5 text-[13px] font-medium leading-[1.4] text-[#909099]">{tr.why}</p>
-                  <div className={`mb-8 flex-1 border-t ${isPopular ? 'border-white/10' : 'border-white/[0.07]'}`}>
+
+                  <div className="mt-4">
+                    <p className="font-semibold text-[2.5rem] leading-[1.05] text-white" style={{ letterSpacing: '-0.04em' }}>
+                      <span className="mr-1.5 text-[13px] font-normal" style={{ color: '#909099', letterSpacing: 0 }}>{fromText[lang]}</span>
+                      €{price}
+                    </p>
+                  </div>
+
+                  <p className="mt-4 text-[13px] font-medium leading-[1.4]" style={{ color: '#909099' }}>{tr.why}</p>
+
+                  <div className={`mt-5 mb-7 flex-1 border-t ${isPopular ? 'border-white/10' : 'border-white/[0.07]'}`}>
                     {tr.features.map((f, fi) => (
-                      <div key={fi} className={`border-b py-2.5 text-[14px] font-medium leading-[1.3] text-[#b8b8b9] ${isPopular ? 'border-white/10' : 'border-white/[0.07]'}`}>
+                      <div key={fi} className={`border-b py-2.5 text-[14px] font-medium leading-[1.3] ${isPopular ? 'border-white/10' : 'border-white/[0.07]'}`} style={{ color: '#b8b8b9' }}>
                         {f}
                       </div>
                     ))}
                   </div>
+
                   <Link href={mailHref} className={`btn-metal w-full ${isPopular ? '' : 'btn-metal--sm'}`}>
                     {tr.cta}
                     <span className="nv-arr" aria-hidden>&rarr;</span>
@@ -653,9 +880,9 @@ export default function PricingPage() {
               return (
                 <Reveal key={tier} delay={ti * 0.06} className="h-full">
                   {isPopular ? (
-                    /* featured tier, emphasized-chip treatment: warm tinted glass, coral border, coral under-glow */
+                    /* featured tier: warm tinted glass, coral border, coral under-glow */
                     <div
-                      className="nv-card3d flex h-full flex-col rounded-[30px] border-2 p-6"
+                      className="nv-card3d flex h-full flex-col rounded-[30px] border-2 p-6 md:p-7"
                       style={{
                         background: '#241512',
                         borderColor: '#6d3f2e',
@@ -665,8 +892,8 @@ export default function PricingPage() {
                       {inner}
                     </div>
                   ) : (
-                    <div className="nv-edge nv-card3d h-full">
-                      <div className="nv-edge-inner flex flex-col p-6">
+                    <div className="nv-edge nv-edge--ring nv-card3d h-full">
+                      <div className="nv-edge-inner nv-inset flex h-full flex-col p-6 md:p-7">
                         {inner}
                       </div>
                     </div>
@@ -676,13 +903,84 @@ export default function PricingPage() {
             })}
           </div>
 
+          {/* the custom system, a wide depth card */}
+          <Reveal delay={0.18}>
+            <div className="nv-edge nv-edge--alt nv-edge--ring mt-4">
+              <div className="nv-edge-inner nv-inset flex flex-col gap-7 p-6 md:flex-row md:items-stretch md:gap-10 md:p-9">
+                <div className="flex min-w-0 flex-col md:w-[300px] md:flex-none">
+                  <span className="block text-[11px] font-medium tabular-nums tracking-[0.14em]" style={{ color: '#909099' }}>
+                    {String(tiers.length).padStart(2, '0')} / {String(tiers.length).padStart(2, '0')}
+                  </span>
+                  <h3 className="mt-2 text-[22px] font-medium text-white" style={{ letterSpacing: '-0.03em' }}>{r.custom.name}</h3>
+                  <p className="mt-3 font-semibold text-[1.5rem] leading-[1.15] text-white" style={{ letterSpacing: '-0.04em' }}>
+                    {priceOnRequestText[lang]}
+                  </p>
+                  <div className="mt-4 flex w-full max-w-[200px] items-center" aria-hidden>
+                    <span className="nv-node h-2 w-2 rounded-full" style={{ background: LIME }} />
+                    <span className="relative h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }}>
+                      <span className="nv-packet" />
+                    </span>
+                    <span className="nv-node h-2 w-2 rounded-full" style={{ background: LIME }} />
+                    <span className="relative h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }}>
+                      <span className="nv-packet" style={{ animationDelay: '-1.2s' }} />
+                    </span>
+                    <span className="nv-node h-2 w-2 rounded-full" style={{ background: LIME }} />
+                  </div>
+                  <p className="mt-4 text-[13px] font-medium leading-[1.4]" style={{ color: '#909099' }}>{r.custom.why}</p>
+                  <div className="flex-1" />
+                  <Link
+                    href={`mailto:contact@landings.md?subject=${encodeURIComponent(r.custom.name)}`}
+                    className="btn-metal mt-6 self-start"
+                  >
+                    {r.custom.cta}
+                    <span className="nv-arr" aria-hidden>&rarr;</span>
+                  </Link>
+                </div>
+
+                <div className="grid min-w-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2">
+                  {r.custom.features.map((f, fi) => (
+                    <div key={fi} className="nv-edge h-full">
+                      <div className="nv-edge-inner nv-inset flex h-full items-start gap-3 px-4 py-3.5">
+                        <svg
+                          aria-hidden
+                          className="mt-[3px] h-4 w-4 flex-none"
+                          fill="none"
+                          stroke={LIME}
+                          strokeWidth={2.2}
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-[13px] font-medium leading-[1.35]" style={{ color: '#e0e0e2' }}>{f}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
           {/* Monthly growth strip */}
-          <Reveal delay={0.1}>
-            <div className="nv-edge nv-edge--alt nv-edge--ring mt-5">
-              <div className="nv-edge-inner flex flex-col gap-6 p-6 md:flex-row md:items-center md:gap-10 md:p-8">
-                <div className="flex-1">
-                  <h3 className="mb-2 text-[24px] font-semibold leading-[1.1] text-white" style={{ letterSpacing: '-0.04em' }}>{growth.title}</h3>
-                  <p className="max-w-2xl text-[15px] font-medium leading-[1.4] text-[#909099]">{growth.body}</p>
+          <Reveal delay={0.24}>
+            <div className="nv-edge nv-edge--ring mt-4">
+              <div className="nv-edge-inner nv-inset flex flex-col gap-6 p-6 md:flex-row md:items-center md:gap-10 md:p-9">
+                <div className="hidden h-16 w-28 shrink-0 items-end gap-1.5 md:flex" aria-hidden>
+                  {[26, 40, 52, 68, 84, 100].map((h, i) => (
+                    <span
+                      key={i}
+                      className="nv-bar flex-1 rounded-sm"
+                      style={{
+                        height: `${h}%`,
+                        ['--i' as string]: i,
+                        background: i >= 4 ? LIME : 'rgba(255,255,255,0.14)',
+                        boxShadow: i >= 4 ? '0 0 10px rgba(255,158,122,0.35)' : undefined,
+                      } as React.CSSProperties}
+                    />
+                  ))}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="mb-2 text-[clamp(1.25rem,2.2vw,1.5rem)] font-semibold leading-[1.15] text-white" style={{ letterSpacing: '-0.04em' }}>{growth.title}</h3>
+                  <p className="max-w-2xl text-[15px] font-medium leading-[1.4]" style={{ color: '#909099' }}>{growth.body}</p>
                 </div>
                 <Link
                   href={`mailto:contact@landings.md?subject=${encodeURIComponent('SEO & Ads')}`}
