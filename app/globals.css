@@ -590,12 +590,14 @@ button {
 .logo-row img {
   width: auto;
   margin-right: 92px;
-  opacity: 0.95;
-  transition: opacity 0.2s ease;
+  filter: grayscale(1) brightness(0.45) contrast(1.05);
+  opacity: 0.9;
+  transition: filter 0.2s ease, opacity 0.2s ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .logo-row img:hover {
+    filter: none;
     opacity: 1;
   }
 }
