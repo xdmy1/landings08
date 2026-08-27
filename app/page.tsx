@@ -1,815 +1,1116 @@
-"use client"
+"use client";
 
-import React, { useEffect, useRef, useState } from 'react'
-import Image from 'next/image'
-import { SiteNav } from '@/components/ui/site-nav'
-import { SiteFooter } from '@/components/ui/site-footer'
-import { useLanguage } from '@/hooks/useLanguage'
+import { Component, useCallback, useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
+import Lenis from "lenis";
+import { MetalFx } from "metal-fx";
+import { ThinkingOrb } from "thinking-orbs";
 
-/* ────────────────────────────────────────────────────────────────
-   navarro.ro clone | landings.md content only.
-   Ground #0d0d0d · lime #FF9E7A · Geist · blur-up reveals.
-   ──────────────────────────────────────────────────────────────── */
-
-const LIME = '#FF9E7A'
-
-/* Blur-up reveal, IntersectionObserver at 0.1 that REPLAYS:
-   the .nv-hidden class returns when the block scrolls away. */
-function Reveal({
-  children,
-  delay = 0,
-  className = '',
-}: {
-  children: React.ReactNode
-  delay?: number
-  className?: string
-}) {
-  const ref = useRef<HTMLDivElement | null>(null)
-  const [shown, setShown] = useState(false)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const io = new IntersectionObserver(
-      ([entry]) => setShown(entry.isIntersecting),
-      { threshold: 0.1 }
-    )
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
-  return (
-    <div
-      ref={ref}
-      className={`nv-reveal ${shown ? '' : 'nv-hidden'} ${className}`}
-      style={delay ? { transitionDelay: `${delay}s` } : undefined}
-    >
-      {children}
-    </div>
-  )
+/* if a WebGL/CSS effect throws at runtime, fall back to the plain element */
+class FxBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { err: boolean }> {
+  state = { err: false };
+  static getDerivedStateFromError() {
+    return { err: true };
+  }
+  render() {
+    return this.state.err ? this.props.fallback : this.props.children;
+  }
 }
 
-/* "*word.*" markers → lime <b> (h1 b is lime via globals); \n → line break */
-function Marked({ text }: { text: string }) {
-  return (
-    <>
-      {text.split('\n').map((line, i) => (
-        <span key={i} className="block">
-          {line.split(/\*(.*?)\*/g).map((part, j) =>
-            j % 2 === 1 ? <b key={j}>{part}</b> : <React.Fragment key={j}>{part}</React.Fragment>
-          )}
-        </span>
-      ))}
-    </>
-  )
-}
+/* ------------------------------------------------------------------ */
+/* data                                                                */
+/* ------------------------------------------------------------------ */
 
-/* Same markers → lime <i> spans, for the real-claim quote */
-function MarkedQuote({ text }: { text: string }) {
-  return (
-    <>
-      {text.split(/\*(.*?)\*/g).map((part, j) =>
-        j % 2 === 1 ? <i key={j}>{part}</i> : <React.Fragment key={j}>{part}</React.Fragment>
-      )}
-    </>
-  )
-}
+const LANGS = ["ro", "en", "de", "fr", "es", "ru"] as const;
+type Lang = (typeof LANGS)[number];
 
-function Label({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center text-[13px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>
-      {children}
-    </span>
-  )
-}
+const PROJECTS = [
+  { key: "glg", name: "Scoala Auto GLG", domain: "scoalaautoglg.com", href: "https://scoalaautoglg.com", img: "/images/shot-glg" },
+  { key: "davo", name: "Davo", domain: "davo.md", href: "https://davo.md", img: "/images/shot-davo" },
+  { key: "interbus", name: "Inter-Bus", domain: "inter-bus.md", href: "https://inter-bus.md", img: "/images/shot-interbus" },
+  { key: "eurogard", name: "Eurogard", domain: "eurogard.md", href: "https://eurogard.md", img: "/images/shot-eurogard" },
+  { key: "radx", name: "RADX Cooling", domain: "radx.solutions", href: "https://radx.solutions", img: "/images/shot-radx" },
+  { key: "mobo", name: "Mobo", domain: "mobo-six.vercel.app", href: "https://mobo-six.vercel.app", img: "/images/shot-mobo" },
+  { key: "infobac", name: "Infobac", domain: "infobac.md", href: "https://infobac.md", img: "/images/shot-infobac" },
+] as const;
 
-/* ── Fixed data: projects, accents, logos ── */
-const PROJECTS_META = [
-  { key: 'glg',           name: 'Scoala Auto GLG', url: 'scoalaautoglg.com', accent: '#2f7df6', shot: '/images/tall-glg.jpg' },
-  { key: 'davo',          name: 'Davo.md',         url: 'davo.md',           accent: '#2456A6', shot: '/images/tall-davo.jpg' },
-  { key: 'interbus',      name: 'Inter-Bus',       url: 'inter-bus.md',      accent: '#D23B33', shot: '/images/tall-interbus.jpg' },
-  { key: 'cmiea',         name: 'CMIEA.md',        url: 'cmiea.md',          accent: '#3E7BFA', shot: '/images/tall-cmiea.jpg' },
-  { key: 'radx',          name: 'RADX Cooling',    url: 'radx.solutions',    accent: '#E23B3B', shot: '/images/tall-radx.jpg' },
-  { key: 'eliteprotocol', name: 'Elite Protocol',  url: 'eliteprotocol.md',  accent: '#C9A227', shot: '/images/tall-eliteprotocol.jpg' },
-] as const
+const shotSrcSet = (base: string) => `${base}-800.webp 800w, ${base}-1280.webp 1280w, ${base}.webp 1920w`;
 
-const ALL_LOGOS = [
-  { k: 'davo', h: 'h-4 md:h-5', t: 'solid' },
-  { k: 'interbus', h: 'h-5 md:h-6', t: 'solid' },
-  { k: 'cmiea', h: 'h-6 md:h-7', t: 'solid' },
-  { k: 'glg', h: 'h-7 md:h-8', t: 'solid' },
-  { k: 'radx', h: 'h-4 md:h-5', t: 'solid' },
-  { k: 'rizzaclassic', h: 'h-5 md:h-6', t: 'solid' },
-  { k: 'eurogard', h: 'h-6 md:h-7', t: 'solid' },
-  { k: 'mobo', h: 'h-6 md:h-7', t: 'mono' },
-] as const
+const LOGOS: ReadonlyArray<{ n: string; h: number }> = [
+  { n: "davo", h: 26 },
+  { n: "glg", h: 46 },
+  { n: "interbus", h: 30 },
+  { n: "eurogard", h: 44 },
+  { n: "radx", h: 30 },
+  { n: "mobo", h: 32 },
+  { n: "cmiea", h: 44 },
+  { n: "respectauto", h: 30 },
+  { n: "rizzaclassic", h: 36 },
+  { n: "udc", h: 42 },
+];
 
-const LOGO_FILTERS: Record<string, React.CSSProperties> = {
-  solid: { filter: 'brightness(0) invert(1)' },
-  mono: { filter: 'grayscale(1) brightness(1.6) contrast(0.9)' },
-  white: {},
-}
+type ProjectKey = (typeof PROJECTS)[number]["key"];
 
-const LOGO_ROW = [
-  { k: 'davo', h: 'h-5 md:h-6' },
-  { k: 'interbus', h: 'h-6 md:h-7' },
-  { k: 'cmiea', h: 'h-8 md:h-9' },
-  { k: 'radx', h: 'h-5 md:h-6' },
-  { k: 'rizzaclassic', h: 'h-7 md:h-8' },
-  { k: 'glg', h: 'h-9 md:h-10' },
-] as const
+type Copy = {
+  nav: [string, string, string, string];
+  avail: string;
+  availShort: string;
+  h1a: string;
+  words: string[];
+  sub: string;
+  ctaP: string;
+  ctaS: string;
+  heroCap: string;
+  projLabel: string;
+  hint: string;
+  logosLabel: string;
+  projects: Record<ProjectKey, { desc: string; tags: string[] }>;
+  servLabel: string;
+  services: { name: string; desc: string }[];
+  priceLabel: string;
+  plans: { name: string; price: string; feats: string[] }[];
+  priceNote: string;
+  priceCta: string;
+  proofLabel: string;
+  proofLine: string;
+  statLbls: [string, string, string];
+  contactLabel: string;
+  contactTitle: string;
+  contactSub: string;
+  loc: string;
+  rights: string;
+  a11y: { prev: string; next: string; menu: string; lang: string };
+};
 
-/* ── 5-language copy, real facts only, no diacritics ── */
-const T = {
-  en: {
-    hero: {
-      headline: 'We build the site\nWe take it to the *top.*\nWe automate the rest',
-      sub: 'Custom-coded websites that rank on page one of Google, Meta & Google Ads campaigns, and booking, invoicing and accounting systems that free your business from paperwork.',
-      cta: 'Start a project',
-      note: 'delivered in 1–4 weeks · reply within 24h',
-    },
-    badges: ['Hand-written code, zero templates', '+300% avg. organic traffic', '10+ custom systems live', 'DR 50 · 2.6K backlinks', 'Delivered in 1-4 weeks', '5 languages, one team'],
-    badgeEm: 'Custom-coded websites from 350 EUR, start to finish',
-    logos: 'Trusted by businesses across Moldova and Europe',
-    work: {
-      label: 'Selected work',
-      heading: 'Projects that *sell.*',
-      view: 'View',
-      projects: {
-        davo:     { caption: 'Transport · Booking system',    line: '#1 in Moldova for online transport bookings' },
-        interbus: { caption: 'Auto parts · Store + ERP',      line: 'Store + ERP running the whole business' },
-        cmiea:    { caption: 'Education · Platform',          line: "The municipality's education platform" },
-        glg:      { caption: 'Driving school · Bookings',     line: '15,000+ graduates, online scheduling' },
-        radx:          { caption: 'Industrial cooling · Site',  line: 'Page 1 on Google for industrial cooling' },
-        eliteprotocol: { caption: 'Etiquette · Premium site',   line: 'A premium brand, matched pixel for pixel' },
-        rizzaclassic:  { caption: 'Restoration · Italy',        line: 'Italian classics, international clients' },
-        autohuse:      { caption: 'Custom covers · Orders',     line: 'Made-to-order covers, ordered online' },
-      },
-    },
-    proof: {
-      label: 'Real results',
-      quote: 'davo.md ranks *#1 on Google* for Moldova–Europe transport: *DR 50*, 2.6K backlinks and *+300% organic traffic* after relaunch.',
-      attribution: 'Davo.md, a landings.md project · real Ahrefs data',
-    },
-    stats: {
-      cells: [
-        { v: '24h', l: 'response time' },
-        { v: '300%', l: 'average traffic increase' },
-        { v: '10+', l: 'custom systems in production' },
-        { v: 'DR 50', l: 'davo.md · 2.6K backlinks' },
-      ],
-      offerLabel: 'The offer',
-      offerTitle: 'from 350 EUR',
-      offerSub: 'Custom-coded website, design, build, launch.',
-      offerNote: 'Delivered in 1-4 weeks.',
-      floats: ['SITE', 'SEO', 'ADS', 'SYSTEMS'],
-    },
-    about: {
-      heading: 'Solutions, not just *websites.*',
-      headingSub: 'Websites, SEO, ads and business systems, one team, start to finish.',
-      aboutTitle: 'About the agency',
-      aboutBody: 'landings.md is a web agency in Chisinau. We hand-code every website, no themes, no builders, then rank it on Google and automate the business behind it.',
-      stackLabel: 'The stack',
-      stack: ['Next.js', 'React', 'Tailwind', 'Hand-written code'],
-      langsLabel: '5 languages',
-      langsNote: 'Every website we ship speaks up to 5 languages.',
-      processLabel: 'Short process',
-      steps: [
-        { n: '01', t: 'Analysis', b: 'market & keywords' },
-        { n: '02', t: 'Build', b: 'site + system, hand-coded' },
-        { n: '03', t: 'Growth', b: 'SEO, ads, ongoing optimisation' },
-      ],
-      contactLabel: 'Contact',
-      avail: 'Available for new projects',
-    },
-    contact: {
-      label: 'Contact',
-      heading: 'Ready to get more *clients?*',
-      sub: "Tell us about your business. We'll show you how to rank on Google, what to automate, and what it would cost.",
-      form: { name: 'Name', email: 'Email', message: 'Tell us about your business...', send: 'Send message' },
-    },
-    footer: { tagline: 'We build the site. We take it to the top. We automate the rest.', copy: '© 2026 landings.md · Chisinau, Moldova', nav: ['Portfolio', 'Pricing', 'Solutions', 'Case Studies'], pages: 'Pages', reach: 'Contact' },
-    pill: { l1: 'Have a project in mind?', l2: 'Get a quote, from 350 EUR' },
-  },
+const T: Record<Lang, Copy> = {
   ro: {
-    hero: {
-      headline: 'Construim site-ul\nIl ducem in *top.*\nAutomatizam restul',
-      sub: 'Site-uri scrise manual care apar pe prima pagina Google, campanii Meta & Google Ads si sisteme de rezervari, facturare si contabilitate care iti scapa afacerea de foi.',
-      cta: 'Incepe un proiect',
-      note: 'livrat in 1–4 saptamani · raspuns in 24h',
+    nav: ["Proiecte", "Servicii", "Prețuri", "Contact"],
+    avail: "Disponibili pentru proiecte noi",
+    availShort: "Disponibili",
+    h1a: "Site-uri care aduc",
+    words: ["clienți.", "vânzări.", "rezultate."],
+    sub: "Studio din Chișinău. Site-uri, aplicații și SEO. Soluții digitale simple și rapide pentru afaceri din Moldova și Europa.",
+    ctaP: "Cere o ofertă",
+    ctaS: "Vezi proiectele",
+    heroCap: "Davo.md · Transport de pasageri, rezervări online",
+    projLabel: "Câteva din proiectele noastre",
+    hint: "Trage sau folosește săgețile",
+    logosLabel: "Și alții cu care am lucrat",
+    projects: {
+      glg: { desc: "Nu doar site: aplicația școlii auto, cu 60 de instructori, operatori, secretari, profesori, contabili și examinatori.", tags: ["Aplicație", "Website"] },
+      davo: { desc: "Transport de pasageri. Site, rezervări cu alegerea locului și SEO.", tags: ["Website", "Rezervări", "SEO"] },
+      interbus: { desc: "Magazin de piese auto cu ERP: facturare, stoc, contabilitate.", tags: ["E-commerce", "ERP"] },
+      eurogard: { desc: "Porți, garduri și automatizări. Site de prezentare care vinde constant.", tags: ["Website"] },
+      radx: { desc: "Răcire industrială. Prima pagină pe Google, lead-uri săptămânal, fără reclame.", tags: ["Website", "SEO"] },
+      mobo: { desc: "Bucătării și mobilier la comandă. Site cu calculator de preț online.", tags: ["Website", "Calculator"] },
+      infobac: { desc: "Platformă de cursuri pentru BAC-ul la informatică, cu simulări și certificări Certiport.", tags: ["Platformă", "Cursuri"] },
     },
-    badges: ['Cod scris manual, zero template-uri', '+300% trafic organic in medie', '10+ sisteme custom in productie', 'DR 50 · 2.6K backlinks', 'Livrare in 1-4 saptamani', '5 limbi, o singura echipa'],
-    badgeEm: 'Site-uri custom-coded de la 350 EUR, de la A la Z',
-    logos: 'De incredere pentru afaceri din Moldova si Europa',
-    work: {
-      label: 'Lucrari selectate',
-      heading: 'Proiecte care *vand.*',
-      view: 'Vezi',
-      projects: {
-        davo:     { caption: 'Transport · Rezervari',        line: '#1 in Moldova la transport online' },
-        interbus: { caption: 'Piese auto · Magazin + ERP',   line: 'Magazin + ERP care conduce toata afacerea' },
-        cmiea:    { caption: 'Educatie · Platforma',         line: 'Platforma de educatie a municipiului' },
-        glg:      { caption: 'Scoala auto · Programari',     line: '15.000+ absolventi, programari online' },
-        radx:          { caption: 'Racire industriala · Site',  line: 'Prima pagina Google la racire industriala' },
-        eliteprotocol: { caption: 'Eticheta · Site premium',    line: 'Brand premium, aliniat pixel cu pixel' },
-        rizzaclassic:  { caption: 'Restaurari · Italia',        line: 'Clasice italiene, clienti internationali' },
-        autohuse:      { caption: 'Huse la comanda · Comenzi',  line: 'Huse la comanda, comandate online' },
-      },
+    servLabel: "Servicii",
+    services: [
+      { name: "Website", desc: "Construit de la zero, rapid și optimizat pentru orice ecran." },
+      { name: "Design", desc: "Minimalist, curat, gândit pentru brandul tău." },
+      { name: "SEO în cod", desc: "Optimizare tehnică scrisă direct în cod: structură, viteză, date structurate, indexare." },
+      { name: "Backlink-uri premium", desc: "Link-uri contextuale, indexate, din site-uri reale. De la 3$ per backlink." },
+      { name: "Sisteme și aplicații", desc: "Soluții care scot hârtiile din firmă: programări, facturare, stoc, contabilitate. Preț la cerere." },
+    ],
+    priceLabel: "Prețuri",
+    plans: [
+      { name: "Starter", price: "€350", feats: ["O pagină, design inclus", "Optimizat pentru mobil", "SEO de bază în cod"] },
+      { name: "Business", price: "€550", feats: ["Mai multe pagini", "Design personalizat", "SEO tehnic complet"] },
+      { name: "Magazin", price: "€850", feats: ["Catalog și coș de cumpărături", "Plăți online", "Panou de administrare"] },
+    ],
+    priceNote: "+ 50 EUR per limbă extra. Backlink-uri premium de la 3$ per bucată. Sisteme personalizate și SEO lunar: preț la cerere.",
+    priceCta: "Cere ofertă",
+    proofLabel: "Rezultate",
+    proofLine: "SEO făcut de noi pentru Davo.md, măsurat în Ahrefs.",
+    statLbls: ["Domain Rating", "Backlink-uri", "Domenii de referință"],
+    contactLabel: "Contact",
+    contactTitle: "Hai să vorbim.",
+    contactSub: "Scrie-ne despre proiectul tău. Răspundem în cel mult 24 de ore.",
+    loc: "Chișinău, Moldova",
+    rights: "Toate drepturile rezervate.",
+    a11y: { prev: "Înapoi", next: "Înainte", menu: "Meniu", lang: "Limba" },
+  },
+  en: {
+    nav: ["Projects", "Services", "Pricing", "Contact"],
+    avail: "Available for new projects",
+    availShort: "Available",
+    h1a: "Websites that bring",
+    words: ["clients.", "sales.", "results."],
+    sub: "Studio from Chisinau. Websites, apps and SEO. Simple, fast digital solutions for businesses in Moldova and Europe.",
+    ctaP: "Request a quote",
+    ctaS: "See the projects",
+    heroCap: "Davo.md · Passenger transport, online booking",
+    projLabel: "A few of our projects",
+    hint: "Drag or use the arrows",
+    logosLabel: "And others we worked with",
+    projects: {
+      glg: { desc: "Not just a website: the driving school's app, with 60 instructors, operators, secretaries, teachers, accountants and examiners.", tags: ["App", "Website"] },
+      davo: { desc: "Passenger transport. Website, booking with seat selection and SEO.", tags: ["Website", "Booking", "SEO"] },
+      interbus: { desc: "Auto parts store with ERP: invoicing, stock, accounting.", tags: ["E-commerce", "ERP"] },
+      eurogard: { desc: "Gates, fences and automation. A presentation site that sells steadily.", tags: ["Website"] },
+      radx: { desc: "Industrial cooling. First page on Google, weekly leads, no ads.", tags: ["Website", "SEO"] },
+      mobo: { desc: "Custom kitchens and furniture. Website with an online price calculator.", tags: ["Website", "Calculator"] },
+      infobac: { desc: "Course platform for the informatics BAC exam, with simulations and Certiport certifications.", tags: ["Platform", "Courses"] },
     },
-    proof: {
-      label: 'Rezultate reale',
-      quote: 'davo.md e *#1 pe Google* la transport Moldova–Europa: *DR 50*, 2.6K backlinks si *+300% trafic organic* dupa relansare.',
-      attribution: 'Davo.md, proiect landings.md · date reale din Ahrefs',
-    },
-    stats: {
-      cells: [
-        { v: '24h', l: 'timp de raspuns' },
-        { v: '300%', l: 'crestere medie a traficului' },
-        { v: '10+', l: 'sisteme custom in productie' },
-        { v: 'DR 50', l: 'davo.md · 2.6K backlinks' },
-      ],
-      offerLabel: 'Oferta',
-      offerTitle: 'de la 350 EUR',
-      offerSub: 'Site custom-coded, design, constructie, lansare.',
-      offerNote: 'Livrat in 1-4 saptamani.',
-      floats: ['SITE', 'SEO', 'ADS', 'SISTEME'],
-    },
-    about: {
-      heading: 'Solutii, nu doar *site-uri.*',
-      headingSub: 'Site-uri, SEO, ads si sisteme de business, o singura echipa, de la A la Z.',
-      aboutTitle: 'Despre agentie',
-      aboutBody: 'landings.md e o agentie web din Chisinau. Scriem fiecare site manual, fara teme, fara constructori, apoi il ducem sus pe Google si automatizam business-ul din spate.',
-      stackLabel: 'Stack-ul',
-      stack: ['Next.js', 'React', 'Tailwind', 'Cod scris manual'],
-      langsLabel: '5 limbi',
-      langsNote: 'Fiecare site livrat vorbeste pana la 5 limbi.',
-      processLabel: 'Proces scurt',
-      steps: [
-        { n: '01', t: 'Analiza', b: 'piata si cuvintele cheie' },
-        { n: '02', t: 'Constructie', b: 'site + sistem, cod scris manual' },
-        { n: '03', t: 'Crestere', b: 'SEO, ads, optimizare continua' },
-      ],
-      contactLabel: 'Contact',
-      avail: 'Disponibil pentru proiecte noi',
-    },
-    contact: {
-      label: 'Contact',
-      heading: 'Pregatit sa atragi mai multi *clienti?*',
-      sub: 'Spune-ne despre afacerea ta. Iti aratam cum sa apari pe Google, ce merita automatizat si cat ar costa.',
-      form: { name: 'Nume', email: 'Email', message: 'Spune-ne despre afacerea ta...', send: 'Trimite mesaj' },
-    },
-    footer: { tagline: 'Construim site-ul. Il ducem in top. Automatizam restul.', copy: '© 2026 landings.md · Chisinau, Moldova', nav: ['Portofoliu', 'Preturi', 'Solutii', 'Studii de Caz'], pages: 'Pagini', reach: 'Contact' },
-    pill: { l1: 'Ai un proiect in minte?', l2: 'Cere oferta, de la 350 EUR' },
+    servLabel: "Services",
+    services: [
+      { name: "Website", desc: "Built from scratch, fast and optimized for every screen." },
+      { name: "Design", desc: "Minimal, clean, shaped around your brand." },
+      { name: "SEO in the code", desc: "Technical SEO written directly in the code: structure, speed, structured data, indexing." },
+      { name: "Premium backlinks", desc: "Contextual, indexed links from real websites. From $3 per backlink." },
+      { name: "Systems and apps", desc: "Solutions that remove the paperwork: scheduling, invoicing, stock, accounting. Price on request." },
+    ],
+    priceLabel: "Pricing",
+    plans: [
+      { name: "Starter", price: "€350", feats: ["One page, design included", "Mobile optimized", "Basic SEO in the code"] },
+      { name: "Business", price: "€550", feats: ["Multiple pages", "Custom design", "Full technical SEO"] },
+      { name: "Store", price: "€850", feats: ["Catalog and cart", "Online payments", "Admin panel"] },
+    ],
+    priceNote: "+ 50 EUR per extra language. Premium backlinks from $3 each. Custom systems and monthly SEO: price on request.",
+    priceCta: "Request a quote",
+    proofLabel: "Results",
+    proofLine: "Our SEO for Davo.md, measured in Ahrefs.",
+    statLbls: ["Domain Rating", "Backlinks", "Referring domains"],
+    contactLabel: "Contact",
+    contactTitle: "Let's talk.",
+    contactSub: "Tell us about your project. We reply within 24 hours.",
+    loc: "Chisinau, Moldova",
+    rights: "All rights reserved.",
+    a11y: { prev: "Previous", next: "Next", menu: "Menu", lang: "Language" },
   },
   de: {
-    hero: {
-      headline: 'Wir bauen die Website\nWir bringen sie nach *oben.*\nWir automatisieren den Rest',
-      sub: 'Handgeschriebene Websites auf Seite 1 bei Google, Meta & Google Ads Kampagnen und Systeme fur Buchungen, Rechnungen und Buchhaltung, die Ihr Unternehmen vom Papierkram befreien.',
-      cta: 'Projekt starten',
-      note: 'Lieferung in 1–4 Wochen · Antwort in 24h',
+    nav: ["Projekte", "Leistungen", "Preise", "Kontakt"],
+    avail: "Verfugbar fur neue Projekte",
+    availShort: "Verfugbar",
+    h1a: "Websites bringen",
+    words: ["Kunden.", "Umsatz.", "Ergebnisse."],
+    sub: "Studio aus Chisinau. Websites, Apps und SEO. Einfache, schnelle digitale Losungen fur Firmen in Moldau und Europa.",
+    ctaP: "Angebot anfragen",
+    ctaS: "Projekte ansehen",
+    heroCap: "Davo.md · Personentransport, Online-Buchung",
+    projLabel: "Einige unserer Projekte",
+    hint: "Ziehen oder Pfeile nutzen",
+    logosLabel: "Und weitere Kunden",
+    projects: {
+      glg: { desc: "Nicht nur eine Website: die App der Fahrschule, mit 60 Fahrlehrern, Operatoren, Sekretariat, Lehrern, Buchhaltung und Prufern.", tags: ["App", "Website"] },
+      davo: { desc: "Personentransport. Website, Buchung mit Sitzplatzwahl und SEO.", tags: ["Website", "Buchung", "SEO"] },
+      interbus: { desc: "Autoteile-Shop mit ERP: Rechnungen, Lager, Buchhaltung.", tags: ["E-Commerce", "ERP"] },
+      eurogard: { desc: "Tore, Zaune und Automatisierung. Eine Website, die konstant verkauft.", tags: ["Website"] },
+      radx: { desc: "Industrielle Kuhlung. Seite 1 bei Google, Leads jede Woche, ohne Werbung.", tags: ["Website", "SEO"] },
+      mobo: { desc: "Kuchen und Mobel nach Mass. Website mit Online-Preisrechner.", tags: ["Website", "Rechner"] },
+      infobac: { desc: "Kursplattform fur das Informatik-Abitur, mit Simulationen und Certiport-Zertifikaten.", tags: ["Plattform", "Kurse"] },
     },
-    badges: ['Handgeschriebener Code, null Templates', '+300% organischer Traffic im Schnitt', '10+ Systeme im Einsatz', 'DR 50 · 2.6K Backlinks', 'Lieferung in 1-4 Wochen', '5 Sprachen, ein Team'],
-    badgeEm: 'Custom-coded Websites ab 350 EUR, von A bis Z',
-    logos: 'Vertraut von Unternehmen in Moldawien und Europa',
-    work: {
-      label: 'Ausgewahlte Arbeiten',
-      heading: 'Projekte, die *verkaufen.*',
-      view: 'Ansehen',
-      projects: {
-        davo:     { caption: 'Transport · Buchungssystem',   line: '#1 in Moldau fur Online-Transport' },
-        interbus: { caption: 'Autoteile · Shop + ERP',       line: 'Shop + ERP fur das ganze Geschaft' },
-        cmiea:    { caption: 'Bildung · Plattform',          line: 'Die Bildungsplattform der Stadt' },
-        glg:      { caption: 'Fahrschule · Termine',         line: '15.000+ Absolventen, Online-Termine' },
-        radx:          { caption: 'Industriekuhlung · Site',    line: 'Seite 1 bei Google fur Industriekuhlung' },
-        eliteprotocol: { caption: 'Etikette · Premium-Site',    line: 'Premium-Marke, Pixel fur Pixel' },
-        rizzaclassic:  { caption: 'Restaurierung · Italien',    line: 'Italienische Klassiker, internationale Kunden' },
-        autohuse:      { caption: 'Massbezuge · Bestellungen',  line: 'Massanfertigungen, online bestellt' },
-      },
-    },
-    proof: {
-      label: 'Echte Ergebnisse',
-      quote: 'davo.md steht *#1 bei Google* fur Transport Moldau–Europa: *DR 50*, 2.6K Backlinks und *+300% organischer Traffic* nach dem Relaunch.',
-      attribution: 'Davo.md, ein landings.md Projekt · echte Ahrefs-Daten',
-    },
-    stats: {
-      cells: [
-        { v: '24h', l: 'Antwortzeit' },
-        { v: '300%', l: 'durchschnittliche Traffic-Steigerung' },
-        { v: '10+', l: 'individuelle Systeme im Einsatz' },
-        { v: 'DR 50', l: 'davo.md · 2.6K Backlinks' },
-      ],
-      offerLabel: 'Das Angebot',
-      offerTitle: 'ab 350 EUR',
-      offerSub: 'Custom-coded Website, Design, Bau, Launch.',
-      offerNote: 'Lieferung in 1-4 Wochen.',
-      floats: ['SITE', 'SEO', 'ADS', 'SYSTEME'],
-    },
-    about: {
-      heading: 'Losungen, nicht nur *Websites.*',
-      headingSub: 'Websites, SEO, Ads und Business-Systeme, ein Team, von A bis Z.',
-      aboutTitle: 'Uber die Agentur',
-      aboutBody: 'landings.md ist eine Webagentur in Chisinau. Wir schreiben jede Website von Hand, keine Themes, keine Baukasten, bringen sie bei Google nach oben und automatisieren das Geschaft dahinter.',
-      stackLabel: 'Der Stack',
-      stack: ['Next.js', 'React', 'Tailwind', 'Handgeschriebener Code'],
-      langsLabel: '5 Sprachen',
-      langsNote: 'Jede gelieferte Website spricht bis zu 5 Sprachen.',
-      processLabel: 'Kurzer Prozess',
-      steps: [
-        { n: '01', t: 'Analyse', b: 'Markt & Keywords' },
-        { n: '02', t: 'Bau', b: 'Site + System, handgeschrieben' },
-        { n: '03', t: 'Wachstum', b: 'SEO, Ads, laufende Optimierung' },
-      ],
-      contactLabel: 'Kontakt',
-      avail: 'Verfugbar fur neue Projekte',
-    },
-    contact: {
-      label: 'Kontakt',
-      heading: 'Bereit fur mehr *Kunden?*',
-      sub: 'Erzahlen Sie uns von Ihrem Geschaft. Wir zeigen Ihnen, wie Sie bei Google ranken, was sich automatisieren lasst und was es kostet.',
-      form: { name: 'Name', email: 'E-Mail', message: 'Erzahlen Sie uns von Ihrem Geschaft...', send: 'Nachricht senden' },
-    },
-    footer: { tagline: 'Wir bauen die Website. Wir bringen sie nach oben. Wir automatisieren den Rest.', copy: '© 2026 landings.md · Chisinau, Moldawien', nav: ['Portfolio', 'Preise', 'Losungen', 'Fallstudien'], pages: 'Seiten', reach: 'Kontakt' },
-    pill: { l1: 'Ein Projekt im Kopf?', l2: 'Angebot anfordern, ab 350 EUR' },
+    servLabel: "Leistungen",
+    services: [
+      { name: "Website", desc: "Von Grund auf gebaut, schnell, fur jeden Bildschirm optimiert." },
+      { name: "Design", desc: "Minimalistisch, sauber, auf deine Marke abgestimmt." },
+      { name: "SEO im Code", desc: "Technisches SEO direkt im Code: Struktur, Tempo, strukturierte Daten, Indexierung." },
+      { name: "Premium-Backlinks", desc: "Kontextuelle, indexierte Links von echten Websites. Ab 3$ pro Backlink." },
+      { name: "Systeme und Apps", desc: "Losungen gegen den Papierkram: Termine, Rechnungen, Lager, Buchhaltung. Preis auf Anfrage." },
+    ],
+    priceLabel: "Preise",
+    plans: [
+      { name: "Starter", price: "€350", feats: ["Eine Seite, Design inklusive", "Mobil optimiert", "Basis-SEO im Code"] },
+      { name: "Business", price: "€550", feats: ["Mehrere Seiten", "Individuelles Design", "Komplettes technisches SEO"] },
+      { name: "Shop", price: "€850", feats: ["Katalog und Warenkorb", "Online-Zahlungen", "Admin-Panel"] },
+    ],
+    priceNote: "+ 50 EUR pro zusatzliche Sprache. Premium-Backlinks ab 3$ pro Stuck. Individuelle Systeme und monatliches SEO: Preis auf Anfrage.",
+    priceCta: "Angebot anfragen",
+    proofLabel: "Ergebnisse",
+    proofLine: "SEO von uns fur Davo.md, gemessen in Ahrefs.",
+    statLbls: ["Domain Rating", "Backlinks", "Verweisende Domains"],
+    contactLabel: "Kontakt",
+    contactTitle: "Reden wir.",
+    contactSub: "Erzahl uns von deinem Projekt. Antwort innerhalb von 24 Stunden.",
+    loc: "Chisinau, Moldau",
+    rights: "Alle Rechte vorbehalten.",
+    a11y: { prev: "Zuruck", next: "Weiter", menu: "Menu", lang: "Sprache" },
   },
   fr: {
-    hero: {
-      headline: 'On construit le site\nOn le fait *monter.*\nOn automatise le reste',
-      sub: 'Des sites codes sur mesure qui se classent en premiere page de Google, des campagnes Meta & Google Ads, et des systemes de reservation, facturation et comptabilite qui liberent votre entreprise de la paperasse.',
-      cta: 'Demarrer un projet',
-      note: 'livre en 1–4 semaines · reponse en 24h',
+    nav: ["Projets", "Services", "Tarifs", "Contact"],
+    avail: "Disponibles pour de nouveaux projets",
+    availShort: "Disponibles",
+    h1a: "Des sites qui generent",
+    words: ["des clients.", "des ventes.", "des resultats."],
+    sub: "Studio a Chisinau. Sites, applications et SEO. Des solutions digitales simples et rapides pour les entreprises.",
+    ctaP: "Demander un devis",
+    ctaS: "Voir les projets",
+    heroCap: "Davo.md · Transport de passagers, reservation en ligne",
+    projLabel: "Quelques-uns de nos projets",
+    hint: "Glissez ou utilisez les fleches",
+    logosLabel: "Et d'autres clients",
+    projects: {
+      glg: { desc: "Pas qu'un site: l'application de l'auto-ecole, avec 60 instructeurs, operateurs, secretaires, professeurs, comptables et examinateurs.", tags: ["App", "Site"] },
+      davo: { desc: "Transport de passagers. Site, reservation avec choix du siege et SEO.", tags: ["Site", "Reservation", "SEO"] },
+      interbus: { desc: "Boutique de pieces auto avec ERP: factures, stock, comptabilite.", tags: ["E-commerce", "ERP"] },
+      eurogard: { desc: "Portails, clotures et automatisation. Un site vitrine qui vend constamment.", tags: ["Site"] },
+      radx: { desc: "Refroidissement industriel. Premiere page Google, des leads chaque semaine, sans publicite.", tags: ["Site", "SEO"] },
+      mobo: { desc: "Cuisines et meubles sur mesure. Site avec calculateur de prix en ligne.", tags: ["Site", "Calculateur"] },
+      infobac: { desc: "Plateforme de cours pour le bac informatique, avec simulations et certifications Certiport.", tags: ["Plateforme", "Cours"] },
     },
-    badges: ['Code ecrit main, zero templates', '+300% de trafic organique en moyenne', '10+ systemes en production', 'DR 50 · 2.6K backlinks', 'Livraison en 1-4 semaines', '5 langues, une equipe'],
-    badgeEm: 'Sites codes sur mesure des 350 EUR, de A a Z',
-    logos: "La confiance d'entreprises en Moldavie et en Europe",
-    work: {
-      label: 'Travaux selectionnes',
-      heading: 'Des projets qui *vendent.*',
-      view: 'Voir',
-      projects: {
-        davo:     { caption: 'Transport · Reservations',     line: '#1 en Moldavie pour le transport en ligne' },
-        interbus: { caption: 'Pieces auto · Boutique + ERP', line: "Boutique + ERP qui gere toute l'entreprise" },
-        cmiea:    { caption: 'Education · Plateforme',       line: 'La plateforme educative de la municipalite' },
-        glg:      { caption: 'Auto-ecole · Rendez-vous',     line: '15 000+ diplomes, rendez-vous en ligne' },
-        radx:          { caption: 'Refroidissement · Site',     line: 'Page 1 sur Google, refroidissement industriel' },
-        eliteprotocol: { caption: 'Etiquette · Site premium',   line: 'Marque premium, au pixel pres' },
-        rizzaclassic:  { caption: 'Restauration · Italie',      line: 'Classiques italiennes, clients internationaux' },
-        autohuse:      { caption: 'Housses sur mesure',         line: 'Housses sur mesure, commandees en ligne' },
-      },
-    },
-    proof: {
-      label: 'Resultats reels',
-      quote: 'davo.md est *#1 sur Google* pour le transport Moldavie–Europe : *DR 50*, 2.6K backlinks et *+300% de trafic organique* apres la refonte.',
-      attribution: 'Davo.md, un projet landings.md · donnees reelles Ahrefs',
-    },
-    stats: {
-      cells: [
-        { v: '24h', l: 'temps de reponse' },
-        { v: '300%', l: 'augmentation moyenne du trafic' },
-        { v: '10+', l: 'systemes sur mesure en production' },
-        { v: 'DR 50', l: 'davo.md · 2.6K backlinks' },
-      ],
-      offerLabel: "L'offre",
-      offerTitle: 'des 350 EUR',
-      offerSub: 'Site code sur mesure, design, construction, lancement.',
-      offerNote: 'Livre en 1-4 semaines.',
-      floats: ['SITE', 'SEO', 'ADS', 'SYSTEMES'],
-    },
-    about: {
-      heading: 'Des solutions, pas seulement des *sites.*',
-      headingSub: 'Sites, SEO, ads et systemes business, une seule equipe, de A a Z.',
-      aboutTitle: "L'agence",
-      aboutBody: 'landings.md est une agence web a Chisinau. Chaque site est code a la main, pas de themes, pas de builders, puis classe sur Google, avec le business automatise derriere.',
-      stackLabel: 'Le stack',
-      stack: ['Next.js', 'React', 'Tailwind', 'Code ecrit main'],
-      langsLabel: '5 langues',
-      langsNote: "Chaque site livre parle jusqu'a 5 langues.",
-      processLabel: 'Processus court',
-      steps: [
-        { n: '01', t: 'Analyse', b: 'marche & mots-cles' },
-        { n: '02', t: 'Construction', b: 'site + systeme, code main' },
-        { n: '03', t: 'Croissance', b: 'SEO, ads, optimisation continue' },
-      ],
-      contactLabel: 'Contact',
-      avail: 'Disponible pour de nouveaux projets',
-    },
-    contact: {
-      label: 'Contact',
-      heading: 'Pret a attirer plus de *clients ?*',
-      sub: 'Parlez-nous de votre activite. On vous montre comment apparaitre sur Google, quoi automatiser et combien ca couterait.',
-      form: { name: 'Nom', email: 'Email', message: 'Parlez-nous de votre activite...', send: 'Envoyer' },
-    },
-    footer: { tagline: 'On construit le site. On le fait monter. On automatise le reste.', copy: '© 2026 landings.md · Chisinau, Moldavie', nav: ['Portfolio', 'Tarifs', 'Solutions', 'Etudes de Cas'], pages: 'Pages', reach: 'Contact' },
-    pill: { l1: 'Un projet en tete ?', l2: 'Demandez un devis, des 350 EUR' },
+    servLabel: "Services",
+    services: [
+      { name: "Site web", desc: "Construit de zero, rapide, optimise pour tous les ecrans." },
+      { name: "Design", desc: "Minimaliste, propre, pense pour votre marque." },
+      { name: "SEO dans le code", desc: "SEO technique ecrit directement dans le code: structure, vitesse, donnees structurees, indexation." },
+      { name: "Backlinks premium", desc: "Liens contextuels, indexes, depuis de vrais sites. A partir de 3$ par backlink." },
+      { name: "Systemes et applications", desc: "Des solutions qui suppriment la paperasse: rendez-vous, factures, stock, comptabilite. Prix sur demande." },
+    ],
+    priceLabel: "Tarifs",
+    plans: [
+      { name: "Starter", price: "€350", feats: ["Une page, design inclus", "Optimise mobile", "SEO de base dans le code"] },
+      { name: "Business", price: "€550", feats: ["Plusieurs pages", "Design personnalise", "SEO technique complet"] },
+      { name: "Boutique", price: "€850", feats: ["Catalogue et panier", "Paiements en ligne", "Panneau d'administration"] },
+    ],
+    priceNote: "+ 50 EUR par langue supplementaire. Backlinks premium a partir de 3$ piece. Systemes sur mesure et SEO mensuel: prix sur demande.",
+    priceCta: "Demander un devis",
+    proofLabel: "Resultats",
+    proofLine: "SEO realise par nous pour Davo.md, mesure dans Ahrefs.",
+    statLbls: ["Domain Rating", "Backlinks", "Domaines referents"],
+    contactLabel: "Contact",
+    contactTitle: "Parlons-en.",
+    contactSub: "Parlez-nous de votre projet. Reponse sous 24 heures.",
+    loc: "Chisinau, Moldavie",
+    rights: "Tous droits reserves.",
+    a11y: { prev: "Precedent", next: "Suivant", menu: "Menu", lang: "Langue" },
   },
   es: {
-    hero: {
-      headline: 'Creamos tu web\nLa llevamos *arriba.*\nAutomatizamos el resto',
-      sub: 'Webs a medida que aparecen en la primera pagina de Google, campanas de Meta & Google Ads, y sistemas de reservas, facturacion y contabilidad que liberan tu negocio del papeleo.',
-      cta: 'Iniciar proyecto',
-      note: 'entregado en 1–4 semanas · respuesta en 24h',
+    nav: ["Proyectos", "Servicios", "Precios", "Contacto"],
+    avail: "Disponibles para nuevos proyectos",
+    availShort: "Disponibles",
+    h1a: "Webs que generan",
+    words: ["clientes.", "ventas.", "confianza."],
+    sub: "Estudio en Chisinau. Webs, aplicaciones y SEO. Soluciones digitales simples y rapidas para negocios.",
+    ctaP: "Pedir presupuesto",
+    ctaS: "Ver proyectos",
+    heroCap: "Davo.md · Transporte de pasajeros, reservas online",
+    projLabel: "Algunos de nuestros proyectos",
+    hint: "Arrastra o usa las flechas",
+    logosLabel: "Y otros clientes",
+    projects: {
+      glg: { desc: "No solo una web: la aplicacion de la autoescuela, con 60 instructores, operadores, secretarias, profesores, contables y examinadores.", tags: ["App", "Web"] },
+      davo: { desc: "Transporte de pasajeros. Web, reservas con eleccion de asiento y SEO.", tags: ["Web", "Reservas", "SEO"] },
+      interbus: { desc: "Tienda de piezas de auto con ERP: facturas, stock, contabilidad.", tags: ["E-commerce", "ERP"] },
+      eurogard: { desc: "Puertas, vallas y automatizacion. Una web de presentacion que vende constantemente.", tags: ["Web"] },
+      radx: { desc: "Refrigeracion industrial. Primera pagina en Google, leads cada semana, sin publicidad.", tags: ["Web", "SEO"] },
+      mobo: { desc: "Cocinas y muebles a medida. Web con calculadora de precios online.", tags: ["Web", "Calculadora"] },
+      infobac: { desc: "Plataforma de cursos para el examen de informatica, con simulaciones y certificaciones Certiport.", tags: ["Plataforma", "Cursos"] },
     },
-    badges: ['Codigo a mano, cero plantillas', '+300% de trafico organico de media', '10+ sistemas en produccion', 'DR 50 · 2.6K backlinks', 'Entrega en 1-4 semanas', '5 idiomas, un equipo'],
-    badgeEm: 'Webs a medida desde 350 EUR, de principio a fin',
-    logos: 'Confianza de empresas en Moldavia y Europa',
-    work: {
-      label: 'Trabajos seleccionados',
-      heading: 'Proyectos que *venden.*',
-      view: 'Ver',
-      projects: {
-        davo:     { caption: 'Transporte · Reservas',        line: '#1 en Moldavia en transporte online' },
-        interbus: { caption: 'Repuestos · Tienda + ERP',     line: 'Tienda + ERP que dirige todo el negocio' },
-        cmiea:    { caption: 'Educacion · Plataforma',       line: 'La plataforma educativa del municipio' },
-        glg:      { caption: 'Autoescuela · Citas',          line: '15.000+ graduados, citas online' },
-        radx:          { caption: 'Refrigeracion · Web',        line: 'Pagina 1 en Google en refrigeracion industrial' },
-        eliteprotocol: { caption: 'Etiqueta · Web premium',     line: 'Marca premium, pixel a pixel' },
-        rizzaclassic:  { caption: 'Restauracion · Italia',      line: 'Clasicos italianos, clientes internacionales' },
-        autohuse:      { caption: 'Fundas a medida · Pedidos',  line: 'Fundas a medida, pedidas online' },
-      },
-    },
-    proof: {
-      label: 'Resultados reales',
-      quote: 'davo.md es *#1 en Google* en transporte Moldavia–Europa: *DR 50*, 2.6K backlinks y *+300% de trafico organico* tras el relanzamiento.',
-      attribution: 'Davo.md, un proyecto de landings.md · datos reales de Ahrefs',
-    },
-    stats: {
-      cells: [
-        { v: '24h', l: 'tiempo de respuesta' },
-        { v: '300%', l: 'aumento medio del trafico' },
-        { v: '10+', l: 'sistemas a medida en produccion' },
-        { v: 'DR 50', l: 'davo.md · 2.6K backlinks' },
-      ],
-      offerLabel: 'La oferta',
-      offerTitle: 'desde 350 EUR',
-      offerSub: 'Web a medida, diseno, construccion, lanzamiento.',
-      offerNote: 'Entregado en 1-4 semanas.',
-      floats: ['SITE', 'SEO', 'ADS', 'SISTEMAS'],
-    },
-    about: {
-      heading: 'Soluciones, no solo *webs.*',
-      headingSub: 'Webs, SEO, ads y sistemas de negocio, un solo equipo, de principio a fin.',
-      aboutTitle: 'La agencia',
-      aboutBody: 'landings.md es una agencia web en Chisinau. Codificamos cada web a mano, sin plantillas, sin builders, la subimos en Google y automatizamos el negocio detras.',
-      stackLabel: 'El stack',
-      stack: ['Next.js', 'React', 'Tailwind', 'Codigo a mano'],
-      langsLabel: '5 idiomas',
-      langsNote: 'Cada web entregada habla hasta 5 idiomas.',
-      processLabel: 'Proceso corto',
-      steps: [
-        { n: '01', t: 'Analisis', b: 'mercado y palabras clave' },
-        { n: '02', t: 'Construccion', b: 'web + sistema, codigo a mano' },
-        { n: '03', t: 'Crecimiento', b: 'SEO, ads, optimizacion continua' },
-      ],
-      contactLabel: 'Contacto',
-      avail: 'Disponible para nuevos proyectos',
-    },
-    contact: {
-      label: 'Contacto',
-      heading: 'Listo para mas *clientes?*',
-      sub: 'Cuentanos sobre tu negocio. Te mostramos como posicionarte en Google, que automatizar y cuanto costaria.',
-      form: { name: 'Nombre', email: 'Email', message: 'Cuentanos sobre tu negocio...', send: 'Enviar mensaje' },
-    },
-    footer: { tagline: 'Creamos tu web. La llevamos arriba. Automatizamos el resto.', copy: '© 2026 landings.md · Chisinau, Moldavia', nav: ['Portafolio', 'Precios', 'Soluciones', 'Casos de Estudio'], pages: 'Paginas', reach: 'Contacto' },
-    pill: { l1: 'Un proyecto en mente?', l2: 'Pide presupuesto, desde 350 EUR' },
+    servLabel: "Servicios",
+    services: [
+      { name: "Web", desc: "Construida desde cero, rapida y optimizada para cualquier pantalla." },
+      { name: "Diseno", desc: "Minimalista, limpio, pensado para tu marca." },
+      { name: "SEO en el codigo", desc: "SEO tecnico escrito directamente en el codigo: estructura, velocidad, datos estructurados, indexacion." },
+      { name: "Backlinks premium", desc: "Enlaces contextuales, indexados, de webs reales. Desde 3$ por backlink." },
+      { name: "Sistemas y aplicaciones", desc: "Soluciones que eliminan el papeleo: citas, facturas, stock, contabilidad. Precio a consultar." },
+    ],
+    priceLabel: "Precios",
+    plans: [
+      { name: "Starter", price: "€350", feats: ["Una pagina, diseno incluido", "Optimizada para movil", "SEO basico en el codigo"] },
+      { name: "Business", price: "€550", feats: ["Varias paginas", "Diseno personalizado", "SEO tecnico completo"] },
+      { name: "Tienda", price: "€850", feats: ["Catalogo y carrito", "Pagos online", "Panel de administracion"] },
+    ],
+    priceNote: "+ 50 EUR por idioma extra. Backlinks premium desde 3$ cada uno. Sistemas a medida y SEO mensual: precio a consultar.",
+    priceCta: "Pedir presupuesto",
+    proofLabel: "Resultados",
+    proofLine: "SEO hecho por nosotros para Davo.md, medido en Ahrefs.",
+    statLbls: ["Domain Rating", "Backlinks", "Dominios de referencia"],
+    contactLabel: "Contacto",
+    contactTitle: "Hablemos.",
+    contactSub: "Cuentanos tu proyecto. Respondemos en 24 horas.",
+    loc: "Chisinau, Moldavia",
+    rights: "Todos los derechos reservados.",
+    a11y: { prev: "Anterior", next: "Siguiente", menu: "Menu", lang: "Idioma" },
   },
+  ru: {
+    nav: ["Проекты", "Услуги", "Цены", "Контакты"],
+    avail: "Открыты для новых проектов",
+    availShort: "Открыты",
+    h1a: "Сайты, которые приносят",
+    words: ["клиентов.", "продажи.", "результат."],
+    sub: "Студия из Кишинёва. Сайты, приложения и SEO. Простые и быстрые цифровые решения для бизнеса в Молдове и Европе.",
+    ctaP: "Запросить предложение",
+    ctaS: "Смотреть проекты",
+    heroCap: "Davo.md · Пассажирские перевозки, онлайн-бронирование",
+    projLabel: "Несколько наших проектов",
+    hint: "Тяните или используйте стрелки",
+    logosLabel: "И другие клиенты",
+    projects: {
+      glg: { desc: "Не просто сайт: приложение автошколы, 60 инструкторов, операторы, секретари, преподаватели, бухгалтеры и экзаменаторы.", tags: ["Приложение", "Сайт"] },
+      davo: { desc: "Пассажирские перевозки. Сайт, бронирование с выбором места и SEO.", tags: ["Сайт", "Бронирование", "SEO"] },
+      interbus: { desc: "Магазин автозапчастей с ERP: счета, склад, бухгалтерия.", tags: ["E-commerce", "ERP"] },
+      eurogard: { desc: "Ворота, заборы и автоматика. Сайт-визитка, который стабильно продаёт.", tags: ["Сайт"] },
+      radx: { desc: "Промышленное охлаждение. Первая страница Google, заявки каждую неделю, без рекламы.", tags: ["Сайт", "SEO"] },
+      mobo: { desc: "Кухни и мебель на заказ. Сайт с онлайн-калькулятором цены.", tags: ["Сайт", "Калькулятор"] },
+      infobac: { desc: "Платформа курсов для экзамена по информатике, с симуляциями и сертификациями Certiport.", tags: ["Платформа", "Курсы"] },
+    },
+    servLabel: "Услуги",
+    services: [
+      { name: "Сайт", desc: "Собран с нуля, быстрый, оптимизирован под любой экран." },
+      { name: "Дизайн", desc: "Минималистичный, чистый, под ваш бренд." },
+      { name: "SEO в коде", desc: "Техническая оптимизация прямо в коде: структура, скорость, структурированные данные, индексация." },
+      { name: "Премиум-беклинки", desc: "Контекстные, индексируемые ссылки с реальных сайтов. От 3$ за беклинк." },
+      { name: "Системы и приложения", desc: "Решения, которые убирают бумажную работу: записи, счета, склад, бухгалтерия. Цена по запросу." },
+    ],
+    priceLabel: "Цены",
+    plans: [
+      { name: "Starter", price: "€350", feats: ["Одна страница, дизайн включён", "Оптимизация под мобильные", "Базовое SEO в коде"] },
+      { name: "Business", price: "€550", feats: ["Несколько страниц", "Индивидуальный дизайн", "Полное техническое SEO"] },
+      { name: "Магазин", price: "€850", feats: ["Каталог и корзина", "Онлайн-оплата", "Панель администратора"] },
+    ],
+    priceNote: "+ 50 EUR за дополнительный язык. Премиум-беклинки от 3$ за штуку. Индивидуальные системы и ежемесячное SEO: цена по запросу.",
+    priceCta: "Запросить предложение",
+    proofLabel: "Результаты",
+    proofLine: "Наше SEO для Davo.md, измерено в Ahrefs.",
+    statLbls: ["Domain Rating", "Беклинки", "Ссылающиеся домены"],
+    contactLabel: "Контакты",
+    contactTitle: "Давайте поговорим.",
+    contactSub: "Напишите нам о вашем проекте. Отвечаем в течение 24 часов.",
+    loc: "Кишинёв, Молдова",
+    rights: "Все права защищены.",
+    a11y: { prev: "Назад", next: "Вперёд", menu: "Меню", lang: "Язык" },
+  },
+};
+
+const SECTION_IDS = ["proiecte", "servicii", "preturi", "contact"];
+const EMAIL = "contact@landings.md";
+const WHATSAPP = "https://wa.me/37368327082";
+const TELEGRAM = "https://t.me/damiqqn";
+const INSTAGRAM = "https://www.instagram.com/landings.md";
+
+const d = (s: string) => ({ "--d": s }) as React.CSSProperties;
+
+function WhatsAppIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z" />
+    </svg>
+  );
 }
 
-/* ──────────────────────────────────────────────────────────────── */
+function InstagramIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z" />
+    </svg>
+  );
+}
 
-export default function Home() {
-  const { language } = useLanguage()
-  const t = T[language as keyof typeof T] ?? T.en
+function TelegramIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+    </svg>
+  );
+}
 
-  /* pointer glow follows the cursor across the dashboard */
-  const glowRef = useRef<HTMLDivElement | null>(null)
+/* ------------------------------------------------------------------ */
+/* giant hero orb (v2): fibonacci dot sphere at native resolution      */
+/* ------------------------------------------------------------------ */
+
+function HeroOrb() {
+  const ref = useRef<HTMLCanvasElement>(null);
+
   useEffect(() => {
-    if (window.matchMedia('(pointer: coarse)').matches) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    let raf = 0, tx = -600, ty = -600, cx = -600, cy = -600
-    const loop = () => {
-      cx += (tx - cx) * 0.18
-      cy += (ty - cy) * 0.18
-      if (glowRef.current) glowRef.current.style.transform = `translate(${cx}px, ${cy}px)`
-      raf = requestAnimationFrame(loop)
+    const canvas = ref.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    let w = 0;
+    let h = 0;
+    const resize = () => {
+      const r = canvas.getBoundingClientRect();
+      w = r.width;
+      h = r.height;
+      canvas.width = Math.max(1, Math.round(w * dpr));
+      canvas.height = Math.max(1, Math.round(h * dpr));
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
+
+    const N = 1700;
+    const pts: Array<[number, number, number]> = [];
+    const ga = Math.PI * (3 - Math.sqrt(5));
+    for (let i = 0; i < N; i++) {
+      const y = 1 - (i / (N - 1)) * 2;
+      const rad = Math.sqrt(Math.max(0, 1 - y * y));
+      const th = ga * i;
+      pts.push([Math.cos(th) * rad, y, Math.sin(th) * rad]);
     }
-    const onMove = (e: MouseEvent) => { tx = e.clientX; ty = e.clientY; if (!raf) loop() }
-    window.addEventListener('mousemove', onMove, { passive: true })
-    return () => { window.removeEventListener('mousemove', onMove); if (raf) cancelAnimationFrame(raf) }
-  }, [])
 
-  /* live dashboard state: counters, Chisinau clock, cycling lines */
-  const [dr, setDr] = useState(0)
-  const [traffic, setTraffic] = useState(0)
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setDr(50); setTraffic(300); return }
-    const t0 = performance.now()
-    let raf = 0
-    const tick = (now: number) => {
-      const p = Math.min((now - t0) / 1300, 1)
-      const e = 1 - Math.pow(1 - p, 3)
-      setDr(Math.round(e * 50))
-      setTraffic(Math.round(e * 300))
-      if (p < 1) raf = requestAnimationFrame(tick)
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [])
+    let raf = 0;
+    let running = false;
+    const tilt = 0.35;
+    const ct = Math.cos(tilt);
+    const st = Math.sin(tilt);
 
-  const [clock, setClock] = useState<string | null>(null)
-  useEffect(() => {
-    const update = () => setClock(new Date().toLocaleTimeString('ro-RO', { timeZone: 'Europe/Chisinau', hour12: false }))
-    update()
-    const id = setInterval(update, 1000)
-    return () => clearInterval(id)
-  }, [])
+    const loop = (t: number) => {
+      const time = t / 1000;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+      const cx = w / 2;
+      const cy = h / 2;
+      const R = Math.min(w, h) * 0.44 * (1 + 0.015 * Math.sin(time * 0.6));
+      const rot = time * 0.1;
+      const cr = Math.cos(rot);
+      const sr = Math.sin(rot);
+      for (const [x0, y0, z0] of pts) {
+        const x1 = x0 * cr + z0 * sr;
+        const z1 = -x0 * sr + z0 * cr;
+        const y2 = y0 * ct - z1 * st;
+        const z2 = y0 * st + z1 * ct;
+        const wob = 1 + 0.018 * Math.sin(3 * Math.atan2(y0, x1) + time * 0.8);
+        const px = cx + x1 * R * wob;
+        const py = cy + y2 * R * wob;
+        const depth = (z2 + 1) / 2;
+        ctx.beginPath();
+        ctx.arc(px, py, 0.6 + depth * 1.6, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(18, 18, 14, ${0.025 + depth * depth * 0.22})`;
+        ctx.fill();
+      }
+      raf = requestAnimationFrame(loop);
+    };
+    const start = () => {
+      if (running) return;
+      running = true;
+      raf = requestAnimationFrame(loop);
+    };
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(raf);
+    };
 
-  const FACTS = ['davo.md · #1 Google transport', 'inter-bus.md · ERP live', 'scoalaautoglg.com · programari online', 'cmiea.md · platforma educatie', 'radx.solutions · page 1 Google'] as const
-  const WORDS = ['Design', 'Code', 'SEO', 'Ads', 'Systems'] as const
-  const [factIdx, setFactIdx] = useState(0)
-  const [wordIdx, setWordIdx] = useState(0)
-  const [swapping, setSwapping] = useState(false)
+    const io = new IntersectionObserver(([e]) => (e.isIntersecting && !document.hidden ? start() : stop()));
+    io.observe(canvas);
+    const onVis = () => (document.hidden ? stop() : start());
+    document.addEventListener("visibilitychange", onVis);
+
+    return () => {
+      stop();
+      ro.disconnect();
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, []);
+
+  return <canvas ref={ref} className="hero-orb-canvas" aria-hidden="true" />;
+}
+
+/* ------------------------------------------------------------------ */
+/* slot-machine word cycler                                            */
+/* ------------------------------------------------------------------ */
+
+function Slot({ words }: { words: string[] }) {
+  const [i, setI] = useState(0);
+  const [snap, setSnap] = useState(false);
+  const [moving, setMoving] = useState(false);
+  const key = words.join("|");
+
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    setSnap(true);
+    setI(0);
+    const raf = requestAnimationFrame(() => requestAnimationFrame(() => setSnap(false)));
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return () => cancelAnimationFrame(raf);
     const id = setInterval(() => {
-      setSwapping(true)
-      setTimeout(() => {
-        setFactIdx((i) => (i + 1) % FACTS.length)
-        setWordIdx((i) => (i + 1) % WORDS.length)
-        setSwapping(false)
-      }, 220)
-    }, 2600)
-    return () => clearInterval(id)
-  }, [])
+      setMoving(true);
+      setI((v) => v + 1);
+    }, 2600);
+    return () => {
+      clearInterval(id);
+      cancelAnimationFrame(raf);
+    };
+  }, [key]);
 
-  /* 3D tilt for the project stage: the card group leans toward the cursor */
-  const stageRef = useRef<HTMLDivElement | null>(null)
-  const [tilt, setTilt] = useState({ rx: 0, ry: 0 })
-  const onStageMove = (e: React.MouseEvent) => {
-    const el = stageRef.current
-    if (!el) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    const r = el.getBoundingClientRect()
-    const px = (e.clientX - r.left) / r.width - 0.5
-    const py = (e.clientY - r.top) / r.height - 0.5
-    setTilt({ rx: -py * 7, ry: px * 9 })
-  }
-  const onStageLeave = () => setTilt({ rx: 0, ry: 0 })
+  const onEnd = (e: React.TransitionEvent) => {
+    if (e.propertyName !== "transform") return;
+    setMoving(false);
+    if (i >= words.length) {
+      setSnap(true);
+      setI(0);
+      requestAnimationFrame(() => requestAnimationFrame(() => setSnap(false)));
+    }
+  };
+
+  const list = [...words, words[0]];
 
   return (
-    <main className="flex min-h-[100svh] flex-col md:h-[100svh] md:overflow-hidden" style={{ background: '#0d0d0d' }}>
-      <div ref={glowRef} className="nv-glow-cursor" aria-hidden />
-      <SiteNav contactHref="mailto:contact@landings.md" />
+    <span className="slot">
+      <span
+        className={`slot-track${moving ? " moving" : ""}`}
+        style={{ transform: `translateY(${-(Math.min(i, words.length) * 1.12)}em)`, transition: snap ? "none" : undefined }}
+        onTransitionEnd={onEnd}
+      >
+        {list.map((w, k) => (
+          <span className="slot-word" key={k} aria-hidden={k > 0}>
+            {w}
+          </span>
+        ))}
+      </span>
+    </span>
+  );
+}
 
-      <div className="nv-container grid w-full flex-1 grid-cols-2 gap-2 pb-2 pt-1 md:gap-3 md:pb-3 md:pt-2 md:min-h-0 md:grid-cols-12 md:grid-rows-[repeat(12,minmax(0,1fr))]">
+/* ------------------------------------------------------------------ */
+/* count-up stat                                                       */
+/* ------------------------------------------------------------------ */
 
-        {/* ── HERO CELL : the loved ribbed graphic lives here ── */}
-        <Reveal className="col-span-2 min-w-0 md:col-span-8 md:row-span-7 md:min-h-0">
-          <div className="nv-edge h-full">
-            <div className="nv-edge-inner nv-inset--soft relative flex h-full flex-col overflow-hidden p-5 md:p-9">
-              {/* arch glow behind the ribs */}
-              <div
-                aria-hidden
-                className="nv-blob-spin absolute left-1/2 top-full h-[420px] w-[560px] -translate-x-1/2 -translate-y-1/3 rounded-full"
-                style={{
-                  background: 'conic-gradient(from 30deg, #FF9E7A, #f2d06f, #d23b33, #7a4df0, #FF9E7A)',
-                  filter: 'saturate(1.1) blur(90px)',
-                  opacity: 0.5,
-                }}
-              />
-              <div
-                aria-hidden
-                className="absolute left-1/2 bottom-0 h-40 w-[70%] -translate-x-1/2 translate-y-1/2 rounded-full"
-                style={{ background: '#fff', filter: 'blur(110px)', opacity: 0.22 }}
-              />
-              {/* the ribbed sheet */}
-              <div className="ribbed ribbed--flat" aria-hidden style={{ position: 'absolute', inset: 0, borderTop: 'none' }} />
+function StatValue({ target, decimals = 0, suffix = "" }: { target: number; decimals?: number; suffix?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
 
-              <div className="relative z-[1] flex h-full flex-col">
-                <span className="chip chip--em max-w-full self-start">
-                  <span className="chip-inner max-w-full justify-center !whitespace-normal px-4 !py-2 text-center !text-[12px] leading-snug md:!whitespace-nowrap md:!text-[13px]">
-                    {t.badgeEm}
-                  </span>
-                </span>
-                <h1
-                  className="mt-5 font-bold"
-                  style={{ fontSize: 'clamp(1.55rem, 3.6vw, 3.4rem)', lineHeight: 1.01, letterSpacing: '-0.05em' }}
-                >
-                  <Marked text={t.hero.headline} />
-                </h1>
-                <p className="mt-3 max-w-[560px] text-[0.8125rem] font-medium md:mt-4 md:text-[1.0625rem]" style={{ color: '#b8b8b9', lineHeight: 1.35 }}>
-                  {t.hero.sub}
-                </p>
-                <div className="flex-1" />
-                <div className="mt-5 flex flex-wrap items-center gap-4 md:mt-6">
-                  <a href="mailto:contact@landings.md" className="btn-metal">
-                    {t.hero.cta}
-                    <span className="nv-arr" aria-hidden>&rarr;</span>
-                  </a>
-                  <span className="text-[0.8125rem] font-medium" style={{ color: '#909099' }}>{t.hero.note}</span>
-                </div>
-                <div className="mt-4 flex items-center gap-2 text-[11px] font-medium md:mt-5" style={{ color: '#909099' }}>
-                  <span className={`nv-swap ${swapping ? 'nv-swap--out' : ''}`} style={{ color: '#b8b8b9' }}>{FACTS[factIdx]}</span>
-                </div>
-              </div>
-            </div>
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const fmt = (v: number) => v.toFixed(decimals) + suffix;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      el.textContent = fmt(target);
+      return;
+    }
+    let raf = 0;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        const t0 = performance.now();
+        const tick = (t: number) => {
+          const p = Math.min(1, (t - t0) / 1100);
+          el.textContent = fmt(target * (1 - Math.pow(1 - p, 3)));
+          if (p < 1) raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+      },
+      { threshold: 0.5 }
+    );
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(raf);
+    };
+  }, [target, decimals, suffix]);
+
+  return <span ref={ref}>{target.toFixed(decimals) + suffix}</span>;
+}
+
+/* ------------------------------------------------------------------ */
+/* projects carousel                                                   */
+/* ------------------------------------------------------------------ */
+
+function Carousel({ t, fx }: { t: Copy; fx: boolean }) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLElement>(null);
+  const [atStart, setAtStart] = useState(true);
+  const [atEnd, setAtEnd] = useState(false);
+
+  const measure = useCallback(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    const p = max > 0 ? el.scrollLeft / max : 0;
+    if (barRef.current) barRef.current.style.transform = `scaleX(${p})`;
+    setAtStart(el.scrollLeft < 8);
+    setAtEnd(el.scrollLeft > max - 8);
+  }, []);
+
+  useEffect(() => {
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [measure]);
+
+  const cardStep = () => {
+    const el = trackRef.current;
+    const card = el?.querySelector<HTMLElement>(".car-card");
+    return card ? card.offsetWidth + 22 : 480;
+  };
+
+  const step = (dir: number) => {
+    trackRef.current?.scrollBy({ left: dir * cardStep(), behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    let down = false;
+    let moved = false;
+    let startX = 0;
+    let startL = 0;
+    let lastX = 0;
+    let lastT = 0;
+    let vel = 0;
+
+    const pd = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse" || e.button !== 0) return;
+      down = true;
+      moved = false;
+      startX = e.clientX;
+      startL = el.scrollLeft;
+      lastX = e.clientX;
+      lastT = performance.now();
+      vel = 0;
+    };
+    const pm = (e: PointerEvent) => {
+      if (!down) return;
+      const dx = e.clientX - startX;
+      /* capture only once a real drag starts, so plain clicks keep their
+         native target (capturing on pointerdown retargets the click to the
+         track and kills the card links) */
+      if (!moved && Math.abs(dx) > 5) {
+        moved = true;
+        el.classList.add("dragging");
+        el.setPointerCapture(e.pointerId);
+      }
+      if (!moved) return;
+      el.scrollLeft = startL - dx;
+      const now = performance.now();
+      vel = (e.clientX - lastX) / Math.max(1, now - lastT);
+      lastX = e.clientX;
+      lastT = now;
+    };
+    const pu = () => {
+      if (!down) return;
+      down = false;
+      el.classList.remove("dragging");
+      if (moved) {
+        const w = cardStep();
+        const projected = el.scrollLeft - vel * 260;
+        const idx = Math.max(0, Math.round(projected / w));
+        el.scrollTo({ left: idx * w, behavior: "smooth" });
+      }
+      if (moved) {
+        const kill = (ev: MouseEvent) => {
+          ev.preventDefault();
+          ev.stopPropagation();
+          el.removeEventListener("click", kill, true);
+        };
+        el.addEventListener("click", kill, true);
+        setTimeout(() => el.removeEventListener("click", kill, true), 80);
+      }
+    };
+
+    el.addEventListener("pointerdown", pd);
+    el.addEventListener("pointermove", pm);
+    el.addEventListener("pointerup", pu);
+    el.addEventListener("pointercancel", pu);
+    return () => {
+      el.removeEventListener("pointerdown", pd);
+      el.removeEventListener("pointermove", pm);
+      el.removeEventListener("pointerup", pu);
+      el.removeEventListener("pointercancel", pu);
+    };
+  }, []);
+
+  return (
+    <div className="car">
+      <div className="container sec-head rv">
+        <div>
+          <div className="rl">
+            <h2 className="rl-i lbl">
+              <em aria-hidden="true">01</em>
+              {fx && <ThinkingOrb state="shaping" size={20} theme="light" className="orb-lbl" aria-label="" />}
+              {t.projLabel}
+            </h2>
           </div>
-        </Reveal>
+          <p className="fu car-hint" style={d("0.1s")}>
+            {t.hint}
+          </p>
+        </div>
+        <div className="car-nav fu" style={d("0.15s")}>
+          <button className="car-btn" onClick={() => step(-1)} disabled={atStart} aria-label={t.a11y.prev}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          <button className="car-btn" onClick={() => step(1)} disabled={atEnd} aria-label={t.a11y.next}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
 
-        {/* ── DR 50 ring ── */}
-        <Reveal delay={0.05} className="col-span-2 min-w-0 md:col-span-4 md:row-span-3 md:min-h-0">
-          <div className="nv-edge nv-edge--ring nv-cell h-full">
-            <div className="nv-edge-inner nv-inset flex h-full items-center gap-4 p-4 md:p-6">
-              <svg width="58" height="58" viewBox="0 0 96 96" aria-hidden className="shrink-0">
-                <circle cx="48" cy="48" r="42" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
-                <circle
-                  cx="48" cy="48" r="42" fill="none"
-                  stroke="#FF9E7A" strokeWidth="8" strokeLinecap="round"
-                  strokeDasharray="264" strokeDashoffset="132"
-                  transform="rotate(-90 48 48)"
-                  style={{ animation: 'nv-ring-fill 0.6s ease-out both' }}
+      <div className="car-track" ref={trackRef} onScroll={measure}>
+        {PROJECTS.map((p, i) => {
+          const c = t.projects[p.key];
+          return (
+            <a className="car-card rv" key={p.key} href={p.href} target="_blank" rel="noopener noreferrer">
+              <div className="car-media fu" style={d(`${0.05 + (i % 3) * 0.08}s`)}>
+                <img
+                  src={`${p.img}.webp`}
+                  srcSet={shotSrcSet(p.img)}
+                  sizes="(max-width: 860px) 84vw, min(76vw, 660px)"
+                  alt={`${p.name}, ${c.tags.join(", ")}`}
+                  width={1920}
+                  height={1200}
+                  loading="lazy"
+                  decoding="async"
+                  draggable={false}
                 />
-              </svg>
-              <div className="min-w-0">
-                <span className="block font-medium" style={{ fontSize: 'clamp(1.6rem, 2vw, 2.1rem)', letterSpacing: '-0.04em', lineHeight: 1, color: '#FF9E7A', whiteSpace: 'nowrap' }}>DR {dr}</span>
-                <span className="mt-1 block truncate text-[0.8125rem] font-medium" style={{ color: '#909099' }}>{t.stats.cells[3].l}</span>
-                <span className="mt-1 block text-[11px] font-medium" style={{ color: '#b8b8b9' }}>2.6K backlinks · 348 ref. domains</span>
-                <span className="block text-[11px] font-medium" style={{ color: '#FF9E7A' }}>Ahrefs · live</span>
               </div>
-            </div>
-          </div>
-        </Reveal>
-
-        {/* ── 300% bars ── */}
-        <Reveal delay={0.08} className="col-span-2 min-w-0 md:col-span-4 md:row-span-2 md:min-h-0">
-          <div className="nv-edge nv-edge--ring nv-cell h-full">
-            <div className="nv-edge-inner nv-inset flex h-full items-center justify-between gap-4 p-4 md:p-6">
-              <div className="min-w-0">
-                <span className="block font-medium" style={{ fontSize: 'clamp(1.5rem, 1.8vw, 1.9rem)', letterSpacing: '-0.04em', lineHeight: 1 }}>{traffic}%</span>
-                <span className="mt-1 block text-[0.75rem] font-medium leading-tight" style={{ color: '#909099' }}>{t.stats.cells[1].l}</span>
-                <span className="mt-0.5 block text-[10px] font-medium" style={{ color: '#FF9E7A' }}>Google Analytics · organic</span>
+              <div className="car-meta fu" style={d("0.15s")}>
+                <span className="car-name">{p.name}</span>
+                <span className="car-url">{p.domain} &#8599;</span>
               </div>
-              <div className="flex h-10 w-24 shrink-0 items-end gap-1" aria-hidden>
-                {[30, 44, 58, 74, 100].map((h, i) => (
-                  <span key={i} className="nv-bar flex-1 rounded-sm" style={{ height: `${h}%`, ['--i' as string]: i, background: i === 4 ? '#FF9E7A' : 'rgba(255,255,255,0.14)' }} />
+              <p className="car-desc fu" style={d("0.2s")}>
+                {c.desc}
+              </p>
+              <div className="car-tags fu" style={d("0.25s")}>
+                {c.tags.map((tag) => (
+                  <span className="tag" key={tag}>
+                    {tag}
+                  </span>
                 ))}
               </div>
+            </a>
+          );
+        })}
+      </div>
+      <div className="car-progress">
+        <i ref={barRef} />
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* page                                                                */
+/* ------------------------------------------------------------------ */
+
+export default function Home() {
+  const [lang, setLang] = useState<Lang>("ro");
+  const [fx, setFx] = useState(false);
+  const [fxHeavy, setFxHeavy] = useState(false);
+  const lenisRef = useRef<Lenis | null>(null);
+  const t = T[lang];
+
+  useEffect(() => {
+    try {
+      const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      setFx(!rm);
+      const c = document.createElement("canvas");
+      const gl = !!(c.getContext("webgl2") || c.getContext("webgl"));
+      const desktop = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      setFxHeavy(!rm && gl && desktop);
+    } catch {
+      setFxHeavy(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
+    for (const p of prefs) {
+      const code = (p || "").toLowerCase().slice(0, 2);
+      if ((LANGS as readonly string[]).includes(code)) {
+        setLang(code as Lang);
+        return;
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const lenis = new Lenis({ lerp: 0.115 });
+    lenisRef.current = lenis;
+    let raf = 0;
+    const loop = (time: number) => {
+      lenis.raf(time);
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => {
+      cancelAnimationFrame(raf);
+      lenis.destroy();
+      lenisRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("in");
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
+    );
+    document.querySelectorAll(".rv:not(.in)").forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [lang]);
+
+  const goto = (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (lenisRef.current) lenisRef.current.scrollTo(el, { offset: -60, duration: 1.05 });
+    else el.scrollIntoView({ behavior: "smooth" });
+  };
+
+  return (
+    <>
+      <main id="top">
+        <header className="top-bar">
+          <div className="container">
+            <div className="top-bar-in">
+              <a className="wordmark" href="#" onClick={(e) => goto(e, "top")} aria-label="landings.md">
+                <img src="/images/logo-mark.webp" alt="landings.md" width={57} height={96} />
+              </a>
+              <p className="status">
+                {fx ? <ThinkingOrb state="working" size={20} theme="light" className="orb-avail" aria-label={t.avail} /> : <span className="orb-ph" aria-hidden="true" />}
+                <span className="avail-long">{t.avail}</span>
+                <span className="avail-short">{t.availShort}</span>
+              </p>
             </div>
           </div>
-        </Reveal>
-
-        {/* ── 10+ systems nodes ── */}
-        <Reveal delay={0.11} className="col-span-2 min-w-0 md:col-span-4 md:row-span-2 md:min-h-0">
-          <div className="nv-edge nv-edge--ring nv-cell h-full">
-            <div className="nv-edge-inner nv-inset flex h-full items-center justify-between gap-4 p-4 md:p-6">
-              <div className="min-w-0">
-                <span className="block font-medium" style={{ fontSize: 'clamp(1.5rem, 1.8vw, 1.9rem)', letterSpacing: '-0.04em', lineHeight: 1 }}>{t.stats.cells[2].v}</span>
-                <span className="mt-1 block text-[0.75rem] font-medium leading-tight" style={{ color: '#909099' }}>{t.stats.cells[2].l}</span>
-                <span className="mt-0.5 block text-[10px] font-medium" style={{ color: '#FF9E7A' }}>Booking · ERP · CRM · Facturare</span>
-              </div>
-              <div className="flex w-24 shrink-0 items-center" aria-hidden>
-                <span className="nv-node h-2 w-2 rounded-full" style={{ background: '#FF9E7A' }} />
-                <span className="relative h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }}>
-                  <span className="nv-packet" />
+        </header>
+        {/* hero */}
+        <section className="hero rv">
+          <div className="hero-orb" aria-hidden="true">{fx && <HeroOrb />}</div>
+          <div className="container">
+            <h1 className="h1">
+              <span className="rl">
+                <span className="rl-i" style={d("0.06s")}>
+                  {t.h1a}
                 </span>
-                <span className="nv-node h-2 w-2 rounded-full" style={{ background: '#FF9E7A' }} />
-                <span className="relative h-px flex-1" style={{ background: 'rgba(255,255,255,0.14)' }}>
-                  <span className="nv-packet" style={{ animationDelay: '-1.2s' }} />
+              </span>
+              <span className="rl">
+                <span className="rl-i" style={d("0.16s")}>
+                  <Slot words={t.words} />
                 </span>
-                <span className="nv-node h-2 w-2 rounded-full" style={{ background: '#FF9E7A' }} />
-              </div>
-            </div>
-          </div>
-        </Reveal>
-
-        {/* ── PROJECTS : depth stage with floating metal-bezel cards ── */}
-        <Reveal delay={0.14} className="col-span-2 min-w-0 md:col-span-4 md:row-span-4 md:min-h-0">
-          <div className="nv-edge nv-edge--ring h-full">
-            <div
-              ref={stageRef}
-              onMouseMove={onStageMove}
-              onMouseLeave={onStageLeave}
-              className="nv-edge-inner nv-well nv-stage flex h-full flex-col p-4 md:p-6"
-            >
-              <div className="relative z-[1] flex items-baseline justify-between gap-3">
-                <h2 className="font-semibold" style={{ fontSize: '1.125rem', letterSpacing: '-0.03em' }}>
-                  <Marked text={t.work.heading} />
-                </h2>
-                <a href="/portfolio" className="shrink-0 text-[0.8125rem] font-medium transition-colors duration-150 hover:!text-white" style={{ color: '#FF9E7A' }}>
-                  {t.work.view} &rarr;
-                </a>
-              </div>
-              <div
-                className="relative z-[1] mt-4 grid min-h-0 flex-1 grid-cols-3 items-stretch gap-4 px-1 pb-3"
-                style={{
-                  transform: `perspective(800px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
-                  transition: 'transform 0.15s ease-out',
-                  transformStyle: 'preserve-3d',
-                }}
-              >
-                {PROJECTS_META.slice(0, 3).map((p, i) => (
-                  <a
-                    key={p.key}
-                    href={`https://${p.url}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="relative block h-full"
-                    style={{ transform: `translateZ(${(i === 1 ? 26 : 12)}px)` }}
-                  >
-                    <div className={`nv-bobwrap nv-bob-${i + 1} h-full`}>
-                    <div className="nv-float-card h-full min-h-[88px] md:min-h-[110px]">
-                      <div className="nv-float-card-img">
-                        <Image src={p.shot} alt={p.name} fill sizes="160px" className="object-cover object-top" />
-                        <span
-                          className="absolute inset-x-0 bottom-0 px-1.5 pb-1.5 pt-8 text-center text-[9px] font-medium leading-tight text-white md:px-2 md:pb-2 md:text-[10px]"
-                          style={{ background: 'linear-gradient(0deg, rgba(6,6,6,0.96) 32%, transparent)' }}
-                        >
-                          {p.name}
-                        </span>
-                      </div>
-                    </div>
-                    </div>
+              </span>
+            </h1>
+            <p className="hero-sub fu" style={d("0.3s")}>
+              {t.sub}
+            </p>
+            <div className="hero-cta fu" style={d("0.4s")}>
+              {(() => {
+                const cta = (
+                  <a className="btn" href="#contact" onClick={(e) => goto(e, "contact")}>
+                    {t.ctaP}
                   </a>
-                ))}
-              </div>
-            </div>
-          </div>
-        </Reveal>
-
-        {/* ── OFERTA ── */}
-        <Reveal delay={0.17} className="col-span-2 min-w-0 md:col-span-4 md:row-span-4 md:min-h-0">
-          <div className="nv-edge nv-edge--alt nv-cell h-full">
-            <div className="nv-edge-inner nv-inset flex h-full flex-col justify-center gap-1 p-4 text-center md:gap-0 md:p-6">
-              <div className="min-w-0">
-                <span className="block text-[11px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>{t.stats.offerLabel}</span>
-                <span className="mt-1 block whitespace-nowrap font-semibold md:mt-2" style={{ fontSize: 'clamp(1.5rem, 2.2vw, 2.2rem)', letterSpacing: '-0.04em', lineHeight: 1.1, color: '#FF9E7A' }}>
-                  {t.stats.offerTitle}
-                </span>
-                <p className="mx-auto mt-1.5 max-w-none text-[0.8125rem] font-medium md:mt-2 md:max-w-[240px]" style={{ color: '#b8b8b9' }}>{t.stats.offerSub}</p>
-                <p className="mt-1 flex flex-wrap items-center justify-center gap-x-2 text-[0.75rem] font-medium" style={{ color: '#909099' }}>
-                  {t.stats.offerNote}
-                  <span aria-hidden className={`nv-swap inline-block font-semibold ${swapping ? 'nv-swap--out' : ''}`} style={{ color: '#FF9E7A' }}>{WORDS[wordIdx]}</span>
-                </p>
-              </div>
-              <a href="mailto:contact@landings.md" className="btn-metal btn-metal--sm mx-auto mt-3 md:mt-4">
-                {t.hero.cta}
-                <span className="nv-arr" aria-hidden>&rarr;</span>
+                );
+                return fxHeavy ? (
+                  <FxBoundary fallback={cta}>
+                    <MetalFx variant="button" preset="chromatic" theme="light" normalizeHostStyles={false} className="fx-cta">
+                      {cta}
+                    </MetalFx>
+                  </FxBoundary>
+                ) : (
+                  cta
+                );
+              })()}
+              <a className="tlink" href="#proiecte" onClick={(e) => goto(e, "proiecte")}>
+                {t.ctaS}
               </a>
             </div>
-          </div>
-        </Reveal>
-
-        {/* ── CONTACT ── */}
-        <Reveal delay={0.2} className="col-span-2 min-w-0 md:col-span-4 md:row-span-4 md:min-h-0">
-          <div className="nv-edge nv-edge--ring nv-cell h-full">
-            <div className="nv-edge-inner nv-inset flex h-full flex-col justify-center gap-1.5 p-4 md:p-6">
-              <span className="text-[11px] font-medium uppercase tracking-[0.14em]" style={{ color: '#909099' }}>{t.contact.label}</span>
-              <a href="mailto:contact@landings.md" className="text-[0.875rem] font-medium text-white transition-colors duration-150 hover:!text-[#FF9E7A] md:text-[0.9375rem]">
-                contact@landings.md
-              </a>
-              <a href="tel:+37368327082" className="text-[0.9375rem] font-medium transition-colors duration-150 hover:!text-[#FF9E7A]" style={{ color: '#b8b8b9' }}>
-                +373 683 27 082
-              </a>
-              <a href="https://instagram.com/landings.md" target="_blank" rel="noopener noreferrer" className="text-[0.8125rem] font-medium transition-colors duration-150 hover:!text-[#FF9E7A]" style={{ color: '#b8b8b9' }}>
-                @landings.md
-              </a>
-              <div className="mt-1 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-                <p className="text-[0.75rem] font-medium" style={{ color: '#909099' }}>
-                  {t.about.avail}
-                </p>
-                <span className="whitespace-nowrap text-[0.75rem] font-semibold tabular-nums" style={{ color: '#FF9E7A' }}>
-                  {clock ? (
-                    <>Chisinau {clock.slice(0, 2)}<span className="nv-blink">:</span>{clock.slice(3, 5)}<span className="nv-blink">:</span>{clock.slice(6, 8)}</>
-                  ) : '24h'}
-                </span>
+            <div className="hero-meta fu" style={d("0.5s")}>
+              <span>{t.loc}</span>
+              <div className="hero-meta-links">
+                <a className="icon-btn" href={WHATSAPP} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                  <WhatsAppIcon />
+                </a>
+                <a className="icon-btn" href={TELEGRAM} target="_blank" rel="noopener noreferrer" aria-label="Telegram">
+                  <TelegramIcon />
+                </a>
+                <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
               </div>
             </div>
-          </div>
-        </Reveal>
-
-        {/* ── LOGO MARQUEE : curated clients, GLG readable ── */}
-        <Reveal delay={0.23} className="col-span-2 min-w-0 md:col-span-8 md:row-span-1 md:min-h-0">
-          <div className="nv-edge h-full">
-            <div className="nv-edge-inner nv-inset flex h-full items-center overflow-hidden px-2 py-1.5">
-              <div className="nv-marquee w-full">
-                <div className="nv-marquee-track">
-                  {[0, 1, 2, 3].map((half) => (
-                    <div key={half} className="flex items-center gap-10 pr-10" aria-hidden={half !== 0}>
-                      {ALL_LOGOS.map((l) => (
-                        <span key={`${half}-${l.k}`} className="nv-logo shrink-0">
-                          <Image src={`/images/logos/${l.k}.png`} alt={half === 0 ? l.k : ''} width={120} height={36} className={`w-auto ${l.h}`} style={LOGO_FILTERS[l.t]} />
-                        </span>
-                      ))}
-                    </div>
+            <div className="logos fu" style={d("0.6s")}>
+              <div className="logo-strip">
+                <div className="logo-row">
+                  {[...LOGOS, ...LOGOS].map((l, i) => (
+                    <img
+                      key={`${l.n}${i}`}
+                      className={i >= LOGOS.length ? "dup" : undefined}
+                      src={`/images/logos/${l.n}.png`}
+                      alt={i >= LOGOS.length ? "" : l.n}
+                      style={{ height: l.h }}
+                      decoding="async"
+                    />
                   ))}
                 </div>
               </div>
             </div>
           </div>
-        </Reveal>
+        </section>
 
-        {/* ── FOOTER: the shared site footer, compact for the bento cell ── */}
-        <Reveal delay={0.26} className="col-span-2 min-w-0 md:col-span-4 md:row-span-1 md:min-h-0">
-          <SiteFooter compact />
-        </Reveal>
+        {/* projects */}
+        <section className="section" id="proiecte">
+          <Carousel t={t} fx={fx} />
+        </section>
 
-      </div>
-    </main>
-  )
+        {/* services */}
+        <section className="section" id="servicii">
+          <div className="container">
+            <div className="rv">
+              <div className="rl">
+                <h2 className="rl-i lbl">
+                  <em aria-hidden="true">02</em>
+                  {fx && <ThinkingOrb state="weaving" size={20} theme="light" className="orb-lbl" aria-label="" />}
+                  {t.servLabel}
+                </h2>
+              </div>
+            </div>
+            <div className="srv-list" style={{ marginTop: 44 }}>
+              {t.services.map((s, i) => (
+                <div className="srv rv" key={i}>
+                  <span className="srv-n fu">{String(i + 1).padStart(2, "0")}</span>
+                  <h3 className="srv-name">
+                    <span className="rl">
+                      <span className="rl-i">{s.name}</span>
+                    </span>
+                  </h3>
+                  <p className="srv-desc fu" style={d("0.12s")}>
+                    {s.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* pricing */}
+        <section className="section" id="preturi">
+          <div className="container">
+            <div className="rv">
+              <div className="rl">
+                <h2 className="rl-i lbl">
+                  <em aria-hidden="true">03</em>
+                  {fx && <ThinkingOrb state="solving" size={20} theme="light" className="orb-lbl" aria-label="" />}
+                  {t.priceLabel}
+                </h2>
+              </div>
+            </div>
+            <div className="price-grid rv" style={{ marginTop: 44 }}>
+              {t.plans.map((p, i) => (
+                <div className="price-cell" key={i}>
+                  <div className="price-plan fu" style={d(`${i * 0.08}s`)}>
+                    {p.name}
+                  </div>
+                  <div className="price-val">
+                    <span className="rl">
+                      <span className="rl-i" style={d(`${0.08 + i * 0.08}s`)}>
+                        {p.price}
+                      </span>
+                    </span>
+                  </div>
+                  <ul className="price-feats fu" style={d(`${0.16 + i * 0.08}s`)}>
+                    {p.feats.map((f) => (
+                      <li key={f}>{f}</li>
+                    ))}
+                  </ul>
+                  <a
+                    className="price-cta fu"
+                    style={d(`${0.22 + i * 0.08}s`)}
+                    href={`mailto:${EMAIL}?subject=${encodeURIComponent(`${p.name} (${p.price})`)}`}
+                  >
+                    {t.priceCta}
+                  </a>
+                </div>
+              ))}
+            </div>
+            <p className="price-note rv fu">{t.priceNote}</p>
+          </div>
+        </section>
+
+        {/* proof */}
+        <section className="section" id="rezultate">
+          <div className="container">
+            <div className="rv">
+              <div className="rl">
+                <h2 className="rl-i lbl">
+                  <em aria-hidden="true">04</em>
+                  {fx && <ThinkingOrb state="breathing" size={20} theme="light" className="orb-lbl" aria-label="" />}
+                  {t.proofLabel}
+                </h2>
+              </div>
+              <p className="proof-line fu" style={d("0.1s")}>
+                {t.proofLine}
+              </p>
+            </div>
+            <div className="stats rv">
+              <div className="stat fu">
+                <div className="stat-val">
+                  <StatValue target={50} />
+                </div>
+                <div className="stat-lbl">{t.statLbls[0]}</div>
+              </div>
+              <div className="stat fu" style={d("0.1s")}>
+                <div className="stat-val">
+                  <StatValue target={2.6} decimals={1} suffix="K" />
+                </div>
+                <div className="stat-lbl">{t.statLbls[1]}</div>
+              </div>
+              <div className="stat fu" style={d("0.2s")}>
+                <div className="stat-val">
+                  <StatValue target={348} />
+                </div>
+                <div className="stat-lbl">{t.statLbls[2]}</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* contact */}
+        <section className="contact" id="contact">
+          <div className="container rv">
+            <div className="rl">
+              <span className="rl-i lbl" style={{ justifyContent: "center" }}>
+                <em aria-hidden="true">05</em> {t.contactLabel}
+              </span>
+            </div>
+            <div className="contact-orb fu" style={d("0.05s")}>
+              {fx && <ThinkingOrb state="connecting" size={64} theme="light" aria-label={t.contactTitle} />}
+            </div>
+            <h2 className="contact-title" style={{ marginTop: 24 }}>
+              <span className="rl">
+                <span className="rl-i" style={d("0.1s")}>
+                  {t.contactTitle}
+                </span>
+              </span>
+            </h2>
+            <p className="contact-sub fu" style={d("0.2s")}>
+              {t.contactSub}
+            </p>
+            <div className="fu" style={d("0.3s")}>
+              <a className="btn btn-lg" href={`mailto:${EMAIL}`}>
+                {EMAIL}
+              </a>
+            </div>
+            <div className="contact-links fu" style={d("0.4s")}>
+              <a className="pill-btn" href={WHATSAPP} target="_blank" rel="noopener noreferrer">
+                <WhatsAppIcon />
+                WhatsApp
+              </a>
+              <a className="pill-btn" href={TELEGRAM} target="_blank" rel="noopener noreferrer">
+                <TelegramIcon />
+                Telegram
+              </a>
+              <a className="pill-btn" href={INSTAGRAM} target="_blank" rel="noopener noreferrer">
+                <InstagramIcon />
+                Instagram
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="footer">
+        <div className="container footer-in">
+          <span>
+            &copy; {new Date().getFullYear()} landings.md. {t.rights}
+          </span>
+          <span>{t.loc}</span>
+        </div>
+      </footer>
+    </>
+  );
 }

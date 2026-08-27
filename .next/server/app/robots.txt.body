@@ -1,6 +1,0 @@
-User-Agent: *
-Allow: /
-Disallow: /_next/
-Disallow: /api/
-
-Sitemap: https://landings.md/sitemap.xml
