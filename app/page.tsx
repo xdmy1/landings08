@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import Lenis from "lenis";
 import { MetalFx } from "metal-fx";
 import { ThinkingOrb } from "thinking-orbs";
+import { HeroOrb } from "./fx";
 
 /* if a WebGL/CSS effect throws at runtime, fall back to the plain element */
 class FxBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { err: boolean }> {
@@ -403,101 +404,6 @@ function TelegramIcon() {
       <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
     </svg>
   );
-}
-
-/* ------------------------------------------------------------------ */
-/* giant hero orb (v2): fibonacci dot sphere at native resolution      */
-/* ------------------------------------------------------------------ */
-
-function HeroOrb() {
-  const ref = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = ref.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const dpr = Math.min(2, window.devicePixelRatio || 1);
-    let w = 0;
-    let h = 0;
-    const resize = () => {
-      const r = canvas.getBoundingClientRect();
-      w = r.width;
-      h = r.height;
-      canvas.width = Math.max(1, Math.round(w * dpr));
-      canvas.height = Math.max(1, Math.round(h * dpr));
-    };
-    resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(canvas);
-
-    const N = 1700;
-    const pts: Array<[number, number, number]> = [];
-    const ga = Math.PI * (3 - Math.sqrt(5));
-    for (let i = 0; i < N; i++) {
-      const y = 1 - (i / (N - 1)) * 2;
-      const rad = Math.sqrt(Math.max(0, 1 - y * y));
-      const th = ga * i;
-      pts.push([Math.cos(th) * rad, y, Math.sin(th) * rad]);
-    }
-
-    let raf = 0;
-    let running = false;
-    const tilt = 0.35;
-    const ct = Math.cos(tilt);
-    const st = Math.sin(tilt);
-
-    const loop = (t: number) => {
-      const time = t / 1000;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, w, h);
-      const cx = w / 2;
-      const cy = h / 2;
-      const R = Math.min(w, h) * 0.44 * (1 + 0.015 * Math.sin(time * 0.6));
-      const rot = time * 0.1;
-      const cr = Math.cos(rot);
-      const sr = Math.sin(rot);
-      for (const [x0, y0, z0] of pts) {
-        const x1 = x0 * cr + z0 * sr;
-        const z1 = -x0 * sr + z0 * cr;
-        const y2 = y0 * ct - z1 * st;
-        const z2 = y0 * st + z1 * ct;
-        const wob = 1 + 0.018 * Math.sin(3 * Math.atan2(y0, x1) + time * 0.8);
-        const px = cx + x1 * R * wob;
-        const py = cy + y2 * R * wob;
-        const depth = (z2 + 1) / 2;
-        ctx.beginPath();
-        ctx.arc(px, py, 0.6 + depth * 1.6, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(18, 18, 14, ${0.025 + depth * depth * 0.22})`;
-        ctx.fill();
-      }
-      raf = requestAnimationFrame(loop);
-    };
-    const start = () => {
-      if (running) return;
-      running = true;
-      raf = requestAnimationFrame(loop);
-    };
-    const stop = () => {
-      running = false;
-      cancelAnimationFrame(raf);
-    };
-
-    const io = new IntersectionObserver(([e]) => (e.isIntersecting && !document.hidden ? start() : stop()));
-    io.observe(canvas);
-    const onVis = () => (document.hidden ? stop() : start());
-    document.addEventListener("visibilitychange", onVis);
-
-    return () => {
-      stop();
-      ro.disconnect();
-      io.disconnect();
-      document.removeEventListener("visibilitychange", onVis);
-    };
-  }, []);
-
-  return <canvas ref={ref} className="hero-orb-canvas" aria-hidden="true" />;
 }
 
 /* ------------------------------------------------------------------ */
