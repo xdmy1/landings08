@@ -9,6 +9,7 @@ type Lang = (typeof LANGS)[number];
 
 type Chrome = {
   cta: string;
+  ctaShort: string;
   bandTitle: string;
   bandText: string;
   finalTitle: string;
@@ -23,6 +24,7 @@ type Chrome = {
 const C: Record<Lang, Chrome> = {
   ro: {
     cta: "Cere o ofertă",
+    ctaShort: "Cere ofertă",
     bandTitle: "Vrei un site care aduce clienți?",
     bandText: "Site-uri, aplicații și SEO. Prețuri de la 350 EUR.",
     finalTitle: "Hai să vorbim.",
@@ -35,6 +37,7 @@ const C: Record<Lang, Chrome> = {
   },
   en: {
     cta: "Request a quote",
+    ctaShort: "Get a quote",
     bandTitle: "Want a website that brings clients?",
     bandText: "Websites, apps and SEO. Prices from 350 EUR.",
     finalTitle: "Let's talk.",
@@ -47,6 +50,7 @@ const C: Record<Lang, Chrome> = {
   },
   de: {
     cta: "Angebot anfragen",
+    ctaShort: "Angebot",
     bandTitle: "Willst du eine Website, die Kunden bringt?",
     bandText: "Websites, Apps und SEO. Preise ab 350 EUR.",
     finalTitle: "Reden wir.",
@@ -59,6 +63,7 @@ const C: Record<Lang, Chrome> = {
   },
   fr: {
     cta: "Demander un devis",
+    ctaShort: "Devis",
     bandTitle: "Envie d'un site qui apporte des clients?",
     bandText: "Sites, applications et SEO. A partir de 350 EUR.",
     finalTitle: "Parlons-en.",
@@ -71,6 +76,7 @@ const C: Record<Lang, Chrome> = {
   },
   es: {
     cta: "Pedir presupuesto",
+    ctaShort: "Presupuesto",
     bandTitle: "Quieres una web que traiga clientes?",
     bandText: "Webs, aplicaciones y SEO. Desde 350 EUR.",
     finalTitle: "Hablemos.",
@@ -83,6 +89,7 @@ const C: Record<Lang, Chrome> = {
   },
   ru: {
     cta: "Запросить предложение",
+    ctaShort: "Заявка",
     bandTitle: "Хотите сайт, который приносит клиентов?",
     bandText: "Сайты, приложения и SEO. Цены от 350 EUR.",
     finalTitle: "Давайте поговорим.",
@@ -153,7 +160,8 @@ export function BlogTopBar() {
             <img src="/images/logo-mark.webp" alt="landings.md" width={57} height={96} />
           </a>
           <a className="btn btn-sm" href="/#contact">
-            {t.cta}
+            <span className="cta-long">{t.cta}</span>
+            <span className="cta-short">{t.ctaShort}</span>
           </a>
         </div>
       </div>

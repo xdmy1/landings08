@@ -163,7 +163,8 @@ button {
   transform: scale(0.94);
 }
 
-.avail-short {
+.avail-short,
+.cta-short {
   display: none;
 }
 
@@ -1122,12 +1123,22 @@ button {
     height: 28px;
   }
 
-  .avail-long {
+  .avail-long,
+  .cta-long {
     display: none;
   }
 
-  .avail-short {
+  .avail-short,
+  .cta-short {
     display: inline;
+  }
+
+  .btn-sm {
+    height: 38px;
+    padding: 0 16px;
+    font-size: 13.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .hero {
