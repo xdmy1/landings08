@@ -1204,6 +1204,13 @@ button {
     justify-content: center;
   }
 
+  .blog-orb {
+    width: 360px;
+    top: -40px;
+    right: -140px;
+    opacity: 0.5;
+  }
+
   .footer {
     margin-top: 64px;
   }
