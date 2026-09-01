@@ -163,6 +163,11 @@ button {
   transform: scale(0.94);
 }
 
+/* the CTA pill sits concentric inside the capsule: side inset = vertical inset */
+.top-bar-cta {
+  padding-right: 9px;
+}
+
 .avail-short,
 .cta-short {
   display: none;
@@ -1139,6 +1144,10 @@ button {
     font-size: 13.5px;
     white-space: nowrap;
     flex-shrink: 0;
+  }
+
+  .top-bar-cta {
+    padding-right: 7px;
   }
 
   .hero {

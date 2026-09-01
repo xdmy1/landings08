@@ -154,7 +154,7 @@ export function BlogTopBar() {
   return (
     <header className="top-bar">
       <div className="container">
-        <div className="top-bar-in">
+        <div className="top-bar-in top-bar-cta">
           <a className="wordmark" href="/" aria-label="landings.md">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/images/logo-mark.webp" alt="landings.md" width={57} height={96} />
