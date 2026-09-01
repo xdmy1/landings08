@@ -15,6 +15,9 @@ type Chrome = {
   finalSub: string;
   allPosts: string;
   otherPosts: string;
+  nfTitle: string;
+  nfSub: string;
+  nfHome: string;
 };
 
 const C: Record<Lang, Chrome> = {
@@ -26,6 +29,9 @@ const C: Record<Lang, Chrome> = {
     finalSub: "Scrie-ne despre proiectul tău. Răspundem în cel mult 24 de ore.",
     allPosts: "Toate articolele",
     otherPosts: "Alte articole",
+    nfTitle: "Pagina nu există.",
+    nfSub: "Linkul e greșit sau pagina a fost mutată.",
+    nfHome: "Înapoi acasă",
   },
   en: {
     cta: "Request a quote",
@@ -35,6 +41,9 @@ const C: Record<Lang, Chrome> = {
     finalSub: "Tell us about your project. We reply within 24 hours.",
     allPosts: "All articles",
     otherPosts: "More articles",
+    nfTitle: "This page doesn't exist.",
+    nfSub: "The link is wrong or the page was moved.",
+    nfHome: "Back home",
   },
   de: {
     cta: "Angebot anfragen",
@@ -44,6 +53,9 @@ const C: Record<Lang, Chrome> = {
     finalSub: "Erzahl uns von deinem Projekt. Antwort innerhalb von 24 Stunden.",
     allPosts: "Alle Artikel",
     otherPosts: "Weitere Artikel",
+    nfTitle: "Diese Seite gibt es nicht.",
+    nfSub: "Der Link ist falsch oder die Seite wurde verschoben.",
+    nfHome: "Zur Startseite",
   },
   fr: {
     cta: "Demander un devis",
@@ -53,6 +65,9 @@ const C: Record<Lang, Chrome> = {
     finalSub: "Parlez-nous de votre projet. Reponse sous 24 heures.",
     allPosts: "Tous les articles",
     otherPosts: "D'autres articles",
+    nfTitle: "Cette page n'existe pas.",
+    nfSub: "Le lien est errone ou la page a ete deplacee.",
+    nfHome: "Retour a l'accueil",
   },
   es: {
     cta: "Pedir presupuesto",
@@ -62,6 +77,9 @@ const C: Record<Lang, Chrome> = {
     finalSub: "Cuentanos tu proyecto. Respondemos en 24 horas.",
     allPosts: "Todos los articulos",
     otherPosts: "Mas articulos",
+    nfTitle: "Esta pagina no existe.",
+    nfSub: "El enlace es incorrecto o la pagina se movio.",
+    nfHome: "Volver al inicio",
   },
   ru: {
     cta: "Запросить предложение",
@@ -71,6 +89,9 @@ const C: Record<Lang, Chrome> = {
     finalSub: "Напишите нам о вашем проекте. Отвечаем в течение 24 часов.",
     allPosts: "Все статьи",
     otherPosts: "Ещё статьи",
+    nfTitle: "Такой страницы нет.",
+    nfSub: "Ссылка неверна или страница была перемещена.",
+    nfHome: "На главную",
   },
 };
 
@@ -187,6 +208,44 @@ export function CtaFinal() {
         </a>
       </div>
     </div>
+  );
+}
+
+/* the 404 view, same design language as everything else */
+export function NotFoundView() {
+  const t = useChrome();
+  const fx = useFx();
+  return (
+    <>
+      <BlogReveal />
+      <BlogTopBar />
+      <main className="blog-hero nf-hero">
+        <div className="blog-orb" aria-hidden="true">{fx && <HeroOrb />}</div>
+        <div className="container blog-hero-in nf-in rv">
+          <p className="nf-code">
+            <span className="rl">
+              <span className="rl-i">404</span>
+            </span>
+          </p>
+          <h1 className="nf-title fu">{t.nfTitle}</h1>
+          <p className="contact-sub fu">{t.nfSub}</p>
+          <div className="nf-actions fu">
+            <a className="btn" href="/">
+              {t.nfHome}
+            </a>
+            <a className="pill-btn" href="mailto:contact@landings.md">
+              contact@landings.md
+            </a>
+          </div>
+        </div>
+      </main>
+      <footer className="footer">
+        <div className="container footer-in">
+          <span>&copy; {new Date().getFullYear()} landings.md</span>
+          <span>Chișinău, Moldova</span>
+        </div>
+      </footer>
+    </>
   );
 }
 

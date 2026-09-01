@@ -1069,6 +1069,43 @@ button {
   margin-bottom: 18px;
 }
 
+/* ---------- 404 ---------- */
+
+.nf-hero {
+  min-height: calc(100svh - 200px);
+  display: flex;
+  align-items: center;
+}
+
+.nf-in {
+  text-align: center;
+  width: 100%;
+}
+
+.nf-code {
+  font-size: clamp(120px, 22vw, 250px);
+  font-weight: 300;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.nf-title {
+  font-size: clamp(22px, 3.4vw, 34px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin-top: 10px;
+}
+
+.nf-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 34px;
+}
+
 /* ---------- responsive ---------- */
 
 @media (max-width: 860px) {
