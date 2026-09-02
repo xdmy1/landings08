@@ -726,35 +726,131 @@ button {
   max-width: 480px;
 }
 
-.stats {
+.viz-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  gap: 16px;
   margin-top: 40px;
 }
 
-.stat {
-  padding: 30px 24px 28px 0;
+.viz-card {
+  border: 1px solid var(--line-2);
+  border-radius: 20px;
+  padding: 26px 24px 22px;
+  background: linear-gradient(180deg, #f3f2ec 0%, #fbfbf8 55%, #fefefc 100%);
+  box-shadow: inset 0 3px 7px -2px rgba(20, 20, 15, 0.12), inset 0 1px 1px rgba(20, 20, 15, 0.06), inset 0 -1px 0 rgba(255, 255, 255, 0.9);
 }
 
-.stat + .stat {
-  border-left: 1px solid var(--line);
-  padding-left: 30px;
+.viz-fig {
+  height: 116px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
 }
 
-.stat-val {
-  font-size: clamp(46px, 6vw, 76px);
+.viz-fig svg {
+  height: 100%;
+  max-width: 100%;
+}
+
+.viz-val {
+  font-size: clamp(30px, 3vw, 40px);
   font-weight: 300;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
   line-height: 1;
   font-feature-settings: "tnum";
 }
 
-.stat-lbl {
-  font-size: 13px;
+.viz-l {
+  font-size: 13.5px;
+  font-weight: 500;
+  margin-top: 9px;
+}
+
+.viz-s {
+  font-size: 12.5px;
   color: var(--ink-2);
-  margin-top: 10px;
+  margin-top: 2px;
+}
+
+/* entrance states, all keyed off .rv.in */
+.viz-ring-fg {
+  stroke-dashoffset: 301.6;
+  transition: stroke-dashoffset 1.3s var(--ease-out) 0.15s;
+}
+
+.rv.in .viz-ring-fg {
+  stroke-dashoffset: 150.8;
+}
+
+.viz-tally rect {
+  fill: var(--ink);
+  transform: scaleY(0);
+  transform-box: fill-box;
+  transform-origin: bottom;
+  transition: transform 0.5s var(--ease-out);
+}
+
+.rv.in .viz-tally rect {
+  transform: scaleY(1);
+}
+
+.viz-dots circle {
+  fill: var(--ink);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.rv.in .viz-dots circle {
+  opacity: 0.75;
+}
+
+.viz-rank-m {
+  transition: transform 1.2s var(--ease-out) 0.2s;
+}
+
+.rv.in .viz-rank-m {
+  transform: translateY(-103.5px);
+}
+
+.viz-hub line {
+  stroke: var(--ink);
+  stroke-width: 1.4;
+  opacity: 0.3;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.5s var(--ease-out);
+}
+
+.rv.in .viz-hub line {
+  stroke-dashoffset: 0;
+}
+
+.viz-hub circle:not(.viz-hub-core) {
+  fill: var(--ink);
+  opacity: 0;
+  transform: scale(0.5);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 0.3s ease, transform 0.3s var(--ease-out);
+}
+
+.rv.in .viz-hub circle:not(.viz-hub-core) {
+  opacity: 0.85;
+  transform: scale(1);
+}
+
+.viz-ticks line {
+  stroke: var(--ink);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.rv.in .viz-ticks line {
+  opacity: 0.85;
 }
 
 /* ---------- contact ---------- */
@@ -1192,18 +1288,9 @@ button {
     padding-left: 0;
   }
 
-  .stats {
+  .viz-grid {
     grid-template-columns: 1fr;
-  }
-
-  .stat {
-    padding: 22px 0 20px;
-  }
-
-  .stat + .stat {
-    border-left: none;
-    border-top: 1px solid var(--line);
-    padding-left: 0;
+    gap: 12px;
   }
 
   .car-card {

@@ -74,7 +74,7 @@ type Copy = {
   priceCta: string;
   proofLabel: string;
   proofLine: string;
-  statLbls: [string, string, string];
+  statCards: { v: string; l: string; s: string }[];
   contactLabel: string;
   contactTitle: string;
   contactSub: string;
@@ -124,7 +124,14 @@ const T: Record<Lang, Copy> = {
     priceCta: "Cere ofertă",
     proofLabel: "Rezultate",
     proofLine: "SEO făcut de noi pentru Davo.md, măsurat în Ahrefs.",
-    statLbls: ["Domain Rating", "Backlink-uri", "Domenii de referință"],
+    statCards: [
+      { v: "50", l: "Domain Rating · Davo.md", s: "din 100, măsurat în Ahrefs" },
+      { v: "2.6K", l: "Backlink-uri · Davo.md", s: "un segment = 100 de link-uri" },
+      { v: "348", l: "Domenii de referință", s: "fiecare punct = un domeniu" },
+      { v: "Pag. 1", l: "Poziție în Google · RADX", s: "fără reclame plătite" },
+      { v: "60+", l: "Oameni în aplicația GLG", s: "instructori, operatori, contabili" },
+      { v: "24h", l: "Timp de răspuns", s: "la orice mesaj" },
+    ],
     contactLabel: "Contact",
     contactTitle: "Hai să vorbim.",
     contactSub: "Scrie-ne despre proiectul tău. Răspundem în cel mult 24 de ore.",
@@ -172,7 +179,14 @@ const T: Record<Lang, Copy> = {
     priceCta: "Request a quote",
     proofLabel: "Results",
     proofLine: "Our SEO for Davo.md, measured in Ahrefs.",
-    statLbls: ["Domain Rating", "Backlinks", "Referring domains"],
+    statCards: [
+      { v: "50", l: "Domain Rating · Davo.md", s: "out of 100, measured in Ahrefs" },
+      { v: "2.6K", l: "Backlinks · Davo.md", s: "one segment = 100 links" },
+      { v: "348", l: "Referring domains", s: "every dot is one domain" },
+      { v: "Page 1", l: "Google position · RADX", s: "no paid ads" },
+      { v: "60+", l: "People in the GLG app", s: "instructors, operators, accountants" },
+      { v: "24h", l: "Response time", s: "to any message" },
+    ],
     contactLabel: "Contact",
     contactTitle: "Let's talk.",
     contactSub: "Tell us about your project. We reply within 24 hours.",
@@ -220,7 +234,14 @@ const T: Record<Lang, Copy> = {
     priceCta: "Angebot anfragen",
     proofLabel: "Ergebnisse",
     proofLine: "SEO von uns fur Davo.md, gemessen in Ahrefs.",
-    statLbls: ["Domain Rating", "Backlinks", "Verweisende Domains"],
+    statCards: [
+      { v: "50", l: "Domain Rating · Davo.md", s: "von 100, gemessen in Ahrefs" },
+      { v: "2.6K", l: "Backlinks · Davo.md", s: "ein Segment = 100 Links" },
+      { v: "348", l: "Verweisende Domains", s: "jeder Punkt ist eine Domain" },
+      { v: "Seite 1", l: "Google-Position · RADX", s: "ohne bezahlte Werbung" },
+      { v: "60+", l: "Nutzer in der GLG-App", s: "Fahrlehrer, Operatoren, Buchhaltung" },
+      { v: "24h", l: "Antwortzeit", s: "auf jede Nachricht" },
+    ],
     contactLabel: "Kontakt",
     contactTitle: "Reden wir.",
     contactSub: "Erzahl uns von deinem Projekt. Antwort innerhalb von 24 Stunden.",
@@ -268,7 +289,14 @@ const T: Record<Lang, Copy> = {
     priceCta: "Demander un devis",
     proofLabel: "Resultats",
     proofLine: "SEO realise par nous pour Davo.md, mesure dans Ahrefs.",
-    statLbls: ["Domain Rating", "Backlinks", "Domaines referents"],
+    statCards: [
+      { v: "50", l: "Domain Rating · Davo.md", s: "sur 100, mesure dans Ahrefs" },
+      { v: "2.6K", l: "Backlinks · Davo.md", s: "un segment = 100 liens" },
+      { v: "348", l: "Domaines referents", s: "chaque point est un domaine" },
+      { v: "Page 1", l: "Position Google · RADX", s: "sans publicite payante" },
+      { v: "60+", l: "Personnes dans l'app GLG", s: "instructeurs, operateurs, comptables" },
+      { v: "24h", l: "Temps de reponse", s: "a chaque message" },
+    ],
     contactLabel: "Contact",
     contactTitle: "Parlons-en.",
     contactSub: "Parlez-nous de votre projet. Reponse sous 24 heures.",
@@ -316,7 +344,14 @@ const T: Record<Lang, Copy> = {
     priceCta: "Pedir presupuesto",
     proofLabel: "Resultados",
     proofLine: "SEO hecho por nosotros para Davo.md, medido en Ahrefs.",
-    statLbls: ["Domain Rating", "Backlinks", "Dominios de referencia"],
+    statCards: [
+      { v: "50", l: "Domain Rating · Davo.md", s: "de 100, medido en Ahrefs" },
+      { v: "2.6K", l: "Backlinks · Davo.md", s: "un segmento = 100 enlaces" },
+      { v: "348", l: "Dominios de referencia", s: "cada punto es un dominio" },
+      { v: "Pag. 1", l: "Posicion en Google · RADX", s: "sin anuncios pagados" },
+      { v: "60+", l: "Personas en la app GLG", s: "instructores, operadores, contables" },
+      { v: "24h", l: "Tiempo de respuesta", s: "a cualquier mensaje" },
+    ],
     contactLabel: "Contacto",
     contactTitle: "Hablemos.",
     contactSub: "Cuentanos tu proyecto. Respondemos en 24 horas.",
@@ -364,7 +399,14 @@ const T: Record<Lang, Copy> = {
     priceCta: "Запросить предложение",
     proofLabel: "Результаты",
     proofLine: "Наше SEO для Davo.md, измерено в Ahrefs.",
-    statLbls: ["Domain Rating", "Беклинки", "Ссылающиеся домены"],
+    statCards: [
+      { v: "50", l: "Domain Rating · Davo.md", s: "из 100, измерено в Ahrefs" },
+      { v: "2.6K", l: "Беклинки · Davo.md", s: "один сегмент = 100 ссылок" },
+      { v: "348", l: "Ссылающиеся домены", s: "каждая точка: один домен" },
+      { v: "Стр. 1", l: "Позиция в Google · RADX", s: "без платной рекламы" },
+      { v: "60+", l: "Люди в приложении GLG", s: "инструкторы, операторы, бухгалтеры" },
+      { v: "24ч", l: "Время ответа", s: "на любое сообщение" },
+    ],
     contactLabel: "Контакты",
     contactTitle: "Давайте поговорим.",
     contactSub: "Напишите нам о вашем проекте. Отвечаем в течение 24 часов.",
@@ -459,6 +501,113 @@ function Slot({ words }: { words: string[] }) {
     </span>
   );
 }
+
+/* ------------------------------------------------------------------ */
+/* result visuals: each encodes exactly the real number beside it,     */
+/* entrance-only animations driven by the shared .rv reveal system     */
+/* ------------------------------------------------------------------ */
+
+/* DR 50 out of 100: ring half filled */
+function RingViz() {
+  return (
+    <svg viewBox="0 0 120 120" className="viz-ring" aria-hidden="true">
+      <circle cx="60" cy="60" r="48" fill="none" stroke="var(--line-2)" strokeWidth="8" />
+      <circle
+        className="viz-ring-fg"
+        cx="60"
+        cy="60"
+        r="48"
+        fill="none"
+        stroke="var(--ink)"
+        strokeWidth="8"
+        strokeLinecap="round"
+        strokeDasharray="301.6"
+        transform="rotate(-90 60 60)"
+      />
+    </svg>
+  );
+}
+
+/* 2.6K backlinks: 26 tally bars, one per 100 links */
+function TallyViz() {
+  return (
+    <svg viewBox="0 0 256 80" className="viz-tally" aria-hidden="true">
+      {Array.from({ length: 26 }, (_, i) => (
+        <rect key={i} x={i * 10} y={8} width={6} height={64} rx={3} style={{ transitionDelay: `${i * 35}ms` }} />
+      ))}
+    </svg>
+  );
+}
+
+/* 348 referring domains: one dot per domain, 29 x 12 grid */
+function DotsViz() {
+  const dots = [];
+  for (let i = 0; i < 348; i++) {
+    dots.push(
+      <circle key={i} cx={4 + (i % 29) * 8} cy={4 + Math.floor(i / 29) * 8} r={1.8} style={{ transitionDelay: `${i * 2.5}ms` }} />
+    );
+  }
+  return (
+    <svg viewBox="0 0 232 96" className="viz-dots" aria-hidden="true">
+      {dots}
+    </svg>
+  );
+}
+
+/* page one in Google: the marker climbs the ten results of page 1 */
+function RankViz() {
+  return (
+    <svg viewBox="0 0 200 120" className="viz-rank" aria-hidden="true">
+      {Array.from({ length: 10 }, (_, i) => (
+        <line key={i} x1={32} y1={8 + i * 11.5} x2={200} y2={8 + i * 11.5} stroke={i < 3 ? "var(--ink-3)" : "var(--line-2)"} strokeWidth={i < 3 ? 2 : 1.5} strokeLinecap="round" />
+      ))}
+      <circle className="viz-rank-m" cx={12} cy={111.5} r={5.5} fill="var(--ink)" />
+    </svg>
+  );
+}
+
+/* the GLG app: one hub, people wired around it */
+function HubViz() {
+  const spokes = Array.from({ length: 12 }, (_, i) => {
+    const a = (i / 12) * Math.PI * 2 - Math.PI / 2;
+    return { x: 100 + Math.cos(a) * 56, y: 60 + Math.sin(a) * 44, d: i * 60 };
+  });
+  return (
+    <svg viewBox="0 0 200 120" className="viz-hub" aria-hidden="true">
+      {spokes.map((s, i) => (
+        <line key={`l${i}`} x1={100} y1={60} x2={s.x} y2={s.y} pathLength={1} style={{ transitionDelay: `${s.d}ms` }} />
+      ))}
+      {spokes.map((s, i) => (
+        <circle key={`c${i}`} cx={s.x} cy={s.y} r={3.2} style={{ transitionDelay: `${s.d + 120}ms` }} />
+      ))}
+      <circle className="viz-hub-core" cx={100} cy={60} r={5.5} fill="var(--ink)" />
+    </svg>
+  );
+}
+
+/* 24 hours: 24 ticks lighting up around the dial */
+function TicksViz() {
+  return (
+    <svg viewBox="0 0 120 120" className="viz-ticks" aria-hidden="true">
+      <circle cx="60" cy="60" r="26" fill="none" stroke="var(--line-2)" strokeWidth="1.5" />
+      {Array.from({ length: 24 }, (_, i) => {
+        const a = (i / 24) * Math.PI * 2 - Math.PI / 2;
+        return (
+          <line
+            key={i}
+            x1={60 + Math.cos(a) * 36}
+            y1={60 + Math.sin(a) * 36}
+            x2={60 + Math.cos(a) * 48}
+            y2={60 + Math.sin(a) * 48}
+            style={{ transitionDelay: `${i * 40}ms` }}
+          />
+        );
+      })}
+    </svg>
+  );
+}
+
+const VIZ = [RingViz, TallyViz, DotsViz, RankViz, HubViz, TicksViz];
 
 /* ------------------------------------------------------------------ */
 /* count-up stat                                                       */
@@ -942,25 +1091,26 @@ export default function Home() {
                 {t.proofLine}
               </p>
             </div>
-            <div className="stats rv">
-              <div className="stat fu">
-                <div className="stat-val">
-                  <StatValue target={50} />
-                </div>
-                <div className="stat-lbl">{t.statLbls[0]}</div>
-              </div>
-              <div className="stat fu" style={d("0.1s")}>
-                <div className="stat-val">
-                  <StatValue target={2.6} decimals={1} suffix="K" />
-                </div>
-                <div className="stat-lbl">{t.statLbls[1]}</div>
-              </div>
-              <div className="stat fu" style={d("0.2s")}>
-                <div className="stat-val">
-                  <StatValue target={348} />
-                </div>
-                <div className="stat-lbl">{t.statLbls[2]}</div>
-              </div>
+            <div className="viz-grid">
+              {t.statCards.map((c, i) => {
+                const Fig = VIZ[i];
+                return (
+                  <div className="viz-card rv" key={i}>
+                    <div className="viz-fig fu">
+                      <Fig />
+                    </div>
+                    <div className="viz-val fu" style={d("0.1s")}>
+                      {i === 0 ? <StatValue target={50} /> : i === 1 ? <StatValue target={2.6} decimals={1} suffix="K" /> : i === 2 ? <StatValue target={348} /> : c.v}
+                    </div>
+                    <div className="viz-l fu" style={d("0.16s")}>
+                      {c.l}
+                    </div>
+                    <div className="viz-s fu" style={d("0.22s")}>
+                      {c.s}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>
