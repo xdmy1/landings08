@@ -474,7 +474,7 @@ button {
 
 .car-card {
   flex: 0 0 auto;
-  width: min(76vw, 660px);
+  width: min(30vw, 400px);
   scroll-snap-align: start;
 }
 
@@ -483,7 +483,7 @@ button {
   border-radius: 16px;
   overflow: hidden;
   background: var(--surface);
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 10 / 15;
 }
 
 .car-media img {
@@ -1238,7 +1238,7 @@ button {
   }
 
   .car-card {
-    width: 84vw;
+    width: 72vw;
   }
 
   .contact {
