@@ -29,9 +29,9 @@ const PROJECTS = [
   { key: "glg", name: "Scoala Auto GLG", domain: "scoalaautoglg.com", href: "https://scoalaautoglg.com", img: "/images/shot-glg" },
   { key: "mobo", name: "Mobo", domain: "mobo.md", href: "https://mobo.md", img: "/images/shot-mobo" },
   { key: "davo", name: "Davo", domain: "davo.md", href: "https://davo.md", img: "/images/shot-davo" },
+  { key: "radx", name: "RADX Cooling", domain: "radx.solutions", href: "https://radx.solutions", img: "/images/shot-radx" },
   { key: "interbus", name: "Inter-Bus", domain: "inter-bus.md", href: "https://inter-bus.md", img: "/images/shot-interbus" },
   { key: "eurogard", name: "Eurogard", domain: "eurogard.md", href: "https://eurogard.md", img: "/images/shot-eurogard" },
-  { key: "radx", name: "RADX Cooling", domain: "radx.solutions", href: "https://radx.solutions", img: "/images/shot-radx" },
   { key: "infobac", name: "Infobac", domain: "infobac.md", href: "https://infobac.md", img: "/images/shot-infobac" },
 ] as const;
 
