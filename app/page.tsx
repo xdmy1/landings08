@@ -35,7 +35,7 @@ const PROJECTS = [
   { key: "infobac", name: "Infobac", domain: "infobac.md", href: "https://infobac.md", img: "/images/shot-infobac" },
 ] as const;
 
-const shotSrcSet = (base: string) => `${base}-800.webp 800w, ${base}-1280.webp 1280w, ${base}.webp 1920w`;
+const shotSrcSet = (base: string) => `${base}-800.webp 800w, ${base}-1280.webp 1280w`;
 
 const LOGOS: ReadonlyArray<{ n: string; h: number }> = [
   { n: "davo", h: 26 },
@@ -686,7 +686,7 @@ function Carousel({ t, fx }: { t: Copy; fx: boolean }) {
             <a className="car-card rv" key={p.key} href={p.href} target="_blank" rel="noopener noreferrer">
               <div className="car-media fu" style={d(`${0.05 + (i % 3) * 0.08}s`)}>
                 <img
-                  src={`${p.img}.webp`}
+                  src={`${p.img}-800.webp`}
                   srcSet={shotSrcSet(p.img)}
                   sizes="(max-width: 860px) 72vw, min(30vw, 400px)"
                   alt={`${p.name}, ${c.tags.join(", ")}`}
