@@ -7,7 +7,7 @@ import { MetalFx } from "metal-fx";
 import { ThinkingOrb } from "thinking-orbs";
 import { HeroOrb } from "../fx";
 import type { SeoPage } from "../_seo/types";
-import { SEO_INDEX } from "../_seo/index";
+import { SEO_INDEX, SEO_SLUGS } from "../_seo/index";
 
 /* if a WebGL/CSS effect throws at runtime, fall back to the plain element */
 class FxBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { err: boolean }> {
@@ -1275,6 +1275,18 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
       </main>
 
       <footer className="footer">
+        <nav className="foot-serv container" aria-label={base.servLabel}>
+          <p className="foot-serv-label">{base.servLabel}</p>
+          <ul>
+            {SEO_SLUGS.map((s) => (
+              <li key={s}>
+                <a href={`/${s}`} aria-current={seo?.slug === s ? "page" : undefined}>
+                  {SEO_INDEX[s]}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
         <div className="container footer-in">
           <span>
             &copy; {new Date().getFullYear()} landings.md. {t.rights}

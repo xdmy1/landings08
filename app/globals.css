@@ -326,9 +326,9 @@ button {
   display: block;
   overflow: hidden;
   box-sizing: content-box;
-  height: 1.12em;
-  padding: 0.08em 0 0.22em;
-  margin: -0.08em 0 -0.22em;
+  height: 1.04em;
+  padding: 0.12em 0 0.22em;
+  margin: -0.12em 0 -0.22em;
 }
 
 .slot-track {
@@ -340,7 +340,7 @@ button {
 .slot-word {
   display: block;
   height: 1.6em;
-  line-height: 1.12;
+  line-height: 1.04;
   color: var(--ink-2);
 }
 
@@ -918,7 +918,45 @@ button {
 }
 
 
+.foot-serv {
+  padding-block: 30px 24px;
+}
+
+.foot-serv-label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.foot-serv ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 26px;
+  margin-top: 14px;
+  list-style: none;
+}
+
+.foot-serv a {
+  font-size: 13.5px;
+  color: var(--ink-2);
+  border-bottom: 1px solid transparent;
+  padding-bottom: 1px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.foot-serv a:hover {
+  color: var(--ink);
+  border-color: var(--line-2);
+}
+
+.foot-serv a[aria-current="page"] {
+  color: var(--ink);
+}
+
 .footer-in {
+  border-top: 1px solid var(--line);
   display: flex;
   justify-content: space-between;
   align-items: center;
