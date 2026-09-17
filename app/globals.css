@@ -5,7 +5,7 @@
   --surface: #ffffff;
   --ink: #0f0f0e;
   --ink-2: #50504a;
-  --ink-3: #82827a;
+  --ink-3: #6b6b64;
   --line: #e2e1d8;
   --line-2: #d0cfc6;
   --green: #17a34a;
@@ -1010,6 +1010,34 @@ button {
 .foot-faq .faq-item p {
   font-size: 14.5px;
   padding-bottom: 18px;
+}
+
+.lang-row {
+  display: flex;
+  gap: 4px;
+}
+
+.lang-btn {
+  padding: 5px 9px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: none;
+  color: var(--ink-3);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.lang-btn:hover {
+  color: var(--ink);
+}
+
+.lang-btn.is-on {
+  color: var(--ink);
+  border-color: var(--line-2);
+  background: linear-gradient(180deg, #ecebe3 0%, #f8f8f4 58%, #fefefb 100%);
 }
 
 .footer-in {

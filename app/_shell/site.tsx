@@ -1070,6 +1070,15 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
 
   useEffect(() => {
     if (seo) return;
+    try {
+      const saved = window.localStorage.getItem("lang");
+      if (saved && (LANGS as readonly string[]).includes(saved)) {
+        setLang(saved as Lang);
+        return;
+      }
+    } catch {
+      /* private mode, fall through to the browser languages */
+    }
     const prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
     for (const p of prefs) {
       const code = (p || "").toLowerCase().slice(0, 2);
@@ -1477,6 +1486,28 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
           <span>
             &copy; {new Date().getFullYear()} landings.md. {t.rights}
           </span>
+          {!seo && (
+            <div className="lang-row" role="group" aria-label={t.a11y.lang}>
+              {LANGS.map((code) => (
+                <button
+                  key={code}
+                  type="button"
+                  className={code === lang ? "lang-btn is-on" : "lang-btn"}
+                  aria-pressed={code === lang}
+                  onClick={() => {
+                    setLang(code);
+                    try {
+                      window.localStorage.setItem("lang", code);
+                    } catch {
+                      /* nothing to remember, the pick still applies for this visit */
+                    }
+                  }}
+                >
+                  {code.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          )}
           <span>{t.loc}</span>
         </div>
       </footer>
