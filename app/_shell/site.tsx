@@ -93,7 +93,7 @@ const T: Record<Lang, Copy> = {
     avail: "Disponibili pentru proiecte noi",
     availShort: "Disponibili",
     founder: "Fondator",
-    online: "De obicei online",
+    online: "Online",
     h1a: "Site-uri care aduc",
     words: ["clienți.", "vânzări.", "rezultate."],
     sub: "Studio din Chișinău. Site-uri, aplicații și SEO. Soluții digitale simple și rapide pentru afaceri din Moldova și Europa.",
@@ -140,7 +140,7 @@ const T: Record<Lang, Copy> = {
     ],
     contactLabel: "Contact",
     contactTitle: "Hai să vorbim.",
-    contactSub: "Scrie-ne despre proiectul tău. Răspundem în cel mult 24 de ore.",
+    contactSub: "Răspundem în cel mult 24 de ore.",
     loc: "Chișinău, Moldova",
     rights: "Toate drepturile rezervate.",
     a11y: { prev: "Înapoi", next: "Înainte", menu: "Meniu", lang: "Limba" },
@@ -150,7 +150,7 @@ const T: Record<Lang, Copy> = {
     avail: "Available for new projects",
     availShort: "Available",
     founder: "Founder",
-    online: "Usually online",
+    online: "Online",
     h1a: "Websites that bring",
     words: ["clients.", "sales.", "results."],
     sub: "Studio from Chisinau. Websites, apps and SEO. Simple, fast digital solutions for businesses in Moldova and Europe.",
@@ -197,7 +197,7 @@ const T: Record<Lang, Copy> = {
     ],
     contactLabel: "Contact",
     contactTitle: "Let's talk.",
-    contactSub: "Tell us about your project. We reply within 24 hours.",
+    contactSub: "We reply within 24 hours.",
     loc: "Chisinau, Moldova",
     rights: "All rights reserved.",
     a11y: { prev: "Previous", next: "Next", menu: "Menu", lang: "Language" },
@@ -207,7 +207,7 @@ const T: Record<Lang, Copy> = {
     avail: "Verfugbar fur neue Projekte",
     availShort: "Verfugbar",
     founder: "Grunder",
-    online: "Meist online",
+    online: "Online",
     h1a: "Websites bringen",
     words: ["Kunden.", "Umsatz.", "Ergebnisse."],
     sub: "Studio aus Chisinau. Websites, Apps und SEO. Einfache, schnelle digitale Losungen fur Firmen in Moldau und Europa.",
@@ -254,7 +254,7 @@ const T: Record<Lang, Copy> = {
     ],
     contactLabel: "Kontakt",
     contactTitle: "Reden wir.",
-    contactSub: "Erzahl uns von deinem Projekt. Antwort innerhalb von 24 Stunden.",
+    contactSub: "Antwort innerhalb von 24 Stunden.",
     loc: "Chisinau, Moldau",
     rights: "Alle Rechte vorbehalten.",
     a11y: { prev: "Zuruck", next: "Weiter", menu: "Menu", lang: "Sprache" },
@@ -264,7 +264,7 @@ const T: Record<Lang, Copy> = {
     avail: "Disponibles pour de nouveaux projets",
     availShort: "Disponibles",
     founder: "Fondateur",
-    online: "Souvent en ligne",
+    online: "En ligne",
     h1a: "Des sites qui generent",
     words: ["des clients.", "des ventes.", "des resultats."],
     sub: "Studio a Chisinau. Sites, applications et SEO. Des solutions digitales simples et rapides pour les entreprises.",
@@ -311,7 +311,7 @@ const T: Record<Lang, Copy> = {
     ],
     contactLabel: "Contact",
     contactTitle: "Parlons-en.",
-    contactSub: "Parlez-nous de votre projet. Reponse sous 24 heures.",
+    contactSub: "Reponse sous 24 heures.",
     loc: "Chisinau, Moldavie",
     rights: "Tous droits reserves.",
     a11y: { prev: "Precedent", next: "Suivant", menu: "Menu", lang: "Langue" },
@@ -321,7 +321,7 @@ const T: Record<Lang, Copy> = {
     avail: "Disponibles para nuevos proyectos",
     availShort: "Disponibles",
     founder: "Fundador",
-    online: "Normalmente en linea",
+    online: "En linea",
     h1a: "Webs que generan",
     words: ["clientes.", "ventas.", "confianza."],
     sub: "Estudio en Chisinau. Webs, aplicaciones y SEO. Soluciones digitales simples y rapidas para negocios.",
@@ -368,7 +368,7 @@ const T: Record<Lang, Copy> = {
     ],
     contactLabel: "Contacto",
     contactTitle: "Hablemos.",
-    contactSub: "Cuentanos tu proyecto. Respondemos en 24 horas.",
+    contactSub: "Respondemos en 24 horas.",
     loc: "Chisinau, Moldavia",
     rights: "Todos los derechos reservados.",
     a11y: { prev: "Anterior", next: "Siguiente", menu: "Menu", lang: "Idioma" },
@@ -378,7 +378,7 @@ const T: Record<Lang, Copy> = {
     avail: "Открыты для новых проектов",
     availShort: "Открыты",
     founder: "Основатель",
-    online: "Обычно онлайн",
+    online: "Онлайн",
     h1a: "Сайты, которые приносят",
     words: ["клиентов.", "продажи.", "результат."],
     sub: "Студия из Кишинёва. Сайты, приложения и SEO. Простые и быстрые цифровые решения для бизнеса в Молдове и Европе.",
@@ -425,7 +425,7 @@ const T: Record<Lang, Copy> = {
     ],
     contactLabel: "Контакты",
     contactTitle: "Давайте поговорим.",
-    contactSub: "Напишите нам о вашем проекте. Отвечаем в течение 24 часов.",
+    contactSub: "Отвечаем в течение 24 часов.",
     loc: "Кишинёв, Молдова",
     rights: "Все права защищены.",
     a11y: { prev: "Назад", next: "Вперёд", menu: "Меню", lang: "Язык" },
@@ -561,6 +561,100 @@ function StatValue({ target, decimals = 0, suffix = "" }: { target: number; deci
   }, [target, decimals, suffix]);
 
   return <span ref={ref}>{target.toFixed(decimals) + suffix}</span>;
+}
+
+/* ------------------------------------------------------------------ */
+/* email menu                                                          */
+/* ------------------------------------------------------------------ */
+
+const MailIcon = () => (
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <rect x="2.5" y="5" width="19" height="14" rx="2.4" stroke="currentColor" strokeWidth="1.6" />
+    <path d="M3 7l9 6 9-6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const MailOpenIcon = () => (
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M3 10.2L12 4l9 6.2V19a1.8 1.8 0 01-1.8 1.8H4.8A1.8 1.8 0 013 19v-8.8z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+    <path d="M3 10.4l9 5.6 9-5.6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const CopyIcon = () => (
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <rect x="9" y="9" width="11.5" height="11.5" rx="2.2" stroke="currentColor" strokeWidth="1.6" />
+    <path d="M15 5.6A2.1 2.1 0 0012.9 3.5H5.6A2.1 2.1 0 003.5 5.6v7.3A2.1 2.1 0 005.6 15" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M4.5 12.5l5 5 10-11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+/* one click on any email button opens Gmail, Outlook, or copies the address */
+function EmailMenu({ subject, triggerClass, children }: { subject?: string; triggerClass: string; children: ReactNode }) {
+  const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const wrap = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: Event) => {
+      if (!wrap.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("pointerdown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("pointerdown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const su = subject ? encodeURIComponent(subject) : "";
+  const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${EMAIL}${subject ? `&su=${su}` : ""}`;
+  const outlook = `https://outlook.live.com/mail/0/deeplink/compose?to=${EMAIL}${subject ? `&subject=${su}` : ""}`;
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      window.location.href = `mailto:${EMAIL}${subject ? `?subject=${su}` : ""}`;
+      setOpen(false);
+    }
+  };
+
+  return (
+    <div className="mailwrap" ref={wrap}>
+      <button type="button" className={triggerClass} aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+        {children}
+      </button>
+      {open && (
+        <div className="mailmenu" role="menu">
+          <a role="menuitem" href={gmail} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>
+            <MailIcon />
+            Gmail
+          </a>
+          <a role="menuitem" href={outlook} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>
+            <MailOpenIcon />
+            Outlook
+          </a>
+          <span className="mailmenu-sep" aria-hidden="true" />
+          <button type="button" role="menuitem" onClick={copy}>
+            {copied ? <CheckIcon /> : <CopyIcon />}
+            {EMAIL}
+          </button>
+        </div>
+      )}
+    </div>
+  );
 }
 
 /* ------------------------------------------------------------------ */
@@ -1059,7 +1153,6 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
               </a>
             </div>
             <div className="hero-meta fu" style={d("0.5s")}>
-              <span>{t.loc}</span>
               <div className="hero-meta-links">
                 <a className="icon-btn" href={WHATSAPP} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
                   <WhatsAppIcon />
@@ -1067,7 +1160,9 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
                 <a className="icon-btn" href={TELEGRAM} target="_blank" rel="noopener noreferrer" aria-label="Telegram">
                   <TelegramIcon />
                 </a>
-                <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+              </div>
+              <div className="hero-meta-links">
+                <EmailMenu triggerClass="mail-link">{EMAIL}</EmailMenu>
               </div>
             </div>
             <div className="logos fu" style={d("0.6s")}>
@@ -1110,7 +1205,6 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
             <div className="srv-list" style={{ marginTop: 44 }}>
               {t.services.map((s, i) => (
                 <div className="srv rv" key={i}>
-                  <span className="srv-n fu">{String(i + 1).padStart(2, "0")}</span>
                   <h3 className="srv-name">
                     <span className="rl">
                       <span className="rl-i">{s.name}</span>
@@ -1154,16 +1248,19 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
                   </div>
                   <ul className="price-feats fu" style={d(`${0.16 + i * 0.08}s`)}>
                     {p.feats.map((f) => (
-                      <li key={f}>{f}</li>
+                      <li key={f}>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M4.5 12.6l5 5 10-11" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        {f}
+                      </li>
                     ))}
                   </ul>
-                  <a
-                    className="price-cta fu"
-                    style={d(`${0.22 + i * 0.08}s`)}
-                    href={`mailto:${EMAIL}?subject=${encodeURIComponent(`${p.name} (${p.price})`)}`}
-                  >
-                    {t.priceCta}
-                  </a>
+                  <div className="price-cta fu" style={d(`${0.22 + i * 0.08}s`)}>
+                    <EmailMenu subject={`${p.name} (${p.price})`} triggerClass="btn btn-sm">
+                      {t.priceCta}
+                    </EmailMenu>
+                  </div>
                 </div>
               ))}
             </div>
@@ -1217,13 +1314,8 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
         {/* contact */}
         <section className="contact" id="contact">
           <div className="container rv">
-            <div className="rl">
-              <span className="rl-i lbl" style={{ justifyContent: "center" }}>
-                {t.contactLabel}
-              </span>
-            </div>
-            <div className="contact-orb fu" style={d("0.05s")}>
-              {fx && <ThinkingOrb state="connecting" size={64} theme="light" aria-label={t.contactTitle} />}
+            <div className="contact-face fu" style={d("0.05s")}>
+              <img src="/images/founder.webp" alt="Damian B." width={288} height={288} loading="lazy" decoding="async" />
             </div>
             <h2 className="contact-title" style={{ marginTop: 24 }}>
               <span className="rl">
@@ -1236,9 +1328,7 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
               {t.contactSub}
             </p>
             <div className="fu" style={d("0.3s")}>
-              <a className="btn btn-lg" href={`mailto:${EMAIL}`}>
-                {EMAIL}
-              </a>
+              <EmailMenu triggerClass="btn btn-lg">{EMAIL}</EmailMenu>
             </div>
             <div className="contact-links fu" style={d("0.4s")}>
               <a className="pill-btn" href={WHATSAPP} target="_blank" rel="noopener noreferrer">
