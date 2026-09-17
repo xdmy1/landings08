@@ -449,10 +449,9 @@ button {
   display: flex;
   align-items: baseline;
   gap: 14px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  letter-spacing: -0.01em;
   color: var(--ink-2);
 }
 
@@ -595,9 +594,8 @@ button {
 }
 
 .tag {
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: 12.5px;
+  letter-spacing: -0.005em;
   color: var(--ink-2);
   border: 1px solid var(--line-2);
   border-radius: 999px;
@@ -727,10 +725,9 @@ button {
 }
 
 .price-plan {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  letter-spacing: -0.01em;
   color: var(--ink-2);
 }
 
@@ -911,10 +908,9 @@ button {
 }
 
 .foot-serv-label {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  letter-spacing: -0.01em;
   color: var(--ink-3);
 }
 
@@ -1489,10 +1485,9 @@ button {
 }
 
 .rel-label {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  letter-spacing: -0.01em;
   color: var(--ink-3);
 }
 
