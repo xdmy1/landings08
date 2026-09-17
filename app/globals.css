@@ -850,18 +850,18 @@ button {
   text-align: center;
 }
 
-.contact-face {
-  display: flex;
-  justify-content: center;
+.founder-c {
+  margin: 0 auto 4px;
+  text-align: left;
 }
 
-.contact-face img {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid var(--line);
-  box-shadow: 0 10px 26px -16px rgba(20, 20, 15, 0.5);
+.founder-c .founder-pic {
+  width: 52px;
+  height: 52px;
+}
+
+.founder-c .founder-name {
+  font-size: 16px;
 }
 
 .contact-orb {
@@ -920,40 +920,96 @@ button {
 }
 
 
-.foot-serv {
-  padding-block: 30px 24px;
+.foot-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 0.85fr);
+  gap: 40px;
+  padding-block: 46px 40px;
 }
 
-.foot-serv-label {
+.foot-logo {
+  height: 34px;
+  width: auto;
+}
+
+.foot-tag {
+  margin-top: 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 280px;
+  text-wrap: pretty;
+}
+
+.foot-social {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.foot-col-label {
   font-size: 13px;
   font-weight: 500;
   letter-spacing: -0.01em;
   color: var(--ink-3);
 }
 
-.foot-serv ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 26px;
-  margin-top: 14px;
+.foot-links {
   list-style: none;
+  margin-top: 14px;
+  display: grid;
+  gap: 9px;
+  font-size: 14px;
+  color: var(--ink-2);
 }
 
-.foot-serv a {
-  font-size: 13.5px;
+.foot-links-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px 20px;
+}
+
+.foot-links a,
+.foot-links .mail-link {
   color: var(--ink-2);
   border-bottom: 1px solid transparent;
   padding-bottom: 1px;
   transition: color 0.15s ease, border-color 0.15s ease;
 }
 
-.foot-serv a:hover {
+.foot-links a:hover,
+.foot-links .mail-link:hover {
   color: var(--ink);
   border-color: var(--line-2);
 }
 
-.foot-serv a[aria-current="page"] {
+.foot-links a[aria-current="page"] {
   color: var(--ink);
+}
+
+.foot-muted {
+  color: var(--ink-3);
+}
+
+.foot-faq {
+  padding-bottom: 16px;
+}
+
+.foot-faq .faq {
+  margin-top: 16px;
+  border-bottom: none;
+}
+
+.foot-faq .faq-item summary {
+  padding: 16px 0;
+}
+
+.foot-faq .faq-item h3 {
+  font-size: 16px;
+}
+
+.foot-faq .faq-item p {
+  font-size: 14.5px;
+  padding-bottom: 18px;
 }
 
 .footer-in {
@@ -1776,6 +1832,16 @@ button {
   .case-stat {
     min-width: 0;
     flex: 1 1 132px;
+  }
+
+  .foot-top {
+    grid-template-columns: 1fr;
+    gap: 34px;
+    padding-block: 38px 32px;
+  }
+
+  .foot-links-2 {
+    grid-template-columns: 1fr;
   }
 }
 

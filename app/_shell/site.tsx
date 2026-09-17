@@ -84,6 +84,9 @@ type Copy = {
   contactSub: string;
   loc: string;
   rights: string;
+  footTag: string;
+  faqLabel: string;
+  faq: { q: string; a: string }[];
   a11y: { prev: string; next: string; menu: string; lang: string };
 };
 
@@ -143,6 +146,13 @@ const T: Record<Lang, Copy> = {
     contactSub: "Răspundem în cel mult 24 de ore.",
     loc: "Chișinău, Moldova",
     rights: "Toate drepturile rezervate.",
+    footTag: "Site-uri, aplicații și SEO, scrise în cod, din Chișinău.",
+    faqLabel: "Întrebări frecvente",
+    faq: [
+      { q: "Cât costă un site?", a: "De la 350 EUR pentru o pagină, 550 EUR pentru un site de prezentare și 850 EUR pentru un magazin online. Prețul final îl primești fix, înainte să începem." },
+      { q: "Cât durează?", a: "Un site de prezentare iese în două săptămâni. Un magazin online sau o platformă cu conturi, în trei sau patru." },
+      { q: "Lucrați și în afara Moldovei?", a: "Da. Lucrăm din Chișinău cu clienți din Moldova, România și restul Europei, în șase limbi." },
+    ],
     a11y: { prev: "Înapoi", next: "Înainte", menu: "Meniu", lang: "Limba" },
   },
   en: {
@@ -200,6 +210,13 @@ const T: Record<Lang, Copy> = {
     contactSub: "We reply within 24 hours.",
     loc: "Chisinau, Moldova",
     rights: "All rights reserved.",
+    footTag: "Websites, apps and SEO, written in code, from Chisinau.",
+    faqLabel: "FAQ",
+    faq: [
+      { q: "How much does a website cost?", a: "From 350 EUR for one page, 550 EUR for a full presentation site and 850 EUR for an online shop. You get the final price fixed, before we start." },
+      { q: "How long does it take?", a: "A presentation site takes two weeks. An online shop or a platform with accounts, three or four." },
+      { q: "Do you work outside Moldova?", a: "Yes. We work from Chisinau with clients in Moldova, Romania and the rest of Europe, in six languages." },
+    ],
     a11y: { prev: "Previous", next: "Next", menu: "Menu", lang: "Language" },
   },
   de: {
@@ -257,6 +274,13 @@ const T: Record<Lang, Copy> = {
     contactSub: "Antwort innerhalb von 24 Stunden.",
     loc: "Chisinau, Moldau",
     rights: "Alle Rechte vorbehalten.",
+    footTag: "Websites, Apps und SEO, im Code geschrieben, aus Chisinau.",
+    faqLabel: "Haufige Fragen",
+    faq: [
+      { q: "Was kostet eine Website?", a: "Ab 350 EUR fur eine Seite, 550 EUR fur eine komplette Website und 850 EUR fur einen Onlineshop. Den Endpreis bekommst du fix, bevor wir starten." },
+      { q: "Wie lange dauert es?", a: "Eine Prasentationswebsite in zwei Wochen. Ein Onlineshop oder eine Plattform mit Konten, in drei oder vier." },
+      { q: "Arbeitet ihr auch ausserhalb der Republik Moldau?", a: "Ja. Wir arbeiten aus Chisinau mit Kunden in der Republik Moldau, Rumanien und dem Rest Europas, in sechs Sprachen." },
+    ],
     a11y: { prev: "Zuruck", next: "Weiter", menu: "Menu", lang: "Sprache" },
   },
   fr: {
@@ -314,6 +338,13 @@ const T: Record<Lang, Copy> = {
     contactSub: "Reponse sous 24 heures.",
     loc: "Chisinau, Moldavie",
     rights: "Tous droits reserves.",
+    footTag: "Sites, applications et SEO, ecrits en code, depuis Chisinau.",
+    faqLabel: "Questions frequentes",
+    faq: [
+      { q: "Combien coute un site?", a: "A partir de 350 EUR pour une page, 550 EUR pour un site complet et 850 EUR pour une boutique en ligne. Le prix final est fixe avant de commencer." },
+      { q: "Combien de temps faut-il?", a: "Un site de presentation sort en deux semaines. Une boutique en ligne ou une plateforme avec comptes, en trois ou quatre." },
+      { q: "Travaillez-vous hors de Moldavie?", a: "Oui. Nous travaillons depuis Chisinau avec des clients en Moldavie, en Roumanie et dans le reste de l Europe, en six langues." },
+    ],
     a11y: { prev: "Precedent", next: "Suivant", menu: "Menu", lang: "Langue" },
   },
   es: {
@@ -371,6 +402,13 @@ const T: Record<Lang, Copy> = {
     contactSub: "Respondemos en 24 horas.",
     loc: "Chisinau, Moldavia",
     rights: "Todos los derechos reservados.",
+    footTag: "Webs, aplicaciones y SEO, escritos en codigo, desde Chisinau.",
+    faqLabel: "Preguntas frecuentes",
+    faq: [
+      { q: "Cuanto cuesta una web?", a: "Desde 350 EUR por una pagina, 550 EUR por una web completa y 850 EUR por una tienda online. El precio final es cerrado, antes de empezar." },
+      { q: "Cuanto tarda?", a: "Una web de presentacion sale en dos semanas. Una tienda online o una plataforma con cuentas, en tres o cuatro." },
+      { q: "Trabajan fuera de Moldavia?", a: "Si. Trabajamos desde Chisinau con clientes de Moldavia, Rumania y el resto de Europa, en seis idiomas." },
+    ],
     a11y: { prev: "Anterior", next: "Siguiente", menu: "Menu", lang: "Idioma" },
   },
   ru: {
@@ -428,6 +466,13 @@ const T: Record<Lang, Copy> = {
     contactSub: "Отвечаем в течение 24 часов.",
     loc: "Кишинёв, Молдова",
     rights: "Все права защищены.",
+    footTag: "Сайты, приложения и SEO, написанные в коде, из Кишинева.",
+    faqLabel: "Частые вопросы",
+    faq: [
+      { q: "Сколько стоит сайт?", a: "От 350 EUR за одну страницу, 550 EUR за полноценный сайт и 850 EUR за интернет-магазин. Итоговую цену вы получаете фиксированной, до старта." },
+      { q: "Сколько занимает работа?", a: "Сайт-презентация выходит за две недели. Интернет-магазин или платформа с аккаунтами, за три или четыре." },
+      { q: "Работаете ли вы за пределами Молдовы?", a: "Да. Работаем из Кишинева с клиентами из Молдовы, Румынии и остальной Европы, на шести языках." },
+    ],
     a11y: { prev: "Назад", next: "Вперёд", menu: "Меню", lang: "Язык" },
   },
 };
@@ -1314,9 +1359,19 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
         {/* contact */}
         <section className="contact" id="contact">
           <div className="container rv">
-            <div className="contact-face fu" style={d("0.05s")}>
-              <img src="/images/founder.webp" alt="Damian B." width={288} height={288} loading="lazy" decoding="async" />
-            </div>
+            <p className="founder founder-c fu" style={d("0.05s")}>
+              <span className="founder-pic">
+                <img src="/images/founder.webp" alt="Damian B." width={288} height={288} loading="lazy" decoding="async" />
+              </span>
+              <span className="founder-txt">
+                <span className="founder-name">Damian B.</span>
+                <span className="founder-role">
+                  {t.founder}
+                  <span className="founder-dot" aria-hidden="true" />
+                  {t.online}
+                </span>
+              </span>
+            </p>
             <h2 className="contact-title" style={{ marginTop: 24 }}>
               <span className="rl">
                 <span className="rl-i" style={d("0.1s")}>
@@ -1349,18 +1404,77 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
       </main>
 
       <footer className="footer">
-        <nav className="foot-serv container" aria-label={base.servLabel}>
-          <p className="foot-serv-label">{base.servLabel}</p>
-          <ul>
-            {SEO_SLUGS.map((s) => (
-              <li key={s}>
-                <a href={`/${s}`} aria-current={seo?.slug === s ? "page" : undefined}>
-                  {SEO_INDEX[s]}
+        <div className="container foot-top">
+          <div className="foot-brand">
+            <a href="/" aria-label="landings.md">
+              <img className="foot-logo" src="/images/logo-mark.webp" alt="landings.md" width={57} height={96} />
+            </a>
+            <p className="foot-tag">{base.footTag}</p>
+            <div className="foot-social">
+              <a className="icon-btn" href={WHATSAPP} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                <WhatsAppIcon />
+              </a>
+              <a className="icon-btn" href={TELEGRAM} target="_blank" rel="noopener noreferrer" aria-label="Telegram">
+                <TelegramIcon />
+              </a>
+              <a className="icon-btn" href={INSTAGRAM} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <InstagramIcon />
+              </a>
+            </div>
+          </div>
+
+          <nav className="foot-col" aria-label={base.servLabel}>
+            <p className="foot-col-label">{base.servLabel}</p>
+            <ul className="foot-links foot-links-2">
+              {SEO_SLUGS.map((slug) => (
+                <li key={slug}>
+                  <a href={`/${slug}`} aria-current={seo?.slug === slug ? "page" : undefined}>
+                    {SEO_INDEX[slug]}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="foot-col">
+            <p className="foot-col-label">{base.contactLabel}</p>
+            <ul className="foot-links">
+              <li>
+                <EmailMenu triggerClass="mail-link">{EMAIL}</EmailMenu>
+              </li>
+              <li>
+                <a href={WHATSAPP} target="_blank" rel="noopener noreferrer">
+                  +373 68 327 082
                 </a>
               </li>
-            ))}
-          </ul>
-        </nav>
+              <li>
+                <a href={TELEGRAM} target="_blank" rel="noopener noreferrer">
+                  @damiqqn
+                </a>
+              </li>
+              <li className="foot-muted">{base.loc}</li>
+              <li className="foot-muted">{base.contactSub}</li>
+            </ul>
+          </div>
+        </div>
+
+        {!seo && (
+          <div className="container foot-faq">
+            <p className="foot-col-label">{base.faqLabel}</p>
+            <div className="faq">
+              {base.faq.map((f) => (
+                <details className="faq-item" key={f.q}>
+                  <summary>
+                    <h3>{f.q}</h3>
+                    <span className="faq-mark" aria-hidden="true" />
+                  </summary>
+                  <p>{f.a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="container footer-in">
           <span>
             &copy; {new Date().getFullYear()} landings.md. {t.rights}
