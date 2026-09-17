@@ -67,7 +67,6 @@ type Copy = {
   ctaS: string;
   heroCap: string;
   projLabel: string;
-  hint: string;
   logosLabel: string;
   projects: Record<ProjectKey, { desc: string; tags: string[] }>;
   servLabel: string;
@@ -101,7 +100,6 @@ const T: Record<Lang, Copy> = {
     ctaS: "Vezi proiectele",
     heroCap: "Davo.md · Transport de pasageri, rezervări online",
     projLabel: "Câteva din proiectele noastre",
-    hint: "Trage sau folosește săgețile",
     logosLabel: "Și alții cu care am lucrat",
     projects: {
       glg: { desc: "Nu doar site: aplicația școlii auto, cu 60 de instructori, operatori, secretari, profesori, contabili și examinatori.", tags: ["Aplicație", "Website"] },
@@ -109,7 +107,7 @@ const T: Record<Lang, Copy> = {
       interbus: { desc: "Magazin de piese auto cu ERP: facturare, stoc, contabilitate.", tags: ["E-commerce", "ERP"] },
       eurogard: { desc: "Porți, garduri și automatizări. Site de prezentare care vinde constant.", tags: ["Website"] },
       radx: { desc: "Răcire industrială. Prima pagină pe Google, lead-uri săptămânal, fără reclame.", tags: ["Website", "SEO"] },
-      mobo: { desc: "Bucătării și mobilier la comandă. Site cu calculator de preț online.", tags: ["Website", "Calculator"] },
+      mobo: { desc: "Bucătării și mobilier la comandă. Site cu calculator de preț online.", tags: ["Website", "Calculator de preț"] },
       infobac: { desc: "Platformă de cursuri pentru BAC-ul la informatică, cu simulări și certificări Certiport.", tags: ["Platformă", "Cursuri"] },
     },
     servLabel: "Servicii",
@@ -158,7 +156,6 @@ const T: Record<Lang, Copy> = {
     ctaS: "See the projects",
     heroCap: "Davo.md · Passenger transport, online booking",
     projLabel: "A few of our projects",
-    hint: "Drag or use the arrows",
     logosLabel: "And others we worked with",
     projects: {
       glg: { desc: "Not just a website: the driving school's app, with 60 instructors, operators, secretaries, teachers, accountants and examiners.", tags: ["App", "Website"] },
@@ -166,7 +163,7 @@ const T: Record<Lang, Copy> = {
       interbus: { desc: "Auto parts store with ERP: invoicing, stock, accounting.", tags: ["E-commerce", "ERP"] },
       eurogard: { desc: "Gates, fences and automation. A presentation site that sells steadily.", tags: ["Website"] },
       radx: { desc: "Industrial cooling. First page on Google, weekly leads, no ads.", tags: ["Website", "SEO"] },
-      mobo: { desc: "Custom kitchens and furniture. Website with an online price calculator.", tags: ["Website", "Calculator"] },
+      mobo: { desc: "Custom kitchens and furniture. Website with an online price calculator.", tags: ["Website", "Price calculator"] },
       infobac: { desc: "Course platform for the informatics BAC exam, with simulations and Certiport certifications.", tags: ["Platform", "Courses"] },
     },
     servLabel: "Services",
@@ -215,7 +212,6 @@ const T: Record<Lang, Copy> = {
     ctaS: "Projekte ansehen",
     heroCap: "Davo.md · Personentransport, Online-Buchung",
     projLabel: "Einige unserer Projekte",
-    hint: "Ziehen oder Pfeile nutzen",
     logosLabel: "Und weitere Kunden",
     projects: {
       glg: { desc: "Nicht nur eine Website: die App der Fahrschule, mit 60 Fahrlehrern, Operatoren, Sekretariat, Lehrern, Buchhaltung und Prufern.", tags: ["App", "Website"] },
@@ -223,7 +219,7 @@ const T: Record<Lang, Copy> = {
       interbus: { desc: "Autoteile-Shop mit ERP: Rechnungen, Lager, Buchhaltung.", tags: ["E-Commerce", "ERP"] },
       eurogard: { desc: "Tore, Zaune und Automatisierung. Eine Website, die konstant verkauft.", tags: ["Website"] },
       radx: { desc: "Industrielle Kuhlung. Seite 1 bei Google, Leads jede Woche, ohne Werbung.", tags: ["Website", "SEO"] },
-      mobo: { desc: "Kuchen und Mobel nach Mass. Website mit Online-Preisrechner.", tags: ["Website", "Rechner"] },
+      mobo: { desc: "Kuchen und Mobel nach Mass. Website mit Online-Preisrechner.", tags: ["Website", "Preisrechner"] },
       infobac: { desc: "Kursplattform fur das Informatik-Abitur, mit Simulationen und Certiport-Zertifikaten.", tags: ["Plattform", "Kurse"] },
     },
     servLabel: "Leistungen",
@@ -272,7 +268,6 @@ const T: Record<Lang, Copy> = {
     ctaS: "Voir les projets",
     heroCap: "Davo.md · Transport de passagers, reservation en ligne",
     projLabel: "Quelques-uns de nos projets",
-    hint: "Glissez ou utilisez les fleches",
     logosLabel: "Et d'autres clients",
     projects: {
       glg: { desc: "Pas qu'un site: l'application de l'auto-ecole, avec 60 instructeurs, operateurs, secretaires, professeurs, comptables et examinateurs.", tags: ["App", "Site"] },
@@ -280,7 +275,7 @@ const T: Record<Lang, Copy> = {
       interbus: { desc: "Boutique de pieces auto avec ERP: factures, stock, comptabilite.", tags: ["E-commerce", "ERP"] },
       eurogard: { desc: "Portails, clotures et automatisation. Un site vitrine qui vend constamment.", tags: ["Site"] },
       radx: { desc: "Refroidissement industriel. Premiere page Google, des leads chaque semaine, sans publicite.", tags: ["Site", "SEO"] },
-      mobo: { desc: "Cuisines et meubles sur mesure. Site avec calculateur de prix en ligne.", tags: ["Site", "Calculateur"] },
+      mobo: { desc: "Cuisines et meubles sur mesure. Site avec calculateur de prix en ligne.", tags: ["Site", "Calculateur de prix"] },
       infobac: { desc: "Plateforme de cours pour le bac informatique, avec simulations et certifications Certiport.", tags: ["Plateforme", "Cours"] },
     },
     servLabel: "Services",
@@ -329,7 +324,6 @@ const T: Record<Lang, Copy> = {
     ctaS: "Ver proyectos",
     heroCap: "Davo.md · Transporte de pasajeros, reservas online",
     projLabel: "Algunos de nuestros proyectos",
-    hint: "Arrastra o usa las flechas",
     logosLabel: "Y otros clientes",
     projects: {
       glg: { desc: "No solo una web: la aplicacion de la autoescuela, con 60 instructores, operadores, secretarias, profesores, contables y examinadores.", tags: ["App", "Web"] },
@@ -337,7 +331,7 @@ const T: Record<Lang, Copy> = {
       interbus: { desc: "Tienda de piezas de auto con ERP: facturas, stock, contabilidad.", tags: ["E-commerce", "ERP"] },
       eurogard: { desc: "Puertas, vallas y automatizacion. Una web de presentacion que vende constantemente.", tags: ["Web"] },
       radx: { desc: "Refrigeracion industrial. Primera pagina en Google, leads cada semana, sin publicidad.", tags: ["Web", "SEO"] },
-      mobo: { desc: "Cocinas y muebles a medida. Web con calculadora de precios online.", tags: ["Web", "Calculadora"] },
+      mobo: { desc: "Cocinas y muebles a medida. Web con calculadora de precios online.", tags: ["Web", "Calculadora de precios"] },
       infobac: { desc: "Plataforma de cursos para el examen de informatica, con simulaciones y certificaciones Certiport.", tags: ["Plataforma", "Cursos"] },
     },
     servLabel: "Servicios",
@@ -386,7 +380,6 @@ const T: Record<Lang, Copy> = {
     ctaS: "Смотреть проекты",
     heroCap: "Davo.md · Пассажирские перевозки, онлайн-бронирование",
     projLabel: "Несколько наших проектов",
-    hint: "Тяните или используйте стрелки",
     logosLabel: "И другие клиенты",
     projects: {
       glg: { desc: "Не просто сайт: приложение автошколы, 60 инструкторов, операторы, секретари, преподаватели, бухгалтеры и экзаменаторы.", tags: ["Приложение", "Сайт"] },
@@ -394,7 +387,7 @@ const T: Record<Lang, Copy> = {
       interbus: { desc: "Магазин автозапчастей с ERP: счета, склад, бухгалтерия.", tags: ["E-commerce", "ERP"] },
       eurogard: { desc: "Ворота, заборы и автоматика. Сайт-визитка, который стабильно продаёт.", tags: ["Сайт"] },
       radx: { desc: "Промышленное охлаждение. Первая страница Google, заявки каждую неделю, без рекламы.", tags: ["Сайт", "SEO"] },
-      mobo: { desc: "Кухни и мебель на заказ. Сайт с онлайн-калькулятором цены.", tags: ["Сайт", "Калькулятор"] },
+      mobo: { desc: "Кухни и мебель на заказ. Сайт с онлайн-калькулятором цены.", tags: ["Сайт", "Калькулятор цены"] },
       infobac: { desc: "Платформа курсов для экзамена по информатике, с симуляциями и сертификациями Certiport.", tags: ["Платформа", "Курсы"] },
     },
     servLabel: "Услуги",
@@ -567,7 +560,7 @@ function StatValue({ target, decimals = 0, suffix = "" }: { target: number; deci
 /* projects carousel                                                   */
 /* ------------------------------------------------------------------ */
 
-function Carousel({ t, fx, order, num }: { t: Copy; fx: boolean; order?: readonly ProjectKey[]; num: string }) {
+function Carousel({ t, fx, order }: { t: Copy; fx: boolean; order?: readonly ProjectKey[] }) {
   const items = order ? order.map((k) => PROJECTS.find((p) => p.key === k)!).filter(Boolean) : PROJECTS;
   const trackRef = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLElement>(null);
@@ -678,14 +671,10 @@ function Carousel({ t, fx, order, num }: { t: Copy; fx: boolean; order?: readonl
         <div>
           <div className="rl">
             <h2 className="rl-i lbl">
-              <em aria-hidden="true">{num}</em>
               {fx && <ThinkingOrb state="shaping" size={20} theme="light" className="orb-lbl" aria-label="" />}
               {t.projLabel}
             </h2>
           </div>
-          <p className="fu car-hint" style={d("0.1s")}>
-            {t.hint}
-          </p>
         </div>
         <div className="car-nav fu" style={d("0.15s")}>
           <button className="car-btn" onClick={() => step(-1)} disabled={atStart} aria-label={t.a11y.prev}>
@@ -748,14 +737,13 @@ function Carousel({ t, fx, order, num }: { t: Copy; fx: boolean; order?: readonl
 /* keyword page sections                                               */
 /* ------------------------------------------------------------------ */
 
-function SeoIntro({ seo, fx, num }: { seo: SeoPage; fx: boolean; num: string }) {
+function SeoIntro({ seo, fx }: { seo: SeoPage; fx: boolean }) {
   return (
     <section className="section" id="despre">
       <div className="container">
         <div className="rv">
           <div className="rl">
             <h2 className="rl-i lbl">
-              <em aria-hidden="true">{num}</em>
               {fx && <ThinkingOrb state="searching" size={20} theme="light" className="orb-lbl" aria-label="" />}
               {seo.introLabel}
             </h2>
@@ -787,14 +775,13 @@ function SeoIntro({ seo, fx, num }: { seo: SeoPage; fx: boolean; num: string }) 
   );
 }
 
-function SeoCases({ seo, fx, num }: { seo: SeoPage; fx: boolean; num: string }) {
+function SeoCases({ seo, fx }: { seo: SeoPage; fx: boolean }) {
   return (
     <section className="section" id="cazuri">
       <div className="container">
         <div className="rv">
           <div className="rl">
             <h2 className="rl-i lbl">
-              <em aria-hidden="true">{num}</em>
               {fx && <ThinkingOrb state="solving" size={20} theme="light" className="orb-lbl" aria-label="" />}
               {seo.casesLabel}
             </h2>
@@ -849,14 +836,13 @@ function SeoCases({ seo, fx, num }: { seo: SeoPage; fx: boolean; num: string }) 
   );
 }
 
-function SeoFaq({ seo, fx, num }: { seo: SeoPage; fx: boolean; num: string }) {
+function SeoFaq({ seo, fx }: { seo: SeoPage; fx: boolean }) {
   return (
     <section className="section" id="intrebari">
       <div className="container">
         <div className="rv">
           <div className="rl">
             <h2 className="rl-i lbl">
-              <em aria-hidden="true">{num}</em>
               {fx && <ThinkingOrb state="weaving" size={20} theme="light" className="orb-lbl" aria-label="" />}
               {seo.faqLabel}
             </h2>
@@ -924,10 +910,6 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
         contactSub: seo.contactSub,
       }
     : base;
-  /* section numbers shift because the keyword pages carry extra sections */
-  const num = seo
-    ? { intro: "01", proj: "02", srv: "03", cases: "04", price: "05", proof: "06", faq: "07", contact: "08" }
-    : { intro: "", proj: "01", srv: "02", cases: "", price: "03", proof: "04", faq: "", contact: "05" };
 
   useEffect(() => {
     try {
@@ -1100,11 +1082,11 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
           </div>
         </section>
 
-        {seo && <SeoIntro seo={seo} fx={fx} num={num.intro} />}
+        {seo && <SeoIntro seo={seo} fx={fx} />}
 
         {/* projects */}
         <section className="section" id="proiecte">
-          <Carousel t={t} fx={fx} order={seo?.projectOrder} num={num.proj} />
+          <Carousel t={t} fx={fx} order={seo?.projectOrder} />
         </section>
 
         {/* services */}
@@ -1113,7 +1095,6 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
             <div className="rv">
               <div className="rl">
                 <h2 className="rl-i lbl">
-                  <em aria-hidden="true">{num.srv}</em>
                   {fx && <ThinkingOrb state="weaving" size={20} theme="light" className="orb-lbl" aria-label="" />}
                   {t.servLabel}
                 </h2>
@@ -1137,7 +1118,7 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
           </div>
         </section>
 
-        {seo && <SeoCases seo={seo} fx={fx} num={num.cases} />}
+        {seo && <SeoCases seo={seo} fx={fx} />}
 
         {/* pricing */}
         <section className="section" id="preturi">
@@ -1145,7 +1126,6 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
             <div className="rv">
               <div className="rl">
                 <h2 className="rl-i lbl">
-                  <em aria-hidden="true">{num.price}</em>
                   {fx && <ThinkingOrb state="solving" size={20} theme="light" className="orb-lbl" aria-label="" />}
                   {t.priceLabel}
                 </h2>
@@ -1189,7 +1169,6 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
             <div className="rv">
               <div className="rl">
                 <h2 className="rl-i lbl">
-                  <em aria-hidden="true">{num.proof}</em>
                   {fx && <ThinkingOrb state="breathing" size={20} theme="light" className="orb-lbl" aria-label="" />}
                   {t.proofLabel}
                 </h2>
@@ -1227,7 +1206,7 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
           </div>
         </section>
 
-        {seo && <SeoFaq seo={seo} fx={fx} num={num.faq} />}
+        {seo && <SeoFaq seo={seo} fx={fx} />}
         {seo && <SeoRelated seo={seo} />}
 
         {/* contact */}
@@ -1235,7 +1214,7 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
           <div className="container rv">
             <div className="rl">
               <span className="rl-i lbl" style={{ justifyContent: "center" }}>
-                <em aria-hidden="true">{num.contact}</em> {t.contactLabel}
+                {t.contactLabel}
               </span>
             </div>
             <div className="contact-orb fu" style={d("0.05s")}>
