@@ -1721,9 +1721,50 @@ button {
 
   .srv {
     grid-template-columns: 1fr;
-    row-gap: 8px;
-    padding: 24px 0;
+    row-gap: 6px;
+    padding: 22px 0;
     align-items: start;
+  }
+
+  /* desktop type is too heavy on a phone */
+  .lbl {
+    font-size: 25px;
+    gap: 11px;
+  }
+
+  .orb-lbl {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  .srv-name {
+    font-size: 20px;
+    letter-spacing: -0.02em;
+  }
+
+  .srv-desc {
+    font-size: 14px;
+  }
+
+  .intro-title {
+    font-size: 23px;
+  }
+
+  .intro-body p,
+  .case-text {
+    font-size: 14.5px;
+  }
+
+  .case-name {
+    font-size: 21px;
+  }
+
+  .faq-item h3 {
+    font-size: 16px;
+  }
+
+  .price-val {
+    font-size: 38px;
   }
 
   .price-grid {
