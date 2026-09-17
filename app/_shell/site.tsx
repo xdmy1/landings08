@@ -910,7 +910,6 @@ function SeoIntro({ seo, fx }: { seo: SeoPage; fx: boolean }) {
         <div className="intro-points rv">
           {seo.introPoints.map((pt, i) => (
             <div className="intro-point fu" style={d(`${i * 0.07}s`)} key={pt.t}>
-              <span className="intro-point-n">{String(i + 1).padStart(2, "0")}</span>
               <h4>{pt.t}</h4>
               <p>{pt.d}</p>
             </div>
@@ -937,7 +936,7 @@ function SeoCases({ seo, fx }: { seo: SeoPage; fx: boolean }) {
           </p>
         </div>
         <div className="case-list">
-          {seo.cases.map((c, i) => (
+          {seo.cases.map((c) => (
             <article className="case rv" key={c.key}>
               <a className="case-shot fu" href={c.href} target="_blank" rel="noopener noreferrer">
                 <img
@@ -950,7 +949,6 @@ function SeoCases({ seo, fx }: { seo: SeoPage; fx: boolean }) {
                 />
               </a>
               <div className="case-body">
-                <span className="case-n fu">{String(i + 1).padStart(2, "0")}</span>
                 <h3 className="case-name">
                   <span className="rl">
                     <span className="rl-i">{c.name}</span>
