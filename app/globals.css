@@ -449,7 +449,7 @@ button {
   display: flex;
   align-items: baseline;
   gap: 14px;
-  font-size: 14px;
+  font-size: 19px;
   font-weight: 500;
   letter-spacing: -0.01em;
   color: var(--ink-2);
@@ -731,6 +731,16 @@ button {
   color: var(--ink-2);
 }
 
+.price-from {
+  font-style: normal;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--ink-3);
+  margin-right: 9px;
+  vertical-align: baseline;
+}
+
 .price-val {
   font-size: clamp(40px, 4.6vw, 58px);
   font-weight: 300;
@@ -792,15 +802,6 @@ button {
   width: 100%;
   height: auto;
   display: block;
-}
-
-.proof-cap {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  font-size: 13px;
-  color: var(--ink-2);
-  margin-top: 12px;
 }
 
 .stats {

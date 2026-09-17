@@ -74,6 +74,7 @@ type Copy = {
   priceLabel: string;
   plans: { name: string; price: string; feats: string[] }[];
   priceNote: string;
+  priceFrom: string;
   priceCta: string;
   proofLabel: string;
   proofLine: string;
@@ -125,12 +126,13 @@ const T: Record<Lang, Copy> = {
       { name: "Magazin", price: "€850", feats: ["Catalog și coș de cumpărături", "Plăți online", "Panou de administrare"] },
     ],
     priceNote: "+ 50 EUR per limbă extra. Backlink-uri premium de la 3$ per bucată. Sisteme personalizate și SEO lunar: preț la cerere.",
+    priceFrom: "de la",
     priceCta: "Cere ofertă",
     proofLabel: "Rezultate",
     proofLine: "SEO făcut de noi pentru Davo.md, măsurat în Ahrefs.",
     statCards: [
-      { v: "50", l: "Domain Rating · Davo.md", s: "din 100, măsurat în Ahrefs" },
-      { v: "2.6K", l: "Backlink-uri · Davo.md", s: "13% dofollow" },
+      { v: "50", l: "Domain Rating", s: "din 100, măsurat în Ahrefs" },
+      { v: "2.6K", l: "Backlink-uri", s: "13% dofollow" },
       { v: "348", l: "Domenii de referință", s: "98% dofollow" },
       { v: "Pag. 1", l: "Poziție în Google · RADX", s: "fără reclame plătite" },
       { v: "60+", l: "Oameni în aplicația GLG", s: "instructori, operatori, contabili" },
@@ -181,12 +183,13 @@ const T: Record<Lang, Copy> = {
       { name: "Store", price: "€850", feats: ["Catalog and cart", "Online payments", "Admin panel"] },
     ],
     priceNote: "+ 50 EUR per extra language. Premium backlinks from $3 each. Custom systems and monthly SEO: price on request.",
+    priceFrom: "starting from",
     priceCta: "Request a quote",
     proofLabel: "Results",
     proofLine: "Our SEO for Davo.md, measured in Ahrefs.",
     statCards: [
-      { v: "50", l: "Domain Rating · Davo.md", s: "out of 100, measured in Ahrefs" },
-      { v: "2.6K", l: "Backlinks · Davo.md", s: "13% dofollow" },
+      { v: "50", l: "Domain Rating", s: "out of 100, measured in Ahrefs" },
+      { v: "2.6K", l: "Backlinks", s: "13% dofollow" },
       { v: "348", l: "Referring domains", s: "98% dofollow" },
       { v: "Page 1", l: "Google position · RADX", s: "no paid ads" },
       { v: "60+", l: "People in the GLG app", s: "instructors, operators, accountants" },
@@ -237,12 +240,13 @@ const T: Record<Lang, Copy> = {
       { name: "Shop", price: "€850", feats: ["Katalog und Warenkorb", "Online-Zahlungen", "Admin-Panel"] },
     ],
     priceNote: "+ 50 EUR pro zusatzliche Sprache. Premium-Backlinks ab 3$ pro Stuck. Individuelle Systeme und monatliches SEO: Preis auf Anfrage.",
+    priceFrom: "ab",
     priceCta: "Angebot anfragen",
     proofLabel: "Ergebnisse",
     proofLine: "SEO von uns fur Davo.md, gemessen in Ahrefs.",
     statCards: [
-      { v: "50", l: "Domain Rating · Davo.md", s: "von 100, gemessen in Ahrefs" },
-      { v: "2.6K", l: "Backlinks · Davo.md", s: "13% dofollow" },
+      { v: "50", l: "Domain Rating", s: "von 100, gemessen in Ahrefs" },
+      { v: "2.6K", l: "Backlinks", s: "13% dofollow" },
       { v: "348", l: "Verweisende Domains", s: "98% dofollow" },
       { v: "Seite 1", l: "Google-Position · RADX", s: "ohne bezahlte Werbung" },
       { v: "60+", l: "Nutzer in der GLG-App", s: "Fahrlehrer, Operatoren, Buchhaltung" },
@@ -293,12 +297,13 @@ const T: Record<Lang, Copy> = {
       { name: "Boutique", price: "€850", feats: ["Catalogue et panier", "Paiements en ligne", "Panneau d'administration"] },
     ],
     priceNote: "+ 50 EUR par langue supplementaire. Backlinks premium a partir de 3$ piece. Systemes sur mesure et SEO mensuel: prix sur demande.",
+    priceFrom: "a partir de",
     priceCta: "Demander un devis",
     proofLabel: "Resultats",
     proofLine: "SEO realise par nous pour Davo.md, mesure dans Ahrefs.",
     statCards: [
-      { v: "50", l: "Domain Rating · Davo.md", s: "sur 100, mesure dans Ahrefs" },
-      { v: "2.6K", l: "Backlinks · Davo.md", s: "13% dofollow" },
+      { v: "50", l: "Domain Rating", s: "sur 100, mesure dans Ahrefs" },
+      { v: "2.6K", l: "Backlinks", s: "13% dofollow" },
       { v: "348", l: "Domaines referents", s: "98% dofollow" },
       { v: "Page 1", l: "Position Google · RADX", s: "sans publicite payante" },
       { v: "60+", l: "Personnes dans l'app GLG", s: "instructeurs, operateurs, comptables" },
@@ -349,12 +354,13 @@ const T: Record<Lang, Copy> = {
       { name: "Tienda", price: "€850", feats: ["Catalogo y carrito", "Pagos online", "Panel de administracion"] },
     ],
     priceNote: "+ 50 EUR por idioma extra. Backlinks premium desde 3$ cada uno. Sistemas a medida y SEO mensual: precio a consultar.",
+    priceFrom: "desde",
     priceCta: "Pedir presupuesto",
     proofLabel: "Resultados",
     proofLine: "SEO hecho por nosotros para Davo.md, medido en Ahrefs.",
     statCards: [
-      { v: "50", l: "Domain Rating · Davo.md", s: "de 100, medido en Ahrefs" },
-      { v: "2.6K", l: "Backlinks · Davo.md", s: "13% dofollow" },
+      { v: "50", l: "Domain Rating", s: "de 100, medido en Ahrefs" },
+      { v: "2.6K", l: "Backlinks", s: "13% dofollow" },
       { v: "348", l: "Dominios de referencia", s: "98% dofollow" },
       { v: "Pag. 1", l: "Posicion en Google · RADX", s: "sin anuncios pagados" },
       { v: "60+", l: "Personas en la app GLG", s: "instructores, operadores, contables" },
@@ -405,12 +411,13 @@ const T: Record<Lang, Copy> = {
       { name: "Магазин", price: "€850", feats: ["Каталог и корзина", "Онлайн-оплата", "Панель администратора"] },
     ],
     priceNote: "+ 50 EUR за дополнительный язык. Премиум-беклинки от 3$ за штуку. Индивидуальные системы и ежемесячное SEO: цена по запросу.",
+    priceFrom: "от",
     priceCta: "Запросить предложение",
     proofLabel: "Результаты",
     proofLine: "Наше SEO для Davo.md, измерено в Ahrefs.",
     statCards: [
-      { v: "50", l: "Domain Rating · Davo.md", s: "из 100, измерено в Ahrefs" },
-      { v: "2.6K", l: "Беклинки · Davo.md", s: "13% dofollow" },
+      { v: "50", l: "Domain Rating", s: "из 100, измерено в Ahrefs" },
+      { v: "2.6K", l: "Беклинки", s: "13% dofollow" },
       { v: "348", l: "Ссылающиеся домены", s: "98% dofollow" },
       { v: "Стр. 1", l: "Позиция в Google · RADX", s: "без платной рекламы" },
       { v: "60+", l: "Люди в приложении GLG", s: "инструкторы, операторы, бухгалтеры" },
@@ -1140,6 +1147,7 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
                   <div className="price-val">
                     <span className="rl">
                       <span className="rl-i" style={d(`${0.08 + i * 0.08}s`)}>
+                        <em className="price-from">{t.priceFrom}</em>
                         {p.price}
                       </span>
                     </span>
@@ -1187,9 +1195,6 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
                   loading="lazy"
                   decoding="async"
                 />
-              </div>
-              <div className="proof-cap fu" style={d("0.15s")}>
-                <span>Ahrefs · Backlink profile · davo.md</span>
               </div>
             </div>
             <div className="stats rv">
