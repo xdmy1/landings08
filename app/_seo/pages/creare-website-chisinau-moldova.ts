@@ -109,7 +109,7 @@ const page: SeoPage = {
   contactTitle: "Hai să vorbim despre website-ul tău.",
   contactSub: "Scrie-ne ce fel de creare website îți trebuie și primești o ofertă fixă în cel mult 24 de ore.",
 
-  projectOrder: ["davo", "glg", "radx", "mobo", "interbus", "eurogard", "infobac"],
+  projectOrder: ["davo", "glg", "radx", "mobo", "interbus", "eurogard", "infobac", "inauto"],
   related: ["magazin-online-chisinau-moldova", "landing-page-chisinau-moldova", "seo-chisinau-moldova", "solutii-software-moldova"],
 };
 

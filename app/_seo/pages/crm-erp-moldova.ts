@@ -111,7 +111,7 @@ const page: SeoPage = {
   contactTitle: "Hai să vedem ce CRM îți trebuie.",
   contactSub: "Scrie-ne cum lucrează firma ta acum și primești în cel mult 24 de ore o ofertă pentru CRM sau ERP.",
 
-  projectOrder: ["interbus", "glg", "infobac", "davo", "mobo", "radx", "eurogard"],
+  projectOrder: ["interbus", "glg", "infobac", "davo", "mobo", "radx", "eurogard", "inauto"],
   related: ["solutii-software-moldova", "aplicatii-mobile-chisinau-moldova", "automatizari-ai-moldova", "magazin-online-chisinau-moldova"],
 };
 

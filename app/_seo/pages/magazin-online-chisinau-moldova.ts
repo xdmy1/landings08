@@ -111,7 +111,7 @@ const page: SeoPage = {
   contactTitle: "Hai să vorbim despre magazinul tău.",
   contactSub: "Scrie-ne ce produse vinzi și primești în cel mult 24 de ore o ofertă fixă pentru magazin online.",
 
-  projectOrder: ["interbus", "mobo", "davo", "glg", "eurogard", "radx", "infobac"],
+  projectOrder: ["interbus", "mobo", "davo", "glg", "eurogard", "radx", "infobac", "inauto"],
   related: ["creare-website-chisinau-moldova", "crm-erp-moldova", "seo-chisinau-moldova", "google-ads-chisinau-moldova"],
 };
 

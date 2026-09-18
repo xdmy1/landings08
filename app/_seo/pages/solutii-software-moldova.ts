@@ -110,7 +110,7 @@ const page: SeoPage = {
   contactTitle: "Spune-ne ce te încurcă în programul de azi.",
   contactSub: "Scrie-ne cum lucrează firma acum și primești o ofertă pentru soluții software, cu preț și termen, în 24 de ore.",
 
-  projectOrder: ["glg", "interbus", "infobac", "davo", "mobo", "radx", "eurogard"],
+  projectOrder: ["glg", "interbus", "infobac", "davo", "mobo", "radx", "eurogard", "inauto"],
   related: ["crm-erp-moldova", "automatizari-ai-moldova", "aplicatii-mobile-chisinau-moldova", "creare-website-chisinau-moldova"],
 };
 

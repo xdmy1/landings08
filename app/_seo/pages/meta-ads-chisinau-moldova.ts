@@ -98,7 +98,7 @@ const page: SeoPage = {
   contactTitle: "Hai să pornim reclamele și pagina care le primește.",
   contactSub: "Scrie-ne ce vinzi și îți răspundem în 24 de ore cu un plan de Meta Ads și cu pagina de care ai nevoie.",
 
-  projectOrder: ["davo", "glg", "mobo", "eurogard", "interbus", "radx", "infobac"],
+  projectOrder: ["davo", "glg", "mobo", "eurogard", "interbus", "radx", "infobac", "inauto"],
   related: ["landing-page-chisinau-moldova", "google-ads-chisinau-moldova", "magazin-online-chisinau-moldova", "creare-website-chisinau-moldova"],
 };
 

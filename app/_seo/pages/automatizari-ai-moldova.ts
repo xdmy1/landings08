@@ -110,7 +110,7 @@ const page: SeoPage = {
   contactTitle: "Hai să vedem ce se poate automatiza la tine.",
   contactSub: "Scrie-ne ce faceți acum cu mâna și primești un plan de automatizare AI, cu preț și termen, în cel mult 24 de ore.",
 
-  projectOrder: ["glg", "interbus", "mobo", "davo", "infobac", "radx", "eurogard"],
+  projectOrder: ["glg", "interbus", "mobo", "davo", "infobac", "radx", "eurogard", "inauto"],
   related: ["creare-boti-telegram", "solutii-software-moldova", "crm-erp-moldova", "creare-website-chisinau-moldova"],
 };
 

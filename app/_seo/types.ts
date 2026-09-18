@@ -3,7 +3,7 @@
 
 export type SeoCase = {
   /* project key, used to pull the same card image the carousel uses */
-  key: "glg" | "mobo" | "davo" | "interbus" | "eurogard" | "radx" | "infobac";
+  key: "glg" | "mobo" | "davo" | "inauto" | "interbus" | "eurogard" | "radx" | "infobac";
   name: string;
   domain: string;
   href: string;

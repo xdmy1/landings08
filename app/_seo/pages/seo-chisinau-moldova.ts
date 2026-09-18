@@ -111,7 +111,7 @@ const page: SeoPage = {
   contactTitle: "Hai să vedem unde stai în Google.",
   contactSub: "Scrie-ne adresa site-ului și primești în cel mult 24 de ore o părere sinceră și o ofertă de SEO în Chișinău sau pentru piața pe care lucrezi.",
 
-  projectOrder: ["davo", "radx", "eurogard", "glg", "mobo", "interbus", "infobac"],
+  projectOrder: ["davo", "radx", "eurogard", "glg", "mobo", "interbus", "infobac", "inauto"],
   related: ["backlink-chisinau-moldova", "creare-website-chisinau-moldova", "google-ads-chisinau-moldova", "landing-page-chisinau-moldova"],
 };
 

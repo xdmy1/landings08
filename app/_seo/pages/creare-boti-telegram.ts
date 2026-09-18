@@ -111,7 +111,7 @@ const page: SeoPage = {
   contactTitle: "Spune-ne ce ar trebui să facă botul tău.",
   contactSub: "Scrie-ne fluxul pe care îl faci acum manual și primești o ofertă pentru creare boți Telegram în cel mult 24 de ore.",
 
-  projectOrder: ["glg", "interbus", "davo", "infobac", "mobo", "eurogard", "radx"],
+  projectOrder: ["glg", "interbus", "davo", "infobac", "mobo", "eurogard", "radx", "inauto"],
   related: ["automatizari-ai-moldova", "solutii-software-moldova", "crm-erp-moldova", "aplicatii-mobile-chisinau-moldova"],
 };
 

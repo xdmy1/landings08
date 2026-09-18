@@ -98,7 +98,7 @@ const page: SeoPage = {
   contactTitle: "Hai să îți creștem profilul de linkuri.",
   contactSub: "Scrie-ne domeniul tău și primești o listă de backlinkuri propuse, cu preț per bucată, în cel mult 24 de ore.",
 
-  projectOrder: ["davo", "radx", "glg", "interbus", "eurogard", "mobo", "infobac"],
+  projectOrder: ["davo", "radx", "glg", "interbus", "eurogard", "mobo", "infobac", "inauto"],
   related: ["seo-chisinau-moldova", "creare-website-chisinau-moldova", "landing-page-chisinau-moldova", "google-ads-chisinau-moldova"],
 };
 
