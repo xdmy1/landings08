@@ -16,13 +16,13 @@ export function seoMetadata(page: SeoPage): Metadata {
       locale: "ro_RO",
       title: page.title,
       description: page.desc,
-      images: [{ url: "/images/shot-davo.jpg", width: 1920, height: 1200, alt: page.title }],
+      images: [{ url: "/images/og.jpg", width: 1200, height: 630, alt: page.title }],
     },
     twitter: {
       card: "summary_large_image",
       title: page.title,
       description: page.desc,
-      images: ["/images/shot-davo.jpg"],
+      images: ["/images/og.jpg"],
     },
     robots: {
       index: true,

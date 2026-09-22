@@ -29,10 +29,10 @@ export const metadata: Metadata = {
       "Studio web din Chișinău. Site-uri rapide și curate, SEO în cod, backlink-uri premium de la 3$. Prețuri de la 350 EUR.",
     images: [
       {
-        url: "/images/shot-davo.jpg",
-        width: 1920,
-        height: 1200,
-        alt: "landings.md, proiect Davo.md",
+        url: "/images/og.jpg",
+        width: 1200,
+        height: 630,
+        alt: "landings.md: site-uri care aduc clienți. Studio din Chișinău, site-uri, aplicații și SEO.",
       },
     ],
   },
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     title: "landings.md | Site-uri, design și SEO",
     description:
       "Studio web din Chișinău. Site-uri rapide și curate, SEO în cod, backlink-uri premium de la 3$.",
-    images: ["/images/shot-davo.jpg"],
+    images: ["/images/og.jpg"],
   },
   robots: {
     index: true,
@@ -71,7 +71,7 @@ const jsonLd = {
       url: SITE,
       email: "contact@landings.md",
       telephone: "+37368327082",
-      image: `${SITE}/images/shot-davo.jpg`,
+      image: `${SITE}/images/og.jpg`,
       logo: `${SITE}/images/logo.png`,
       address: {
         "@type": "PostalAddress",

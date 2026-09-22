@@ -15,6 +15,13 @@ export const metadata: Metadata = {
     siteName: "landings.md",
     title: "Blog | landings.md",
     description: "Ghiduri practice despre site-uri, SEO și publicitate online.",
+    images: [{ url: "/images/og.jpg", width: 1200, height: 630, alt: "Blog landings.md" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog | landings.md",
+    description: "Ghiduri practice despre site-uri, SEO și publicitate online.",
+    images: ["/images/og.jpg"],
   },
 };
 
