@@ -28,18 +28,20 @@ const PROJECTS = [
 
 const shotSrcSet = (base: string) => `${base}-800.webp 800w, ${base}-1280.webp 1280w`;
 
-const LOGOS: ReadonlyArray<{ n: string; h: number }> = [
+/* lt = the artwork is white/light (made for dark backgrounds): on hover it
+   shows its real colors on a dark chip, otherwise the white parts vanish */
+const LOGOS: ReadonlyArray<{ n: string; h: number; lt?: boolean }> = [
   { n: "davo", h: 26 },
-  { n: "glg", h: 46 },
+  { n: "glg", h: 46, lt: true },
   { n: "interbus", h: 30 },
-  { n: "eurogard", h: 44 },
+  { n: "eurogard", h: 44, lt: true },
   { n: "radx", h: 30 },
-  { n: "mobo", h: 32 },
+  { n: "mobo", h: 32, lt: true },
   { n: "inauto", h: 34 },
   { n: "cmiea", h: 44 },
-  { n: "respectauto", h: 30 },
-  { n: "rizzaclassic", h: 36 },
-  { n: "udc", h: 42 },
+  { n: "respectauto", h: 22, lt: true },
+  { n: "rizzaclassic", h: 36, lt: true },
+  { n: "udc", h: 42, lt: true },
 ];
 
 type ProjectKey = (typeof PROJECTS)[number]["key"];
@@ -1277,7 +1279,7 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
                   {[...LOGOS, ...LOGOS].map((l, i) => (
                     <img
                       key={`${l.n}${i}`}
-                      className={i >= LOGOS.length ? "dup" : undefined}
+                      className={[i >= LOGOS.length ? "dup" : "", l.lt ? "lt" : ""].filter(Boolean).join(" ") || undefined}
                       src={`/images/logos/${l.n}.png`}
                       alt={i >= LOGOS.length ? "" : l.n}
                       style={{ height: l.h }}
