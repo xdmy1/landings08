@@ -778,6 +778,11 @@ button {
     filter: none;
     opacity: 1;
   }
+
+  /* pale yellow/gold artwork: a touch deeper and warmer so it holds on the light bg */
+  .logo-row img.dk:hover {
+    filter: brightness(0.85) saturate(1.25) hue-rotate(-8deg);
+  }
 }
 
 @keyframes logo-drift {
