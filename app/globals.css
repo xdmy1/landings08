@@ -768,26 +768,15 @@ button {
 .logo-row img {
   width: auto;
   margin-right: 92px;
-  border-radius: 6px;
-  background-color: transparent;
-  box-shadow: 0 0 0 12px transparent;
   filter: grayscale(1) brightness(0.45) contrast(1.05);
   opacity: 0.9;
-  transition: filter 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  transition: filter 0.2s ease, opacity 0.2s ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .logo-row img:hover {
     filter: none;
     opacity: 1;
-  }
-
-  /* white artwork (made for dark backgrounds): real colors, on a dark chip
-     that fades in behind the mark, so the white parts stay visible */
-  .logo-row img.lt:hover {
-    filter: none;
-    background-color: var(--ink);
-    box-shadow: 0 0 0 12px var(--ink);
   }
 }
 
