@@ -1,24 +1,12 @@
 "use client";
 
-import { Component, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import Lenis from "lenis";
-import { MetalFx } from "metal-fx";
 import { ThinkingOrb } from "thinking-orbs";
 import { HeroOrb } from "../fx";
 import type { SeoPage } from "../_seo/types";
 import { SEO_INDEX, SEO_SLUGS } from "../_seo/index";
-
-/* if a WebGL/CSS effect throws at runtime, fall back to the plain element */
-class FxBoundary extends Component<{ fallback: ReactNode; children: ReactNode }, { err: boolean }> {
-  state = { err: false };
-  static getDerivedStateFromError() {
-    return { err: true };
-  }
-  render() {
-    return this.state.err ? this.props.fallback : this.props.children;
-  }
-}
 
 /* ------------------------------------------------------------------ */
 /* data                                                                */
@@ -68,6 +56,7 @@ type Copy = {
   ctaP: string;
   ctaS: string;
   heroCap: string;
+  feat: { name: string; domain: string; desc: string; tags: string[] };
   projLabel: string;
   logosLabel: string;
   projects: Record<ProjectKey, { desc: string; tags: string[] }>;
@@ -105,6 +94,7 @@ const T: Record<Lang, Copy> = {
     ctaP: "Cere o ofertă",
     ctaS: "Vezi proiectele",
     heroCap: "Davo.md · Transport de pasageri, rezervări online",
+    feat: { name: "Mobo CRM", domain: "app.mobo.md", desc: "CRM făcut de la zero pentru Mobo: lead-uri, estimări cu preț calculat, producție și finanțe într-un singur loc.", tags: ["CRM", "Software", "Design"] },
     projLabel: "Câteva din proiectele noastre",
     logosLabel: "Și alții cu care am lucrat",
     projects: {
@@ -170,6 +160,7 @@ const T: Record<Lang, Copy> = {
     ctaP: "Request a quote",
     ctaS: "See the projects",
     heroCap: "Davo.md · Passenger transport, online booking",
+    feat: { name: "Mobo CRM", domain: "app.mobo.md", desc: "A CRM built from scratch for Mobo: leads, priced estimates, production and finance in one place.", tags: ["CRM", "Software", "Design"] },
     projLabel: "A few of our projects",
     logosLabel: "And others we worked with",
     projects: {
@@ -235,6 +226,7 @@ const T: Record<Lang, Copy> = {
     ctaP: "Angebot anfragen",
     ctaS: "Projekte ansehen",
     heroCap: "Davo.md · Personentransport, Online-Buchung",
+    feat: { name: "Mobo CRM", domain: "app.mobo.md", desc: "Ein von Grund auf gebautes CRM für Mobo: Leads, Kalkulationen, Produktion und Finanzen an einem Ort.", tags: ["CRM", "Software", "Design"] },
     projLabel: "Einige unserer Projekte",
     logosLabel: "Und weitere Kunden",
     projects: {
@@ -300,6 +292,7 @@ const T: Record<Lang, Copy> = {
     ctaP: "Demander un devis",
     ctaS: "Voir les projets",
     heroCap: "Davo.md · Transport de passagers, reservation en ligne",
+    feat: { name: "Mobo CRM", domain: "app.mobo.md", desc: "Un CRM construit de zéro pour Mobo : leads, devis chiffrés, production et finances au même endroit.", tags: ["CRM", "Logiciel", "Design"] },
     projLabel: "Quelques-uns de nos projets",
     logosLabel: "Et d'autres clients",
     projects: {
@@ -365,6 +358,7 @@ const T: Record<Lang, Copy> = {
     ctaP: "Pedir presupuesto",
     ctaS: "Ver proyectos",
     heroCap: "Davo.md · Transporte de pasajeros, reservas online",
+    feat: { name: "Mobo CRM", domain: "app.mobo.md", desc: "Un CRM hecho desde cero para Mobo: leads, presupuestos con precio, producción y finanzas en un solo lugar.", tags: ["CRM", "Software", "Diseño"] },
     projLabel: "Algunos de nuestros proyectos",
     logosLabel: "Y otros clientes",
     projects: {
@@ -430,6 +424,7 @@ const T: Record<Lang, Copy> = {
     ctaP: "Запросить предложение",
     ctaS: "Смотреть проекты",
     heroCap: "Davo.md · Пассажирские перевозки, онлайн-бронирование",
+    feat: { name: "Mobo CRM", domain: "app.mobo.md", desc: "CRM, созданная с нуля для Mobo: лиды, сметы с расчётом цены, производство и финансы в одном месте.", tags: ["CRM", "Софт", "Дизайн"] },
     projLabel: "Несколько наших проектов",
     logosLabel: "И другие клиенты",
     projects: {
@@ -706,6 +701,76 @@ function EmailMenu({ subject, triggerClass, children }: { subject?: string; trig
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* featured work: the Mobo CRM reel, up top in the hero                */
+/* ------------------------------------------------------------------ */
+
+function Featured({ t }: { t: Copy }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  const f = t.feat;
+
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    /* React does not always put the muted attribute in the SSR markup, so
+       set it by hand before asking for autoplay */
+    v.muted = true;
+    v.defaultMuted = true;
+    const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (rm) return;
+    const io = new IntersectionObserver(
+      (es) => {
+        es.forEach((e) => {
+          if (e.isIntersecting) v.play().catch(() => {});
+          else v.pause();
+        });
+      },
+      { threshold: 0.2 }
+    );
+    io.observe(v);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <div className="feat fu" style={d("0.7s")}>
+      <div className="feat-media">
+        <video
+          ref={ref}
+          className="feat-video"
+          src="/videos/mobo-crm.mp4"
+          poster="/images/mobo-crm-poster.webp"
+          width={1920}
+          height={1080}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          disablePictureInPicture
+          tabIndex={-1}
+          aria-label={`${f.name}, ${f.tags.join(", ")}`}
+        />
+      </div>
+      <div className="feat-foot">
+        <div className="feat-id">
+          <span className="feat-name">{f.name}</span>
+          <span className="feat-url">{f.domain}</span>
+        </div>
+        <div className="feat-txt">
+          <p className="feat-desc">{f.desc}</p>
+          <div className="feat-tags">
+            {f.tags.map((tag) => (
+              <span className="tag" key={tag}>
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -1045,7 +1110,6 @@ function SeoRelated({ seo }: { seo: SeoPage }) {
 export default function SiteShell({ seo }: { seo?: SeoPage }) {
   const [lang, setLang] = useState<Lang>("ro");
   const [fx, setFx] = useState(false);
-  const [fxHeavy, setFxHeavy] = useState(false);
   const lenisRef = useRef<Lenis | null>(null);
   const base = T[seo ? "ro" : lang];
   const t: Copy = seo
@@ -1067,12 +1131,8 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
     try {
       const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       setFx(!rm);
-      const c = document.createElement("canvas");
-      const gl = !!(c.getContext("webgl2") || c.getContext("webgl"));
-      const desktop = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-      setFxHeavy(!rm && gl && desktop);
     } catch {
-      setFxHeavy(false);
+      setFx(false);
     }
   }, []);
 
@@ -1192,22 +1252,9 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
               {t.sub}
             </p>
             <div className="hero-cta fu" style={d("0.4s")}>
-              {(() => {
-                const cta = (
-                  <a className="btn" href="#contact" onClick={(e) => goto(e, "contact")}>
-                    {t.ctaP}
-                  </a>
-                );
-                return fxHeavy ? (
-                  <FxBoundary fallback={cta}>
-                    <MetalFx variant="button" preset="chromatic" theme="light" normalizeHostStyles={false} className="fx-cta">
-                      {cta}
-                    </MetalFx>
-                  </FxBoundary>
-                ) : (
-                  cta
-                );
-              })()}
+              <a className="btn" href="#contact" onClick={(e) => goto(e, "contact")}>
+                {t.ctaP}
+              </a>
               <a className="tlink" href="#proiecte" onClick={(e) => goto(e, "proiecte")}>
                 {t.ctaS}
               </a>
@@ -1241,6 +1288,7 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
                 </div>
               </div>
             </div>
+            <Featured t={t} />
           </div>
         </section>
 
