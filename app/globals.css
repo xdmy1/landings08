@@ -726,11 +726,6 @@ button {
   letter-spacing: -0.01em;
 }
 
-.feat-url {
-  font-size: 13px;
-  color: var(--ink-3);
-}
-
 .feat-desc {
   font-size: 14px;
   line-height: 1.55;

@@ -56,7 +56,7 @@ type Copy = {
   ctaP: string;
   ctaS: string;
   heroCap: string;
-  feat: { name: string; domain: string; desc: string; tags: string[] };
+  feat: { name: string; desc: string; tags: string[] };
   projLabel: string;
   logosLabel: string;
   projects: Record<ProjectKey, { desc: string; tags: string[] }>;
@@ -94,7 +94,7 @@ const T: Record<Lang, Copy> = {
     ctaP: "Cere o ofertă",
     ctaS: "Vezi proiectele",
     heroCap: "Davo.md · Transport de pasageri, rezervări online",
-    feat: { name: "Mobo CRM", domain: "app.mobo.md", desc: "CRM făcut de la zero pentru Mobo: lead-uri, estimări cu preț calculat, producție și finanțe într-un singur loc.", tags: ["CRM", "Software", "Design"] },
+    feat: { name: "Mobo CRM", desc: "CRM făcut de la zero pentru Mobo: lead-uri, estimări cu preț calculat, producție și finanțe într-un singur loc.", tags: ["CRM", "Software", "Design"] },
     projLabel: "Câteva din proiectele noastre",
     logosLabel: "Și alții cu care am lucrat",
     projects: {
@@ -160,7 +160,7 @@ const T: Record<Lang, Copy> = {
     ctaP: "Request a quote",
     ctaS: "See the projects",
     heroCap: "Davo.md · Passenger transport, online booking",
-    feat: { name: "Mobo CRM", domain: "app.mobo.md", desc: "A CRM built from scratch for Mobo: leads, priced estimates, production and finance in one place.", tags: ["CRM", "Software", "Design"] },
+    feat: { name: "Mobo CRM", desc: "A CRM built from scratch for Mobo: leads, priced estimates, production and finance in one place.", tags: ["CRM", "Software", "Design"] },
     projLabel: "A few of our projects",
     logosLabel: "And others we worked with",
     projects: {
@@ -226,7 +226,7 @@ const T: Record<Lang, Copy> = {
     ctaP: "Angebot anfragen",
     ctaS: "Projekte ansehen",
     heroCap: "Davo.md · Personentransport, Online-Buchung",
-    feat: { name: "Mobo CRM", domain: "app.mobo.md", desc: "Ein von Grund auf gebautes CRM für Mobo: Leads, Kalkulationen, Produktion und Finanzen an einem Ort.", tags: ["CRM", "Software", "Design"] },
+    feat: { name: "Mobo CRM", desc: "Ein von Grund auf gebautes CRM für Mobo: Leads, Kalkulationen, Produktion und Finanzen an einem Ort.", tags: ["CRM", "Software", "Design"] },
     projLabel: "Einige unserer Projekte",
     logosLabel: "Und weitere Kunden",
     projects: {
@@ -292,7 +292,7 @@ const T: Record<Lang, Copy> = {
     ctaP: "Demander un devis",
     ctaS: "Voir les projets",
     heroCap: "Davo.md · Transport de passagers, reservation en ligne",
-    feat: { name: "Mobo CRM", domain: "app.mobo.md", desc: "Un CRM construit de zéro pour Mobo : leads, devis chiffrés, production et finances au même endroit.", tags: ["CRM", "Logiciel", "Design"] },
+    feat: { name: "Mobo CRM", desc: "Un CRM construit de zéro pour Mobo : leads, devis chiffrés, production et finances au même endroit.", tags: ["CRM", "Logiciel", "Design"] },
     projLabel: "Quelques-uns de nos projets",
     logosLabel: "Et d'autres clients",
     projects: {
@@ -358,7 +358,7 @@ const T: Record<Lang, Copy> = {
     ctaP: "Pedir presupuesto",
     ctaS: "Ver proyectos",
     heroCap: "Davo.md · Transporte de pasajeros, reservas online",
-    feat: { name: "Mobo CRM", domain: "app.mobo.md", desc: "Un CRM hecho desde cero para Mobo: leads, presupuestos con precio, producción y finanzas en un solo lugar.", tags: ["CRM", "Software", "Diseño"] },
+    feat: { name: "Mobo CRM", desc: "Un CRM hecho desde cero para Mobo: leads, presupuestos con precio, producción y finanzas en un solo lugar.", tags: ["CRM", "Software", "Diseño"] },
     projLabel: "Algunos de nuestros proyectos",
     logosLabel: "Y otros clientes",
     projects: {
@@ -424,7 +424,7 @@ const T: Record<Lang, Copy> = {
     ctaP: "Запросить предложение",
     ctaS: "Смотреть проекты",
     heroCap: "Davo.md · Пассажирские перевозки, онлайн-бронирование",
-    feat: { name: "Mobo CRM", domain: "app.mobo.md", desc: "CRM, созданная с нуля для Mobo: лиды, сметы с расчётом цены, производство и финансы в одном месте.", tags: ["CRM", "Софт", "Дизайн"] },
+    feat: { name: "Mobo CRM", desc: "CRM, созданная с нуля для Mobo: лиды, сметы с расчётом цены, производство и финансы в одном месте.", tags: ["CRM", "Софт", "Дизайн"] },
     projLabel: "Несколько наших проектов",
     logosLabel: "И другие клиенты",
     projects: {
@@ -758,7 +758,6 @@ function Featured({ t }: { t: Copy }) {
       <div className="feat-foot">
         <div className="feat-id">
           <span className="feat-name">{f.name}</span>
-          <span className="feat-url">{f.domain}</span>
         </div>
         <div className="feat-txt">
           <p className="feat-desc">{f.desc}</p>
