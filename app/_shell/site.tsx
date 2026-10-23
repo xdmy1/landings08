@@ -7,6 +7,8 @@ import { ThinkingOrb } from "thinking-orbs";
 import { HeroOrb } from "../fx";
 import type { SeoPage } from "../_seo/types";
 import { SEO_INDEX, SEO_SLUGS } from "../_seo/index";
+import { PAY_MARKS as PAY } from "../_pay/legal-footer";
+import { COMPANY } from "../_pay/plans";
 
 /* ------------------------------------------------------------------ */
 /* data                                                                */
@@ -30,16 +32,6 @@ const shotSrcSet = (base: string) => `${base}-800.webp 800w, ${base}-1280.webp 1
 
 /* lt = the artwork is white/light (made for dark backgrounds): on hover it
    shows its real colors on a dark chip, otherwise the white parts vanish */
-/* payment marks in the footer (real colors, official artwork) */
-const PAY: ReadonlyArray<{ n: string; alt: string; h: number }> = [
-  { n: "maib", alt: "maib", h: 17 },
-  { n: "mia", alt: "MIA Plăți Instant", h: 19 },
-  { n: "visa", alt: "Visa", h: 13 },
-  { n: "mastercard", alt: "Mastercard", h: 22 },
-  { n: "applepay", alt: "Apple Pay", h: 22 },
-  { n: "googlepay", alt: "Google Pay", h: 18 },
-];
-
 /* dk: pale (yellow/gold) artwork, deepened a little on hover for contrast */
 const LOGOS: ReadonlyArray<{ n: string; h: number; dk?: boolean }> = [
   { n: "davo", h: 26 },
@@ -80,6 +72,15 @@ type Copy = {
   priceNote: string;
   priceFrom: string;
   priceCta: string;
+  maint: {
+    label: string;
+    lead: string;
+    per: string;
+    cta: string;
+    note: string;
+    terms: string;
+    plans: { id: "start" | "business" | "prioritar"; name: string; price: string; feats: string[] }[];
+  };
   proofLabel: string;
   proofLine: string;
   statCards: { v: string; l: string; s: string }[];
@@ -137,6 +138,19 @@ const T: Record<Lang, Copy> = {
     priceNote: "+ 50 EUR per limbă extra. Backlink-uri premium de la 3$ per bucată. Sisteme personalizate și SEO lunar: preț la cerere.",
     priceFrom: "de la",
     priceCta: "Cere ofertă",
+    maint: {
+      label: "Mentenanță lunară",
+      lead: "Ne scrieți pe Telegram ce aveți nevoie: poze noi, texte, produse, o reclamă de verificat. Ne ocupăm noi, fără să mai căutați pe cineva.",
+      per: "/lună",
+      cta: "Alege pachetul",
+      note: "O cerere înseamnă o sarcină de până la 30 de minute. Bugetul pentru reclame se plătește separat. Lucrările mari, cum ar fi un site nou, au ofertă separată. Plata se face lunar cu cardul, în lei, la cursul BNM din ziua plății.",
+      terms: "Termeni și condiții",
+      plans: [
+        { id: "start", name: "Start", price: "€50", feats: ["Grup Telegram cu echipa noastră", "Răspuns în 48 de ore, luni–vineri", "Până la 5 cereri pe lună", "Poze, texte, prețuri și produse actualizate", "Site-ul verificat și ținut în funcțiune"] },
+        { id: "business", name: "Business", price: "€150", feats: ["Grup Telegram cu echipa noastră", "Răspuns în aceeași zi lucrătoare", "Până la 25 de cereri pe lună", "Produse, bannere, oferte și pagini simple", "Reclamele verificate și ajustate săptămânal", "Raport lunar scurt"] },
+        { id: "prioritar", name: "Prioritar", price: "€250", feats: ["Răspuns în 2 ore, luni–sâmbătă", "Până la 3 cereri pe zi", "Reclame Meta și Google gestionate de noi", "Urgențe rezolvate și în weekend", "O pagină nouă sau un landing de campanie pe lună", "Raport și apel lunar de 30 de minute"] },
+      ],
+    },
     proofLabel: "Rezultate",
     proofLine: "SEO făcut de noi pentru Davo.md, măsurat în Ahrefs.",
     statCards: [
@@ -203,6 +217,19 @@ const T: Record<Lang, Copy> = {
     priceNote: "+ 50 EUR per extra language. Premium backlinks from $3 each. Custom systems and monthly SEO: price on request.",
     priceFrom: "starting from",
     priceCta: "Request a quote",
+    maint: {
+      label: "Monthly maintenance",
+      lead: "Message us on Telegram what you need: new photos, text, products, an ad to check. We take care of it, so you don't have to look for someone.",
+      per: "/month",
+      cta: "Choose plan",
+      note: "One request is a task of up to 30 minutes. Ad budget is paid separately. Big work, like a new website, is quoted separately. Paid monthly by card, in MDL at the National Bank of Moldova rate on the day of payment.",
+      terms: "Terms and conditions",
+      plans: [
+        { id: "start", name: "Start", price: "€50", feats: ["Telegram group with our team", "Reply within 48 hours, Monday to Friday", "Up to 5 requests a month", "Photos, text, prices and products kept up to date", "Website checked and kept running"] },
+        { id: "business", name: "Business", price: "€150", feats: ["Telegram group with our team", "Reply the same working day", "Up to 25 requests a month", "Products, banners, offers and simple pages", "Ads checked and tuned every week", "Short monthly report"] },
+        { id: "prioritar", name: "Priority", price: "€250", feats: ["Reply within 2 hours, Monday to Saturday", "Up to 3 requests a day", "Meta and Google ads run by us", "Urgent fixes on weekends too", "One new page or campaign landing page a month", "Monthly report and a 30-minute call"] },
+      ],
+    },
     proofLabel: "Results",
     proofLine: "Our SEO for Davo.md, measured in Ahrefs.",
     statCards: [
@@ -269,6 +296,19 @@ const T: Record<Lang, Copy> = {
     priceNote: "+ 50 EUR pro zusatzliche Sprache. Premium-Backlinks ab 3$ pro Stuck. Individuelle Systeme und monatliches SEO: Preis auf Anfrage.",
     priceFrom: "ab",
     priceCta: "Angebot anfragen",
+    maint: {
+      label: "Monatliche Betreuung",
+      lead: "Schreiben Sie uns auf Telegram, was Sie brauchen: neue Fotos, Texte, Produkte, eine Anzeige zum Prüfen. Wir kümmern uns darum.",
+      per: "/Monat",
+      cta: "Paket wählen",
+      note: "Eine Anfrage ist eine Aufgabe bis 30 Minuten. Das Werbebudget wird separat bezahlt. Große Arbeiten wie eine neue Website werden separat angeboten. Monatliche Zahlung per Karte, in MDL zum Kurs der Nationalbank Moldaus am Zahlungstag.",
+      terms: "AGB",
+      plans: [
+        { id: "start", name: "Start", price: "€50", feats: ["Telegram-Gruppe mit unserem Team", "Antwort innerhalb von 48 Stunden, Mo–Fr", "Bis zu 5 Anfragen pro Monat", "Fotos, Texte, Preise und Produkte aktuell", "Website geprüft und am Laufen gehalten"] },
+        { id: "business", name: "Business", price: "€150", feats: ["Telegram-Gruppe mit unserem Team", "Antwort am selben Werktag", "Bis zu 25 Anfragen pro Monat", "Produkte, Banner, Angebote und einfache Seiten", "Anzeigen wöchentlich geprüft und angepasst", "Kurzer Monatsbericht"] },
+        { id: "prioritar", name: "Priorität", price: "€250", feats: ["Antwort innerhalb von 2 Stunden, Mo–Sa", "Bis zu 3 Anfragen pro Tag", "Meta- und Google-Anzeigen von uns betreut", "Dringendes auch am Wochenende", "Eine neue Seite oder Kampagnen-Landingpage pro Monat", "Monatsbericht und 30-Minuten-Gespräch"] },
+      ],
+    },
     proofLabel: "Ergebnisse",
     proofLine: "SEO von uns fur Davo.md, gemessen in Ahrefs.",
     statCards: [
@@ -335,6 +375,19 @@ const T: Record<Lang, Copy> = {
     priceNote: "+ 50 EUR par langue supplementaire. Backlinks premium a partir de 3$ piece. Systemes sur mesure et SEO mensuel: prix sur demande.",
     priceFrom: "a partir de",
     priceCta: "Demander un devis",
+    maint: {
+      label: "Maintenance mensuelle",
+      lead: "Écrivez-nous sur Telegram ce dont vous avez besoin : nouvelles photos, textes, produits, une publicité à vérifier. On s'en occupe.",
+      per: "/mois",
+      cta: "Choisir",
+      note: "Une demande est une tâche de 30 minutes maximum. Le budget publicitaire est payé à part. Les gros travaux, comme un nouveau site, font l'objet d'un devis. Paiement mensuel par carte, en MDL au taux de la Banque nationale de Moldavie du jour du paiement.",
+      terms: "Conditions générales",
+      plans: [
+        { id: "start", name: "Start", price: "€50", feats: ["Groupe Telegram avec notre équipe", "Réponse sous 48 heures, du lundi au vendredi", "Jusqu'à 5 demandes par mois", "Photos, textes, prix et produits à jour", "Site vérifié et maintenu en ligne"] },
+        { id: "business", name: "Business", price: "€150", feats: ["Groupe Telegram avec notre équipe", "Réponse le jour ouvré même", "Jusqu'à 25 demandes par mois", "Produits, bannières, offres et pages simples", "Publicités vérifiées et ajustées chaque semaine", "Court rapport mensuel"] },
+        { id: "prioritar", name: "Prioritaire", price: "€250", feats: ["Réponse sous 2 heures, du lundi au samedi", "Jusqu'à 3 demandes par jour", "Publicités Meta et Google gérées par nous", "Urgences traitées aussi le week-end", "Une nouvelle page ou landing de campagne par mois", "Rapport mensuel et appel de 30 minutes"] },
+      ],
+    },
     proofLabel: "Resultats",
     proofLine: "SEO realise par nous pour Davo.md, mesure dans Ahrefs.",
     statCards: [
@@ -401,6 +454,19 @@ const T: Record<Lang, Copy> = {
     priceNote: "+ 50 EUR por idioma extra. Backlinks premium desde 3$ cada uno. Sistemas a medida y SEO mensual: precio a consultar.",
     priceFrom: "desde",
     priceCta: "Pedir presupuesto",
+    maint: {
+      label: "Mantenimiento mensual",
+      lead: "Escríbenos por Telegram lo que necesitas: fotos nuevas, textos, productos, un anuncio que revisar. Nos encargamos nosotros.",
+      per: "/mes",
+      cta: "Elegir plan",
+      note: "Una solicitud es una tarea de hasta 30 minutos. El presupuesto de anuncios se paga aparte. Los trabajos grandes, como una web nueva, se presupuestan aparte. Pago mensual con tarjeta, en MDL al tipo del Banco Nacional de Moldavia del día del pago.",
+      terms: "Términos y condiciones",
+      plans: [
+        { id: "start", name: "Start", price: "€50", feats: ["Grupo de Telegram con nuestro equipo", "Respuesta en 48 horas, de lunes a viernes", "Hasta 5 solicitudes al mes", "Fotos, textos, precios y productos al día", "Web revisada y funcionando"] },
+        { id: "business", name: "Business", price: "€150", feats: ["Grupo de Telegram con nuestro equipo", "Respuesta el mismo día laborable", "Hasta 25 solicitudes al mes", "Productos, banners, ofertas y páginas simples", "Anuncios revisados y ajustados cada semana", "Informe mensual breve"] },
+        { id: "prioritar", name: "Prioritario", price: "€250", feats: ["Respuesta en 2 horas, de lunes a sábado", "Hasta 3 solicitudes al día", "Anuncios de Meta y Google gestionados por nosotros", "Urgencias también el fin de semana", "Una página nueva o landing de campaña al mes", "Informe mensual y llamada de 30 minutos"] },
+      ],
+    },
     proofLabel: "Resultados",
     proofLine: "SEO hecho por nosotros para Davo.md, medido en Ahrefs.",
     statCards: [
@@ -467,6 +533,19 @@ const T: Record<Lang, Copy> = {
     priceNote: "+ 50 EUR за дополнительный язык. Премиум-беклинки от 3$ за штуку. Индивидуальные системы и ежемесячное SEO: цена по запросу.",
     priceFrom: "от",
     priceCta: "Запросить предложение",
+    maint: {
+      label: "Ежемесячное сопровождение",
+      lead: "Пишите нам в Telegram, что нужно: новые фото, тексты, товары, проверить рекламу. Мы всё сделаем, вам не нужно никого искать.",
+      per: "/мес",
+      cta: "Выбрать",
+      note: "Один запрос — это задача до 30 минут. Рекламный бюджет оплачивается отдельно. Крупные работы, например новый сайт, оцениваются отдельно. Оплата ежемесячно картой, в леях по курсу НБМ на день оплаты.",
+      terms: "Условия",
+      plans: [
+        { id: "start", name: "Старт", price: "€50", feats: ["Группа в Telegram с нашей командой", "Ответ в течение 48 часов, пн–пт", "До 5 запросов в месяц", "Фото, тексты, цены и товары всегда актуальны", "Сайт под контролем и работает"] },
+        { id: "business", name: "Бизнес", price: "€150", feats: ["Группа в Telegram с нашей командой", "Ответ в тот же рабочий день", "До 25 запросов в месяц", "Товары, баннеры, акции и простые страницы", "Реклама проверяется и настраивается каждую неделю", "Короткий ежемесячный отчёт"] },
+        { id: "prioritar", name: "Приоритет", price: "€250", feats: ["Ответ в течение 2 часов, пн–сб", "До 3 запросов в день", "Реклама Meta и Google под нашим управлением", "Срочные задачи и в выходные", "Новая страница или лендинг для кампании каждый месяц", "Отчёт и 30-минутный созвон раз в месяц"] },
+      ],
+    },
     proofLabel: "Результаты",
     proofLine: "Наше SEO для Davo.md, измерено в Ahrefs.",
     statCards: [
@@ -1388,6 +1467,61 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
           </div>
         </section>
 
+        {/* monthly maintenance, paid online by card (maib) */}
+        <section className="section" id="mentenanta">
+          <div className="container">
+            <div className="rv">
+              <div className="rl">
+                <h2 className="rl-i lbl">
+                  {fx && <ThinkingOrb state="solving" size={20} theme="light" className="orb-lbl" aria-label="" />}
+                  {t.maint.label}
+                </h2>
+              </div>
+              <p className="maint-lead fu" style={d("0.08s")}>
+                {t.maint.lead}
+              </p>
+            </div>
+            <div className="price-grid rv" style={{ marginTop: 40 }}>
+              {t.maint.plans.map((p, i) => (
+                <div className="price-cell" key={p.id}>
+                  <div className="price-plan fu" style={d(`${i * 0.08}s`)}>
+                    {p.name}
+                  </div>
+                  <div className="price-val">
+                    <span className="rl">
+                      <span className="rl-i" style={d(`${0.08 + i * 0.08}s`)}>
+                        {p.price}
+                        <em className="price-per">{t.maint.per}</em>
+                      </span>
+                    </span>
+                  </div>
+                  <ul className="price-feats fu" style={d(`${0.16 + i * 0.08}s`)}>
+                    {p.feats.map((f) => (
+                      <li key={f}>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M4.5 12.6l5 5 10-11" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="price-cta fu" style={d(`${0.22 + i * 0.08}s`)}>
+                    <a className="btn btn-sm" href={`/plata/${p.id}`}>
+                      {t.maint.cta}
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="price-note rv fu">
+              {t.maint.note}{" "}
+              <a className="maint-terms" href="/termeni-si-conditii">
+                {t.maint.terms}
+              </a>
+            </p>
+          </div>
+        </section>
+
         {/* proof */}
         <section className="section" id="rezultate">
           <div className="container">
@@ -1558,7 +1692,7 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
 
         <div className="container footer-in">
           <span>
-            &copy; {new Date().getFullYear()} landings.md. IDNO 1026023160988. {t.rights}
+            &copy; {new Date().getFullYear()} landings.md. {COMPANY.legalName}, IDNO {COMPANY.idno}, {COMPANY.address}. {t.rights}
           </span>
           {!seo && (
             <div className="lang-row" role="group" aria-label={t.a11y.lang}>
@@ -1582,7 +1716,9 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
               ))}
             </div>
           )}
-          <span>{t.loc}</span>
+          <a className="foot-terms" href="/termeni-si-conditii">
+            {t.maint.terms}
+          </a>
         </div>
       </footer>
     </>

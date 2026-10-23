@@ -18,6 +18,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.8,
     },
+    {
+      url: `${SITE}/termeni-si-conditii`,
+      lastModified: new Date("2026-10-23"),
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
     ...SEO_SLUGS.map((slug) => ({
       url: `${SITE}/${slug}`,
       lastModified: new Date("2026-09-16"),
