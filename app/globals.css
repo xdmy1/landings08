@@ -1154,6 +1154,20 @@ button {
 }
 
 
+.foot-pay {
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px 30px;
+  padding-block: 22px;
+}
+
+.foot-pay img {
+  width: auto;
+  display: block;
+}
+
 .footer-in {
   border-top: 1px solid var(--line);
   display: flex;

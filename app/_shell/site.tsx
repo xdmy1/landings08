@@ -30,6 +30,16 @@ const shotSrcSet = (base: string) => `${base}-800.webp 800w, ${base}-1280.webp 1
 
 /* lt = the artwork is white/light (made for dark backgrounds): on hover it
    shows its real colors on a dark chip, otherwise the white parts vanish */
+/* payment marks in the footer (real colors, official artwork) */
+const PAY: ReadonlyArray<{ n: string; alt: string; h: number }> = [
+  { n: "maib", alt: "maib", h: 17 },
+  { n: "mia", alt: "MIA Plăți Instant", h: 19 },
+  { n: "visa", alt: "Visa", h: 13 },
+  { n: "mastercard", alt: "Mastercard", h: 22 },
+  { n: "applepay", alt: "Apple Pay", h: 22 },
+  { n: "googlepay", alt: "Google Pay", h: 18 },
+];
+
 /* dk: pale (yellow/gold) artwork, deepened a little on hover for contrast */
 const LOGOS: ReadonlyArray<{ n: string; h: number; dk?: boolean }> = [
   { n: "davo", h: 26 },
@@ -1539,6 +1549,12 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
             </div>
           </div>
         )}
+
+        <div className="container foot-pay">
+          {PAY.map((p) => (
+            <img key={p.n} src={`/images/pay/${p.n}.svg`} alt={p.alt} style={{ height: p.h }} loading="lazy" decoding="async" />
+          ))}
+        </div>
 
         <div className="container footer-in">
           <span>
