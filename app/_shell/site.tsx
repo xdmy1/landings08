@@ -1542,7 +1542,7 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
 
         <div className="container footer-in">
           <span>
-            &copy; {new Date().getFullYear()} landings.md. {t.rights}
+            &copy; {new Date().getFullYear()} landings.md. IDNO 1026023160988. {t.rights}
           </span>
           {!seo && (
             <div className="lang-row" role="group" aria-label={t.a11y.lang}>
