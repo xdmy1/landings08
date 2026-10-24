@@ -303,7 +303,7 @@ export const POSTS: Post[] = [
       {
         "h": "Site de prezentare: punctul de pornire",
         "p": [
-          "Pentru majoritatea afacerilor mici din Moldova, primul pas este un site de prezentare: pagina principală, servicii, despre noi, contact. Scopul lui este simplu, să transforme vizitatorii în apeluri și cereri de ofertă. La acest nivel bugetele încep de la câteva sute de euro: la landings.md, de exemplu, un site pornește de la 350 EUR.",
+          "Pentru majoritatea afacerilor mici din Moldova, primul pas este un site de prezentare: pagina principală, servicii, despre noi, contact. Scopul lui este simplu, să transforme vizitatorii în apeluri și cereri de ofertă. La acest nivel bugetele de pe piață încep de la câteva sute de euro. La landings.md prețul îl stabilim pe proiect, după o discuție scurtă despre ce îți trebuie.",
           "Un site bun de prezentare include design adaptat pe mobil, viteză bună de încărcare și structură gândită pentru Google. Dacă oferta nu spune nimic despre aceste trei lucruri, întreabă direct. Ele fac diferența între un site care aduce clienți și unul care doar există."
         ]
       },
@@ -421,7 +421,7 @@ export const POSTS: Post[] = [
         "h": "Unde ajung oamenii după click",
         "p": [
           "O reclamă bună cu o pagină slabă pierde bani. Trimite oamenii pe o pagină care continuă exact mesajul din reclamă, se încarcă repede pe telefon și are un singur pas următor: formular, buton de WhatsApp sau coș de cumpărături.",
-          "Dacă nu ai încă un site, nu este un obstacol mare: un landing simplu este o investiție mică, la un studio local precum landings.md pornește de la 350 EUR. Pentru servicii locale funcționează bine și campaniile cu mesaje directe în Messenger sau WhatsApp, fără site."
+          "Dacă nu ai încă un site, nu este un obstacol mare: un landing dedicat campaniei se face de obicei în una sau două săptămâni. La landings.md prețul îl stabilim pe proiect, după o discuție scurtă despre ce îți trebuie. Pentru servicii locale funcționează bine și campaniile cu mesaje directe în Messenger sau WhatsApp, fără site."
         ]
       },
       {
@@ -498,7 +498,7 @@ export const POSTS: Post[] = [
         "h": "Pagina de destinație decide costul pe client",
         "p": [
           "Un anunț excelent care duce spre o pagină lentă și confuză aruncă banii pe fereastră. Pagina trebuie să continue promisiunea din anunț: același serviciu, aceeași ofertă, cu un formular sau un buton de apel vizibil fără scroll.",
-          "Trimite fiecare grup de anunțuri spre pagina cea mai relevantă, nu spre pagina principală a site-ului. Pentru o campanie serioasă merită o pagină dedicată ofertei, cu un singur mesaj și un singur îndemn. Spre exemplu, la landings.md un site de prezentare pornește de la 350 EUR, o investiție mică în raport cu un buget lunar de reclame."
+          "Trimite fiecare grup de anunțuri spre pagina cea mai relevantă, nu spre pagina principală a site-ului. Pentru o campanie serioasă merită o pagină dedicată ofertei, cu un singur mesaj și un singur îndemn. La landings.md construim astfel de pagini pe oferta din campanie, iar prețul îl stabilim pe proiect, după o discuție scurtă despre ce îți trebuie."
         ]
       },
       {
@@ -844,7 +844,7 @@ export const POSTS: Post[] = [
         "h": "Când optimizezi și când reconstruiești",
         "p": [
           "Dacă site-ul stă pe o temă veche, cu zeci de pluginuri și scoruri slabe peste tot, optimizarea devine cârpeală. Fiecare oră de lucru câștigă puțin, iar cauza rămâne în fundație.",
-          "În astfel de cazuri, un site nou construit corect de la început iese adesea mai ieftin decât luni de reparații. La landings.md, un site pornește de la 350 EUR, cu viteza tratată din construcție, nu ca reparație ulterioară. Pentru o firmă din Chișinău sau din București, calculul e simplu: costul lucrării față de clienții pierduți în fiecare lună."
+          "În astfel de cazuri, un site nou construit corect de la început iese adesea mai ieftin decât luni de reparații. La landings.md, un site nou se scrie de la zero, cu viteza tratată din construcție, nu ca reparație ulterioară. Pentru o firmă din Chișinău sau din București, calculul e simplu: costul lucrării față de clienții pierduți în fiecare lună."
         ]
       }
     ],
@@ -1133,7 +1133,7 @@ export const POSTS: Post[] = [
         "h": "Alege platforma după buget și volum",
         "p": [
           "Pentru creare magazin online ai trei drumuri: o platformă SaaS cu abonament lunar, o soluție open source precum WooCommerce sau PrestaShop, sau un magazin dezvoltat la comandă. Pentru un catalog de până la câteva sute de produse, primele două variante acoperă tot ce ai nevoie. Dezvoltarea la comandă are sens abia când ai procese pe care nicio platformă standard nu le suportă.",
-          "Bugetul de start nu trebuie să fie uriaș. Ca reper, la landings.md un site pornește de la 350 EUR, iar costul unui magazin crește odată cu numărul de integrări cerute. Regula simplă: nu plăti de la început pentru funcții pe care nu le vei folosi în primul an."
+          "Costul unui magazin crește odată cu numărul de integrări cerute, așa că merită să știi de la început ce îți trebuie cu adevărat. La landings.md prețul îl stabilim pe proiect, după o discuție scurtă despre catalog și integrări. Regula simplă: nu plăti de la început pentru funcții pe care nu le vei folosi în primul an."
         ]
       },
       {
@@ -1282,7 +1282,7 @@ export const POSTS: Post[] = [
       },
       {
         "q": "Cât costă un landing page profesionist?",
-        "a": "Depinde de complexitate, de texte și de integrări. Ca reper, la landings.md un site pornește de la 350 EUR, deci o pagină de vânzare rămâne o investiție accesibilă pentru o afacere mică. Important este ca pagina să își recupereze costul din primele vânzări."
+        "a": "Depinde de complexitate, de texte și de integrări. La landings.md prețul îl stabilim pe proiect, după o discuție scurtă despre oferta ta și campania în care intră. Important este ca pagina să își recupereze costul din primele vânzări."
       }
     ]
   },

@@ -4,8 +4,8 @@ const page: SeoPage = {
   slug: "backlink-chisinau-moldova",
   kw: "backlink",
   kwAlt: [],
-  title: "Backlinkuri Chișinău, Moldova. Linkuri contextuale de la 3$",
-  desc: "Backlinkuri premium din articole, pe site-uri reale și indexate în Google. Alegem donorii manual, scriem textul, punem link dofollow cu ancoră naturală. De la 3$ bucata.",
+  title: "Backlinkuri Chișinău, Moldova. Linkuri contextuale, indexate",
+  desc: "Backlinkuri premium din articole, pe site-uri reale și indexate în Google. Alegem donorii manual, scriem textul, punem link dofollow cu ancoră naturală.",
 
   h1a: "Backlinkuri în Chișinău, Moldova,",
   words: ["reale.", "indexate.", "dofollow."],
@@ -21,7 +21,7 @@ const page: SeoPage = {
   introPoints: [
     { t: "Donori verificați manual", d: "Fiecare backlink pleacă de la un site cu trafic propriu, indexat în Google, pe o temă apropiată de a ta." },
     { t: "Link dofollow în text", d: "Linkurile stau în corpul articolului, cu ancoră naturală, nu în subsol, nu în comentarii, nu într-un director." },
-    { t: "De la 3$ bucata", d: "Prețul unui backlink pornește de la 3$ și urcă odată cu puterea domeniului pe care îl alegem împreună." },
+    { t: "Preț după domeniu", d: "Prețul unui backlink depinde de puterea domeniului pe care îl alegem împreună și îl știi pentru fiecare donor înainte să plătești." },
   ],
 
   servLabel: "Ce include un pachet de backlinkuri",
@@ -64,14 +64,14 @@ const page: SeoPage = {
   ],
 
   priceNote:
-    "Un backlink premium contextual pornește de la 3$ bucata, iar prețul final depinde de domeniul ales. Pachetele lunare de backlinkuri și SEO se fac la ofertă, după ce ne uităm la nișă și la concurență. Dacă ai nevoie și de site, el pornește de la 350 EUR pentru o pagină, 550 EUR pentru un site de prezentare și 850 EUR pentru un magazin online.",
+    "Prețul unui backlink premium contextual depinde de domeniul ales, iar lista donorilor o vezi înainte să plătești. Pachetele lunare de backlinkuri și SEO se fac la ofertă, după ce ne uităm la nișă și la concurență. Dacă ai nevoie și de site, prețul lui îl stabilim pe proiect, după o discuție scurtă despre ce îți trebuie.",
   proofLine: "Profilul de backlinkuri construit de noi pentru Davo.md, așa cum arată în Ahrefs.",
 
   faqLabel: "Întrebări despre backlinkuri",
   faq: [
     {
       q: "Cât costă un backlink?",
-      a: "Pornește de la 3$ bucata și urcă odată cu puterea domeniului. Un site cu trafic organic mare costă mai mult decât un blog mic, dar și mișcă mai mult. Primești lista donorilor și prețul fiecăruia înainte să plătești ceva.",
+      a: "Prețul depinde de puterea domeniului pe care apare linkul. Un site cu trafic organic mare costă mai mult decât un blog mic, dar și mișcă mai mult. Primești lista donorilor și prețul fiecăruia înainte să plătești ceva.",
     },
     {
       q: "De unde luați backlinkurile?",

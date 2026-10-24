@@ -77,7 +77,7 @@ const page: SeoPage = {
   ],
 
   priceNote:
-    "Un CRM sau un ERP se ofertează după ce vedem fluxurile din firmă, deci prețul este la ofertă, nu pe listă. Sumele de 350, 550 și 850 EUR sunt pentru site-uri de prezentare și magazine online, nu pentru sisteme interne. Primești o ofertă fixă înainte să înceapă lucrul, plus etapele în care se livrează.",
+    "Un CRM sau un ERP se ofertează după ce vedem fluxurile din firmă, deci prețul este la ofertă. Primești o ofertă fixă înainte să înceapă lucrul, plus etapele în care se livrează.",
   proofLine: "Nu facem doar CRM și ERP. Pentru Davo.md am făcut și SEO cu backlinkuri, iar profilul de linkuri se vede în Ahrefs.",
 
   faqLabel: "Întrebări despre CRM și ERP",

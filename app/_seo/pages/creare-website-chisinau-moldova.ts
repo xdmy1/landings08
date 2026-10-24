@@ -3,8 +3,8 @@ import type { SeoPage } from "../types";
 const page: SeoPage = {
   slug: "creare-website-chisinau-moldova",
   kw: "creare website",
-  title: "Creare website Chișinău, Moldova. Site-uri de la 350 EUR",
-  desc: "Creare website în Chișinău: site de prezentare, magazin online sau platformă. Cod scris de la zero, SEO inclus, livrare în 2 până la 4 săptămâni. De la 350 EUR.",
+  title: "Creare website Chișinău, Moldova. Site-uri scrise de la zero",
+  desc: "Creare website în Chișinău: site de prezentare, magazin online sau platformă. Cod scris de la zero, SEO inclus, livrare în 2 până la 4 săptămâni.",
 
   h1a: "Creare website în Chișinău,",
   words: ["rapid.", "curat.", "care vinde."],
@@ -25,11 +25,11 @@ const page: SeoPage = {
 
   servLabel: "Ce include creare website",
   services: [
-    { name: "Creare website de prezentare", desc: "Paginile care explică ce faci, pentru cine și de ce să te aleagă pe tine. De la 350 EUR pentru o pagină, 550 EUR pentru un site complet." },
-    { name: "Creare website cu magazin", desc: "Catalog, coș, plăți online și panou de administrare, pentru firmele care vând direct de pe site. De la 850 EUR." },
+    { name: "Creare website de prezentare", desc: "Paginile care explică ce faci, pentru cine și de ce să te aleagă pe tine. O singură pagină sau un site complet, cu o pagină pentru fiecare serviciu." },
+    { name: "Creare website cu magazin", desc: "Catalog, coș, plăți online și panou de administrare, pentru firmele care vând direct de pe site." },
     { name: "Design propriu", desc: "Minimalist și curat, construit pe brandul tău. Nu refolosim la tine designul livrat altui client." },
     { name: "SEO în cod", desc: "Optimizarea tehnică vine odată cu website-ul: structură, viteză, date structurate, indexare în Google." },
-    { name: "Creare website multilingv", desc: "Aceleași pagini în română, engleză, rusă sau altă limbă de care ai nevoie. Plus 50 EUR per limbă extra." },
+    { name: "Creare website multilingv", desc: "Aceleași pagini în română, engleză, rusă sau altă limbă de care ai nevoie, fiecare pe adresa ei, ca Google să le indexeze separat." },
   ],
 
   casesLabel: "Case studies",
@@ -75,14 +75,14 @@ const page: SeoPage = {
   ],
 
   priceNote:
-    "Prețurile de creare website pornesc de la 350 EUR pentru o pagină și 550 EUR pentru un site de prezentare complet. Magazin online de la 850 EUR. Plus 50 EUR per limbă extra. Backlinkuri premium de la 3$ bucata. Sisteme personalizate și SEO lunar: preț la ofertă.",
+    "Prețul pentru creare website îl stabilim pe proiect, după o discuție scurtă despre ce îți trebuie: câte pagini, câte limbi, ce funcții. Oferta este fixă și o primești înainte să începem. La fel lucrăm pentru sisteme personalizate, SEO lunar și backlinkuri.",
   proofLine: "SEO și backlinkuri făcute de noi pentru Davo.md după creare website, măsurate în Ahrefs.",
 
   faqLabel: "Întrebări despre creare website",
   faq: [
     {
       q: "Cât costă creare website în Chișinău?",
-      a: "Un site de o pagină pornește de la 350 EUR, un site de prezentare complet de la 550 EUR, iar un magazin online de la 850 EUR. Prețul final depinde de numărul de pagini, de limbi și de funcțiile cerute. Primești o ofertă fixă înainte să începem, nu costuri care apar pe parcurs.",
+      a: "Prețul îl stabilim pe proiect, după o discuție scurtă despre ce îți trebuie. Contează numărul de pagini, limbile și funcțiile cerute. Primești o ofertă fixă înainte să începem, nu costuri care apar pe parcurs.",
     },
     {
       q: "Cât durează creare website de la zero?",

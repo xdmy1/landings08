@@ -64,7 +64,7 @@ const page: SeoPage = {
   ],
 
   priceNote:
-    "Administrarea campaniilor Meta Ads se face la ofertă, după ce vedem ce vinzi și câte produse sau servicii intră în promovare. Bugetul de reclame merge direct către Meta și rămâne sub controlul tău. Pagina de aterizare pornește de la 350 EUR, un site de prezentare de la 550 EUR, un magazin online de la 850 EUR, iar backlinkurile premium de la 3$ bucata.",
+    "Administrarea campaniilor Meta Ads se face la ofertă, după ce vedem ce vinzi și câte produse sau servicii intră în promovare. Bugetul de reclame merge direct către Meta și rămâne sub controlul tău. Prețul paginii de aterizare, al site-ului sau al magazinului online îl stabilim pe proiect, după o discuție scurtă despre ce îți trebuie.",
   proofLine: "Davo.md, clientul pentru care am făcut site, rezervări, Meta Ads, SEO și backlinkuri. Profilul de linkuri, în Ahrefs.",
 
   faqLabel: "Întrebări despre Meta Ads",

@@ -76,7 +76,7 @@ const page: SeoPage = {
   ],
 
   priceNote:
-    "Site-urile au preț fix, 350, 550 și 850 EUR. O automatizare nu are, pentru că depinde de câți pași are fluxul și de câte programe trebuie legate. Orice proiect de automatizare AI merge la ofertă, cu suma spusă înainte de start.",
+    "O automatizare nu are preț fix, pentru că depinde de câți pași are fluxul și de câte programe trebuie legate. Orice proiect de automatizare AI merge la ofertă, cu suma spusă înainte de start.",
   proofLine: "La fel ca la o automatizare, contează ce se poate măsura. SEO și backlinkuri făcute de noi pentru Davo.md, în Ahrefs.",
 
   faqLabel: "Întrebări despre automatizare AI",
