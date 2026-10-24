@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: "landings.md | Site-uri, design și SEO în Chișinău, Moldova",
   description:
-    "Studio web din Chișinău. Construim site-uri rapide și curate, magazine online și sisteme, cu SEO optimizat direct în cod și backlink-uri premium contextuale.",
+    "Studio web din Chișinău. Construim site-uri rapide și curate, magazine online și sisteme, cu SEO optimizat direct în cod și backlink-uri premium contextuale de la 3$. Prețuri de la 350 EUR.",
   keywords: [
     "creare site moldova",
     "creare site chisinau",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     locale: "ro_RO",
     title: "landings.md | Site-uri, design și SEO",
     description:
-      "Studio web din Chișinău. Site-uri rapide și curate, SEO în cod, backlink-uri premium contextuale.",
+      "Studio web din Chișinău. Site-uri rapide și curate, SEO în cod, backlink-uri premium de la 3$. Prețuri de la 350 EUR.",
     images: [
       {
         url: "/images/og.jpg",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "landings.md | Site-uri, design și SEO",
     description:
-      "Studio web din Chișinău. Site-uri rapide și curate, SEO în cod, backlink-uri premium contextuale.",
+      "Studio web din Chișinău. Site-uri rapide și curate, SEO în cod, backlink-uri premium de la 3$.",
     images: ["/images/og.jpg"],
   },
   robots: {
@@ -85,8 +85,39 @@ const jsonLd = {
       },
       areaServed: ["MD", "RO", "EU"],
       sameAs: ["https://www.instagram.com/landings.md"],
+      priceRange: "€350 - €850",
       description:
         "Studio web din Chișinău: site-uri, design, SEO optimizat în cod și backlink-uri premium contextuale.",
+      makesOffer: [
+        {
+          "@type": "Offer",
+          name: "Starter",
+          price: "350",
+          priceCurrency: "EUR",
+          description: "Landing page: o pagină, design inclus, SEO de bază în cod.",
+        },
+        {
+          "@type": "Offer",
+          name: "Business",
+          price: "550",
+          priceCurrency: "EUR",
+          description: "Site complet cu mai multe pagini, design personalizat și SEO tehnic.",
+        },
+        {
+          "@type": "Offer",
+          name: "Magazin",
+          price: "850",
+          priceCurrency: "EUR",
+          description: "Magazin online cu plăți, catalog și panou de administrare.",
+        },
+        {
+          "@type": "Offer",
+          name: "Backlink-uri premium",
+          price: "3",
+          priceCurrency: "USD",
+          description: "Backlink-uri contextuale, indexate, din site-uri reale. Preț per backlink.",
+        },
+      ],
     },
     {
       "@type": "WebSite",

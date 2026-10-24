@@ -75,7 +75,7 @@ const page: SeoPage = {
   ],
 
   priceNote:
-    "Configurarea și administrarea campaniilor Google Ads se fac la ofertă, în funcție de câte servicii ai și cât de mare e contul. Bugetul de reclame îl stabilești tu și îl plătești direct către Google. Prețul paginii de aterizare, al site-ului sau al magazinului online îl stabilim pe proiect, după o discuție scurtă despre ce îți trebuie.",
+    "Configurarea și administrarea campaniilor Google Ads se fac la ofertă, în funcție de câte servicii ai și cât de mare e contul. Bugetul de reclame îl stabilești tu și îl plătești direct către Google. Pagina de aterizare pornește de la 350 EUR, un site de prezentare de la 550 EUR, un magazin online de la 850 EUR, iar backlinkurile premium de la 3$ bucata.",
   proofLine: "Pentru Davo.md am făcut SEO și backlinkuri, nu Google Ads, iar profilul organic arată așa în Ahrefs.",
 
   faqLabel: "Întrebări despre Google Ads",
@@ -102,7 +102,7 @@ const page: SeoPage = {
     },
     {
       q: "Pot să fac Google Ads dacă nu am site?",
-      a: "Ai nevoie de o destinație, altfel nu ai unde trimite clickul. În cazul acesta construim întâi o pagină de aterizare și abia apoi pornim campaniile. E și ordinea care nu risipește bani, pentru că nu plătești trafic către o pagină care nu convertește.",
+      a: "Ai nevoie de o destinație, altfel nu ai unde trimite clickul. În cazul acesta construim întâi o pagină de aterizare, de la 350 EUR, și abia apoi pornim campaniile. E și ordinea mai ieftină, pentru că nu plătești trafic către o pagină care nu convertește.",
     },
   ],
 

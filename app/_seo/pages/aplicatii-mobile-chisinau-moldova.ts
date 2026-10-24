@@ -75,14 +75,14 @@ const page: SeoPage = {
   ],
 
   priceNote:
-    "Aplicații mobile și sisteme cu conturi se ofertează după ce vedem ecranele de care ai nevoie, deci prețul este la ofertă. Primești o ofertă fixă și etapele de livrare înainte să începem.",
+    "Aplicații mobile și sisteme cu conturi se ofertează după ce vedem ecranele de care ai nevoie, deci prețul este la ofertă. Sumele de 350, 550 și 850 EUR sunt pentru site-uri de prezentare și magazine online, nu pentru o aplicație. Primești o ofertă fixă și etapele de livrare înainte să începem.",
   proofLine: "Aplicații mobile sau site, Google contează la fel. Pentru Davo.md am făcut SEO și backlinkuri, iar profilul de linkuri se vede în Ahrefs.",
 
   faqLabel: "Întrebări despre aplicații mobile",
   faq: [
     {
       q: "Cât costă o aplicație mobilă?",
-      a: "Prețul este la ofertă, pentru că depinde de câte ecrane are și de ce se întâmplă în spatele lor. Ne spui ce trebuie să facă omul în aplicație, îți trimitem o ofertă fixă și etapele de livrare.",
+      a: "Prețul este la ofertă, pentru că depinde de câte ecrane are și de ce se întâmplă în spatele lor. Ne spui ce trebuie să facă omul în aplicație, îți trimitem o ofertă fixă și etapele de livrare. Prețurile de pe listă sunt pentru site-uri, nu pentru sisteme.",
     },
     {
       q: "Aplicații mobile pentru iPhone și Android se fac separat?",

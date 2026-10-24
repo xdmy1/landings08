@@ -4,8 +4,8 @@ const page: SeoPage = {
   slug: "landing-page-chisinau-moldova",
   kw: "landing page",
   kwAlt: ["landing pages"],
-  title: "Landing page Chișinău, Moldova. O pagină care convertește",
-  desc: "Facem landing page pentru reclame Google și Meta: o pagină, un mesaj, o singură acțiune. Cod scris de la zero în Chișinău, încărcare rapidă pe mobil.",
+  title: "Landing page Chișinău, Moldova. O pagină care convertește, 350 EUR",
+  desc: "Facem landing page pentru reclame Google și Meta: o pagină, un mesaj, o singură acțiune. Cod scris de la zero în Chișinău, încărcare rapidă pe mobil, de la 350 EUR.",
 
   h1a: "Landing page în Chișinău, Moldova,",
   words: ["rapid.", "clar.", "care convertește."],
@@ -26,11 +26,11 @@ const page: SeoPage = {
 
   servLabel: "Ce include un landing page",
   services: [
-    { name: "Landing page pentru reclame", desc: "O pagină construită pe oferta din campanie, cu mesajul din reclamă continuat în titlu." },
+    { name: "Landing page pentru reclame", desc: "O pagină construită pe oferta din campanie, cu mesajul din reclamă continuat în titlu. De la 350 EUR." },
     { name: "Text și structură", desc: "Scriem noi titlurile, secțiunile și întrebările frecvente, pornind de la ce vinzi și cui. Nu completezi tu un șablon gol." },
     { name: "Design propriu", desc: "Minimalist, cu o singură linie de citit de sus în jos. Nu refolosim la tine designul livrat altui client." },
     { name: "Formular și urmărire", desc: "Formular scurt, cereri trimise pe email sau în Telegram, plus evenimente de conversie pentru Google și Meta." },
-    { name: "Landing pages pe variante", desc: "Mai multe versiuni ale aceleiași oferte, câte una pentru fiecare public sau limbă." },
+    { name: "Landing pages pe variante", desc: "Mai multe versiuni ale aceleiași oferte, câte una pentru fiecare public sau limbă. Plus 50 EUR per limbă extra." },
   ],
 
   casesLabel: "Case studies",
@@ -76,14 +76,14 @@ const page: SeoPage = {
   ],
 
   priceNote:
-    "Prețul unui landing page îl stabilim pe proiect, după o discuție scurtă despre oferta ta și campania în care intră. Designul, textele și SEO de bază sunt incluse, iar oferta este fixă înainte să începem. Campaniile și optimizarea lunară se stabilesc tot la ofertă.",
+    "Un landing page pornește de la 350 EUR, cu design și SEO de bază incluse. Dacă ai nevoie de mai multe pagini pe același domeniu, pachetul complet de prezentare este 550 EUR, iar un magazin online 850 EUR. Plus 50 EUR per limbă extra. Backlinkuri premium de la 3$ bucata. Campanii și optimizare lunară: preț la ofertă.",
   proofLine: "SEO și backlinkuri făcute de noi pentru Davo.md, măsurate în Ahrefs. Orice landing page pleacă de la aceeași bază tehnică.",
 
   faqLabel: "Întrebări despre landing page",
   faq: [
     {
       q: "Cât costă un landing page?",
-      a: "Prețul îl stabilim pe proiect, după o discuție scurtă despre ce îți trebuie. Designul, textele și SEO de bază sunt incluse, iar variantele pentru publicuri sau limbi diferite intră în același calcul. Oferta este fixă și o primești înainte să începem.",
+      a: "Pornește de la 350 EUR, cu design, texte și SEO de bază incluse. Dacă vrei mai multe variante ale aceleiași pagini, pentru publicuri sau limbi diferite, se adaugă puțin peste prețul de start. Oferta este fixă și o primești înainte să începem.",
     },
     {
       q: "În cât timp îmi faceți un landing page?",
@@ -95,7 +95,7 @@ const page: SeoPage = {
     },
     {
       q: "Faceți landing pages și pentru campanii în alte limbi?",
-      a: "Da. Aceeași pagină în română, rusă sau engleză, fiecare limbă pe adresa ei, ca Google să le indexeze separat. RADX Cooling, de exemplu, lucrează în engleză pentru piața europeană.",
+      a: "Da. Aceeași pagină în română, rusă sau engleză, fiecare limbă pe adresa ei, ca Google să le indexeze separat. Costul este 50 EUR per limbă extra. RADX Cooling, de exemplu, lucrează în engleză pentru piața europeană.",
     },
     {
       q: "Pot să văd de unde vin cererile?",
