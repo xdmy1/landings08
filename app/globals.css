@@ -84,10 +84,11 @@ button {
 }
 
 /* ---------- glass buttons ----------
-   One skin for every button on the site: a glossy capsule with a bright
-   reflection over the top half (hard horizon at the middle), light bleeding
-   back in at the bottom, a crisp ring around it. The reflection is a full
-   overlay that inherits the shape, so it can never poke out of the pill.
+   One skin for every button on the site, in two layers like the old Aqua
+   capsules: the body (crisp ring, darker through the middle, light bleeding
+   back in at the bottom) and, on top of it, the reflection as its own
+   rounded capsule, inset from the rim near the top, white at the top and
+   melting into the body below the middle, so no edge shows there.
    Secondary = the site's light neutral, primary (.btn) = the site's black. */
 
 .btn,
@@ -99,12 +100,13 @@ button {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  border: 1.5px solid #7d7d77;
-  background: linear-gradient(180deg, #f6f6f2 0%, #e8e8e2 50%, #d9d9d2 51%, #e9e9e3 80%, #f8f8f5 100%);
+  border: 1.5px solid #6f6f69;
+  background: linear-gradient(180deg, #e8e8e2 0%, #d8d8d0 38%, #c6c6bd 58%, #cfcfc7 70%, #e6e6e0 86%, #fafaf7 100%);
   color: var(--ink);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.85), 0 0 6px rgba(255, 255, 255, 0.55);
   box-shadow:
-    inset 0 -9px 10px -8px rgba(255, 255, 255, 1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -12px 12px -8px rgba(255, 255, 255, 0.95),
+    inset 0 2px 3px rgba(20, 20, 15, 0.1),
     0 1px 1.5px rgba(20, 20, 15, 0.18),
     0 12px 22px -14px rgba(20, 20, 15, 0.45);
   transition: transform 0.16s var(--ease-out), box-shadow 0.2s ease, border-color 0.2s ease, filter 0.2s ease;
@@ -119,22 +121,34 @@ button {
   content: "";
   position: absolute;
   z-index: -1;
-  inset: 1px;
-  border-radius: inherit;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.78) 36%, rgba(255, 255, 255, 0.4) 49%, rgba(255, 255, 255, 0) 50%);
+  top: 6%;
+  height: 60%;
+  left: max(4px, 0.38em);
+  right: max(4px, 0.38em);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.9) 28%, rgba(255, 255, 255, 0.55) 58%, rgba(255, 255, 255, 0.14) 84%, rgba(255, 255, 255, 0) 100%);
   pointer-events: none;
+}
+
+/* round buttons: the reflection is an oval cap */
+.icon-btn::before,
+.car-btn::before {
+  top: 6%;
+  height: 58%;
+  left: 12%;
+  right: 12%;
 }
 
 .btn:hover,
 .pill-btn:hover,
 .icon-btn:hover,
 .car-btn:hover {
-  border-color: #55554f;
+  border-color: #4f4f49;
   filter: brightness(1.03);
   transform: translateY(-1px);
   box-shadow:
-    inset 0 -9px 10px -8px rgba(255, 255, 255, 1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -12px 12px -8px rgba(255, 255, 255, 0.95),
+    inset 0 2px 3px rgba(20, 20, 15, 0.1),
     0 1px 1.5px rgba(20, 20, 15, 0.18),
     0 16px 28px -14px rgba(20, 20, 15, 0.5);
 }
@@ -148,28 +162,29 @@ button {
   filter: brightness(0.98);
 }
 
-/* primary: the same glass, in the site's black */
+/* primary: the same two layers, in the site's black */
 .btn {
-  border-color: #0b0b0a;
-  background: linear-gradient(180deg, #4b4b46 0%, #26261f 50%, #0f0f0e 51%, #1b1b18 80%, #3a3a35 100%);
+  border-color: #000;
+  background: linear-gradient(180deg, #3d3d39 0%, #1d1d1a 42%, #0f0f0e 62%, #27271f 84%, #4a4a44 100%);
   color: #fcfcfa;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.6), 0 0 8px rgba(0, 0, 0, 0.35);
   box-shadow:
-    inset 0 -9px 10px -8px rgba(255, 255, 255, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -10px 12px -9px rgba(255, 255, 255, 0.45),
+    inset 0 2px 3px rgba(0, 0, 0, 0.4),
     0 1px 1.5px rgba(0, 0, 0, 0.35),
     0 14px 26px -14px rgba(11, 11, 10, 0.85);
 }
 
 .btn::before {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 36%, rgba(255, 255, 255, 0.12) 49%, rgba(255, 255, 255, 0) 50%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.62) 0%, rgba(255, 255, 255, 0.46) 28%, rgba(255, 255, 255, 0.22) 58%, rgba(255, 255, 255, 0.05) 84%, rgba(255, 255, 255, 0) 100%);
 }
 
 .btn:hover {
-  border-color: #0b0b0a;
-  filter: brightness(1.1);
+  border-color: #000;
+  filter: brightness(1.12);
   box-shadow:
-    inset 0 -9px 10px -8px rgba(255, 255, 255, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -10px 12px -9px rgba(255, 255, 255, 0.5),
+    inset 0 2px 3px rgba(0, 0, 0, 0.4),
     0 1px 1.5px rgba(0, 0, 0, 0.35),
     0 18px 32px -14px rgba(11, 11, 10, 0.9);
 }
