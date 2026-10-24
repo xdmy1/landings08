@@ -4,6 +4,10 @@ const nextConfig = {
     domains: ['images.unsplash.com', 'aceternity.com'],
   },
   poweredByHeader: false,
+  // trial: the "Dimensiuni" page (public/d) is the home page; remove to bring back the app shell
+  async rewrites() {
+    return { beforeFiles: [{ source: '/', destination: '/d/index.html' }] }
+  },
   async headers() {
     return [
       {
