@@ -67,11 +67,6 @@ type Copy = {
   projects: Record<ProjectKey, { desc: string; tags: string[] }>;
   servLabel: string;
   services: { name: string; desc: string }[];
-  priceLabel: string;
-  plans: { name: string; price: string; feats: string[] }[];
-  priceNote: string;
-  priceFrom: string;
-  priceCta: string;
   maint: {
     label: string;
     lead: string;
@@ -97,7 +92,7 @@ type Copy = {
 
 const T: Record<Lang, Copy> = {
   ro: {
-    nav: ["Proiecte", "Servicii", "Prețuri", "Contact"],
+    nav: ["Proiecte", "Servicii", "Mentenanță", "Contact"],
     avail: "Disponibili pentru proiecte noi",
     availShort: "Disponibili",
     founder: "Fondator",
@@ -126,18 +121,9 @@ const T: Record<Lang, Copy> = {
       { name: "Website", desc: "Construit de la zero, rapid și optimizat pentru orice ecran." },
       { name: "Design", desc: "Minimalist, curat, gândit pentru brandul tău." },
       { name: "SEO în cod", desc: "Optimizare tehnică scrisă direct în cod: structură, viteză, date structurate, indexare." },
-      { name: "Backlink-uri premium", desc: "Link-uri contextuale, indexate, din site-uri reale. De la 3$ per backlink." },
+      { name: "Backlink-uri premium", desc: "Link-uri contextuale, indexate, din site-uri reale." },
       { name: "Sisteme și aplicații", desc: "Soluții care scot hârtiile din firmă: programări, facturare, stoc, contabilitate. Preț la cerere." },
     ],
-    priceLabel: "Prețuri",
-    plans: [
-      { name: "Starter", price: "€350", feats: ["O pagină, design inclus", "Optimizat pentru mobil", "SEO de bază în cod"] },
-      { name: "Business", price: "€550", feats: ["Mai multe pagini", "Design personalizat", "SEO tehnic complet"] },
-      { name: "Magazin", price: "€850", feats: ["Catalog și coș de cumpărături", "Plăți online", "Panou de administrare"] },
-    ],
-    priceNote: "+ 50 EUR per limbă extra. Backlink-uri premium de la 3$ per bucată. Sisteme personalizate și SEO lunar: preț la cerere.",
-    priceFrom: "de la",
-    priceCta: "Cere ofertă",
     maint: {
       label: "Mentenanță lunară",
       lead: "Ne scrieți pe Telegram ce aveți nevoie: poze noi, texte, produse, o reclamă de verificat. Ne ocupăm noi, fără să mai căutați pe cineva.",
@@ -169,14 +155,14 @@ const T: Record<Lang, Copy> = {
     footTag: "Site-uri, aplicații și SEO, scrise în cod, din Chișinău.",
     faqLabel: "Întrebări frecvente",
     faq: [
-      { q: "Cât costă un site?", a: "De la 350 EUR pentru o pagină, 550 EUR pentru un site de prezentare și 850 EUR pentru un magazin online. Prețul final îl primești fix, înainte să începem." },
+      { q: "Cât costă un site?", a: "Fiecare proiect are prețul lui. Îl stabilim după o discuție scurtă despre ce îți trebuie și îl primești fix, înainte să începem." },
       { q: "Cât durează?", a: "Un site de prezentare iese în două săptămâni. Un magazin online sau o platformă cu conturi, în trei sau patru." },
       { q: "Lucrați și în afara Moldovei?", a: "Da. Lucrăm din Chișinău cu clienți din Moldova, România și restul Europei, în șase limbi." },
     ],
     a11y: { prev: "Înapoi", next: "Înainte", menu: "Meniu", lang: "Limba" },
   },
   en: {
-    nav: ["Projects", "Services", "Pricing", "Contact"],
+    nav: ["Projects", "Services", "Maintenance", "Contact"],
     avail: "Available for new projects",
     availShort: "Available",
     founder: "Founder",
@@ -205,18 +191,9 @@ const T: Record<Lang, Copy> = {
       { name: "Website", desc: "Built from scratch, fast and optimized for every screen." },
       { name: "Design", desc: "Minimal, clean, shaped around your brand." },
       { name: "SEO in the code", desc: "Technical SEO written directly in the code: structure, speed, structured data, indexing." },
-      { name: "Premium backlinks", desc: "Contextual, indexed links from real websites. From $3 per backlink." },
+      { name: "Premium backlinks", desc: "Contextual, indexed links from real websites." },
       { name: "Systems and apps", desc: "Solutions that remove the paperwork: scheduling, invoicing, stock, accounting. Price on request." },
     ],
-    priceLabel: "Pricing",
-    plans: [
-      { name: "Starter", price: "€350", feats: ["One page, design included", "Mobile optimized", "Basic SEO in the code"] },
-      { name: "Business", price: "€550", feats: ["Multiple pages", "Custom design", "Full technical SEO"] },
-      { name: "Store", price: "€850", feats: ["Catalog and cart", "Online payments", "Admin panel"] },
-    ],
-    priceNote: "+ 50 EUR per extra language. Premium backlinks from $3 each. Custom systems and monthly SEO: price on request.",
-    priceFrom: "starting from",
-    priceCta: "Request a quote",
     maint: {
       label: "Monthly maintenance",
       lead: "Message us on Telegram what you need: new photos, text, products, an ad to check. We take care of it, so you don't have to look for someone.",
@@ -248,14 +225,14 @@ const T: Record<Lang, Copy> = {
     footTag: "Websites, apps and SEO, written in code, from Chisinau.",
     faqLabel: "FAQ",
     faq: [
-      { q: "How much does a website cost?", a: "From 350 EUR for one page, 550 EUR for a full presentation site and 850 EUR for an online shop. You get the final price fixed, before we start." },
+      { q: "How much does a website cost?", a: "Every project is priced on its own. We set the price after a short talk about what you need, and you get it fixed before we start." },
       { q: "How long does it take?", a: "A presentation site takes two weeks. An online shop or a platform with accounts, three or four." },
       { q: "Do you work outside Moldova?", a: "Yes. We work from Chisinau with clients in Moldova, Romania and the rest of Europe, in six languages." },
     ],
     a11y: { prev: "Previous", next: "Next", menu: "Menu", lang: "Language" },
   },
   de: {
-    nav: ["Projekte", "Leistungen", "Preise", "Kontakt"],
+    nav: ["Projekte", "Leistungen", "Betreuung", "Kontakt"],
     avail: "Verfugbar fur neue Projekte",
     availShort: "Verfugbar",
     founder: "Grunder",
@@ -284,18 +261,9 @@ const T: Record<Lang, Copy> = {
       { name: "Website", desc: "Von Grund auf gebaut, schnell, fur jeden Bildschirm optimiert." },
       { name: "Design", desc: "Minimalistisch, sauber, auf deine Marke abgestimmt." },
       { name: "SEO im Code", desc: "Technisches SEO direkt im Code: Struktur, Tempo, strukturierte Daten, Indexierung." },
-      { name: "Premium-Backlinks", desc: "Kontextuelle, indexierte Links von echten Websites. Ab 3$ pro Backlink." },
+      { name: "Premium-Backlinks", desc: "Kontextuelle, indexierte Links von echten Websites." },
       { name: "Systeme und Apps", desc: "Losungen gegen den Papierkram: Termine, Rechnungen, Lager, Buchhaltung. Preis auf Anfrage." },
     ],
-    priceLabel: "Preise",
-    plans: [
-      { name: "Starter", price: "€350", feats: ["Eine Seite, Design inklusive", "Mobil optimiert", "Basis-SEO im Code"] },
-      { name: "Business", price: "€550", feats: ["Mehrere Seiten", "Individuelles Design", "Komplettes technisches SEO"] },
-      { name: "Shop", price: "€850", feats: ["Katalog und Warenkorb", "Online-Zahlungen", "Admin-Panel"] },
-    ],
-    priceNote: "+ 50 EUR pro zusatzliche Sprache. Premium-Backlinks ab 3$ pro Stuck. Individuelle Systeme und monatliches SEO: Preis auf Anfrage.",
-    priceFrom: "ab",
-    priceCta: "Angebot anfragen",
     maint: {
       label: "Monatliche Betreuung",
       lead: "Schreiben Sie uns auf Telegram, was Sie brauchen: neue Fotos, Texte, Produkte, eine Anzeige zum Prüfen. Wir kümmern uns darum.",
@@ -327,14 +295,14 @@ const T: Record<Lang, Copy> = {
     footTag: "Websites, Apps und SEO, im Code geschrieben, aus Chisinau.",
     faqLabel: "Haufige Fragen",
     faq: [
-      { q: "Was kostet eine Website?", a: "Ab 350 EUR fur eine Seite, 550 EUR fur eine komplette Website und 850 EUR fur einen Onlineshop. Den Endpreis bekommst du fix, bevor wir starten." },
+      { q: "Was kostet eine Website?", a: "Jedes Projekt hat seinen eigenen Preis. Wir legen ihn nach einem kurzen Gesprach uber deinen Bedarf fest, und du bekommst ihn fix, bevor wir starten." },
       { q: "Wie lange dauert es?", a: "Eine Prasentationswebsite in zwei Wochen. Ein Onlineshop oder eine Plattform mit Konten, in drei oder vier." },
       { q: "Arbeitet ihr auch ausserhalb der Republik Moldau?", a: "Ja. Wir arbeiten aus Chisinau mit Kunden in der Republik Moldau, Rumanien und dem Rest Europas, in sechs Sprachen." },
     ],
     a11y: { prev: "Zuruck", next: "Weiter", menu: "Menu", lang: "Sprache" },
   },
   fr: {
-    nav: ["Projets", "Services", "Tarifs", "Contact"],
+    nav: ["Projets", "Services", "Maintenance", "Contact"],
     avail: "Disponibles pour de nouveaux projets",
     availShort: "Disponibles",
     founder: "Fondateur",
@@ -363,18 +331,9 @@ const T: Record<Lang, Copy> = {
       { name: "Site web", desc: "Construit de zero, rapide, optimise pour tous les ecrans." },
       { name: "Design", desc: "Minimaliste, propre, pense pour votre marque." },
       { name: "SEO dans le code", desc: "SEO technique ecrit directement dans le code: structure, vitesse, donnees structurees, indexation." },
-      { name: "Backlinks premium", desc: "Liens contextuels, indexes, depuis de vrais sites. A partir de 3$ par backlink." },
+      { name: "Backlinks premium", desc: "Liens contextuels, indexes, depuis de vrais sites." },
       { name: "Systemes et applications", desc: "Des solutions qui suppriment la paperasse: rendez-vous, factures, stock, comptabilite. Prix sur demande." },
     ],
-    priceLabel: "Tarifs",
-    plans: [
-      { name: "Starter", price: "€350", feats: ["Une page, design inclus", "Optimise mobile", "SEO de base dans le code"] },
-      { name: "Business", price: "€550", feats: ["Plusieurs pages", "Design personnalise", "SEO technique complet"] },
-      { name: "Boutique", price: "€850", feats: ["Catalogue et panier", "Paiements en ligne", "Panneau d'administration"] },
-    ],
-    priceNote: "+ 50 EUR par langue supplementaire. Backlinks premium a partir de 3$ piece. Systemes sur mesure et SEO mensuel: prix sur demande.",
-    priceFrom: "a partir de",
-    priceCta: "Demander un devis",
     maint: {
       label: "Maintenance mensuelle",
       lead: "Écrivez-nous sur Telegram ce dont vous avez besoin : nouvelles photos, textes, produits, une publicité à vérifier. On s'en occupe.",
@@ -406,14 +365,14 @@ const T: Record<Lang, Copy> = {
     footTag: "Sites, applications et SEO, ecrits en code, depuis Chisinau.",
     faqLabel: "Questions frequentes",
     faq: [
-      { q: "Combien coute un site?", a: "A partir de 350 EUR pour une page, 550 EUR pour un site complet et 850 EUR pour une boutique en ligne. Le prix final est fixe avant de commencer." },
+      { q: "Combien coute un site?", a: "Chaque projet a son propre prix. Nous le fixons apres un court echange sur vos besoins, et il est ferme avant de commencer." },
       { q: "Combien de temps faut-il?", a: "Un site de presentation sort en deux semaines. Une boutique en ligne ou une plateforme avec comptes, en trois ou quatre." },
       { q: "Travaillez-vous hors de Moldavie?", a: "Oui. Nous travaillons depuis Chisinau avec des clients en Moldavie, en Roumanie et dans le reste de l Europe, en six langues." },
     ],
     a11y: { prev: "Precedent", next: "Suivant", menu: "Menu", lang: "Langue" },
   },
   es: {
-    nav: ["Proyectos", "Servicios", "Precios", "Contacto"],
+    nav: ["Proyectos", "Servicios", "Mantenimiento", "Contacto"],
     avail: "Disponibles para nuevos proyectos",
     availShort: "Disponibles",
     founder: "Fundador",
@@ -442,18 +401,9 @@ const T: Record<Lang, Copy> = {
       { name: "Web", desc: "Construida desde cero, rapida y optimizada para cualquier pantalla." },
       { name: "Diseno", desc: "Minimalista, limpio, pensado para tu marca." },
       { name: "SEO en el codigo", desc: "SEO tecnico escrito directamente en el codigo: estructura, velocidad, datos estructurados, indexacion." },
-      { name: "Backlinks premium", desc: "Enlaces contextuales, indexados, de webs reales. Desde 3$ por backlink." },
+      { name: "Backlinks premium", desc: "Enlaces contextuales, indexados, de webs reales." },
       { name: "Sistemas y aplicaciones", desc: "Soluciones que eliminan el papeleo: citas, facturas, stock, contabilidad. Precio a consultar." },
     ],
-    priceLabel: "Precios",
-    plans: [
-      { name: "Starter", price: "€350", feats: ["Una pagina, diseno incluido", "Optimizada para movil", "SEO basico en el codigo"] },
-      { name: "Business", price: "€550", feats: ["Varias paginas", "Diseno personalizado", "SEO tecnico completo"] },
-      { name: "Tienda", price: "€850", feats: ["Catalogo y carrito", "Pagos online", "Panel de administracion"] },
-    ],
-    priceNote: "+ 50 EUR por idioma extra. Backlinks premium desde 3$ cada uno. Sistemas a medida y SEO mensual: precio a consultar.",
-    priceFrom: "desde",
-    priceCta: "Pedir presupuesto",
     maint: {
       label: "Mantenimiento mensual",
       lead: "Escríbenos por Telegram lo que necesitas: fotos nuevas, textos, productos, un anuncio que revisar. Nos encargamos nosotros.",
@@ -485,14 +435,14 @@ const T: Record<Lang, Copy> = {
     footTag: "Webs, aplicaciones y SEO, escritos en codigo, desde Chisinau.",
     faqLabel: "Preguntas frecuentes",
     faq: [
-      { q: "Cuanto cuesta una web?", a: "Desde 350 EUR por una pagina, 550 EUR por una web completa y 850 EUR por una tienda online. El precio final es cerrado, antes de empezar." },
+      { q: "Cuanto cuesta una web?", a: "Cada proyecto tiene su propio precio. Lo fijamos tras una charla corta sobre lo que necesitas, y es cerrado antes de empezar." },
       { q: "Cuanto tarda?", a: "Una web de presentacion sale en dos semanas. Una tienda online o una plataforma con cuentas, en tres o cuatro." },
       { q: "Trabajan fuera de Moldavia?", a: "Si. Trabajamos desde Chisinau con clientes de Moldavia, Rumania y el resto de Europa, en seis idiomas." },
     ],
     a11y: { prev: "Anterior", next: "Siguiente", menu: "Menu", lang: "Idioma" },
   },
   ru: {
-    nav: ["Проекты", "Услуги", "Цены", "Контакты"],
+    nav: ["Проекты", "Услуги", "Сопровождение", "Контакты"],
     avail: "Открыты для новых проектов",
     availShort: "Открыты",
     founder: "Основатель",
@@ -521,18 +471,9 @@ const T: Record<Lang, Copy> = {
       { name: "Сайт", desc: "Собран с нуля, быстрый, оптимизирован под любой экран." },
       { name: "Дизайн", desc: "Минималистичный, чистый, под ваш бренд." },
       { name: "SEO в коде", desc: "Техническая оптимизация прямо в коде: структура, скорость, структурированные данные, индексация." },
-      { name: "Премиум-беклинки", desc: "Контекстные, индексируемые ссылки с реальных сайтов. От 3$ за беклинк." },
+      { name: "Премиум-беклинки", desc: "Контекстные, индексируемые ссылки с реальных сайтов." },
       { name: "Системы и приложения", desc: "Решения, которые убирают бумажную работу: записи, счета, склад, бухгалтерия. Цена по запросу." },
     ],
-    priceLabel: "Цены",
-    plans: [
-      { name: "Starter", price: "€350", feats: ["Одна страница, дизайн включён", "Оптимизация под мобильные", "Базовое SEO в коде"] },
-      { name: "Business", price: "€550", feats: ["Несколько страниц", "Индивидуальный дизайн", "Полное техническое SEO"] },
-      { name: "Магазин", price: "€850", feats: ["Каталог и корзина", "Онлайн-оплата", "Панель администратора"] },
-    ],
-    priceNote: "+ 50 EUR за дополнительный язык. Премиум-беклинки от 3$ за штуку. Индивидуальные системы и ежемесячное SEO: цена по запросу.",
-    priceFrom: "от",
-    priceCta: "Запросить предложение",
     maint: {
       label: "Ежемесячное сопровождение",
       lead: "Пишите нам в Telegram, что нужно: новые фото, тексты, товары, проверить рекламу. Мы всё сделаем, вам не нужно никого искать.",
@@ -564,7 +505,7 @@ const T: Record<Lang, Copy> = {
     footTag: "Сайты, приложения и SEO, написанные в коде, из Кишинева.",
     faqLabel: "Частые вопросы",
     faq: [
-      { q: "Сколько стоит сайт?", a: "От 350 EUR за одну страницу, 550 EUR за полноценный сайт и 850 EUR за интернет-магазин. Итоговую цену вы получаете фиксированной, до старта." },
+      { q: "Сколько стоит сайт?", a: "У каждого проекта своя цена. Мы определяем её после короткого разговора о ваших задачах, и вы получаете её фиксированной до старта." },
       { q: "Сколько занимает работа?", a: "Сайт-презентация выходит за две недели. Интернет-магазин или платформа с аккаунтами, за три или четыре." },
       { q: "Работаете ли вы за пределами Молдовы?", a: "Да. Работаем из Кишинева с клиентами из Молдовы, Румынии и остальной Европы, на шести языках." },
     ],
@@ -572,7 +513,7 @@ const T: Record<Lang, Copy> = {
   },
 };
 
-const SECTION_IDS = ["proiecte", "servicii", "preturi", "contact"];
+const SECTION_IDS = ["proiecte", "servicii", "mentenanta", "contact"];
 const EMAIL = "contact@landings.md";
 const WHATSAPP = "https://wa.me/37368327082";
 const TELEGRAM = "https://t.me/damiqqn";
@@ -1211,7 +1152,6 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
         sub: seo.sub,
         servLabel: seo.servLabel,
         services: seo.services,
-        priceNote: seo.priceNote,
         proofLine: seo.proofLine,
         contactTitle: seo.contactTitle,
         contactSub: seo.contactSub,
@@ -1420,52 +1360,6 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
 
         {seo && <SeoCases seo={seo} fx={fx} />}
 
-        {/* pricing */}
-        <section className="section" id="preturi">
-          <div className="container">
-            <div className="rv">
-              <div className="rl">
-                <h2 className="rl-i lbl">
-                  {fx && <ThinkingOrb state="solving" size={20} theme="light" className="orb-lbl" aria-label="" />}
-                  {t.priceLabel}
-                </h2>
-              </div>
-            </div>
-            <div className="price-grid rv" style={{ marginTop: 44 }}>
-              {t.plans.map((p, i) => (
-                <div className="price-cell" key={i}>
-                  <div className="price-plan fu" style={d(`${i * 0.08}s`)}>
-                    {p.name}
-                  </div>
-                  <div className="price-val">
-                    <span className="rl">
-                      <span className="rl-i" style={d(`${0.08 + i * 0.08}s`)}>
-                        <em className="price-from">{t.priceFrom}</em>
-                        {p.price}
-                      </span>
-                    </span>
-                  </div>
-                  <ul className="price-feats fu" style={d(`${0.16 + i * 0.08}s`)}>
-                    {p.feats.map((f) => (
-                      <li key={f}>
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                          <path d="M4.5 12.6l5 5 10-11" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="price-cta fu" style={d(`${0.22 + i * 0.08}s`)}>
-                    <EmailMenu subject={`${p.name} (${p.price})`} triggerClass="btn btn-sm">
-                      {t.priceCta}
-                    </EmailMenu>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <p className="price-note rv fu">{t.priceNote}</p>
-          </div>
-        </section>
 
         {/* monthly maintenance, paid online by card (maib) */}
         <section className="section" id="mentenanta">

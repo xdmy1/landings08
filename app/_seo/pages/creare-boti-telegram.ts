@@ -77,7 +77,7 @@ const page: SeoPage = {
   ],
 
   priceNote:
-    "Prețurile fixe de 350, 550 și 850 EUR sunt pentru site-uri. Un bot Telegram nu se vinde la pachet fix, pentru că depinde de câți pași are fluxul și la ce sistem se leagă. Creare boți Telegram merge la ofertă, cu suma și termenul spuse înainte de start.",
+    "Un bot Telegram nu se vinde la pachet fix, pentru că depinde de câți pași are fluxul și la ce sistem se leagă. Creare boți Telegram merge la ofertă, cu suma și termenul spuse înainte de start.",
   proofLine: "SEO și backlinkuri făcute de noi pentru Davo.md, măsurate în Ahrefs. Arătăm doar cifre care se pot verifica.",
 
   faqLabel: "Întrebări despre boți Telegram",

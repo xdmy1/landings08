@@ -4,8 +4,8 @@ const page: SeoPage = {
   slug: "magazin-online-chisinau-moldova",
   kw: "magazin online",
   kwAlt: ["magazine online"],
-  title: "Magazin online Chișinău, Moldova. Magazine online de la 850 EUR",
-  desc: "Construim magazin online cu catalog, coș, plăți online și panou de administrare. Cod scris de la zero în Chișinău, stoc și livrare legate în comandă, de la 850 EUR.",
+  title: "Magazin online Chișinău, Moldova. Magazine scrise de la zero",
+  desc: "Construim magazin online cu catalog, coș, plăți online și panou de administrare. Cod scris de la zero în Chișinău, stoc și livrare legate în comandă.",
 
   h1a: "Magazin online în Chișinău, Moldova,",
   words: ["cu catalog.", "cu plăți.", "care vinde."],
@@ -26,11 +26,11 @@ const page: SeoPage = {
 
   servLabel: "Ce include un magazin online",
   services: [
-    { name: "Magazin online cu catalog", desc: "Categorii, filtre, variante de produs, căutare și pagini de produs scrise pentru Google. De la 850 EUR." },
+    { name: "Magazin online cu catalog", desc: "Categorii, filtre, variante de produs, căutare și pagini de produs scrise pentru Google." },
     { name: "Coș și checkout", desc: "Drum scurt de la produs la comandă, fără cont obligatoriu, cu costul livrării calculat înainte de plată." },
     { name: "Plăți și livrare", desc: "Plată cu cardul, transfer sau ramburs, plus curierii cu care lucrezi deja, legați direct în comandă." },
     { name: "Conturi B2B", desc: "Prețuri per client, istoric de comenzi și căutare după cod de piesă, pentru firmele care vând angro. Exact ce am construit pentru Inter-Bus." },
-    { name: "Magazin online multilingv", desc: "Același catalog în română, rusă sau engleză, cu adrese separate pentru fiecare limbă. Plus 50 EUR per limbă extra." },
+    { name: "Magazin online multilingv", desc: "Același catalog în română, rusă sau engleză, cu adrese separate pentru fiecare limbă." },
   ],
 
   casesLabel: "Case studies",
@@ -77,14 +77,14 @@ const page: SeoPage = {
   ],
 
   priceNote:
-    "Un magazin online pornește de la 850 EUR și include catalog, coș, plăți online și panou de administrare. Un site de prezentare este 550 EUR, o singură pagină 350 EUR. Plus 50 EUR per limbă extra. Backlinkuri premium contextuale de la 3$ bucata. Conturi B2B, ERP și SEO lunar: preț la ofertă.",
+    "Orice magazin online include catalog, coș, plăți online și panou de administrare. Prețul îl stabilim pe proiect, după o discuție scurtă despre catalog, limbi și integrările de care ai nevoie. La fel lucrăm pentru conturi B2B, ERP, SEO lunar și backlinkuri.",
   proofLine: "Profilul de linkuri construit de noi pentru Davo.md, măsurat în Ahrefs. Aceeași muncă o ducem și pe un magazin online.",
 
   faqLabel: "Întrebări despre magazin online",
   faq: [
     {
       q: "Cât costă un magazin online în Chișinău?",
-      a: "Prețul pornește de la 850 EUR și include catalog, coș, plăți online și panou de administrare. Peste asta se adaugă doar ce ceri în plus: conturi B2B, legături cu curierii sau limbi suplimentare la 50 EUR fiecare. Primești o ofertă fixă înainte să începem lucrul, nu costuri care apar pe parcurs.",
+      a: "Prețul îl stabilim pe proiect, după o discuție scurtă despre ce îți trebuie. Baza include catalog, coș, plăți online și panou de administrare, iar peste ea intră doar ce ceri în plus: conturi B2B, legături cu curierii sau limbi suplimentare. Primești o ofertă fixă înainte să începem lucrul, nu costuri care apar pe parcurs.",
     },
     {
       q: "Cât durează până pornește un magazin online?",

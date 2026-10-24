@@ -21,7 +21,7 @@ const page: SeoPage = {
   introPoints: [
     { t: "SEO tehnic în cod", d: "Structură, titluri, date structurate, sitemap, viteză și indexare, scrise odată cu site-ul, nu lipite după lansare." },
     { t: "Căutare locală", d: "Pagini pe fiecare serviciu și pe fiecare zonă, pentru oamenii care caută din Chișinău și din restul Moldovei." },
-    { t: "Linkuri reale", d: "Backlinkuri contextuale din site-uri cu autoritate, de la 3$ bucata, nu liste de directoare moarte." },
+    { t: "Linkuri reale", d: "Backlinkuri contextuale din site-uri cu autoritate și trafic propriu, nu liste de directoare moarte." },
   ],
 
   servLabel: "Ce include un proiect SEO",
@@ -77,14 +77,14 @@ const page: SeoPage = {
   ],
 
   priceNote:
-    "Partea tehnică de SEO intră în prețul oricărui site făcut de noi: 350 EUR o pagină, 550 EUR un site de prezentare, 850 EUR un magazin online. Optimizare SEO lunară: preț la ofertă, în funcție de domeniu și de concurență. Backlinkuri premium contextuale de la 3$ bucata.",
+    "Partea tehnică de SEO intră în prețul oricărui site făcut de noi, nu se facturează separat după lansare. Optimizarea SEO lunară și backlinkurile premium contextuale le stabilim pe proiect, după o discuție scurtă despre domeniul tău și concurența din nișă.",
   proofLine: "Rezultatul muncii de SEO și backlinkuri pentru Davo.md, măsurat în Ahrefs.",
 
   faqLabel: "Întrebări despre SEO",
   faq: [
     {
       q: "Cât costă SEO în Chișinău?",
-      a: "Partea tehnică intră în prețul site-ului, deci pornește de la 350 EUR odată cu prima pagină. Munca lunară se cotează separat, după ce ne uităm la domeniul tău și la concurența din nișă. Backlinkurile contextuale pornesc de la 3$ bucata și se adaugă în ritmul pe care îl alegi tu.",
+      a: "Partea tehnică intră în prețul site-ului, deci nu o plătești separat. Munca lunară o stabilim pe proiect, după o discuție scurtă despre domeniul tău și concurența din nișă. Backlinkurile contextuale se adaugă în ritmul pe care îl alegi tu, cu prețul fiecăruia spus dinainte.",
     },
     {
       q: "În cât timp se văd rezultatele la SEO?",

@@ -76,7 +76,7 @@ const page: SeoPage = {
   ],
 
   priceNote:
-    "350, 550 și 850 EUR sunt prețuri de site. Un proiect de soluții software la comandă merge la ofertă, pentru că un program intern nu se poate evalua ca o pagină de prezentare. Ne spui ce trebuie să facă software-ul și primești o sumă fixă, cu termen.",
+    "Un proiect de soluții software la comandă merge la ofertă, pentru că un program intern nu se poate evalua ca o pagină de prezentare. Ne spui ce trebuie să facă software-ul și primești o sumă fixă, cu termen.",
   proofLine: "Pe lângă software facem și promovare. Cifrele pentru Davo.md sunt măsurate în Ahrefs, nu estimate.",
 
   faqLabel: "Întrebări despre soluții software",
