@@ -31,7 +31,6 @@ const post = async (url: string, body?: unknown) => {
 
 export default function Checker() {
   const [url, setUrl] = useState("");
-  const [kw, setKw] = useState("");
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
   const [st, setSt] = useState<Record<StepKey, State>>({ read: "wait", speed: "wait", google: "wait", ai: "wait" });
@@ -48,7 +47,7 @@ export default function Checker() {
     if (u && !auto.current) {
       auto.current = true;
       setUrl(u);
-      void start(u, "");
+      void start(u);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q]);
@@ -58,10 +57,10 @@ export default function Checker() {
   async function run(e: React.FormEvent) {
     e.preventDefault();
     if (busy) return;
-    await start(url, kw);
+    await start(url);
   }
 
-  async function start(url: string, kw: string) {
+  async function start(url: string) {
     setErr("");
     if (url.trim().length < 4) return setErr(ERR.url);
     setBusy(true);
@@ -69,7 +68,7 @@ export default function Checker() {
     setSec(0);
     timer.current = setInterval(() => setSec((s) => s + 1), 1000);
     try {
-      const start = await post("/api/audit", { url, keyword: kw });
+      const start = await post("/api/audit", { url });
       const base = (start.j as { base?: string }).base;
       const rid = (start.j as { rid?: string }).rid;
       if (!start.ok || !base || !rid) {
@@ -121,7 +120,6 @@ export default function Checker() {
           <input className="vr-input" type="text" inputMode="url" autoComplete="url" placeholder="Adresa site-ului tău, de ex. exemplu.md" value={url} onChange={(e) => setUrl(e.target.value)} disabled={busy} aria-label="Adresa site-ului" />
           <button className="btn" type="submit" disabled={busy}>{busy ? "Se verifică…" : "Verifică gratuit"}</button>
         </div>
-        <input className="vr-input sm" type="text" placeholder="Ce caută clienții în Google? (opțional)" value={kw} onChange={(e) => setKw(e.target.value)} disabled={busy} aria-label="Ce caută clienții în Google" />
         {err && <p className="vr-err" role="alert">{err} {/WhatsApp/.test(err) && <a href="https://wa.me/37368327082" target="_blank" rel="noopener">Deschide WhatsApp</a>}</p>}
         {!busy && !err && <p className="vr-hint">Durează în jur de un minut. Nu trebuie cont.</p>}
       </form>
