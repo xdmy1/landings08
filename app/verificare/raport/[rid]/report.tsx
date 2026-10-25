@@ -1,0 +1,313 @@
+"use client";
+/* eslint-disable @next/next/no-img-element */
+
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import type { ReportView } from "../../../_audit/view";
+
+const WA = "37368327082";
+const SEV = { critic: "Grav", important: "Important", minor: "Mic" } as const;
+const PAY_MARKS = [
+  { n: "maib", h: 15 },
+  { n: "visa", h: 11 },
+  { n: "mastercard", h: 19 },
+  { n: "applepay", h: 19 },
+  { n: "googlepay", h: 16 },
+];
+
+type Props = { rid: string; eur: number; was: number; mdl: number };
+
+function read(key: string): string | null {
+  try {
+    return localStorage.getItem(key) ?? sessionStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function LockIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="5" y="11" width="14" height="10" rx="2" fill="currentColor" />
+      <path d="M8 11V8a4 4 0 1 1 8 0v3" stroke="currentColor" strokeWidth="2.2" />
+    </svg>
+  );
+}
+
+function Locked({ title, text, eur }: { title: string; text: string; eur: number }) {
+  return (
+    <div className="vr-locked">
+      <div className="vr-locked-fake" aria-hidden="true">
+        {[0, 1].map((i) => (
+          <div className="vr-issue" key={i}>
+            <div className="vr-issue-top"><span className="vr-sev important">Important</span></div>
+            <h3>Informație ascunsă în raportul gratuit</h3>
+            <p>Ce înseamnă pentru afacerea ta și ce să faci, explicat pe înțelesul tuturor, pas cu pas.</p>
+          </div>
+        ))}
+      </div>
+      <div className="vr-locked-over">
+        <div>
+          <div className="vr-lock"><LockIcon /></div>
+          <strong>{title}</strong>
+          <p>{text}</p>
+          <a className="btn" href="#deblocheaza">Deblochează pentru {eur} €</a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Pay({ base, eur, mdl }: { base: string; eur: number; mdl: number }) {
+  const [email, setEmail] = useState("");
+  const [err, setErr] = useState("");
+  const [busy, setBusy] = useState(false);
+  async function go(e: React.FormEvent) {
+    e.preventDefault();
+    setErr("");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) return setErr("Scrie o adresă de email validă.");
+    setBusy(true);
+    try {
+      const r = await fetch("/api/audit/pay", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ base, email }) });
+      const j = await r.json().catch(() => ({}));
+      if (j.payUrl) {
+        window.location.href = j.payUrl;
+        return;
+      }
+      setErr(
+        j.error === "not_configured"
+          ? "Plata cu cardul pornește în curând. Până atunci, scrie-ne pe WhatsApp și îți trimitem raportul complet."
+          : j.error === "email"
+            ? "Scrie o adresă de email validă."
+            : "Plata nu a putut fi pornită. Încearcă din nou peste un minut."
+      );
+    } catch {
+      setErr("Nu am putut porni plata. Verifică internetul și încearcă din nou.");
+    }
+    setBusy(false);
+  }
+  return (
+    <form className="vr-pay" onSubmit={go} noValidate>
+      <div className="vr-price-row">
+        <div className="vr-price"><s>{eur === 5 ? 25 : eur * 5} €</s>{eur} €</div>
+        <span className="vr-launch">Preț de lansare</span>
+      </div>
+      <p className="vr-price-sub">Plată unică, {mdl} lei. Raportul se deschide imediat.</p>
+      <label className="vr-email">
+        <span>Emailul tău, pentru chitanță</span>
+        <input type="email" inputMode="email" autoComplete="email" placeholder="nume@firma.md" value={email} onChange={(e) => setEmail(e.target.value)} disabled={busy} />
+      </label>
+      <button className="btn vr-paybtn" type="submit" disabled={busy}>{busy ? "Se deschide plata…" : `Plătește ${eur} € cu cardul`}</button>
+      {err && <p className="vr-pay-err" role="alert">{err} {/WhatsApp/.test(err) && <a href={`https://wa.me/${WA}`} target="_blank" rel="noopener">Deschide WhatsApp</a>}</p>}
+      <div className="vr-marks">{PAY_MARKS.map((m) => <img key={m.n} src={`/images/pay/${m.n}.svg`} alt={m.n} style={{ height: m.h }} />)}</div>
+      <p className="vr-fine">Plata se face pe pagina securizată maib, cu 3-D Secure. Apăsând „Plătește”, accepți <a href="/termeni-si-conditii" target="_blank">Termenii și condițiile</a>.</p>
+    </form>
+  );
+}
+
+export default function Report({ rid, eur, was, mdl }: Props) {
+  void was;
+  const q = useSearchParams();
+  const [parts, setParts] = useState<Record<string, unknown> | null | undefined>(undefined);
+  const [view, setView] = useState<ReportView | null>(null);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    const raw = read(`lmd-audit:${rid}`);
+    const p = raw ? (JSON.parse(raw) as Record<string, unknown>) : null;
+    setParts(p);
+    if (!p) return;
+    const payId = q.get("payId") || read(`lmd-paid:${rid}`) || "";
+    fetch("/api/audit/report", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...p, payId }) })
+      .then((r) => r.json())
+      .then((j: { view?: ReportView }) => {
+        if (!j.view) return setFailed(true);
+        setView(j.view);
+        if (j.view.paid && payId) {
+          try {
+            localStorage.setItem(`lmd-paid:${rid}`, payId);
+          } catch {
+            /* private mode: stays unlocked for this visit */
+          }
+        }
+      })
+      .catch(() => setFailed(true));
+  }, [rid, q]);
+
+  if (parts === null || failed) {
+    return (
+      <div className="vr-empty">
+        <h1 className="vr-h1">Raportul nu e pe acest dispozitiv</h1>
+        <p className="vr-sub">Rapoartele rămân în browserul în care au fost făcute. Fă o verificare nouă, durează un minut.</p>
+        <a className="btn btn-lg" href="/verificare">Verifică un site</a>
+      </div>
+    );
+  }
+  if (!view) return <p className="vr-loading">Se încarcă raportul…</p>;
+
+  const v = view;
+  const date = new Date(v.createdAt).toLocaleDateString("ro-RO", { day: "numeric", month: "long", year: "numeric" });
+  const waText = encodeURIComponent(`Bună! Am verificat site-ul ${v.host} pe landings.md și a luat ${v.total ?? "?"}/100. Vreau să-l reparați.`);
+  const failedChecks = v.checklist.filter((c) => !c.ok).length;
+
+  return (
+    <>
+      <div className="vr-head">
+        <div>
+          <p className="vr-kicker">Raport de verificare</p>
+          <h1 className="vr-host">{v.host}</h1>
+          <p className="vr-date">Verificat pe {date}</p>
+          {v.verdict && <p className="vr-verdict">{v.verdict}</p>}
+          {v.paid && <p className="vr-paid">✓ Raport complet deblocat</p>}
+        </div>
+        <div className={`vr-dial ${v.tone}`} style={{ ["--v" as string]: v.total ?? 0 }}>
+          <div><b>{v.total ?? "—"}</b><span>din 100 · {v.label}</span></div>
+        </div>
+      </div>
+
+      <div className="vr-cats">
+        {v.cats.map((c) => (
+          <div className="vr-cat" key={c.key}>
+            <div className="vr-cat-top"><h3>{c.name}</h3><b>{c.score ?? "—"}</b></div>
+            <div className="vr-bar"><i className={c.tone} style={{ width: `${c.score ?? 0}%` }} /></div>
+            <p>{c.summary}</p>
+          </div>
+        ))}
+      </div>
+
+      {(v.shots.desktop || v.shots.mobile) && (
+        <section className="vr-sec">
+          <h2>Ce vede un client nou</h2>
+          {v.firstImpression && <p className="vr-lead">{v.firstImpression}</p>}
+          <div className="vr-shots">
+            {v.shots.desktop && <figure className="vr-shot"><img src={v.shots.desktop} alt={`${v.host} pe calculator`} /><figcaption>Pe calculator</figcaption></figure>}
+            {v.shots.mobile && <figure className="vr-shot"><img src={v.shots.mobile} alt={`${v.host} pe telefon`} /><figcaption>Pe telefon</figcaption></figure>}
+          </div>
+        </section>
+      )}
+
+      {v.issues.length > 0 && (
+        <section className="vr-sec">
+          <h2>Ce trebuie reparat</h2>
+          <p className="vr-lead">Am găsit {v.issues.length} probleme, în ordinea în care te costă clienți.{!v.paid && " Soluția pentru fiecare e în raportul complet."}</p>
+          <div className="vr-issues">
+            {v.issues.map((i, k) => (
+              <article className="vr-issue" key={k}>
+                <div className="vr-issue-top"><span className={`vr-sev ${i.severity}`}>{SEV[i.severity]}</span><span className="vr-issue-cat">{i.category}</span></div>
+                <h3>{i.title}</h3>
+                <p>{i.why}</p>
+                {i.fix ? (
+                  <p className="vr-fix"><b>Cum se repară:</b> {i.fix}</p>
+                ) : (
+                  <a className="vr-fix-locked" href="#deblocheaza">
+                    <b>Cum se repară:</b> <span aria-hidden="true">pașii exacți pentru site-ul tău, în ordinea în care merită făcuți</span>
+                    <em><LockIcon /> Deblochează</em>
+                  </a>
+                )}
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {v.google && (
+        <section className="vr-sec">
+          <h2>Te găsesc clienții în Google?</h2>
+          <p className="vr-lead">
+            Am căutat ce scrie un client din Moldova: „{v.google.keyword}”.{" "}
+            {v.google.source === "google" ? `Am verificat Google pagină cu pagină, primele ${v.google.depth} rezultate.` : "Poziția e estimată după căutarea de azi."}
+          </p>
+          {v.paid ? (
+            <>
+              <div className="vr-google">
+                <div className="vr-box">
+                  <small>Poziția site-ului tău</small>
+                  <b>{v.google.position ? `Locul ${v.google.position}${v.google.page ? `, pagina ${v.google.page}` : ""}` : `Nu apare în primele ${v.google.depth} rezultate`}</b>
+                  {v.google.note && <p>{v.google.note}</p>}
+                </div>
+                <div className="vr-box">
+                  <small>Cine apare înaintea ta</small>
+                  <ol>{v.google.competitors.map((c, k) => <li key={k}>{c.name} <span className="vr-muted">{c.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></li>)}</ol>
+                </div>
+              </div>
+              {v.google.analysis && (
+                <div className="vr-box vr-gwhy">
+                  <small>De ce sunt ei mai sus</small>
+                  <p>{v.google.analysis}</p>
+                  {v.google.actions.length > 0 && <ol>{v.google.actions.map((x, k) => <li key={k}>{x}</li>)}</ol>}
+                </div>
+              )}
+            </>
+          ) : (
+            <Locked title="Locul tău în Google și cine îți ia clienții" text={`Pe ce loc și pe ce pagină apare ${v.host}, ${v.google.competitorsCount || "firmele"} concurenți care apar înaintea ta, de ce și ce să faci ca să urci.`} eur={eur} />
+          )}
+        </section>
+      )}
+
+      {v.speed && (
+        <section className="vr-sec">
+          <h2>Viteză</h2>
+          <p className="vr-lead">Măsurat cu Google PageSpeed. Pe telefon contează cel mai mult: acolo sunt majoritatea clienților.</p>
+          <div className="vr-nums">
+            <div className="vr-box"><small>Telefon</small><b>{v.speed.mobile ?? "—"}/100</b></div>
+            <div className="vr-box"><small>Calculator</small><b>{v.speed.desktop ?? "—"}/100</b></div>
+            <div className="vr-box"><small>Apare conținutul principal (telefon)</small><b>{v.speed.lcp ?? "—"}</b></div>
+            <div className="vr-box"><small>Răspunsul serverului</small><b>{v.speed.ttfb ?? "—"}</b></div>
+          </div>
+          {v.speed.opportunities.length > 0 && (
+            <div className="vr-check vr-one">
+              {v.speed.opportunities.map((o, k) => <div key={k} className="no"><i>!</i>{o.title}<span>până la {o.savings} mai repede</span></div>)}
+            </div>
+          )}
+        </section>
+      )}
+
+      <section className="vr-sec">
+        <h2>Verificarea tehnică</h2>
+        <p className="vr-lead">20 de verificări pentru Google, siguranță și contact. {failedChecks ? `${failedChecks} au picat.` : "Toate au trecut."}</p>
+        <div className="vr-check">
+          {v.checklist.map((c, k) => <div key={k} className={c.ok ? "ok" : "no"}><i>{c.ok ? "✓" : "✕"}</i>{c.label}<span>{c.note}</span></div>)}
+        </div>
+      </section>
+
+      {v.strengths.length > 0 && (
+        <section className="vr-sec">
+          <h2>Ce e bine</h2>
+          <ul className="vr-list">{v.strengths.map((x, k) => <li key={k}>{x}</li>)}</ul>
+        </section>
+      )}
+
+      {!v.paid && parts && (
+        <section className="vr-unlock" id="deblocheaza">
+          <div>
+            <p className="vr-kicker vr-kicker-light">Raportul complet</p>
+            <h2>Afli exact cum repari și cine îți ia clienții.</h2>
+            <ul>
+              <li>Cum se repară fiecare din cele {v.issues.length} probleme, pas cu pas</li>
+              <li>Pe ce loc și pe ce pagină ești în Google</li>
+              <li>Concurenții care apar înaintea ta și de ce</li>
+              <li>Ce să faci ca să urci în Google</li>
+            </ul>
+          </div>
+          <Pay base={String(parts.base)} eur={eur} mdl={mdl} />
+        </section>
+      )}
+
+      <section className="vr-cta">
+        <div className="vr-cta-text">
+          <div className="vr-cta-who">
+            <img src="/images/founder.webp" alt="" />
+            <span>Damian B. · răspunde azi</span>
+          </div>
+          <h2>Vrei să-l reparăm noi?</h2>
+          <p>Scrie-ne și îți spunem ce facem întâi și cât durează.</p>
+        </div>
+        <div className="vr-cta-btns">
+          <a className="btn" href={`https://wa.me/${WA}?text=${waText}`} target="_blank" rel="noopener">Scrie-ne pe WhatsApp</a>
+          <a className="pill-btn" href="https://t.me/damiqqn" target="_blank" rel="noopener">Telegram</a>
+        </div>
+      </section>
+      {v.errors.length > 0 && <p className="vr-note">Unele verificări nu au mers de data asta. Restul raportului e complet.</p>}
+    </>
+  );
+}

@@ -89,8 +89,13 @@ export type Analysis = {
 export type GooglePos = {
   keyword: string;
   position: number | null; // null = not in the results we saw
+  page: number | null; // Google page 1-5 when the real results were checked
+  source: "google" | "search"; // real Google pages, or Claude's web search (first ~10 results)
+  depth: number; // how many results were looked at
   competitors: { name: string; url: string }[];
   note: string;
+  analysis: string; // why the ones above rank above
+  actions: string[]; // what to do to move up
 };
 
 export type Audit = {
@@ -102,6 +107,7 @@ export type Audit = {
   facts?: Facts;
   mobile?: Vitals;
   desktop?: Vitals;
+  shots?: { desktop: string | null; mobile: string | null };
   analysis?: Analysis;
   google?: GooglePos;
   errors: string[];

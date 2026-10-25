@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { adminEmail, langOfOrder, payInfo, sendMail, signatureOk } from "../../../_pay/maib";
 import { fmtDateTime, fmtMoney, receiptEmail } from "../../../_pay/receipt";
-import { reportIdOfOrder } from "../../../_audit/price";
-import { savePart } from "../../../_audit/store";
 
 export const dynamic = "force-dynamic";
 
@@ -27,16 +25,6 @@ export async function POST(req: Request) {
   console.log("[pay] callback", orderId, payId, status, result.statusCode);
 
   if (status !== "OK") return NextResponse.json({ ok: true });
-
-  // a website-check report: unlock it (the receipt below still goes out)
-  const reportId = reportIdOfOrder(orderId);
-  if (reportId) {
-    try {
-      await savePart(reportId, "pay", { paid: true, payId });
-    } catch (e) {
-      console.error("[pay] unlock report", reportId, e);
-    }
-  }
 
   try {
     const info = await payInfo(payId);

@@ -72,9 +72,9 @@ export type PayRequest = {
   clientIp: string;
   language: "ro" | "ru" | "en";
   description: string;
-  clientName: string;
-  email: string;
-  phone: string;
+  clientName?: string;
+  email?: string;
+  phone?: string;
   orderId: string;
   items: { id: string; name: string; price: number; quantity: number }[];
   callbackUrl: string;

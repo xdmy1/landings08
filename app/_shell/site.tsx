@@ -1300,11 +1300,11 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
               <a className="btn" href="#contact" onClick={(e) => goto(e, "contact")}>
                 {t.ctaP}
               </a>
+              <a className="pill-btn hero-check" href="/verificare">
+                {t.ctaCheck}
+              </a>
               <a className="tlink" href="#proiecte" onClick={(e) => goto(e, "proiecte")}>
                 {t.ctaS}
-              </a>
-              <a className="pill-btn" href="/verificare">
-                {t.ctaCheck}
               </a>
             </div>
             <div className="hero-meta fu" style={d("0.5s")}>

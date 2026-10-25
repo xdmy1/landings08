@@ -4,6 +4,12 @@ const nextConfig = {
     domains: ['images.unsplash.com', 'aceternity.com'],
   },
   poweredByHeader: false,
+  experimental: {
+    // headless Chrome for the website check screenshots
+    // and the Claude SDK, whose regexes the minifier would break
+    serverComponentsExternalPackages: ['@sparticuz/chromium', 'puppeteer-core', '@anthropic-ai/sdk'],
+    outputFileTracingIncludes: { '/api/audit/shots': ['./node_modules/@sparticuz/chromium/bin/**'] },
+  },
   async headers() {
     return [
       {

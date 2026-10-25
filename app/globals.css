@@ -2410,3 +2410,12 @@ button {
 .check-input:focus { border-color: var(--ink); box-shadow: 0 0 0 4px rgba(15, 15, 14, 0.07); }
 .check-form .btn { height: 56px; padding: 0 28px; }
 @media (max-width: 860px) { .check-band { grid-template-columns: 1fr; padding: 26px; } .check-form .btn { width: 100%; } }
+
+/* hero: the website check sits next to the main button, same size */
+.hero-cta { gap: 12px; }
+.hero-cta .tlink { margin-left: 14px; }
+.hero-check { height: 52px; padding: 0 26px; font-size: 15px; }
+@media (max-width: 560px) {
+  .hero-cta .btn, .hero-check { flex: 1 1 100%; }
+  .hero-cta .tlink { margin: 8px auto 0; }
+}

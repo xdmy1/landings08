@@ -8,7 +8,7 @@ type State = "wait" | "run" | "done" | "fail";
 
 const STEPS: { key: StepKey; label: string; note: string }[] = [
   { key: "read", label: "Citim site-ul", note: "texte, linkuri, SEO, siguranță" },
-  { key: "speed", label: "Măsurăm viteza pe telefon și calculator", note: "Google PageSpeed" },
+  { key: "speed", label: "Măsurăm viteza și facem poze pe telefon și calculator", note: "Google PageSpeed" },
   { key: "google", label: "Căutăm site-ul în Google", note: "ce caută clienții din Moldova" },
   { key: "ai", label: "Analizăm designul și cât de bine vinde", note: "ca un designer și un consultant" },
 ];
@@ -26,7 +26,7 @@ const ERR: Record<string, string> = {
 const post = async (url: string, body?: unknown) => {
   const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body || {}) });
   const j = await r.json().catch(() => ({}));
-  return { ok: r.ok && j.ok !== false, status: r.status, j } as { ok: boolean; status: number; j: { id?: string; error?: string; ok?: boolean } };
+  return { ok: r.ok && j.ok !== false, status: r.status, j } as { ok: boolean; status: number; j: { error?: string; ok?: boolean } };
 };
 
 export default function Checker() {
@@ -70,25 +70,43 @@ export default function Checker() {
     timer.current = setInterval(() => setSec((s) => s + 1), 1000);
     try {
       const start = await post("/api/audit", { url, keyword: kw });
-      if (!start.ok || !start.j.id) {
+      const base = (start.j as { base?: string }).base;
+      const rid = (start.j as { rid?: string }).rid;
+      if (!start.ok || !base || !rid) {
         set("read", "fail");
         setErr(ERR[start.j.error || "net"] || ERR.net);
         setBusy(false);
         if (timer.current) clearInterval(timer.current);
         return;
       }
-      const id = start.j.id;
       set("read", "done");
       set("speed", "run");
       set("google", "run");
-      const google = post(`/api/audit/${id}/google`).then((r) => set("google", r.ok ? "done" : "fail"));
-      const speed = await post(`/api/audit/${id}/speed`);
-      set("speed", speed.ok ? "done" : "fail");
+      const parts: Record<string, unknown> = { base };
+      const google = post("/api/audit/google", { base }).then((r) => {
+        const g = (r.j as { google?: string }).google;
+        if (g) parts.google = g;
+        set("google", r.ok ? "done" : "fail");
+      });
+      const [speed, shots] = await Promise.all([post("/api/audit/speed", { base }), post("/api/audit/shots", { base })]);
+      const sp = (speed.j as { speed?: string }).speed;
+      if (sp) parts.speed = sp;
+      const sh = (shots.j as { shots?: unknown }).shots;
+      if (sh) parts.shots = sh;
+      set("speed", speed.ok || shots.ok ? "done" : "fail");
       set("ai", "run");
-      const ai = await post(`/api/audit/${id}/analyze`);
+      const ai = await post("/api/audit/analyze", { base, speed: parts.speed, shots: parts.shots });
+      const an = (ai.j as { analysis?: string }).analysis;
+      if (an) parts.analysis = an;
       set("ai", ai.ok ? "done" : "fail");
       await google;
-      window.location.href = `/verificare/${id}`;
+      // no database: the sealed report stays in this browser
+      try {
+        localStorage.setItem(`lmd-audit:${rid}`, JSON.stringify(parts));
+      } catch {
+        sessionStorage.setItem(`lmd-audit:${rid}`, JSON.stringify(parts));
+      }
+      window.location.href = `/verificare/raport/${rid}`;
     } catch {
       setErr(ERR.net);
       setBusy(false);
@@ -113,9 +131,15 @@ export default function Checker() {
           <div className="vr-steps" aria-live="polite">
             {STEPS.map((s) => (
               <div key={s.key} className={`vr-step ${st[s.key]}`}>
-                <span className="vr-ic">{st[s.key] === "done" ? "✓" : ""}</span>
-                {s.label}
-                <small>{st[s.key] === "fail" ? "nu a mers, continuăm" : s.note}</small>
+                <span className="vr-ic">
+                  {st[s.key] === "done" && (
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  )}
+                </span>
+                <span className="vr-step-text">
+                  {s.label}
+                  <small>{st[s.key] === "fail" ? "nu a mers, continuăm" : s.note}</small>
+                </span>
               </div>
             ))}
           </div>
