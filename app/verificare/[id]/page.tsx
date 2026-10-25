@@ -9,6 +9,7 @@ import { AUDIT_EUR, AUDIT_EUR_WAS, reportIdOfOrder } from "../../_audit/price";
 import { categoryScores, grade, overallScore, sortedIssues } from "../../_audit/score";
 import { CATS, type Audit, type Facts } from "../../_audit/types";
 import Unlock from "./unlock";
+import { isOwnSite } from "../../_audit/own";
 import "../verificare.css";
 
 export const dynamic = "force-dynamic";
@@ -73,7 +74,7 @@ function Locked({ title, text, rows, mdlLabel }: { title: string; text: string; 
 
 export default async function ReportPage({ params, searchParams }: { params: { id: string }; searchParams: { payId?: string } }) {
   let a: Audit | null = await loadAudit(params.id);
-  if (!a) notFound();
+  if (!a || isOwnSite(a.host)) notFound();
 
   // back from maib: confirm the payment ourselves in case the callback is still on its way
   if (!a.paid && searchParams.payId && maibReady()) {

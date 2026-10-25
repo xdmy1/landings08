@@ -3,6 +3,7 @@ import { aiReady } from "../../_audit/ai";
 import { allowAudit, newAuditId, saveAudit, storeReady } from "../../_audit/store";
 import { clientIp, json, progressView } from "../../_audit/http";
 import type { Audit } from "../../_audit/types";
+import { isOwnSite } from "../../_audit/own";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -19,6 +20,7 @@ export async function POST(req: Request) {
 
   const u = normaliseUrl(typeof body.url === "string" ? body.url : "");
   if (!u || !(await publicHost(u.hostname))) return json({ error: "url" }, 400);
+  if (isOwnSite(u.hostname)) return json({ error: "own" }, 409);
   const keyword = typeof body.keyword === "string" ? body.keyword.replace(/\s+/g, " ").trim().slice(0, 80) : "";
 
   const gate = await allowAudit(clientIp(req));
@@ -28,6 +30,7 @@ export async function POST(req: Request) {
   try {
     audit.facts = await collectFacts(u);
     audit.host = audit.facts.host;
+    if (isOwnSite(audit.host)) return json({ error: "own" }, 409); // reached one of ours through a redirect
   } catch (e) {
     console.error("[audit] collect", u.toString(), e);
     return json({ error: "unreachable" }, 422);

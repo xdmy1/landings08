@@ -20,6 +20,7 @@ const ERR: Record<string, string> = {
   limit_site: "Azi au fost prea multe verificări. Revino mâine sau scrie-ne pe WhatsApp.",
   not_configured: "Verificarea pornește în curând. Până atunci, scrie-ne pe WhatsApp și verificăm noi site-ul.",
   net: "Nu am putut trimite cererea. Verifică internetul și încearcă din nou.",
+  own: "Site-ul ăsta e făcut de noi, la landings.md, așa că nu îl evaluăm singuri. Vrei unul la fel? Scrie-ne pe WhatsApp.",
 };
 
 const post = async (url: string, body?: unknown) => {
