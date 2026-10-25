@@ -48,7 +48,7 @@ export async function publicHost(host: string): Promise<boolean> {
 }
 
 /* fetch that re-checks every redirect hop, so a public site can't bounce us inward */
-async function safeFetch(url: string, init: RequestInit & { timeoutMs?: number } = {}, hops = 5): Promise<{ res: Response; finalUrl: string }> {
+export async function safeFetch(url: string, init: RequestInit & { timeoutMs?: number } = {}, hops = 5): Promise<{ res: Response; finalUrl: string }> {
   let current = url;
   for (let i = 0; i <= hops; i++) {
     const u = new URL(current);
@@ -80,7 +80,7 @@ function sslDaysLeft(host: string): Promise<number | null> {
   });
 }
 
-const text = (el: HTMLElement | null | undefined) => (el?.text || "").replace(/\s+/g, " ").trim();
+export const text = (el: HTMLElement | null | undefined) => (el?.text || "").replace(/\s+/g, " ").trim();
 const attr = (root: HTMLElement, sel: string, a: string) => root.querySelector(sel)?.getAttribute(a)?.trim() || "";
 
 export async function collectFacts(u: URL): Promise<Facts> {

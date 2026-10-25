@@ -4,6 +4,7 @@
 
 import { COMPANY } from "../_pay/plans";
 import { launch } from "./shots";
+import type { Mark } from "./types";
 import type { ReportView } from "./view";
 
 const esc = (s: string | null | undefined) => (s || "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
@@ -14,10 +15,72 @@ export function reportNumber(rid: string): string {
   return `RAP-${rid.slice(0, 6).toUpperCase()}`;
 }
 
+/* the FAQ code on one line, so it doesn't fill a printed page */
+function compact(code: string): string {
+  const m = code.match(/<script[^>]*>([\s\S]*)<\/script>/i);
+  try {
+    const one = JSON.stringify(JSON.parse(m ? m[1] : code));
+    return m ? `<script type="application/ld+json">${one}</script>` : one;
+  } catch {
+    return code;
+  }
+}
+
+/* a screenshot with its problems boxed in red, numbered, and the legend under it */
+function marked(src: string, marks?: Mark[]): string {
+  if (!marks?.length) return `<img src="${src}">`;
+  return `<div><div class="marked"><img src="${src}">${marks.map((m) => `<span class="mk" style="left:${m.x}%;top:${m.y}%;width:${m.w}%;height:${m.h}%"><i>${m.n}</i></span>`).join("")}</div><ol class="legend">${marks.map((m) => `<li><i>${m.n}</i>${esc(m.label)}</li>`).join("")}</ol></div>`;
+}
+
+/* the paid analysis: competitors, brand search, AI answers, copy and the plan */
+function deepHtml(v: ReportView): string {
+  const d = v.deep;
+  if (!d) return "";
+  const c = d.competitors, b = d.brand, a = d.ai, cp = d.copy, pl = d.plan;
+  const out: string[] = [];
+  if (c) {
+    out.push(`<h2>Tu față de concurenții tăi</h2><p class="muted">${esc(c.summary)}</p>
+<table class="t"><tr><th></th><th class="you">Tu</th>${c.names.map((n) => `<th>${esc(n)}</th>`).join("")}</tr>
+${c.rows.map((r) => `<tr><td class="muted">${esc(r.label)}</td><td class="you"><b>${esc(r.you)}</b></td>${r.them.map((t) => `<td>${esc(t)}</td>`).join("")}</tr>`).join("")}
+</table><ul style="margin-top:8px">${c.insights.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`);
+  }
+  if (b) {
+    const p = b.profile;
+    out.push(`<h2>Ce vede clientul când îți caută numele</h2><p class="muted">Am căutat „${esc(b.query)}”. ${esc(b.summary)}</p>
+<table class="t">
+<tr><td style="width:150px" class="muted">Profilul Google Business</td><td><b>${p.found ? (p.rating ? `${p.rating} ★ · ${p.reviews ?? "?"} recenzii` : "Există") : "Nu l-am găsit"}</b> <span class="muted">${esc(p.note)}</span></td></tr>
+${b.results.map((r) => `<tr><td class="muted">${esc(r.kind)}</td><td>${esc(r.title)} <span class="muted">${esc(r.url.replace(/^https?:\/\/(www\.)?/, ""))}</span><br><span class="muted">${esc(r.note)}</span></td></tr>`).join("")}
+<tr><td class="muted">Ce să faci</td><td><ol>${b.actions.map((x) => `<li>${esc(x)}</li>`).join("")}</ol></td></tr>
+</table>`);
+  }
+  if (a) {
+    const n = a.questions.filter((q) => q.mentioned).length;
+    out.push(`<h2>Te recomandă inteligența artificială?</h2><p><b>${esc(v.host)} a fost recomandat în ${n} din ${a.questions.length} răspunsuri.</b> <span class="muted">${esc(a.summary)}</span></p>
+<table class="t">${a.questions.map((q) => `<tr><td style="width:18px" class="${q.mentioned ? "yes" : "bad"}">${q.mentioned ? "✓" : "✕"}</td><td>„${esc(q.q)}”<br><span class="muted">${q.recommended.length ? `Recomandă: ${esc(q.recommended.map((r) => r.name).join(", "))}` : "Nu a recomandat nicio firmă anume."}</span></td></tr>`).join("")}</table>
+<p style="margin-top:8px"><b>Ca să fii recomandat mai des</b></p><ol>${a.actions.map((x) => `<li>${esc(x)}</li>`).join("")}</ol>
+<p class="muted small">Testat cu un asistent AI care caută pe web. ChatGPT sau Google AI pot răspunde puțin diferit.</p>`);
+  }
+  if (cp) {
+    const box = (label: string, value: string, hint = "") => `<div class="copy"><small>${esc(label)}${hint ? ` · ${esc(hint)}` : ""}</small>${esc(value)}</div>`;
+    out.push(`<h2>Gata de copiat</h2>
+${box("Titlul pentru Google", cp.title, `${cp.title.length} caractere`)}
+${box("Descrierea din Google", cp.description, `${cp.description.length} caractere`)}
+${box("Titlul principal de pe site", cp.h1)}
+${box("Descrierea pentru profilul Google Business", cp.gbp, `${cp.gbp.length} caractere`)}
+<div class="copy"><small>Întrebări frecvente pentru site</small>${cp.faq.map((f) => `<p style="margin-top:5px"><b>${esc(f.q)}</b><br><span class="muted">${esc(f.a)}</span></p>`).join("")}</div>
+<div class="copy"><small>Codul pentru Google cu întrebările (se pune în pagină)</small><pre>${esc(compact(cp.faqJsonLd))}</pre></div>`);
+  }
+  if (pl) {
+    out.push(`<h2>Planul pe 30 de zile</h2><div class="weeks">${pl.weeks.map((w) => `<div class="week"><span class="muted small">Săptămâna ${w.week}</span><h3>${esc(w.focus)}</h3>${w.steps.map((s) => `<div>${esc(s.what)}<br><span class="tag ${s.who}">${s.who === "singur" ? "Poți singur" : "Programator"}</span> <span class="muted small">${esc(s.time)} · ${esc(s.impact)}</span></div>`).join("")}</div>`).join("")}</div>`);
+  }
+  return out.join("\n");
+}
+
 function html(v: ReportView, origin: string): string {
   const date = new Date(v.createdAt).toLocaleDateString("ro-RO", { day: "numeric", month: "long", year: "numeric" });
   const tone = (t: string) => TONE[t as keyof typeof TONE] || TONE.mid;
   const g = v.google;
+  const d = v.deep;
   return `<!doctype html><html lang="ro"><head><meta charset="utf-8">
 <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600&display=block" rel="stylesheet">
 <style>
@@ -58,6 +121,25 @@ table.t tr { break-inside: avoid; }
 .check .ok i { color: #1f8a4c; } .check .no i { color: #b42318; }
 .check span { margin-left: auto; color: #6b6b64; font-size: 9pt; }
 ol, ul { padding-left: 18px; } li { margin: 3px 0; }
+.marked { position: relative; }
+.marked img { width: 100%; border: 1px solid #e6e5df; border-radius: 8px; display: block; }
+.mk { position: absolute; border: 2px solid #e0261b; border-radius: 5px; }
+.mk i, .legend i { display: inline-grid; place-items: center; width: 15px; height: 15px; border-radius: 50%; background: #e0261b; color: #fff; font-style: normal; font-size: 7.5pt; font-weight: 700; }
+.mk i { position: absolute; top: -8px; left: -8px; }
+.legend { list-style: none; padding: 0; margin-top: 6px; font-size: 9pt; color: #50504a; }
+.legend li { display: flex; gap: 6px; align-items: flex-start; margin: 3px 0; }
+.you { background: #f6f6f1; }
+.yes { color: #1f8a4c; font-weight: 700; } .bad { color: #b42318; font-weight: 700; }
+.copy { border: 1px solid #e6e5df; border-radius: 8px; padding: 8px 10px; margin-top: 6px; break-inside: avoid; }
+.copy small { display: block; color: #6b6b64; font-size: 8.5pt; }
+.copy pre { font-size: 7.5pt; white-space: pre-wrap; word-break: break-word; background: #f4f3ee; padding: 6px 8px; border-radius: 6px; margin-top: 4px; }
+.weeks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.week { border: 1px solid #e6e5df; border-radius: 8px; padding: 8px 10px; break-inside: avoid; }
+.week h3 { font-size: 10.5pt; font-weight: 600; }
+.week div { border-top: 1px solid #e6e5df; padding-top: 5px; margin-top: 5px; }
+.tag { display: inline-block; font-size: 7.5pt; font-weight: 600; padding: 0 6px; border-radius: 99px; background: #eef0f2; color: #4a5562; }
+.tag.singur { background: #e7f5ec; color: #135c32; }
+.small { font-size: 9pt; }
 .end { margin-top: 30px; padding-top: 12px; border-top: 1px solid #e6e5df; color: #6b6b64; font-size: 9pt; }
 </style></head><body>
 <div class="brand"><img src="${origin}/images/logo-mark.webp" alt="">landings.md</div>
@@ -82,7 +164,7 @@ ol, ul { padding-left: 18px; } li { margin: 3px 0; }
 ${v.cats.map((c) => `<tr><td><b>${esc(c.name)}</b><div class="bar"><i style="width:${c.score ?? 0}%;background:${tone(c.tone)}"></i></div></td><td>${esc(c.summary)}</td><td class="num"><b>${c.score ?? "—"}</b></td></tr>`).join("")}
 </table>
 
-${v.shots.desktop || v.shots.mobile ? `<h2>Ce vede un client nou</h2><p class="muted">${esc(v.firstImpression)}</p><div class="shots">${v.shots.desktop ? `<img src="${v.shots.desktop}">` : "<div></div>"}${v.shots.mobile ? `<img src="${v.shots.mobile}">` : ""}</div>` : ""}
+${v.shots.desktop || v.shots.mobile ? `<h2>Ce vede un client nou</h2><p class="muted">${esc(v.firstImpression)}</p><div class="shots">${v.shots.desktop ? marked(v.shots.desktop, d?.marks?.desktop) : "<div></div>"}${v.shots.mobile ? marked(v.shots.mobile, d?.marks?.mobile) : ""}</div>` : ""}
 
 <h2>Ce trebuie reparat (${v.issues.length})</h2>
 <table class="t"><tr><th style="width:22px">#</th><th style="width:76px">Gravitate</th><th>Problema și de ce contează</th><th style="width:38%">Cum se repară</th></tr>
@@ -98,6 +180,8 @@ ${g.analysis ? `<tr><td class="muted">De ce sunt mai sus</td><td>${esc(g.analysi
 ${g.actions.length ? `<tr><td class="muted">Ce să faci</td><td><ol>${g.actions.map((x) => `<li>${esc(x)}</li>`).join("")}</ol></td></tr>` : ""}
 </table>` : ""}
 
+${deepHtml(v)}
+
 ${v.speed ? `<h2>Viteză</h2>
 <table class="t"><tr><th>Măsurătoare</th><th class="num">Valoare</th></tr>
 <tr><td>Nota Google PageSpeed pe telefon</td><td class="num"><b>${v.speed.mobile ?? "—"}/100</b></td></tr>
@@ -105,6 +189,11 @@ ${v.speed ? `<h2>Viteză</h2>
 <tr><td>Apare conținutul principal (telefon)</td><td class="num">${esc(v.speed.lcp) || "—"}</td></tr>
 <tr><td>Răspunsul serverului</td><td class="num">${esc(v.speed.ttfb) || "—"}</td></tr>
 ${v.speed.opportunities.map((o) => `<tr><td class="muted">${esc(o.title)}</td><td class="num muted">până la ${esc(o.savings)}</td></tr>`).join("")}
+</table>` : ""}
+
+${d?.pages ? `<h2>Toate paginile site-ului</h2><ul class="small">${d.pages.summary.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>
+<table class="t small"><tr><th>Pagina</th><th>Titlu</th><th>Descriere</th><th class="num">H1</th><th class="num">Cuvinte</th><th class="num">Răspuns</th></tr>
+${d.pages.rows.map((r) => `<tr><td style="word-break:break-all">${esc(r.url.replace(/^https?:\/\/[^/]+/, "") || "/")}${r.status === 0 || r.status >= 400 ? ' <span class="bad">nu se deschide</span>' : ""}</td><td class="${!r.title || r.dupTitle || r.titleLen > 65 ? "bad" : ""}">${r.title ? `${r.titleLen} car.${r.dupTitle ? ", dublat" : ""}` : "lipsă"}</td><td class="${r.desc ? "" : "bad"}">${r.desc ? "da" : "lipsă"}</td><td class="num ${r.h1 === 1 ? "" : "bad"}">${r.h1}</td><td class="num ${r.words < 250 ? "bad" : ""}">${r.words}</td><td class="num">${r.ms != null ? `${(r.ms / 1000).toFixed(1)} s` : "—"}</td></tr>`).join("")}
 </table>` : ""}
 
 <h2>Verificarea tehnică</h2>

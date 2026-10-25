@@ -11,8 +11,8 @@ import { z } from "zod/v4";
 import type { Analysis, Audit, GooglePos } from "./types";
 import { googlePages, serpReady } from "./serp";
 
-const MODEL = "claude-sonnet-5-5";
-const BETAS = ["server-side-fallback-2026-07-01"];
+export const MODEL = "claude-sonnet-5-5";
+export const BETAS = ["server-side-fallback-2026-07-01"];
 
 export function aiReady(): boolean {
   return Boolean(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN);
@@ -20,7 +20,7 @@ export function aiReady(): boolean {
 
 let client: Anthropic | null = null;
 // a key that isn't scoped to one workspace needs the workspace named on every request
-const ai = () =>
+export const ai = () =>
   (client ??= new Anthropic({
     maxRetries: 1,
     timeout: 55_000,
@@ -64,7 +64,7 @@ Output:
 - issues: 8-16 concrete problems, most damaging first. severity: critic = loses customers now, important = clear loss, minor = polish. title max 70 characters; why = 1-2 sentences on the business impact; fix = 1 sentence on what to do.
 - strengths: 2-5 real things the site does well.`;
 
-function img(dataUri: string | null | undefined) {
+export function img(dataUri: string | null | undefined) {
   const m = dataUri?.match(/^data:(image\/(?:jpeg|png|webp));base64,(.+)$/);
   return m ? ({ type: "image" as const, source: { type: "base64" as const, media_type: m[1] as "image/jpeg" | "image/png" | "image/webp", data: m[2] } }) : null;
 }
@@ -139,7 +139,7 @@ async function pickKeyword(brief: string): Promise<string> {
   return (t && t.type === "text" ? t.text : "").replace(/["„”]/g, "").trim().split("\n")[0].slice(0, 80);
 }
 
-function briefOf(a: Audit): string {
+export function briefOf(a: Audit): string {
   const f = a.facts!;
   return `Site: ${a.host}\nTitle: ${f.title}\nDescription: ${f.description}\nH1: ${f.h1.join(" | ")}\nLanguage: ${f.lang}\nText sample: ${f.textSample.slice(0, 1200)}`;
 }

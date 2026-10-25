@@ -22,6 +22,15 @@ export function allow(kind: "start" | "ai", ip: string): "ok" | "ip" | "site" {
   return "ok";
 }
 
+/* a paid report runs each deeper step a few times at most (a retry after a failure, a second device) */
+const deepRuns = new Map<string, number>();
+export function allowDeep(rid: string, step: string): boolean {
+  if (deepRuns.size > 5000) deepRuns.clear();
+  const n = (deepRuns.get(`${rid}:${step}`) || 0) + 1;
+  deepRuns.set(`${rid}:${step}`, n);
+  return n <= Number(process.env.AUDIT_DEEP_RUNS || 3);
+}
+
 export function newRid(): string {
   const abc = "abcdefghijkmnpqrstuvwxyz23456789";
   return Array.from(crypto.getRandomValues(new Uint8Array(12)), (b) => abc[b % abc.length]).join("");

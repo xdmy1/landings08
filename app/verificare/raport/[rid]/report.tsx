@@ -1,9 +1,11 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { DEEP_STEPS, type Deep, type DeepStep } from "../../../_audit/types";
 import type { ReportView } from "../../../_audit/view";
+import { AiSection, BrandSection, CompetitorsSection, CopySection, DeepPending, MarkedShot, PagesSection, PlanSection, Teaser } from "./deep-sections";
 
 const WA = "37368327082";
 const SEV = { critic: "Grav", important: "Important", minor: "Mic" } as const;
@@ -16,6 +18,17 @@ const PAY_MARKS = [
 ];
 
 type Props = { rid: string; eur: number; was: number; mdl: number };
+type StepState = "run" | "done" | "fail";
+
+/* the paid sections as the finished list names them, and where each one is */
+const DEEP_DONE: Record<DeepStep, { label: string; to: string }> = {
+  competitors: { label: "Tu față de concurenții tăi", to: "d-competitors" },
+  brand: { label: "Ce vede clientul când îți caută numele", to: "d-brand" },
+  ai: { label: "Te recomandă inteligența artificială?", to: "d-ai" },
+  copy: { label: "Textele gata de copiat și planul pe 30 de zile", to: "d-copy" },
+  pages: { label: "Toate paginile site-ului", to: "d-pages" },
+  marks: { label: "Problemele încercuite pe poze", to: "d-marks" },
+};
 
 function read(key: string): string | null {
   try {
@@ -23,6 +36,61 @@ function read(key: string): string | null {
   } catch {
     return null;
   }
+}
+
+function readParts(rid: string): Record<string, string> {
+  try {
+    return JSON.parse(read(`lmd-deep:${rid}`) || "{}") as Record<string, string>;
+  } catch {
+    return {};
+  }
+}
+
+function has(d: Deep, k: DeepStep): boolean {
+  return k === "copy" ? !!(d.copy && d.plan) : !!d[k];
+}
+
+const Tick = () => (
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
+);
+
+/* after payment: the deeper analysis runs step by step, then the list becomes a table of contents */
+function DeepProgress({ steps, onRetry }: { steps: Partial<Record<DeepStep, StepState>>; onRetry: () => void }) {
+  const states = DEEP_STEPS.map((s) => steps[s.key]);
+  const running = states.includes("run");
+  const failed = states.includes("fail");
+  return (
+    <section className="vr-deep">
+      <h2>{running ? "Pregătim analiza completă" : "Ce conține analiza completă"}</h2>
+      <p>{running ? "Durează cam un minut. Fiecare parte apare mai jos când e gata. Rămâi pe pagină până se termină." : "Apasă pe o parte ca să mergi direct la ea."}</p>
+      <div className="vr-steps" aria-live="polite">
+        {DEEP_STEPS.map((s) => {
+          const st = steps[s.key] || "run";
+          const text = (
+            <span className="vr-step-text">
+              {st === "done" ? DEEP_DONE[s.key].label : s.label}
+              {st === "fail" && <small>nu a mers de data asta</small>}
+            </span>
+          );
+          return st === "done" ? (
+            <a key={s.key} className="vr-step done" href={`#${DEEP_DONE[s.key].to}`}>
+              <span className="vr-ic"><Tick /></span>
+              {text}
+              <span className="vr-step-go" aria-hidden="true">↓</span>
+            </a>
+          ) : (
+            <div key={s.key} className={`vr-step ${st}`}>
+              <span className="vr-ic" />
+              {text}
+            </div>
+          );
+        })}
+      </div>
+      {failed && !running && (
+        <button className="pill-btn vr-retry" type="button" onClick={onRetry}>Încearcă din nou ce nu a mers</button>
+      )}
+    </section>
+  );
 }
 
 function LockIcon() {
@@ -112,14 +180,46 @@ export default function Report({ rid, eur, was, mdl }: Props) {
   const [view, setView] = useState<ReportView | null>(null);
   const [failed, setFailed] = useState(false);
   const [pdfBusy, setPdfBusy] = useState(false);
+  const [deep, setDeep] = useState<Deep>({});
+  const [steps, setSteps] = useState<Partial<Record<DeepStep, StepState>>>({});
+  const started = useRef(false);
   const payIdNow = q.get("payId") || "";
+
+  /* each step runs on its own, so one slow or failed part doesn't hold up the others */
+  const runDeep = useCallback(
+    (keys: DeepStep[]) => {
+      if (!parts || !keys.length) return;
+      const payId = payIdNow || read(`lmd-paid:${rid}`) || "";
+      setSteps((st) => ({ ...st, ...Object.fromEntries(keys.map((k) => [k, "run"])) }));
+      for (const k of keys) {
+        // only the marks need the screenshots; the other steps go without the heavy images
+        const body = k === "marks" ? { ...parts, payId } : { ...parts, shots: undefined, payId };
+        fetch(`/api/audit/deep/${k}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+          .then((r) => r.json())
+          .then((j: { ok?: boolean; part?: string; value?: unknown }) => {
+            if (!j.ok || !j.part || !j.value) throw new Error(k);
+            const saved = readParts(rid);
+            saved[k] = j.part;
+            try {
+              localStorage.setItem(`lmd-deep:${rid}`, JSON.stringify(saved));
+            } catch {
+              /* private mode: shown for this visit only */
+            }
+            setDeep((d) => (k === "copy" ? { ...d, ...(j.value as Pick<Deep, "copy" | "plan">) } : { ...d, [k]: j.value }));
+            setSteps((st) => ({ ...st, [k]: "done" }));
+          })
+          .catch(() => setSteps((st) => ({ ...st, [k]: "fail" })));
+      }
+    },
+    [parts, payIdNow, rid]
+  );
 
   async function downloadPdf() {
     if (!parts || pdfBusy) return;
     setPdfBusy(true);
     try {
       const payId = payIdNow || read(`lmd-paid:${rid}`) || "";
-      const r = await fetch("/api/audit/pdf", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...parts, payId }) });
+      const r = await fetch("/api/audit/pdf", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...parts, payId, deep: readParts(rid) }) });
       if (!r.ok) throw new Error(String(r.status));
       const url = URL.createObjectURL(await r.blob());
       const a = document.createElement("a");
@@ -139,7 +239,7 @@ export default function Report({ rid, eur, was, mdl }: Props) {
     setParts(p);
     if (!p) return;
     const payId = q.get("payId") || read(`lmd-paid:${rid}`) || "";
-    fetch("/api/audit/report", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...p, payId }) })
+    fetch("/api/audit/report", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...p, payId, deep: readParts(rid) }) })
       .then((r) => r.json())
       .then((j: { view?: ReportView }) => {
         if (!j.view) return setFailed(true);
@@ -154,6 +254,16 @@ export default function Report({ rid, eur, was, mdl }: Props) {
       })
       .catch(() => setFailed(true));
   }, [rid, q]);
+
+  /* once the payment checks out: show the parts already made, run the rest */
+  useEffect(() => {
+    if (!view?.paid || started.current) return;
+    started.current = true;
+    const have = view.deep || {};
+    setDeep(have);
+    setSteps(Object.fromEntries(DEEP_STEPS.filter((s) => has(have, s.key)).map((s) => [s.key, "done"])));
+    runDeep(DEEP_STEPS.filter((s) => !has(have, s.key)).map((s) => s.key));
+  }, [view, runDeep]);
 
   if (parts === null || failed) {
     return (
@@ -170,6 +280,9 @@ export default function Report({ rid, eur, was, mdl }: Props) {
   const date = new Date(v.createdAt).toLocaleDateString("ro-RO", { day: "numeric", month: "long", year: "numeric" });
   const waText = encodeURIComponent(`Bună! Am verificat site-ul ${v.host} pe landings.md și a luat ${v.total ?? "?"}/100. Vreau să-l reparați.`);
   const failedChecks = v.checklist.filter((c) => !c.ok).length;
+  const paidPart = (k: DeepStep, title: string, show: () => React.ReactNode) =>
+    v.paid ? (has(deep, k) ? show() : steps[k] === "run" ? <DeepPending title={title} /> : null) : null;
+  const marks = v.paid ? deep.marks : undefined;
 
   return (
     <>
@@ -202,6 +315,8 @@ export default function Report({ rid, eur, was, mdl }: Props) {
         </div>
       </div>
 
+      {v.paid && <DeepProgress steps={steps} onRetry={() => runDeep(DEEP_STEPS.filter((s) => steps[s.key] === "fail").map((s) => s.key))} />}
+
       <div className="vr-cats">
         {v.cats.map((c) => (
           <div className="vr-cat" key={c.key}>
@@ -213,12 +328,13 @@ export default function Report({ rid, eur, was, mdl }: Props) {
       </div>
 
       {(v.shots.desktop || v.shots.mobile) && (
-        <section className="vr-sec">
+        <section className="vr-sec" id="d-marks">
           <h2 className="lbl">Ce vede un client nou</h2>
           {v.firstImpression && <p className="art-lead">{v.firstImpression}</p>}
+          {marks && <p className="vr-note">Cu roșu: problemele pe care le vede clientul de cum intră. Numerele sunt explicate sub fiecare poză.</p>}
           <div className="vr-shots">
-            {v.shots.desktop && <figure className="vr-shot"><img src={v.shots.desktop} alt={`${v.host} pe calculator`} /><figcaption>Pe calculator</figcaption></figure>}
-            {v.shots.mobile && <figure className="vr-shot"><img src={v.shots.mobile} alt={`${v.host} pe telefon`} /><figcaption>Pe telefon</figcaption></figure>}
+            {v.shots.desktop && <MarkedShot src={v.shots.desktop} alt={`${v.host} pe calculator`} caption="Pe calculator" marks={marks?.desktop} />}
+            {v.shots.mobile && <MarkedShot src={v.shots.mobile} alt={`${v.host} pe telefon`} caption="Pe telefon" marks={marks?.mobile} />}
           </div>
         </section>
       )}
@@ -281,6 +397,16 @@ export default function Report({ rid, eur, was, mdl }: Props) {
         </section>
       )}
 
+      {paidPart("competitors", "Tu față de concurenții tăi", () => <CompetitorsSection c={deep.competitors!} />)}
+      {paidPart("brand", "Ce vede clientul când îți caută numele", () => <BrandSection b={deep.brand!} />)}
+      {paidPart("ai", "Te recomandă inteligența artificială?", () => <AiSection a={deep.ai!} host={v.host} />)}
+      {paidPart("copy", "Gata de copiat", () => (
+        <>
+          <CopySection copy={deep.copy!} />
+          <PlanSection plan={deep.plan!} />
+        </>
+      ))}
+
       {v.speed && (
         <section className="vr-sec">
           <h2 className="lbl">Viteză</h2>
@@ -299,6 +425,8 @@ export default function Report({ rid, eur, was, mdl }: Props) {
         </section>
       )}
 
+      {paidPart("pages", "Toate paginile site-ului", () => <PagesSection p={deep.pages!} />)}
+
       <section className="vr-sec">
         <h2 className="lbl">Verificarea tehnică</h2>
         <p className="art-lead">20 de verificări pentru Google, siguranță și contact. {failedChecks ? `${failedChecks} au picat.` : "Toate au trecut."}</p>
@@ -314,15 +442,18 @@ export default function Report({ rid, eur, was, mdl }: Props) {
         </section>
       )}
 
+      {!v.paid && <Teaser />}
+
       {!v.paid && parts && (
         <section className="vr-unlock" id="deblocheaza">
           <div>
             <h2>Afli exact cum repari și cine îți ia clienții.</h2>
             <ul>
               <li>Cum se repară fiecare din cele {v.issues.length} probleme, pas cu pas</li>
-              <li>Pe ce loc și pe ce pagină ești în Google</li>
-              <li>Concurenții care apar înaintea ta și de ce</li>
-              <li>Ce să faci ca să urci în Google</li>
+              <li>Locul tău în Google și concurenții de dinaintea ta</li>
+              <li>Dacă te recomandă inteligența artificială</li>
+              <li>Textele gata scrise și planul pe 30 de zile</li>
+              <li>Raportul întreg și în PDF</li>
             </ul>
           </div>
           <Pay base={String(parts.base)} eur={eur} mdl={mdl} />

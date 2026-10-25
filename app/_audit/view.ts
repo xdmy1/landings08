@@ -2,7 +2,7 @@
    (how to fix each problem, the Google details) only leave it after payment. */
 
 import { categoryScores, grade, overallScore, sortedIssues } from "./score";
-import { CATS, type Audit, type CatKey, type Facts, type Severity } from "./types";
+import { CATS, type Audit, type CatKey, type Deep, type Facts, type Severity } from "./types";
 
 export type ReportView = {
   rid: string;
@@ -40,6 +40,7 @@ export type ReportView = {
   checklist: { ok: boolean; label: string; note: string }[];
   strengths: string[];
   errors: string[];
+  deep: Deep | null; // only on a paid report
 };
 
 const CAT_NAME = Object.fromEntries(CATS.map((c) => [c.key, c.name])) as Record<CatKey, string>;
@@ -117,5 +118,6 @@ export function buildView(a: Audit, paid: boolean): ReportView {
     checklist: checklist(f),
     strengths: a.analysis?.strengths || [],
     errors: a.errors,
+    deep: paid ? a.deep || {} : null,
   };
 }

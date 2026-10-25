@@ -110,7 +110,32 @@ export type Audit = {
   shots?: { desktop: string | null; mobile: string | null };
   analysis?: Analysis;
   google?: GooglePos;
+  deep?: Deep;
   errors: string[];
   paid: boolean;
   payId?: string;
 };
+
+/* ---------- the deeper analysis that runs only after payment ---------- */
+
+export type Mark = { x: number; y: number; w: number; h: number; n: number; label: string }; // percent of the image
+
+export type Deep = {
+  competitors?: { names: string[]; urls: string[]; rows: { label: string; you: string; them: string[] }[]; insights: string[]; summary: string };
+  brand?: { query: string; profile: { found: boolean; rating: number | null; reviews: number | null; note: string }; results: { title: string; url: string; kind: string; note: string }[]; summary: string; actions: string[] };
+  ai?: { questions: { q: string; mentioned: boolean; recommended: { name: string; url: string }[] }[]; summary: string; actions: string[] };
+  copy?: { title: string; description: string; h1: string; faq: { q: string; a: string }[]; faqJsonLd: string; gbp: string };
+  plan?: { weeks: { week: number; focus: string; steps: { what: string; who: "singur" | "programator"; time: string; impact: string }[] }[] };
+  pages?: { found: number; rows: { url: string; status: number; title: string; titleLen: number; desc: boolean; h1: number; words: number; ms: number | null; noindex: boolean; dupTitle: boolean }[]; summary: string[] };
+  marks?: { desktop: Mark[]; mobile: Mark[] };
+};
+
+export type DeepStep = "competitors" | "brand" | "ai" | "copy" | "pages" | "marks";
+export const DEEP_STEPS: { key: DeepStep; label: string }[] = [
+  { key: "competitors", label: "Verificăm concurenții care apar înaintea ta" },
+  { key: "brand", label: "Căutăm numele firmei tale în Google" },
+  { key: "ai", label: "Întrebăm inteligența artificială pe cine recomandă" },
+  { key: "copy", label: "Scriem textele gata de copiat și planul pe 30 de zile" },
+  { key: "pages", label: "Citim toate paginile site-ului" },
+  { key: "marks", label: "Încercuim problemele pe pozele site-ului" },
+];
