@@ -27,7 +27,7 @@ export function LegalFooter() {
       <PayMarks />
       <div className="container footer-in">
         <span className="foot-legal">
-          &copy; {new Date().getFullYear()} landings.md. {COMPANY.legalName}, IDNO {COMPANY.idno}, {COMPANY.address}.
+          &copy; {new Date().getFullYear()} landings.md. IDNO {COMPANY.idno}, {COMPANY.address}.
         </span>
         <a className="foot-terms" href="/termeni-si-conditii">
           Termeni și condiții
