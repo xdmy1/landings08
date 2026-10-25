@@ -331,3 +331,12 @@
   .vr-table td + td::before { content: attr(data-n); color: var(--ink-3); font-weight: 400; text-align: left; }
   .vr-deep .vr-step { align-items: center; }
 }
+
+/* the price never breaks inside "5 €"; on a narrow phone the badge drops below instead */
+.vr-price, .vr-price s, .vr-launch { white-space: nowrap; }
+.vr-price-row { flex-wrap: wrap; row-gap: 10px; }
+@media (max-width: 420px) {
+  .vr-price { font-size: 40px; gap: 10px; }
+  .vr-price s { font-size: 22px; }
+  .vr-launch { font-size: 11px; letter-spacing: 0.06em; padding: 5px 9px; }
+}
