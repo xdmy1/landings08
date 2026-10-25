@@ -111,6 +111,27 @@ export default function Report({ rid, eur, was, mdl }: Props) {
   const [parts, setParts] = useState<Record<string, unknown> | null | undefined>(undefined);
   const [view, setView] = useState<ReportView | null>(null);
   const [failed, setFailed] = useState(false);
+  const [pdfBusy, setPdfBusy] = useState(false);
+  const payIdNow = q.get("payId") || "";
+
+  async function downloadPdf() {
+    if (!parts || pdfBusy) return;
+    setPdfBusy(true);
+    try {
+      const payId = payIdNow || read(`lmd-paid:${rid}`) || "";
+      const r = await fetch("/api/audit/pdf", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...parts, payId }) });
+      if (!r.ok) throw new Error(String(r.status));
+      const url = URL.createObjectURL(await r.blob());
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = (r.headers.get("Content-Disposition") || "").match(/filename="([^"]+)"/)?.[1] || "raport.pdf";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+    } catch {
+      alert("Nu am putut face PDF-ul. Încearcă din nou.");
+    }
+    setPdfBusy(false);
+  }
 
   useEffect(() => {
     const raw = read(`lmd-audit:${rid}`);
@@ -152,12 +173,29 @@ export default function Report({ rid, eur, was, mdl }: Props) {
 
   return (
     <>
+      {v.paid && payIdNow && (
+        <div className="vr-success" role="status">
+          <span className="vr-success-ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </span>
+          <div>
+            <strong>Plata a reușit. Mulțumim!</strong>
+            <p>Raportul complet e deblocat mai jos. Chitanța ți-a fost trimisă pe email.</p>
+          </div>
+          <button className="btn" type="button" onClick={downloadPdf} disabled={pdfBusy}>{pdfBusy ? "Se pregătește…" : "Descarcă PDF"}</button>
+        </div>
+      )}
       <div className="vr-head">
         <div>
           <p className="vr-meta">Raport de verificare · {date}</p>
           <h1 className="art-h1 vr-host">{v.host}</h1>
           {v.verdict && <p className="art-lead">{v.verdict}</p>}
-          {v.paid && <p className="vr-paid">✓ Raport complet deblocat</p>}
+          {v.paid && (
+            <div className="vr-paid-row">
+              <span className="vr-paid">✓ Raport complet deblocat</span>
+              <button className="pill-btn" type="button" onClick={downloadPdf} disabled={pdfBusy}>{pdfBusy ? "Se pregătește PDF-ul…" : "Descarcă raportul PDF"}</button>
+            </div>
+          )}
         </div>
         <div className={`vr-dial ${v.tone}`} style={{ ["--v" as string]: v.total ?? 0 }}>
           <div><b>{v.total ?? "—"}</b><span>din 100 · {v.label}</span></div>

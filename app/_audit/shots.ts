@@ -9,15 +9,20 @@ export type Shots = { desktop: string | null; mobile: string | null };
 const IPHONE = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1";
 const LOCAL_CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
-export async function screenshots(url: string): Promise<Shots> {
+/* headless Chrome: @sparticuz/chromium on Vercel, the installed Chrome locally */
+export async function launch() {
   const chromium = (await import("@sparticuz/chromium")).default;
   const puppeteer = (await import("puppeteer-core")).default;
   const onVercel = Boolean(process.env.VERCEL);
-  const browser = await puppeteer.launch({
+  return puppeteer.launch({
     args: onVercel ? [...chromium.args, "--hide-scrollbars"] : ["--hide-scrollbars"],
     executablePath: onVercel ? await chromium.executablePath() : process.env.CHROME_PATH || LOCAL_CHROME,
     headless: true,
   });
+}
+
+export async function screenshots(url: string): Promise<Shots> {
+  const browser = await launch();
   const publicOk = new Map<string, Promise<boolean>>();
   const shoot = async (phone: boolean) => {
     const page = await browser.newPage();

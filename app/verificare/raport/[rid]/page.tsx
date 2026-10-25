@@ -15,7 +15,7 @@ export default async function ReportPage({ params }: { params: { rid: string } }
   const { rate } = await eurRate();
   return (
     <>
-      <BlogTopBar />
+      <BlogTopBar lang="ro" />
       <main className="blog-hero vr-hero">
         <div className="container blog-hero-in">
           <Suspense fallback={<p className="vr-loading">Se încarcă raportul…</p>}>

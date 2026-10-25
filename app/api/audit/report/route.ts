@@ -1,6 +1,5 @@
-import { maibReady, payInfo } from "../../../_pay/maib";
 import { json } from "../../../_audit/http";
-import { reportIdOfOrder } from "../../../_audit/price";
+import { isPaid } from "../../../_audit/paid";
 import { readAudit, readJson } from "../../../_audit/state";
 import { buildView } from "../../../_audit/view";
 
@@ -11,16 +10,5 @@ export async function POST(req: Request) {
   const body = await readJson(req);
   const a = body && readAudit(body);
   if (!a) return json({ error: "bad_request" }, 400);
-  // local preview of the full report: AUDIT_DEMO_PAID=1 in .env.local (never set in production)
-  let paid = process.env.NODE_ENV !== "production" && process.env.AUDIT_DEMO_PAID === "1";
-  const payId = typeof body.payId === "string" ? body.payId : "";
-  if (!paid && payId && maibReady()) {
-    try {
-      const info = await payInfo(payId);
-      paid = info?.status === "OK" && reportIdOfOrder(info.orderId || "") === a.id;
-    } catch (e) {
-      console.error("[audit] pay check", a.id, e);
-    }
-  }
-  return json({ view: buildView(a, paid) });
+  return json({ view: buildView(a, await isPaid(a.id, body.payId)) });
 }

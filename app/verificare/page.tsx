@@ -16,7 +16,7 @@ export default function VerificarePage() {
   return (
     <>
       <BlogReveal />
-      <BlogTopBar />
+      <BlogTopBar lang="ro" />
       <main className="blog-hero vr-hero">
         <BlogOrb />
         <div className="container blog-hero-in">
