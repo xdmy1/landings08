@@ -340,3 +340,142 @@
   .vr-price s { font-size: 22px; }
   .vr-launch { font-size: 11px; letter-spacing: 0.06em; padding: 5px 9px; }
 }
+
+/* the overall score: the number alone in the ring, its meaning beside it */
+.vr-score { display: flex; align-items: center; gap: 20px; }
+.vr-score .vr-dial { width: 150px; height: 150px; flex: none; }
+.vr-score .vr-dial::before { inset: 12px; }
+.vr-score .vr-dial b { position: relative; font-size: 54px; font-weight: 500; letter-spacing: -0.04em; line-height: 1; }
+.vr-score-txt small { display: block; font-size: 14px; color: var(--ink-3); }
+.vr-score-txt strong { display: block; font-size: 28px; font-weight: 600; letter-spacing: -0.02em; margin-top: 2px; color: #b42318; }
+.vr-score-txt strong.mid { color: #a16f0a; }
+.vr-score-txt strong.good { color: #1f8a4c; }
+.vr-score-txt span { display: block; font-size: 14px; color: var(--ink-3); margin-top: 2px; }
+
+@media (max-width: 860px) {
+  .vr-score { margin-top: 4px; }
+  .vr-score .vr-dial { width: 104px; height: 104px; }
+  .vr-score .vr-dial::before { inset: 9px; }
+  .vr-score .vr-dial b { font-size: 38px; }
+  .vr-score-txt strong { font-size: 24px; }
+}
+
+/* on a phone the six categories are one list, not six big cards */
+@media (max-width: 640px) {
+  .vr-cats { grid-template-columns: 1fr; gap: 0; margin-top: 32px; border: 1px solid var(--line); border-radius: 20px; background: #fff; overflow: hidden; }
+  .vr-cat { border: 0; border-radius: 0; border-bottom: 1px solid var(--line); padding: 14px 18px 16px; background: none; }
+  .vr-cat:last-child { border-bottom: 0; }
+  .vr-cat-top { align-items: center; }
+  .vr-cat-top h3 { font-size: 17px; }
+  .vr-cat-top b { font-size: 22px; letter-spacing: -0.02em; }
+  .vr-bar { height: 4px; margin: 8px 0 10px; }
+  .vr-cat p { font-size: 14.5px; line-height: 1.45; }
+}
+
+/* ---------- report tags in the site's two-layer glass skin ----------
+   Same build as .tag and the buttons: a body darker through the middle with
+   light coming back at the bottom, and the reflection as its own capsule on
+   top. Coloured versions for severity; the light neutral for the rest. */
+
+.vr-sev, .vr-kind, .vr-who, .vr-paid, .vr-fix-locked em,
+.vr-teaser-n, .vr-ai-ic, .vr-mark i, .vr-mark-list i {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid #6f6f69;
+  color: var(--ink);
+  background: linear-gradient(180deg, #ececE6 0%, #dcdcd4 40%, #cbcbc2 60%, #d4d4cc 74%, #ebebe5 88%, #fafaf7 100%);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0 -7px 8px -6px rgba(255, 255, 255, 0.95), inset 0 1px 2px rgba(20, 20, 15, 0.1), 0 1px 1.5px rgba(20, 20, 15, 0.16), 0 6px 12px -8px rgba(20, 20, 15, 0.4);
+}
+.vr-sev::before, .vr-kind::before, .vr-who::before, .vr-paid::before, .vr-fix-locked em::before,
+.vr-teaser-n::before, .vr-ai-ic::before, .vr-mark i::before, .vr-mark-list i::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 6%;
+  height: 58%;
+  left: max(3px, 0.38em);
+  right: max(3px, 0.38em);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.88) 30%, rgba(255, 255, 255, 0.5) 60%, rgba(255, 255, 255, 0.12) 85%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+/* round ones: the reflection is an oval cap */
+.vr-teaser-n::before, .vr-ai-ic::before, .vr-mark i::before, .vr-mark-list i::before { left: 14%; right: 14%; height: 54%; }
+
+/* red: serious, the boxes on the screenshots, a "no" from the AI test */
+.vr-sev.critic, .vr-mark i, .vr-mark-list i {
+  border-color: #7e140c;
+  color: #fff;
+  background: linear-gradient(180deg, #e65a4f 0%, #c8352a 42%, #a6221a 62%, #bf3529 82%, #e2685d 100%);
+  text-shadow: 0 -1px 0 rgba(80, 0, 0, 0.45);
+  box-shadow: inset 0 -6px 7px -5px rgba(255, 255, 255, 0.45), 0 1px 1.5px rgba(0, 0, 0, 0.2), 0 6px 12px -8px rgba(160, 30, 20, 0.7);
+}
+/* amber: important */
+.vr-sev.important {
+  border-color: #845400;
+  color: #fff;
+  background: linear-gradient(180deg, #f3bf4a 0%, #d99c15 42%, #b67f05 62%, #cf9618 82%, #f3c862 100%);
+  text-shadow: 0 -1px 0 rgba(90, 50, 0, 0.5);
+  box-shadow: inset 0 -6px 7px -5px rgba(255, 255, 255, 0.5), 0 1px 1.5px rgba(0, 0, 0, 0.2), 0 6px 12px -8px rgba(160, 110, 10, 0.7);
+}
+/* green: paid, things you can do yourself, a "yes" from the AI test */
+.vr-paid, .vr-who.singur, .vr-ai-q.yes .vr-ai-ic {
+  border-color: #0d5a2e;
+  color: #fff;
+  background: linear-gradient(180deg, #3aa86a 0%, #1f8a4c 46%, #156b3a 62%, #1f8a4c 84%, #46b878 100%);
+  text-shadow: 0 -1px 0 rgba(0, 50, 20, 0.45);
+  box-shadow: inset 0 -6px 7px -5px rgba(255, 255, 255, 0.5), 0 1px 1.5px rgba(0, 0, 0, 0.2), 0 6px 12px -8px rgba(31, 138, 76, 0.7);
+}
+.vr-ai-q.no .vr-ai-ic { color: #9b1c12; }
+/* black: the numbers of what the full report adds */
+.vr-teaser-n {
+  border-color: #000;
+  color: #fff;
+  background: linear-gradient(180deg, #4a4a45 0%, #1d1d1a 48%, #0f0f0e 62%, #2c2c27 86%, #55554e 100%);
+  text-shadow: none;
+  box-shadow: inset 0 -5px 6px -4px rgba(255, 255, 255, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+.vr-teaser-n::before { background: linear-gradient(180deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0)); }
+
+.vr-sev { padding: 4px 11px; }
+.vr-kind, .vr-who { padding: 3px 10px; }
+.vr-paid { padding: 8px 16px; }
+.vr-mark i { border-width: 1px; }
+
+/* the locked fix: label and the unlock pill on one line, the blurred text under them */
+.vr-fix-locked { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px 12px; }
+.vr-fix-locked b { grid-column: 1; grid-row: 1; }
+.vr-fix-locked em { grid-column: 2; grid-row: 1; padding: 5px 12px; border-radius: 999px; font-size: 14px; }
+.vr-fix-locked span { grid-column: 1 / -1; grid-row: 2; overflow: hidden; white-space: nowrap; text-overflow: clip; }
+
+/* on a phone the pay card takes almost the whole width of the dark box */
+@media (max-width: 640px) {
+  .vr-unlock { padding: 26px 8px 8px; border-radius: 24px; gap: 22px; }
+  .vr-unlock > div:first-child { padding: 0 14px; }
+  .vr-pay { padding: 22px 18px 20px; border-radius: 18px; }
+  .vr-marks { gap: 12px; }
+  .vr-marks img { max-height: 15px; }
+}
+
+/* contrast: white text needs a deep body and a softer, shorter reflection; amber takes dark text */
+.vr-sev { font-weight: 700; }
+.vr-sev.critic, .vr-mark i, .vr-mark-list i {
+  background: linear-gradient(180deg, #c9433a 0%, #a8241b 42%, #861810 62%, #9c261c 82%, #c2554b 100%);
+  text-shadow: 0 1px 1px rgba(50, 0, 0, 0.6);
+}
+.vr-paid, .vr-who.singur, .vr-ai-q.yes .vr-ai-ic {
+  background: linear-gradient(180deg, #2a9257 0%, #15703c 46%, #0d5730 62%, #15703c 84%, #33a063 100%);
+  text-shadow: 0 1px 1px rgba(0, 40, 15, 0.6);
+}
+.vr-sev.critic::before, .vr-mark i::before, .vr-mark-list i::before,
+.vr-paid::before, .vr-who.singur::before, .vr-ai-q.yes .vr-ai-ic::before {
+  height: 44%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.22) 55%, rgba(255, 255, 255, 0) 100%);
+}
+.vr-sev.important {
+  color: #3a2300;
+  background: linear-gradient(180deg, #f6cd6a 0%, #e8b13a 42%, #d29a1c 62%, #e0ab34 82%, #f7d47c 100%);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+}

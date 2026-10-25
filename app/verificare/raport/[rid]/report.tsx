@@ -309,8 +309,15 @@ export default function Report({ rid, eur, was, mdl }: Props) {
             </div>
           )}
         </div>
-        <div className={`vr-dial ${v.tone}`} style={{ ["--v" as string]: v.total ?? 0 }}>
-          <div><b>{v.total ?? "—"}</b><span>din 100 · {v.label}</span></div>
+        <div className="vr-score">
+          <div className={`vr-dial ${v.tone}`} style={{ ["--v" as string]: v.total ?? 0 }}>
+            <b>{v.total ?? "—"}</b>
+          </div>
+          <div className="vr-score-txt">
+            <small>Nota site-ului</small>
+            <strong className={v.tone}>{v.label}</strong>
+            <span>din 100 de puncte</span>
+          </div>
         </div>
       </div>
 
