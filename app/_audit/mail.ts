@@ -25,7 +25,7 @@ export function reportEmail(v: ReportView, orderId: string) {
   ];
   const wa = `${WA}?text=${encodeURIComponent(`Bună! Am raportul pentru ${v.host} și vreau să-l reparați.`)}`;
 
-  const scoreCard = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px;border:1px solid #e6e6e1;border-radius:16px;background:#fff;border-collapse:separate"><tr><td style="padding:18px">
+  const scoreCard = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:16px"><tr><td style="padding:14px 0;border-top:1px solid #e6e6e1;border-bottom:1px solid #e6e6e1">
 <div><span style="font-size:52px;line-height:1;font-weight:500;letter-spacing:-.05em;color:${TONE[v.tone]}">${score}</span><span style="font-size:16px;color:#7a7a73"> / 100</span><span style="font-size:18px;font-weight:600;color:${TONE[v.tone]};margin-left:12px">${esc(v.label)}</span></div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;border-collapse:separate"><tr>
 <td width="${Math.max(score, 2)}%" style="height:8px;border-radius:99px 0 0 99px;background:${BAR[v.tone]};font-size:0;line-height:0">&nbsp;</td>
@@ -37,7 +37,7 @@ ${v.verdict ? `<div style="font-size:15px;line-height:1.55;color:#45453f;margin-
   const issues = top
     .map((i) => {
       const [label, tone] = SEV_TAG[i.severity];
-      return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:10px;border:1px solid #e6e6e1;border-radius:16px;background:#fff;border-collapse:separate"><tr><td style="padding:16px">
+      return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style=""><tr><td style="padding:14px 0;border-top:1px solid #e6e6e1">
 <div>${tag(label, tone)}<span style="font-size:13px;color:#7a7a73;margin-left:8px;vertical-align:middle">${esc(i.category)}</span></div>
 <div style="font-size:17px;line-height:1.35;font-weight:600;letter-spacing:-.01em;margin-top:10px">${esc(i.title)}</div>
 <div style="font-size:15px;line-height:1.55;color:#45453f;margin-top:6px">${esc(i.why)}</div>
@@ -46,8 +46,8 @@ ${i.fix ? `<div style="font-size:15px;line-height:1.55;color:#134a2a;background:
     })
     .join("\n");
 
-  const list = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e6e6e1;border-radius:16px;background:#fff;border-collapse:separate">${inside
-    .map((x, k) => `<tr><td style="padding:11px 16px;${k ? "border-top:1px solid #e6e6e1;" : ""}font-size:15px;line-height:1.45"><span style="color:#1f8a4c;font-weight:700;margin-right:8px">&#10003;</span>${esc(x)}</td></tr>`)
+  const list = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">${inside
+    .map((x) => `<tr><td style="padding:8px 0;border-top:1px solid #e6e6e1;font-size:15px;line-height:1.45"><span style="color:#1f8a4c;font-weight:700;margin-right:8px">&#10003;</span>${esc(x)}</td></tr>`)
     .join("")}</table>`;
 
   const html = shell({

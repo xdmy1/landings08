@@ -42,18 +42,19 @@ export function tag(label: string, tone: Tone) {
 /* the round glass badge with a tick, as on the site's success note */
 export function tick(tone: Tone = "green") {
   const s = SKIN[tone];
-  return `<table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:separate"><tr><td align="center" valign="middle" width="44" height="44" style="width:44px;height:44px;border-radius:50%;border:1px solid ${s.edge};background-color:${s.solid};background-image:linear-gradient(180deg,${s.bg});box-shadow:inset 0 -6px 7px -5px rgba(255,255,255,.5),0 3px 8px ${s.glow};color:${s.color};font-size:22px;font-weight:700;line-height:44px;text-shadow:${s.shadow}">&#10003;</td></tr></table>`;
+  return `<table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:separate"><tr><td align="center" valign="middle" width="34" height="34" style="width:34px;height:34px;border-radius:50%;border:1px solid ${s.edge};background-color:${s.solid};background-image:linear-gradient(180deg,${s.bg});box-shadow:inset 0 -6px 7px -5px rgba(255,255,255,.5),0 3px 8px ${s.glow};color:${s.color};font-size:17px;font-weight:700;line-height:34px;text-shadow:${s.shadow}">&#10003;</td></tr></table>`;
 }
 
 /* label over value, one under the other, so nothing is squeezed on a phone */
 export function rows(list: [string, string][]) {
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${LINE};border-radius:16px;background:#fff;border-collapse:separate">
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
 ${list
   .map(
-    ([k, v], i) =>
-      `<tr><td style="padding:12px 16px;${i ? `border-top:1px solid ${LINE};` : ""}"><div style="font-size:13px;color:${INK3}">${esc(k)}</div><div style="font-size:16px;line-height:1.45;color:${INK};margin-top:2px;word-break:break-word">${esc(v)}</div></td></tr>`
+    ([k, v]) =>
+      `<tr><td style="padding:10px 0;border-top:1px solid ${LINE}"><div style="font-size:13px;color:${INK3}">${esc(k)}</div><div style="font-size:16px;line-height:1.45;color:${INK};margin-top:1px;word-break:break-word">${esc(v)}</div></td></tr>`
   )
   .join("\n")}
+<tr><td style="border-top:1px solid ${LINE};font-size:0;line-height:0">&nbsp;</td></tr>
 </table>`;
 }
 
@@ -62,21 +63,21 @@ export const p = (t: string, color = INK2) => `<div style="font-size:15px;line-h
 
 /* the whole email: header with the mark, the card, the legal line */
 export function shell(o: { preheader: string; title: string; sub?: string; badge?: string; body: string }) {
+  const title = `<div style="font-size:24px;line-height:1.15;font-weight:500;letter-spacing:-.03em;color:${INK}">${esc(o.title)}</div>`;
   return `<!doctype html><html lang="ro"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light">
 <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap" rel="stylesheet">
-<style>@media (min-width:620px){.card{padding:36px 40px !important}.outer{padding:32px 16px !important}}</style></head>
-<body style="margin:0;padding:0;background:#efefea;-webkit-text-size-adjust:100%">
+<style>@media (min-width:640px){.bg{background:#efefea !important}.outer{padding:32px 16px !important}.card{border:1px solid ${LINE} !important;border-radius:22px !important;padding:36px 40px !important}.head{padding:0 8px 14px !important}}</style></head>
+<body style="margin:0;padding:0;background:#fcfcfa;-webkit-text-size-adjust:100%">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(o.preheader)}</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#efefea"><tr><td class="outer" align="center" style="padding:14px 8px">
+<table class="bg" role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#fcfcfa"><tr><td class="outer" align="center" style="padding:0">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;font-family:Switzer,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;color:${INK}">
-<tr><td style="padding:8px 8px 14px"><a href="${SITE}" style="text-decoration:none;color:${INK}"><img src="${SITE}/email/mark.png" width="18" height="30" alt="" style="vertical-align:middle;border:0"><span style="font-size:18px;font-weight:600;letter-spacing:-.02em;vertical-align:middle;margin-left:9px">landings.md</span></a></td></tr>
-<tr><td class="card" style="background:#fcfcfa;border:1px solid ${LINE};border-radius:22px;padding:24px 20px">
-${o.badge ? `<div style="margin-bottom:16px">${o.badge}</div>` : ""}
-<div style="font-size:26px;line-height:1.15;font-weight:500;letter-spacing:-.03em;color:${INK}">${esc(o.title)}</div>
-${o.sub ? `<div style="font-size:15px;color:${INK3};margin-top:6px">${esc(o.sub)}</div>` : ""}
+<tr><td class="head" style="padding:16px 16px 6px"><a href="${SITE}" style="text-decoration:none;color:${INK}"><img src="${SITE}/email/mark.png" width="15" height="25" alt="" style="vertical-align:middle;border:0"><span style="font-size:16px;font-weight:600;letter-spacing:-.02em;vertical-align:middle;margin-left:8px">landings.md</span></a></td></tr>
+<tr><td class="card" style="background:#fcfcfa;padding:14px 16px 20px">
+${o.badge ? `<table role="presentation" cellpadding="0" cellspacing="0"><tr><td valign="middle" style="padding-right:12px">${o.badge}</td><td valign="middle">${title}</td></tr></table>` : title}
+${o.sub ? `<div style="font-size:14px;color:${INK3};margin-top:6px;word-break:break-word">${esc(o.sub)}</div>` : ""}
 ${o.body}
 </td></tr>
-<tr><td style="padding:16px 8px 8px;font-size:12px;line-height:1.6;color:#8a8a83">IDNO ${COMPANY.idno} · ${esc(COMPANY.address)}<br><a href="mailto:${COMPANY.email}" style="color:#8a8a83">${COMPANY.email}</a> · <span style="white-space:nowrap">${esc(COMPANY.phone)}</span> · <a href="${SITE}" style="color:#8a8a83">landings.md</a></td></tr>
+<tr><td class="head" style="padding:4px 16px 20px;font-size:12px;line-height:1.6;color:#8a8a83">IDNO ${COMPANY.idno} · ${esc(COMPANY.address)}<br><a href="mailto:${COMPANY.email}" style="color:#8a8a83">${COMPANY.email}</a> · <span style="white-space:nowrap">${esc(COMPANY.phone)}</span> · <a href="${SITE}" style="color:#8a8a83">landings.md</a></td></tr>
 </table></td></tr></table></body></html>`;
 }
 
