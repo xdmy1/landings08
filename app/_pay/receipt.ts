@@ -22,6 +22,7 @@ export const RC: Record<
     card: string;
     status: string;
     next: string;
+    nextReport: string;
     retry: string;
     home: string;
     subject: string;
@@ -46,6 +47,7 @@ export const RC: Record<
     card: "Card",
     status: "Stare",
     next: "În cel mult o zi lucrătoare vă adăugăm în grupul Telegram și pachetul începe din acea zi, pentru 30 de zile.",
+    nextReport: "Raportul complet s-a deschis pe pagina raportului, în browserul în care ați plătit. De acolo îl puteți descărca și în PDF.",
     retry: "Încearcă din nou",
     home: "Înapoi pe site",
     subject: "Confirmare plată",
@@ -69,6 +71,7 @@ export const RC: Record<
     card: "Карта",
     status: "Статус",
     next: "В течение одного рабочего дня мы добавим вас в группу Telegram, и пакет начнёт действовать с этого дня на 30 дней.",
+    nextReport: "Полный отчёт открылся на странице отчёта, в браузере, в котором вы оплатили. Оттуда его можно скачать и в PDF.",
     retry: "Попробовать снова",
     home: "Вернуться на сайт",
     subject: "Подтверждение оплаты",
@@ -92,6 +95,7 @@ export const RC: Record<
     card: "Card",
     status: "Status",
     next: "Within one working day we add you to the Telegram group, and the plan runs for 30 days from that day.",
+    nextReport: "The full report opened on the report page, in the browser you paid in. You can also download it as a PDF from there.",
     retry: "Try again",
     home: "Back to the website",
     subject: "Payment confirmation",
@@ -122,9 +126,11 @@ const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&l
 
 export function receiptEmail(
   lang: PayLang,
-  o: { orderId: string; name: string; service: string; qty: number; amount: string; date: string; card?: string }
+  o: { orderId: string; name: string; service: string; qty: number; amount: string; date: string; card?: string },
+  kind: "plan" | "report" = "plan"
 ) {
   const t = RC[lang];
+  const next = kind === "report" ? t.nextReport : t.next;
   const rows: [string, string][] = [
     [t.order, o.orderId],
     [t.merchant, COMPANY.legalName],
@@ -143,7 +149,7 @@ export function receiptEmail(
     "",
     ...rows.map(([k, v]) => `${k}: ${v}`),
     "",
-    t.next,
+    next,
     "",
     `${t.questions} ${COMPANY.email}, ${COMPANY.phone}.`,
     "",
@@ -164,7 +170,7 @@ ${rows
   )
   .join("")}
 </table></td></tr>
-<tr><td style="padding-top:20px;font-size:14px;line-height:1.6;color:#45453f">${esc(t.next)}</td></tr>
+<tr><td style="padding-top:20px;font-size:14px;line-height:1.6;color:#45453f">${esc(next)}</td></tr>
 <tr><td style="padding-top:14px;font-size:14px;line-height:1.6;color:#45453f">${esc(t.questions)} <a href="mailto:${COMPANY.email}" style="color:#0f0f0e">${COMPANY.email}</a>, ${esc(COMPANY.phone)}.</td></tr>
 <tr><td style="padding-top:26px;font-size:12px;line-height:1.6;color:#8a8a83">${esc(COMPANY.legalName)} · IDNO ${COMPANY.idno} · ${esc(COMPANY.address)}</td></tr>
 </table></td></tr></table></body></html>`;

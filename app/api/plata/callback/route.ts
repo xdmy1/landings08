@@ -44,7 +44,7 @@ export async function POST(req: Request) {
         amount,
         date: when,
         card: info.cardNumber || String(result.cardNumber || ""),
-      });
+      }, orderId.startsWith("RAP-") ? "report" : "plan");
       await sendMail({ email: info.email, name }, m.subject, m.html, m.text);
     }
 
