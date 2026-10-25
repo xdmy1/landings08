@@ -16,10 +16,12 @@ export default async function ReportPage({ params }: { params: { rid: string } }
   return (
     <>
       <BlogTopBar />
-      <main className="container vr-main">
-        <Suspense fallback={<p className="vr-loading">Se încarcă raportul…</p>}>
-          <Report rid={params.rid.replace(/[^a-z0-9]/g, "").slice(0, 12)} eur={AUDIT_EUR} was={AUDIT_EUR_WAS} mdl={toMdl(AUDIT_EUR, rate)} />
-        </Suspense>
+      <main className="blog-hero vr-hero">
+        <div className="container blog-hero-in">
+          <Suspense fallback={<p className="vr-loading">Se încarcă raportul…</p>}>
+            <Report rid={params.rid.replace(/[^a-z0-9]/g, "").slice(0, 12)} eur={AUDIT_EUR} was={AUDIT_EUR_WAS} mdl={toMdl(AUDIT_EUR, rate)} />
+          </Suspense>
+        </div>
       </main>
       <LegalFooter />
     </>

@@ -11,9 +11,10 @@ export async function POST(req: Request) {
   const body = await readJson(req);
   const a = body && readAudit(body);
   if (!a) return json({ error: "bad_request" }, 400);
-  let paid = false;
+  // local preview of the full report: AUDIT_DEMO_PAID=1 in .env.local (never set in production)
+  let paid = process.env.NODE_ENV !== "production" && process.env.AUDIT_DEMO_PAID === "1";
   const payId = typeof body.payId === "string" ? body.payId : "";
-  if (payId && maibReady()) {
+  if (!paid && payId && maibReady()) {
     try {
       const info = await payInfo(payId);
       paid = info?.status === "OK" && reportIdOfOrder(info.orderId || "") === a.id;

@@ -509,6 +509,7 @@ button {
 .pill-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 9px;
   height: 44px;
   padding: 0 20px;
@@ -2414,7 +2415,7 @@ button {
 /* hero: the website check sits next to the main button, same size */
 .hero-cta { gap: 12px; }
 .hero-cta .tlink { margin-left: 14px; }
-.hero-check { height: 52px; padding: 0 26px; font-size: 15px; }
+.hero-check { height: 52px; padding: 0 26px; font-size: 15px; justify-content: center; }
 @media (max-width: 560px) {
   .hero-cta .btn, .hero-check { flex: 1 1 100%; }
   .hero-cta .tlink { margin: 8px auto 0; }

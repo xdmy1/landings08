@@ -154,10 +154,9 @@ export default function Report({ rid, eur, was, mdl }: Props) {
     <>
       <div className="vr-head">
         <div>
-          <p className="vr-kicker">Raport de verificare</p>
-          <h1 className="vr-host">{v.host}</h1>
-          <p className="vr-date">Verificat pe {date}</p>
-          {v.verdict && <p className="vr-verdict">{v.verdict}</p>}
+          <p className="vr-meta">Raport de verificare · {date}</p>
+          <h1 className="art-h1 vr-host">{v.host}</h1>
+          {v.verdict && <p className="art-lead">{v.verdict}</p>}
           {v.paid && <p className="vr-paid">✓ Raport complet deblocat</p>}
         </div>
         <div className={`vr-dial ${v.tone}`} style={{ ["--v" as string]: v.total ?? 0 }}>
@@ -177,8 +176,8 @@ export default function Report({ rid, eur, was, mdl }: Props) {
 
       {(v.shots.desktop || v.shots.mobile) && (
         <section className="vr-sec">
-          <h2>Ce vede un client nou</h2>
-          {v.firstImpression && <p className="vr-lead">{v.firstImpression}</p>}
+          <h2 className="lbl">Ce vede un client nou</h2>
+          {v.firstImpression && <p className="art-lead">{v.firstImpression}</p>}
           <div className="vr-shots">
             {v.shots.desktop && <figure className="vr-shot"><img src={v.shots.desktop} alt={`${v.host} pe calculator`} /><figcaption>Pe calculator</figcaption></figure>}
             {v.shots.mobile && <figure className="vr-shot"><img src={v.shots.mobile} alt={`${v.host} pe telefon`} /><figcaption>Pe telefon</figcaption></figure>}
@@ -188,8 +187,8 @@ export default function Report({ rid, eur, was, mdl }: Props) {
 
       {v.issues.length > 0 && (
         <section className="vr-sec">
-          <h2>Ce trebuie reparat</h2>
-          <p className="vr-lead">Am găsit {v.issues.length} probleme, în ordinea în care te costă clienți.{!v.paid && " Soluția pentru fiecare e în raportul complet."}</p>
+          <h2 className="lbl">Ce trebuie reparat</h2>
+          <p className="art-lead">Am găsit {v.issues.length} probleme, în ordinea în care te costă clienți.{!v.paid && " Soluția pentru fiecare e în raportul complet."}</p>
           <div className="vr-issues">
             {v.issues.map((i, k) => (
               <article className="vr-issue" key={k}>
@@ -212,8 +211,8 @@ export default function Report({ rid, eur, was, mdl }: Props) {
 
       {v.google && (
         <section className="vr-sec">
-          <h2>Te găsesc clienții în Google?</h2>
-          <p className="vr-lead">
+          <h2 className="lbl">Te găsesc clienții în Google?</h2>
+          <p className="art-lead">
             Am căutat ce scrie un client din Moldova: „{v.google.keyword}”.{" "}
             {v.google.source === "google" ? `Am verificat Google pagină cu pagină, primele ${v.google.depth} rezultate.` : "Poziția e estimată după căutarea de azi."}
           </p>
@@ -246,8 +245,8 @@ export default function Report({ rid, eur, was, mdl }: Props) {
 
       {v.speed && (
         <section className="vr-sec">
-          <h2>Viteză</h2>
-          <p className="vr-lead">Măsurat cu Google PageSpeed. Pe telefon contează cel mai mult: acolo sunt majoritatea clienților.</p>
+          <h2 className="lbl">Viteză</h2>
+          <p className="art-lead">Măsurat cu Google PageSpeed. Pe telefon contează cel mai mult: acolo sunt majoritatea clienților.</p>
           <div className="vr-nums">
             <div className="vr-box"><small>Telefon</small><b>{v.speed.mobile ?? "—"}/100</b></div>
             <div className="vr-box"><small>Calculator</small><b>{v.speed.desktop ?? "—"}/100</b></div>
@@ -263,8 +262,8 @@ export default function Report({ rid, eur, was, mdl }: Props) {
       )}
 
       <section className="vr-sec">
-        <h2>Verificarea tehnică</h2>
-        <p className="vr-lead">20 de verificări pentru Google, siguranță și contact. {failedChecks ? `${failedChecks} au picat.` : "Toate au trecut."}</p>
+        <h2 className="lbl">Verificarea tehnică</h2>
+        <p className="art-lead">20 de verificări pentru Google, siguranță și contact. {failedChecks ? `${failedChecks} au picat.` : "Toate au trecut."}</p>
         <div className="vr-check">
           {v.checklist.map((c, k) => <div key={k} className={c.ok ? "ok" : "no"}><i>{c.ok ? "✓" : "✕"}</i>{c.label}<span>{c.note}</span></div>)}
         </div>
@@ -272,7 +271,7 @@ export default function Report({ rid, eur, was, mdl }: Props) {
 
       {v.strengths.length > 0 && (
         <section className="vr-sec">
-          <h2>Ce e bine</h2>
+          <h2 className="lbl">Ce e bine</h2>
           <ul className="vr-list">{v.strengths.map((x, k) => <li key={k}>{x}</li>)}</ul>
         </section>
       )}
@@ -280,7 +279,6 @@ export default function Report({ rid, eur, was, mdl }: Props) {
       {!v.paid && parts && (
         <section className="vr-unlock" id="deblocheaza">
           <div>
-            <p className="vr-kicker vr-kicker-light">Raportul complet</p>
             <h2>Afli exact cum repari și cine îți ia clienții.</h2>
             <ul>
               <li>Cum se repară fiecare din cele {v.issues.length} probleme, pas cu pas</li>

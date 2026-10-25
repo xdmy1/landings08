@@ -121,7 +121,7 @@ export default function Checker() {
           <input className="vr-input" type="text" inputMode="url" autoComplete="url" placeholder="Adresa site-ului tău, de ex. exemplu.md" value={url} onChange={(e) => setUrl(e.target.value)} disabled={busy} aria-label="Adresa site-ului" />
           <button className="btn" type="submit" disabled={busy}>{busy ? "Se verifică…" : "Verifică gratuit"}</button>
         </div>
-        <input className="vr-input sm" type="text" placeholder="Ce caută clienții tăi în Google? (opțional, de ex. mobilă la comandă Chișinău)" value={kw} onChange={(e) => setKw(e.target.value)} disabled={busy} aria-label="Ce caută clienții în Google" />
+        <input className="vr-input sm" type="text" placeholder="Ce caută clienții în Google? (opțional)" value={kw} onChange={(e) => setKw(e.target.value)} disabled={busy} aria-label="Ce caută clienții în Google" />
         {err && <p className="vr-err" role="alert">{err} {/WhatsApp/.test(err) && <a href="https://wa.me/37368327082" target="_blank" rel="noopener">Deschide WhatsApp</a>}</p>}
         {!busy && !err && <p className="vr-hint">Durează în jur de un minut. Nu trebuie cont.</p>}
       </form>
@@ -147,7 +147,7 @@ export default function Checker() {
         </>
       ) : (
         <div className="vr-chips">
-          {["Viteză", "SEO", "Design", "Vânzare", "Telefon", "Siguranță", "Poziția în Google"].map((c) => <span key={c}>{c}</span>)}
+          {["Viteză", "SEO", "Design", "Vânzare", "Telefon", "Siguranță", "Poziția în Google"].map((c) => <span className="tag" key={c}>{c}</span>)}
         </div>
       )}
     </>
