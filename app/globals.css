@@ -2420,3 +2420,30 @@ button {
   .hero-cta .btn, .hero-check { flex: 1 1 100%; }
   .hero-cta .tlink { margin: 8px auto 0; }
 }
+
+/* ---------- text fields: white, recessed, with an edge you can see ---------- */
+input.vr-input,
+.vr-email input[type],
+input.check-input,
+.co-field input[type] {
+  background: #fff;
+  border: 1.5px solid #a3a39b;
+  box-shadow: inset 0 2px 4px rgba(20, 20, 15, 0.13), 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+input.vr-input::placeholder,
+.vr-email input[type]::placeholder,
+input.check-input::placeholder,
+.co-field input[type]::placeholder {
+  color: #77776f;
+  opacity: 1;
+}
+input.vr-input:focus,
+.vr-email input[type]:focus,
+input.check-input:focus,
+.co-field input[type]:focus {
+  border-color: var(--ink);
+  box-shadow: inset 0 2px 4px rgba(20, 20, 15, 0.13), 0 0 0 4px rgba(15, 15, 14, 0.1);
+}
+@media (max-width: 520px) {
+  input.check-input { font-size: 16px; padding: 0 18px; }
+}
