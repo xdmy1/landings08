@@ -19,6 +19,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${SITE}/verificare`,
+      lastModified: new Date("2026-10-25"),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
       url: `${SITE}/termeni-si-conditii`,
       lastModified: new Date("2026-10-23"),
       changeFrequency: "yearly",

@@ -60,6 +60,7 @@ type Copy = {
   sub: string;
   ctaP: string;
   ctaS: string;
+  ctaCheck: string;
   heroCap: string;
   feat: { name: string; desc: string; tags: string[] };
   projLabel: string;
@@ -67,6 +68,7 @@ type Copy = {
   projects: Record<ProjectKey, { desc: string; tags: string[] }>;
   servLabel: string;
   services: { name: string; desc: string }[];
+  check: { title: string; sub: string; ph: string; btn: string };
   maint: {
     label: string;
     lead: string;
@@ -102,6 +104,7 @@ const T: Record<Lang, Copy> = {
     sub: "Studio din Chișinău. Site-uri, aplicații și SEO. Soluții digitale simple și rapide pentru afaceri din Moldova și Europa.",
     ctaP: "Cere o ofertă",
     ctaS: "Vezi proiectele",
+    ctaCheck: "Verifică-ți site-ul gratuit",
     heroCap: "Davo.md · Transport de pasageri, rezervări online",
     feat: { name: "Mobo CRM", desc: "CRM făcut de la zero pentru Mobo: lead-uri, estimări cu preț calculat, producție și finanțe într-un singur loc.", tags: ["CRM", "Software", "Design"] },
     projLabel: "Câteva din proiectele noastre",
@@ -124,6 +127,7 @@ const T: Record<Lang, Copy> = {
       { name: "Backlink-uri premium", desc: "Link-uri contextuale, indexate, din site-uri reale." },
       { name: "Sisteme și aplicații", desc: "Soluții care scot hârtiile din firmă: programări, facturare, stoc, contabilitate. Preț la cerere." },
     ],
+    check: { title: "Cât de bun e site-ul tău?", sub: "Verifică-l gratuit într-un minut: viteză, Google, design și cât de bine vinde.", ph: "adresa site-ului tău, de ex. exemplu.md", btn: "Verifică gratuit" },
     maint: {
       label: "Mentenanță lunară",
       lead: "Ne scrieți pe Telegram ce aveți nevoie: poze noi, texte, produse, o reclamă de verificat. Ne ocupăm noi, fără să mai căutați pe cineva.",
@@ -172,6 +176,7 @@ const T: Record<Lang, Copy> = {
     sub: "Studio from Chisinau. Websites, apps and SEO. Simple, fast digital solutions for businesses in Moldova and Europe.",
     ctaP: "Request a quote",
     ctaS: "See the projects",
+    ctaCheck: "Check your website for free",
     heroCap: "Davo.md · Passenger transport, online booking",
     feat: { name: "Mobo CRM", desc: "A CRM built from scratch for Mobo: leads, priced estimates, production and finance in one place.", tags: ["CRM", "Software", "Design"] },
     projLabel: "A few of our projects",
@@ -194,6 +199,7 @@ const T: Record<Lang, Copy> = {
       { name: "Premium backlinks", desc: "Contextual, indexed links from real websites." },
       { name: "Systems and apps", desc: "Solutions that remove the paperwork: scheduling, invoicing, stock, accounting. Price on request." },
     ],
+    check: { title: "How good is your website?", sub: "Check it for free in a minute: speed, Google, design and how well it sells.", ph: "your website address, e.g. example.com", btn: "Check for free" },
     maint: {
       label: "Monthly maintenance",
       lead: "Message us on Telegram what you need: new photos, text, products, an ad to check. We take care of it, so you don't have to look for someone.",
@@ -242,6 +248,7 @@ const T: Record<Lang, Copy> = {
     sub: "Studio aus Chisinau. Websites, Apps und SEO. Einfache, schnelle digitale Losungen fur Firmen in Moldau und Europa.",
     ctaP: "Angebot anfragen",
     ctaS: "Projekte ansehen",
+    ctaCheck: "Website kostenlos prufen",
     heroCap: "Davo.md · Personentransport, Online-Buchung",
     feat: { name: "Mobo CRM", desc: "Ein von Grund auf gebautes CRM für Mobo: Leads, Kalkulationen, Produktion und Finanzen an einem Ort.", tags: ["CRM", "Software", "Design"] },
     projLabel: "Einige unserer Projekte",
@@ -264,6 +271,7 @@ const T: Record<Lang, Copy> = {
       { name: "Premium-Backlinks", desc: "Kontextuelle, indexierte Links von echten Websites." },
       { name: "Systeme und Apps", desc: "Losungen gegen den Papierkram: Termine, Rechnungen, Lager, Buchhaltung. Preis auf Anfrage." },
     ],
+    check: { title: "Wie gut ist deine Website?", sub: "Kostenlos in einer Minute prufen: Tempo, Google, Design und wie gut sie verkauft.", ph: "Adresse deiner Website, z. B. beispiel.de", btn: "Kostenlos prufen" },
     maint: {
       label: "Monatliche Betreuung",
       lead: "Schreiben Sie uns auf Telegram, was Sie brauchen: neue Fotos, Texte, Produkte, eine Anzeige zum Prüfen. Wir kümmern uns darum.",
@@ -312,6 +320,7 @@ const T: Record<Lang, Copy> = {
     sub: "Studio a Chisinau. Sites, applications et SEO. Des solutions digitales simples et rapides pour les entreprises.",
     ctaP: "Demander un devis",
     ctaS: "Voir les projets",
+    ctaCheck: "Verifiez votre site gratuitement",
     heroCap: "Davo.md · Transport de passagers, reservation en ligne",
     feat: { name: "Mobo CRM", desc: "Un CRM construit de zéro pour Mobo : leads, devis chiffrés, production et finances au même endroit.", tags: ["CRM", "Logiciel", "Design"] },
     projLabel: "Quelques-uns de nos projets",
@@ -334,6 +343,7 @@ const T: Record<Lang, Copy> = {
       { name: "Backlinks premium", desc: "Liens contextuels, indexes, depuis de vrais sites." },
       { name: "Systemes et applications", desc: "Des solutions qui suppriment la paperasse: rendez-vous, factures, stock, comptabilite. Prix sur demande." },
     ],
+    check: { title: "Votre site est-il bon ?", sub: "Verifiez-le gratuitement en une minute : vitesse, Google, design et ventes.", ph: "adresse de votre site, ex. exemple.fr", btn: "Verifier gratuitement" },
     maint: {
       label: "Maintenance mensuelle",
       lead: "Écrivez-nous sur Telegram ce dont vous avez besoin : nouvelles photos, textes, produits, une publicité à vérifier. On s'en occupe.",
@@ -382,6 +392,7 @@ const T: Record<Lang, Copy> = {
     sub: "Estudio en Chisinau. Webs, aplicaciones y SEO. Soluciones digitales simples y rapidas para negocios.",
     ctaP: "Pedir presupuesto",
     ctaS: "Ver proyectos",
+    ctaCheck: "Revisa tu web gratis",
     heroCap: "Davo.md · Transporte de pasajeros, reservas online",
     feat: { name: "Mobo CRM", desc: "Un CRM hecho desde cero para Mobo: leads, presupuestos con precio, producción y finanzas en un solo lugar.", tags: ["CRM", "Software", "Diseño"] },
     projLabel: "Algunos de nuestros proyectos",
@@ -404,6 +415,7 @@ const T: Record<Lang, Copy> = {
       { name: "Backlinks premium", desc: "Enlaces contextuales, indexados, de webs reales." },
       { name: "Sistemas y aplicaciones", desc: "Soluciones que eliminan el papeleo: citas, facturas, stock, contabilidad. Precio a consultar." },
     ],
+    check: { title: "Que tan buena es tu web?", sub: "Revisala gratis en un minuto: velocidad, Google, diseno y cuanto vende.", ph: "direccion de tu web, ej. ejemplo.es", btn: "Revisar gratis" },
     maint: {
       label: "Mantenimiento mensual",
       lead: "Escríbenos por Telegram lo que necesitas: fotos nuevas, textos, productos, un anuncio que revisar. Nos encargamos nosotros.",
@@ -452,6 +464,7 @@ const T: Record<Lang, Copy> = {
     sub: "Студия из Кишинёва. Сайты, приложения и SEO. Простые и быстрые цифровые решения для бизнеса в Молдове и Европе.",
     ctaP: "Запросить предложение",
     ctaS: "Смотреть проекты",
+    ctaCheck: "Проверить сайт бесплатно",
     heroCap: "Davo.md · Пассажирские перевозки, онлайн-бронирование",
     feat: { name: "Mobo CRM", desc: "CRM, созданная с нуля для Mobo: лиды, сметы с расчётом цены, производство и финансы в одном месте.", tags: ["CRM", "Софт", "Дизайн"] },
     projLabel: "Несколько наших проектов",
@@ -474,6 +487,7 @@ const T: Record<Lang, Copy> = {
       { name: "Премиум-беклинки", desc: "Контекстные, индексируемые ссылки с реальных сайтов." },
       { name: "Системы и приложения", desc: "Решения, которые убирают бумажную работу: записи, счета, склад, бухгалтерия. Цена по запросу." },
     ],
+    check: { title: "Насколько хорош ваш сайт?", sub: "Проверьте бесплатно за минуту: скорость, Google, дизайн и продажи.", ph: "адрес вашего сайта, например example.md", btn: "Проверить бесплатно" },
     maint: {
       label: "Ежемесячное сопровождение",
       lead: "Пишите нам в Telegram, что нужно: новые фото, тексты, товары, проверить рекламу. Мы всё сделаем, вам не нужно никого искать.",
@@ -1289,6 +1303,9 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
               <a className="tlink" href="#proiecte" onClick={(e) => goto(e, "proiecte")}>
                 {t.ctaS}
               </a>
+              <a className="pill-btn" href="/verificare">
+                {t.ctaCheck}
+              </a>
             </div>
             <div className="hero-meta fu" style={d("0.5s")}>
               <div className="hero-meta-links">
@@ -1360,6 +1377,22 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
 
         {seo && <SeoCases seo={seo} fx={fx} />}
 
+
+        {/* website check: type the address here, the check starts on /verificare */}
+        <section className="section" id="verificare">
+          <div className="container">
+            <div className="check-band rv">
+              <div>
+                <h2 className="check-title">{t.check.title}</h2>
+                <p className="check-sub">{t.check.sub}</p>
+              </div>
+              <form className="check-form" action="/verificare" method="get">
+                <input className="check-input" name="u" type="text" inputMode="url" autoComplete="url" placeholder={t.check.ph} aria-label={t.check.ph} required />
+                <button className="btn" type="submit">{t.check.btn}</button>
+              </form>
+            </div>
+          </div>
+        </section>
 
         {/* monthly maintenance, paid online by card (maib) */}
         <section className="section" id="mentenanta">

@@ -2400,3 +2400,13 @@ button {
     margin-top: 14px;
   }
 }
+
+/* ---------- website check band on the home page ---------- */
+.check-band { border: 1px solid var(--line); border-radius: 28px; padding: 40px; background: #fff; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+.check-title { font-size: clamp(30px, 3.6vw, 48px); font-weight: 500; letter-spacing: -0.035em; line-height: 1.02; }
+.check-sub { font-size: 17px; line-height: 1.55; color: var(--ink-2); margin-top: 12px; max-width: 460px; }
+.check-form { display: flex; gap: 10px; flex-wrap: wrap; }
+.check-input { flex: 1 1 240px; height: 56px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--bg); padding: 0 22px; font: inherit; font-size: 17px; color: var(--ink); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+.check-input:focus { border-color: var(--ink); box-shadow: 0 0 0 4px rgba(15, 15, 14, 0.07); }
+.check-form .btn { height: 56px; padding: 0 28px; }
+@media (max-width: 860px) { .check-band { grid-template-columns: 1fr; padding: 26px; } .check-form .btn { width: 100%; } }

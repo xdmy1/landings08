@@ -38,6 +38,7 @@ const SECTIONS: Sec[] = [
       "Bugetul pentru reclame (Meta, Google) nu este inclus și se plătește de Client direct platformei de reclame.",
       "Lucrările mari, cum ar fi un site nou sau funcții noi, nu fac parte din pachete și primesc ofertă separată.",
       "Cererile nefolosite într-o lună nu se mută în luna următoare.",
+      "Raportul complet de verificare a unui site (pagina „Verifică-ți site-ul”): 5 EUR, plată unică. Verificarea de bază este gratuită; plata deblochează raportul complet pentru site-ul verificat: toate problemele găsite și soluțiile lor, poziția estimată în căutare și concurenții, detaliile de viteză și verificarea tehnică. Raportul este generat automat, cu ajutorul inteligenței artificiale, pe baza datelor publice ale site-ului din ziua verificării, și are caracter informativ.",
     ],
   },
   {
@@ -66,6 +67,7 @@ const SECTIONS: Sec[] = [
       "Programul de lucru este luni–vineri, 10:00–18:00, ora Moldovei. Pentru pachetul Prioritar programul este luni–sâmbătă, iar urgențele (site căzut, eroare care oprește vânzările) se rezolvă și în weekend.",
       "Timpii de răspuns din fiecare pachet se socotesc în programul de lucru.",
       "Clientul ne oferă accesele necesare (site, conturi de reclame) și materialele (poze, texte, prețuri). Termenele încep din momentul în care avem materialele.",
+      "Raportul complet de verificare se deblochează imediat după confirmarea plății, la același link, și rămâne accesibil 6 luni.",
     ],
   },
   {
@@ -76,6 +78,7 @@ const SECTIONS: Sec[] = [
       "Rambursăm integral suma dacă cererea vine în 14 zile de la plată și nu am executat încă nicio cerere din pachet.",
       "Dacă am executat deja cereri, rambursăm suma proporțional cu zilele rămase din perioada de 30 de zile.",
       "Dacă nu putem presta serviciul din vina noastră, rambursăm integral partea neprestată.",
+      "Pentru raportul de verificare: dacă după plată raportul complet nu se deblochează din cauza unei erori tehnice și nu o rezolvăm în 24 de ore, rambursăm integral suma.",
       "Cererea de rambursare se trimite la " + COMPANY.email + ", cu numărul comenzii. Răspundem în cel mult 3 zile lucrătoare.",
       "Banii se întorc pe același card, prin maib, de obicei în 5–10 zile lucrătoare, în funcție de banca care a emis cardul. Se rambursează suma plătită în lei, fără recalcularea cursului.",
     ],

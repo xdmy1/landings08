@@ -4,3 +4,7 @@ node_modules
 scripts/og/shots
 scripts/og/*.png
 scripts/og/*.profile
+.data/
+
+# local secrets
+.env*.local
