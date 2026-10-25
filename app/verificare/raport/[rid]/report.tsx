@@ -158,7 +158,6 @@ function Pay({ base, eur, mdl }: { base: string; eur: number; mdl: number }) {
     <form className="vr-pay" onSubmit={go} noValidate>
       <div className="vr-price-row">
         <div className="vr-price"><s>{eur === 5 ? 25 : eur * 5} €</s>{eur} €</div>
-        <span className="vr-launch">Preț de lansare</span>
       </div>
       <p className="vr-price-sub">Plată unică, {mdl} lei. Raportul se deschide imediat.</p>
       <label className="vr-email">
