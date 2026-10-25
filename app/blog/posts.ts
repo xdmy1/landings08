@@ -1533,7 +1533,7 @@ export const POSTS: Post[] = [
         "h": "Când merită să chemi un specialist",
         "p": [
           "Multe verificări le poți face singur, cu Search Console și puțină răbdare. Dacă site-ul are însă sute de pagini, un magazin online sau migrări în istoric, un audit tehnic făcut de cineva cu experiență economisește luni de căutări oarbe.",
-          "Fundația tehnică amplifică restul muncii de SEO. La davo.md, un proiect la care lucrăm în studioul nostru din Chișinău, autoritatea a ajuns la DR 50 în Ahrefs, dar niciun backlink nu ar fi contat dacă paginile nu erau corect indexate. Întâi fundația, apoi promovarea."
+          "Fundația tehnică amplifică restul muncii de SEO. La davo.md, un proiect la care lucrăm, autoritatea a ajuns la DR 50 în Ahrefs, dar niciun backlink nu ar fi contat dacă paginile nu erau corect indexate. Întâi fundația, apoi promovarea."
         ]
       }
     ],

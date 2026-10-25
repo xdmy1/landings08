@@ -2,6 +2,7 @@
    maib requires: order number, merchant name, site name, amount, currency,
    payment date and the order description (product names and quantities). */
 
+import { button, esc, p, rows, shell, tick, WA } from "./mailui";
 import { COMPANY, type PayLang } from "./plans";
 
 export const RC: Record<
@@ -122,8 +123,6 @@ export function fmtMoney(amount: number | undefined, currency: string | undefine
   return `${amount.toLocaleString("ro-RO", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency || "MDL"}`;
 }
 
-const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] as string);
-
 export function receiptEmail(
   lang: PayLang,
   o: { orderId: string; name: string; service: string; qty: number; amount: string; date: string; card?: string },
@@ -131,7 +130,7 @@ export function receiptEmail(
 ) {
   const t = RC[lang];
   const next = kind === "report" ? t.nextReport : t.next;
-  const rows: [string, string][] = [
+  const rowsList: [string, string][] = [
     [t.order, o.orderId],
     [t.merchant, COMPANY.legalName],
     [t.site, "landings.md"],
@@ -140,14 +139,14 @@ export function receiptEmail(
     [t.amount, o.amount],
     [t.date, o.date],
   ];
-  if (o.card) rows.push([t.card, o.card]);
+  if (o.card) rowsList.push([t.card, o.card]);
 
   const text = [
     `${t.hello}${o.name ? `, ${o.name}` : ""}!`,
     "",
     t.thanks,
     "",
-    ...rows.map(([k, v]) => `${k}: ${v}`),
+    ...rowsList.map(([k, v]) => `${k}: ${v}`),
     "",
     next,
     "",
@@ -156,24 +155,41 @@ export function receiptEmail(
     `${COMPANY.legalName}, IDNO ${COMPANY.idno}, ${COMPANY.address}`,
   ].join("\n");
 
-  const html = `<!doctype html><html><body style="margin:0;background:#f4f4f1;font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#0f0f0e">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding:32px 12px"><tr><td align="center">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#fcfcfa;border:1px solid #e6e6e1;border-radius:18px;padding:32px">
-<tr><td style="font-size:15px;font-weight:600;letter-spacing:-0.01em">landings.md</td></tr>
-<tr><td style="padding-top:22px;font-size:22px;font-weight:500;letter-spacing:-0.02em">${esc(t.subject)} ${esc(o.orderId)}</td></tr>
-<tr><td style="padding-top:12px;font-size:15px;line-height:1.6;color:#45453f">${esc(t.hello)}${o.name ? `, ${esc(o.name)}` : ""}! ${esc(t.thanks)}</td></tr>
-<tr><td style="padding-top:20px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:14px">
-${rows
-  .map(
-    ([k, v]) =>
-      `<tr><td style="padding:9px 0;border-top:1px solid #e6e6e1;color:#6b6b64">${esc(k)}</td><td align="right" style="padding:9px 0;border-top:1px solid #e6e6e1">${esc(v)}</td></tr>`
-  )
-  .join("")}
-</table></td></tr>
-<tr><td style="padding-top:20px;font-size:14px;line-height:1.6;color:#45453f">${esc(next)}</td></tr>
-<tr><td style="padding-top:14px;font-size:14px;line-height:1.6;color:#45453f">${esc(t.questions)} <a href="mailto:${COMPANY.email}" style="color:#0f0f0e">${COMPANY.email}</a>, ${esc(COMPANY.phone)}.</td></tr>
-<tr><td style="padding-top:26px;font-size:12px;line-height:1.6;color:#8a8a83">${esc(COMPANY.legalName)} · IDNO ${COMPANY.idno} · ${esc(COMPANY.address)}</td></tr>
-</table></td></tr></table></body></html>`;
+  const html = shell({
+    preheader: `${t.okTitle} ${o.amount} · ${o.service}`,
+    badge: tick("green"),
+    title: t.okTitle,
+    sub: `${o.orderId} · ${o.amount}`,
+    body: `${p(`${esc(t.hello)}${o.name ? `, ${esc(o.name)}` : ""}! ${esc(t.thanks)}`)}
+<div style="margin-top:18px">${rows(rowsList)}</div>
+${p(esc(next))}
+${p(`${esc(t.questions)} <a href="mailto:${COMPANY.email}" style="color:#0f0f0e">${COMPANY.email}</a>, <span style="white-space:nowrap">${esc(COMPANY.phone)}</span>.`)}
+<div style="margin-top:22px">${button(WA, lang === "ru" ? "Написать в WhatsApp" : lang === "en" ? "Write on WhatsApp" : "Scrie-ne pe WhatsApp", "light")}</div>`,
+  });
 
   return { subject: `${t.subject} ${o.orderId} · landings.md`, html, text };
+}
+
+/* the copy of every paid order that goes to the studio */
+export function studioEmail(o: { orderId: string; service: string; amount: string; date: string; name: string; email: string; phone: string; payId: string }) {
+  const list: [string, string][] = [
+    ["Comanda", o.orderId],
+    ["Pachet", o.service],
+    ["Suma", o.amount],
+    ["Data", o.date],
+    ["Client", o.name || "—"],
+    ["Email", o.email || "—"],
+    ["Telefon", o.phone || "—"],
+    ["maib payId", o.payId],
+  ];
+  const text = ["Plată nouă pe landings.md", "", ...list.map(([k, v]) => `${k}: ${v}`)].join("\n");
+  const html = shell({
+    preheader: `${o.amount} · ${o.service}`,
+    badge: tick("green"),
+    title: "Plată nouă",
+    sub: `${o.amount} · ${o.orderId}`,
+    body: `<div style="margin-top:18px">${rows(list)}</div>
+${o.email ? `<div style="margin-top:22px">${button(`mailto:${o.email}`, "Scrie clientului", "black")}</div>` : ""}`,
+  });
+  return { subject: `Plată nouă ${o.orderId}: ${o.service}, ${o.amount}`, html, text };
 }

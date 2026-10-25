@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: "landings.md | Site-uri, design și SEO în Chișinău, Moldova",
   description:
-    "Studio web din Chișinău. Construim site-uri rapide și curate, magazine online și sisteme, cu SEO optimizat direct în cod și backlink-uri premium contextuale.",
+    "Construim site-uri rapide și curate, magazine online și sisteme, cu SEO optimizat direct în cod și backlink-uri premium contextuale.",
   keywords: [
     "creare site moldova",
     "creare site chisinau",
@@ -26,13 +26,13 @@ export const metadata: Metadata = {
     locale: "ro_RO",
     title: "landings.md | Site-uri, design și SEO",
     description:
-      "Studio web din Chișinău. Site-uri rapide și curate, SEO în cod, backlink-uri premium contextuale.",
+      "Site-uri rapide și curate, SEO în cod, backlink-uri premium contextuale.",
     images: [
       {
         url: "/images/og.jpg",
         width: 1200,
         height: 630,
-        alt: "landings.md: site-uri care aduc clienți. Studio din Chișinău, site-uri, aplicații și SEO.",
+        alt: "landings.md: site-uri care aduc clienți. Site-uri, aplicații și SEO.",
       },
     ],
   },
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "landings.md | Site-uri, design și SEO",
     description:
-      "Studio web din Chișinău. Site-uri rapide și curate, SEO în cod, backlink-uri premium contextuale.",
+      "Site-uri rapide și curate, SEO în cod, backlink-uri premium contextuale.",
     images: ["/images/og.jpg"],
   },
   robots: {
@@ -86,7 +86,7 @@ const jsonLd = {
       areaServed: ["MD", "RO", "EU"],
       sameAs: ["https://www.instagram.com/landings.md"],
       description:
-        "Studio web din Chișinău: site-uri, design, SEO optimizat în cod și backlink-uri premium contextuale.",
+        "Site-uri, design, SEO optimizat în cod și backlink-uri premium contextuale.",
     },
     {
       "@type": "WebSite",

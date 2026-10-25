@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { adminEmail, langOfOrder, payInfo, sendMail, signatureOk } from "../../../_pay/maib";
-import { fmtDateTime, fmtMoney, receiptEmail } from "../../../_pay/receipt";
+import { fmtDateTime, fmtMoney, receiptEmail, studioEmail } from "../../../_pay/receipt";
 
 export const dynamic = "force-dynamic";
 
@@ -48,24 +48,8 @@ export async function POST(req: Request) {
       await sendMail({ email: info.email, name }, m.subject, m.html, m.text);
     }
 
-    const adminText = [
-      `Plată nouă pe landings.md`,
-      ``,
-      `Comanda: ${orderId}`,
-      `Pachet: ${service}`,
-      `Suma: ${amount}`,
-      `Data: ${fmtDateTime(new Date(), "ro")}`,
-      `Client: ${name}`,
-      `Email: ${info?.email || ""}`,
-      `Telefon: ${info?.phone || ""}`,
-      `maib payId: ${payId}`,
-    ].join("\n");
-    await sendMail(
-      { email: adminEmail() },
-      `Plată nouă ${orderId}: ${service}, ${amount}`,
-      `<pre style="font:14px/1.6 -apple-system,Segoe UI,Arial,sans-serif">${adminText.replace(/</g, "&lt;")}</pre>`,
-      adminText
-    );
+    const st = studioEmail({ orderId, service, amount, date: fmtDateTime(new Date(), "ro"), name, email: info?.email || "", phone: info?.phone || "", payId });
+    await sendMail({ email: adminEmail() }, st.subject, st.html, st.text);
   } catch (e) {
     console.error("[pay] callback follow-up", e);
   }

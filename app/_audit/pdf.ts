@@ -151,7 +151,7 @@ ol, ul { padding-left: 18px; } li { margin: 3px 0; }
     <tr><td>Site verificat</td><td><b>${esc(v.host)}</b></td></tr>
     <tr><td>Status</td><td><span class="paid">Plătit · raport complet</span></td></tr>
   </table>
-  <div class="from"><b>${esc(COMPANY.brand)}</b><br>Studio web din Chișinău<br>${esc(COMPANY.email)} · ${esc(COMPANY.phone)}<br>IDNO ${esc(COMPANY.idno)}, ${esc(COMPANY.address)}</div>
+  <div class="from"><b>${esc(COMPANY.brand)}</b><br>${esc(COMPANY.email)} · ${esc(COMPANY.phone)}<br>IDNO ${esc(COMPANY.idno)}, ${esc(COMPANY.address)}</div>
 </div>
 
 <div class="score">
