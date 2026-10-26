@@ -38,7 +38,7 @@ const SECTIONS: Sec[] = [
       "Bugetul pentru reclame (Meta, Google) nu este inclus și se plătește de Client direct platformei de reclame.",
       "Lucrările mari, cum ar fi un site nou sau funcții noi, nu fac parte din pachete și primesc ofertă separată.",
       "Cererile nefolosite într-o lună nu se mută în luna următoare.",
-      "Raportul complet de verificare a unui site (pagina „Verifică-ți site-ul”): 5 EUR, plată unică. Verificarea de bază este gratuită; plata deblochează raportul complet pentru site-ul verificat: toate problemele găsite și soluțiile lor, poziția estimată în căutare și concurenții, detaliile de viteză și verificarea tehnică. Raportul este generat automat, cu ajutorul inteligenței artificiale, pe baza datelor publice ale site-ului din ziua verificării, și are caracter informativ.",
+      "Raportul complet de verificare a unui site (pagina „Verifică-ți site-ul”): 5 EUR, plată unică. Verificarea de bază este gratuită; plata deblochează raportul complet pentru site-ul verificat: toate problemele găsite și soluțiile lor, poziția estimată în căutare și concurenții, comparația cu concurenții, ce apare la căutarea numelui firmei, dacă asistenții AI recomandă firma, texte gata de copiat, un plan pe 30 de zile, verificarea paginilor site-ului, problemele marcate pe capturi și varianta PDF. Raportul este generat automat, cu ajutorul inteligenței artificiale, pe baza datelor publice ale site-ului din ziua verificării, și are caracter informativ.",
     ],
   },
   {
@@ -67,7 +67,7 @@ const SECTIONS: Sec[] = [
       "Programul de lucru este luni–vineri, 10:00–18:00, ora Moldovei. Pentru pachetul Prioritar programul este luni–sâmbătă, iar urgențele (site căzut, eroare care oprește vânzările) se rezolvă și în weekend.",
       "Timpii de răspuns din fiecare pachet se socotesc în programul de lucru.",
       "Clientul ne oferă accesele necesare (site, conturi de reclame) și materialele (poze, texte, prețuri). Termenele încep din momentul în care avem materialele.",
-      "Raportul complet de verificare se deblochează imediat după confirmarea plății, la același link, și rămâne accesibil 6 luni.",
+      "Raportul complet de verificare se deschide imediat după confirmarea plății, pe pagina raportului, în browserul în care s-a făcut verificarea. Raportul rămâne salvat în acel browser; Clientul îl poate descărca oricând în format PDF de pe acea pagină.",
     ],
   },
   {

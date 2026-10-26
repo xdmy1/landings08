@@ -478,3 +478,10 @@
   background: linear-gradient(180deg, #f6cd6a 0%, #e8b13a 42%, #d29a1c 62%, #e0ab34 82%, #f7d47c 100%);
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
 }
+
+/* the payment details maib asks for, under the success note */
+.vr-receipt { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0 24px; margin-top: 4px; border-top: 1px solid #cfe8d8; }
+.vr-receipt div { padding: 10px 0; border-bottom: 1px solid #dcefe3; min-width: 0; }
+.vr-receipt dt { font-size: 13px; color: #4b7a5d; }
+.vr-receipt dd { font-size: 15px; color: var(--ink); margin-top: 1px; word-break: break-word; }
+@media (min-width: 641px) { .vr-success > .btn { grid-column: 3; grid-row: 1; } }

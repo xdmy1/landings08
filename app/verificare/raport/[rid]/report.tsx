@@ -294,6 +294,21 @@ export default function Report({ rid, eur, was, mdl }: Props) {
             <strong>Plata a reușit. Mulțumim!</strong>
             <p>Raportul complet e deblocat mai jos. Chitanța ți-a fost trimisă pe email.</p>
           </div>
+          {v.receipt && (
+            <dl className="vr-receipt">
+              {([
+                ["Numărul comenzii", v.receipt.orderId],
+                ["Comerciant", v.receipt.merchant],
+                ["Site", v.receipt.site],
+                ["Serviciu", v.receipt.service],
+                ["Suma", v.receipt.amount],
+                ["Data plății", v.receipt.date],
+                ...(v.receipt.card ? [["Card", v.receipt.card]] : []),
+              ] as [string, string][]).map(([k, val]) => (
+                <div key={k}><dt>{k}</dt><dd>{val}</dd></div>
+              ))}
+            </dl>
+          )}
           <button className="btn" type="button" onClick={downloadPdf} disabled={pdfBusy}>{pdfBusy ? "Se pregătește…" : "Descarcă PDF"}</button>
         </div>
       )}

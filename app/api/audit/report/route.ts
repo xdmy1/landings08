@@ -1,5 +1,5 @@
 import { json } from "../../../_audit/http";
-import { isPaid } from "../../../_audit/paid";
+import { paidReceipt } from "../../../_audit/paid";
 import { readAudit, readJson } from "../../../_audit/state";
 import { buildView } from "../../../_audit/view";
 
@@ -10,5 +10,6 @@ export async function POST(req: Request) {
   const body = await readJson(req);
   const a = body && readAudit(body);
   if (!a) return json({ error: "bad_request" }, 400);
-  return json({ view: buildView(a, await isPaid(a.id, body.payId)) });
+  const receipt = await paidReceipt(a.id, body.payId);
+  return json({ view: buildView(a, receipt !== null, receipt) });
 }
