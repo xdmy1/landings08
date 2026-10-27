@@ -55,7 +55,9 @@ export type ReportRequest = {
 };
 
 const TZ = "Europe/Chisinau";
-const ready = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN) && (process.env.NODE_ENV === "production" || process.env.TRACK_DEV === "1");
+const ready = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+/* local development reads the live store but never writes into it (TRACK_DEV=1 in .env.local allows it) */
+const canWrite = () => ready() && (process.env.NODE_ENV === "production" || process.env.TRACK_DEV === "1");
 const OPT = { access: "private" as const, contentType: "application/json", addRandomSuffix: false, allowOverwrite: true };
 
 /* the day a moment belongs to, by Chișinău time */
@@ -119,7 +121,7 @@ export function fromRequest(req: Request): Pick<Ev, "sid" | "vid" | "dev" | "br"
 }
 
 export async function logEvent(ev: Ev): Promise<void> {
-  if (!ready()) return;
+  if (!canWrite()) return;
   const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
   try {
     await put(`ev/${dayOf(ev.t)}/${id}.json`, JSON.stringify(ev), OPT);
@@ -168,7 +170,7 @@ export async function loadDay(day: string, today: string): Promise<Ev[]> {
   const paths = await listAll(`ev/${day}/`);
   const evs = await readMany<Ev>(paths);
   evs.sort((a, b) => a.t.localeCompare(b.t));
-  if (day < today && paths.length) {
+  if (day < today && paths.length && canWrite()) {
     try {
       await put(`day/${day}.json`, JSON.stringify(evs), OPT);
     } catch (e) {
@@ -181,9 +183,11 @@ export async function loadDay(day: string, today: string): Promise<Ev[]> {
 /* ---- report requests: the small record and, apart, the heavy sealed parts ---- */
 
 export async function saveRequest(r: ReportRequest): Promise<void> {
+  if (!canWrite()) throw new Error("store is read-only in development");
   await put(`req/${r.id}.json`, JSON.stringify(r), OPT);
 }
 export async function saveRequestParts(id: string, parts: Record<string, unknown>): Promise<void> {
+  if (!canWrite()) throw new Error("store is read-only in development");
   await put(`reqparts/${id}.json`, JSON.stringify(parts), OPT);
 }
 export async function loadRequest(id: string): Promise<ReportRequest | null> {
