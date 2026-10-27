@@ -10,6 +10,7 @@ import { AiSection, BrandSection, CompetitorsSection, CopySection, DeepPending, 
 const WA = "37368327082";
 const SEV = { critic: "Grav", important: "Important", minor: "Mic" } as const;
 const PAY_MARKS = [
+  { n: "mia", h: 17 },
   { n: "maib", h: 15 },
   { n: "visa", h: 11 },
   { n: "mastercard", h: 19 },
@@ -129,7 +130,6 @@ function Locked({ title, text, eur }: { title: string; text: string; eur: number
 /* card payments off: the visitor leaves an email, pays through MIA, the studio approves from /admin */
 function RequestReport({ parts, rid, host, eur, mdl }: { parts: Record<string, unknown>; rid: string; host: string; eur: number; mdl: number }) {
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [sent, setSent] = useState<{ id: string; email: string } | null>(null);
@@ -147,7 +147,7 @@ function RequestReport({ parts, rid, host, eur, mdl }: { parts: Record<string, u
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) return setErr("Scrie o adresă de email validă.");
     setBusy(true);
     try {
-      const r = await fetch("/api/audit/request", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...parts, deep: readParts(rid), email: email.trim(), phone: phone.trim() }) });
+      const r = await fetch("/api/audit/request", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...parts, deep: readParts(rid), email: email.trim(), phone: "" }) });
       const j = await r.json().catch(() => ({}));
       if (!r.ok || !j.id) throw new Error(j.error || "request");
       const s = { id: j.id as string, email: email.trim() };
@@ -170,18 +170,13 @@ function RequestReport({ parts, rid, host, eur, mdl }: { parts: Record<string, u
         <div className="vr-price"><s>{eur === 5 ? 25 : eur * 5} €</s>{eur} €</div>
       </div>
       <p className="vr-price-sub">Plată unică, {mdl} lei.</p>
-      <p className="vr-off-title">Plata cu cardul e sistată temporar.</p>
       {!sent ? (
         <>
-          <p className="vr-off-text">Lasă emailul, plătește prin MIA la numărul <b>+373 68 327 082</b> din aplicația băncii tale, și primești raportul complet pe email, cu PDF, imediat ce confirmăm plata.</p>
+          <p className="vr-off-text"><b>Plata cu cardul e sistată temporar.</b> Lasă emailul, plătești prin MIA la <b>+373 68 327 082</b> din aplicația băncii și primești raportul pe email, cu PDF, după confirmare.</p>
           <form className="vr-req" onSubmit={go} noValidate>
             <label className="vr-email">
               <span>Emailul tău, pentru raport</span>
               <input type="email" inputMode="email" autoComplete="email" placeholder="nume@firma.md" value={email} onChange={(e) => setEmail(e.target.value)} disabled={busy} />
-            </label>
-            <label className="vr-email">
-              <span>Telefon (opțional)</span>
-              <input type="tel" inputMode="tel" autoComplete="tel" placeholder="+373" value={phone} onChange={(e) => setPhone(e.target.value)} disabled={busy} />
             </label>
             <button className="btn vr-paybtn" type="submit" disabled={busy} data-track="Raport: trimite cererea">{busy ? "Se trimite…" : "Trimite cererea"}</button>
             {err && <p className="vr-pay-err" role="alert">{err} {/WhatsApp/.test(err) && <a href={`https://wa.me/${WA}`} target="_blank" rel="noopener">Deschide WhatsApp</a>}</p>}
@@ -189,7 +184,8 @@ function RequestReport({ parts, rid, host, eur, mdl }: { parts: Record<string, u
         </>
       ) : (
         <>
-          <p className="vr-off-text">Cererea <b>{code}</b> e înregistrată pentru <b>{sent.email}</b>. Mai ai doi pași:</p>
+          <p className="vr-off-title">Cererea {code} e înregistrată.</p>
+          <p className="vr-off-text">Raportul vine pe <b>{sent.email}</b>. Mai ai doi pași:</p>
           <ol className="vr-steps-list">
             <li>Plătește {eur} € ({mdl} lei) prin MIA la <b>+373 68 327 082</b>, din aplicația băncii tale.</li>
             <li>Scrie-ne că ai plătit, cu codul <b>{code}</b>. Raportul vine pe email, cu PDF.</li>
@@ -198,6 +194,7 @@ function RequestReport({ parts, rid, host, eur, mdl }: { parts: Record<string, u
           <a className="pill-btn vr-paybtn" href={`https://t.me/damiqqn?text=${text}`} target="_blank" rel="noopener noreferrer" data-track="Raport MIA: Telegram">Am plătit, scriu pe Telegram</a>
         </>
       )}
+      <div className="vr-marks">{PAY_MARKS.map((m) => <img key={m.n} src={`/images/pay/${m.n}.svg`} alt={m.n} style={{ height: m.h }} />)}</div>
       <p className="vr-fine">MIA: plată instant la număr de telefon, din aplicația oricărei bănci din Moldova.</p>
     </div>
   );
