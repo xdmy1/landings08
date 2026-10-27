@@ -179,6 +179,11 @@
 .vr-email input { height: 56px; border-radius: 16px; border: 1.5px solid var(--line); background: #fff; padding: 0 18px; font: inherit; font-size: 17px; color: var(--ink); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
 .vr-email input:focus { border-color: var(--ink); box-shadow: 0 0 0 4px rgba(15, 15, 14, 0.07); }
 .vr-paybtn { width: 100%; height: 58px !important; font-size: 17px !important; }
+.vr-off-title { font-size: 21px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; margin-top: 4px; }
+.vr-off-text { font-size: 15px; line-height: 1.6; color: var(--ink-2); }
+.vr-pay .pill-btn.vr-paybtn { justify-content: center; }
+.vr-req { display: grid; gap: 12px; }
+.vr-steps-list { padding-left: 20px; font-size: 15px; line-height: 1.6; color: var(--ink-2); display: grid; gap: 6px; }
 .vr-pay-err { font-size: 14px; color: #b42318; }
 .vr-pay-err a { text-decoration: underline; }
 .vr-marks { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; opacity: 0.85; padding-top: 4px; }

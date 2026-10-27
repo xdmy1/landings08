@@ -17,7 +17,7 @@ const PAY_MARKS = [
   { n: "googlepay", h: 16 },
 ];
 
-type Props = { rid: string; eur: number; was: number; mdl: number };
+type Props = { rid: string; eur: number; was: number; mdl: number; online: boolean };
 type StepState = "run" | "done" | "fail";
 
 /* the paid sections as the finished list names them, and where each one is */
@@ -126,7 +126,84 @@ function Locked({ title, text, eur }: { title: string; text: string; eur: number
   );
 }
 
-function Pay({ base, eur, mdl }: { base: string; eur: number; mdl: number }) {
+/* card payments off: the visitor leaves an email, pays through MIA, the studio approves from /admin */
+function RequestReport({ parts, rid, host, eur, mdl }: { parts: Record<string, unknown>; rid: string; host: string; eur: number; mdl: number }) {
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const [sent, setSent] = useState<{ id: string; email: string } | null>(null);
+  useEffect(() => {
+    try {
+      const s = localStorage.getItem(`lmd-req:${rid}`);
+      if (s) setSent(JSON.parse(s));
+    } catch {
+      /* nothing saved */
+    }
+  }, [rid]);
+  async function go(e: React.FormEvent) {
+    e.preventDefault();
+    setErr("");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) return setErr("Scrie o adresă de email validă.");
+    setBusy(true);
+    try {
+      const r = await fetch("/api/audit/request", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...parts, deep: readParts(rid), email: email.trim(), phone: phone.trim() }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok || !j.id) throw new Error(j.error || "request");
+      const s = { id: j.id as string, email: email.trim() };
+      try {
+        localStorage.setItem(`lmd-req:${rid}`, JSON.stringify(s));
+      } catch {
+        /* shown for this visit only */
+      }
+      setSent(s);
+    } catch {
+      setErr("Nu am putut trimite cererea. Încearcă din nou sau scrie-ne pe WhatsApp.");
+    }
+    setBusy(false);
+  }
+  const code = sent ? sent.id.slice(0, 6).toUpperCase() : "";
+  const text = encodeURIComponent(`Am plătit prin MIA pentru raportul ${host} (${eur} €). Codul cererii: ${code}.`);
+  return (
+    <div className="vr-pay">
+      <div className="vr-price-row">
+        <div className="vr-price"><s>{eur === 5 ? 25 : eur * 5} €</s>{eur} €</div>
+      </div>
+      <p className="vr-price-sub">Plată unică, {mdl} lei.</p>
+      <p className="vr-off-title">Plata cu cardul e sistată temporar.</p>
+      {!sent ? (
+        <>
+          <p className="vr-off-text">Lasă emailul, plătește prin MIA la numărul <b>+373 68 327 082</b> din aplicația băncii tale, și primești raportul complet pe email, cu PDF, imediat ce confirmăm plata.</p>
+          <form className="vr-req" onSubmit={go} noValidate>
+            <label className="vr-email">
+              <span>Emailul tău, pentru raport</span>
+              <input type="email" inputMode="email" autoComplete="email" placeholder="nume@firma.md" value={email} onChange={(e) => setEmail(e.target.value)} disabled={busy} />
+            </label>
+            <label className="vr-email">
+              <span>Telefon (opțional)</span>
+              <input type="tel" inputMode="tel" autoComplete="tel" placeholder="+373" value={phone} onChange={(e) => setPhone(e.target.value)} disabled={busy} />
+            </label>
+            <button className="btn vr-paybtn" type="submit" disabled={busy} data-track="Raport: trimite cererea">{busy ? "Se trimite…" : "Trimite cererea"}</button>
+            {err && <p className="vr-pay-err" role="alert">{err} {/WhatsApp/.test(err) && <a href={`https://wa.me/${WA}`} target="_blank" rel="noopener">Deschide WhatsApp</a>}</p>}
+          </form>
+        </>
+      ) : (
+        <>
+          <p className="vr-off-text">Cererea <b>{code}</b> e înregistrată pentru <b>{sent.email}</b>. Mai ai doi pași:</p>
+          <ol className="vr-steps-list">
+            <li>Plătește {eur} € ({mdl} lei) prin MIA la <b>+373 68 327 082</b>, din aplicația băncii tale.</li>
+            <li>Scrie-ne că ai plătit, cu codul <b>{code}</b>. Raportul vine pe email, cu PDF.</li>
+          </ol>
+          <a className="btn vr-paybtn" href={`https://wa.me/${WA}?text=${text}`} target="_blank" rel="noopener noreferrer" data-track="Raport MIA: WhatsApp">Am plătit, scriu pe WhatsApp</a>
+          <a className="pill-btn vr-paybtn" href={`https://t.me/damiqqn?text=${text}`} target="_blank" rel="noopener noreferrer" data-track="Raport MIA: Telegram">Am plătit, scriu pe Telegram</a>
+        </>
+      )}
+      <p className="vr-fine">MIA: plată instant la număr de telefon, din aplicația oricărei bănci din Moldova.</p>
+    </div>
+  );
+}
+
+function Pay({ base, parts, rid, eur, mdl, host, online }: { base: string; parts: Record<string, unknown>; rid: string; eur: number; mdl: number; host: string; online: boolean }) {
   const [email, setEmail] = useState("");
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
@@ -154,6 +231,7 @@ function Pay({ base, eur, mdl }: { base: string; eur: number; mdl: number }) {
     }
     setBusy(false);
   }
+  if (!online) return <RequestReport parts={parts} rid={rid} host={host} eur={eur} mdl={mdl} />;
   return (
     <form className="vr-pay" onSubmit={go} noValidate>
       <div className="vr-price-row">
@@ -172,7 +250,7 @@ function Pay({ base, eur, mdl }: { base: string; eur: number; mdl: number }) {
   );
 }
 
-export default function Report({ rid, eur, was, mdl }: Props) {
+export default function Report({ rid, eur, was, mdl, online }: Props) {
   void was;
   const q = useSearchParams();
   const [parts, setParts] = useState<Record<string, unknown> | null | undefined>(undefined);
@@ -292,7 +370,7 @@ export default function Report({ rid, eur, was, mdl }: Props) {
           </span>
           <div>
             <strong>Plata a reușit. Mulțumim!</strong>
-            <p>Raportul complet e deblocat mai jos. Chitanța ți-a fost trimisă pe email.</p>
+            <p>{payIdNow.startsWith("apr-") ? "Raportul complet e deblocat mai jos. L-ai primit și pe email, cu PDF." : "Raportul complet e deblocat mai jos. Chitanța ți-a fost trimisă pe email."}</p>
           </div>
           {v.receipt && (
             <dl className="vr-receipt">
@@ -477,7 +555,7 @@ export default function Report({ rid, eur, was, mdl }: Props) {
               <li>Raportul întreg și în PDF</li>
             </ul>
           </div>
-          <Pay base={String(parts.base)} eur={eur} mdl={mdl} />
+          <Pay base={String(parts.base)} parts={parts} rid={rid} eur={eur} mdl={mdl} host={v.host} online={online} />
         </section>
       )}
 

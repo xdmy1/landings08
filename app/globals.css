@@ -227,6 +227,41 @@ button {
   transform: none;
 }
 
+/* the hero is on screen from the first paint: it enters by itself, before any
+   script runs, so the title is painted (and measured by Google) right away */
+@keyframes hero-rl {
+  from {
+    transform: translateY(140%) rotate(4deg);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes hero-fu {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.hero .rl-i {
+  animation: hero-rl 0.9s var(--ease-out) var(--d, 0s) both;
+}
+.hero .fu {
+  animation: hero-fu 0.65s var(--ease-out) var(--d, 0s) both;
+}
+
 /* ---------- sticky liquid-glass top bar ---------- */
 
 .top-bar {
@@ -453,12 +488,15 @@ button {
   line-height: 1.04;
   color: var(--ink-2);
 }
+.slot-word[data-w]::before {
+  content: attr(data-w);
+}
 
 .hero-sub {
   max-width: 540px;
   font-size: 17px;
   line-height: 1.65;
-  color: var(--ink-2);
+  color: color-mix(in srgb, var(--ink) 70%, var(--ink-2));
   margin-top: 38px;
 }
 
@@ -583,6 +621,15 @@ button {
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   cursor: grab;
+  touch-action: pan-x pan-y;
+  overscroll-behavior-x: contain;
+}
+
+/* fingers: looser snapping, so a swipe that starts on a card still scrolls the page up or down */
+@media (pointer: coarse) {
+  .car-track {
+    scroll-snap-type: x proximity;
+  }
 }
 
 .car-track::-webkit-scrollbar {
@@ -781,6 +828,11 @@ button {
   animation-play-state: paused;
 }
 
+.logo-link {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
 .logo-row img {
   width: auto;
   margin-right: 92px;
@@ -1109,6 +1161,23 @@ button {
 .co-pay {
   width: 100%;
   margin-top: 4px;
+}
+
+/* card payments paused: the notice that stands in for the form */
+.co-off-title {
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.co-off-text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.co-off .pill-btn {
+  width: 100%;
+  justify-content: center;
 }
 
 .co-pay:disabled {
@@ -2362,6 +2431,11 @@ button {
   .rv.in .imgrev,
   .rv.imgrev.in {
     opacity: 1;
+  }
+
+  .hero .rl-i,
+  .hero .fu {
+    animation: hero-fade 0.3s ease var(--d, 0s) both;
   }
 
   .slot-track {

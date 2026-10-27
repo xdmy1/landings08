@@ -1,0 +1,51 @@
+/* the studio's own numbers: plain tables, phone first */
+.ad { max-width: 960px; margin: 0 auto; padding: 24px 16px 80px; color: var(--ink); }
+.ad-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.ad-top h1 { font-size: 26px; font-weight: 500; letter-spacing: -0.03em; }
+.ad-range { display: flex; gap: 4px; }
+.ad-range a { padding: 7px 12px; border-radius: 999px; font-size: 13.5px; color: var(--ink-2); border: 1.5px solid transparent; text-decoration: none; }
+.ad-range a.on { border-color: var(--ink); color: var(--ink); background: #fff; }
+.ad-out { font-size: 13px; color: var(--ink-3); text-decoration: underline; }
+.ad-tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 8px 0 28px; }
+.ad-tile { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 16px 16px 14px; }
+.ad-tile b { display: block; font-size: 30px; font-weight: 500; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
+.ad-tile span { display: block; margin-top: 8px; font-size: 12.5px; color: var(--ink-3); }
+.ad h2 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; margin: 26px 0 8px; }
+.ad-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 16px; }
+.ad table { width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.ad th { text-align: left; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); padding: 10px 12px 8px; border-bottom: 1px solid var(--line); }
+.ad td { padding: 9px 12px; border-top: 1px solid var(--line); vertical-align: top; line-height: 1.4; word-break: break-word; }
+.ad tr:first-child td { border-top: 0; }
+.ad .n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ad .dim { color: var(--ink-3); font-size: 12.5px; }
+.ad .sc { display: inline-block; min-width: 34px; text-align: center; padding: 2px 7px; border-radius: 999px; font-weight: 600; font-size: 13px; }
+.ad .sc.good { background: #e7f5ec; color: #135c32; }
+.ad .sc.mid { background: #fdf3e0; color: #8a5a00; }
+.ad .sc.bad { background: #fde8e6; color: #9b1c12; }
+.ad .empty { padding: 18px 12px; color: var(--ink-3); font-size: 14px; }
+.ad-two { display: grid; grid-template-columns: 1fr; gap: 0 16px; }
+.ad-two > .ad-wrap { margin-top: 0; }
+.ad-flash { margin: 0 0 14px; padding: 12px 14px; border-radius: 14px; font-size: 14px; }
+.ad-flash.ok { background: #e7f5ec; color: #135c32; }
+.ad-flash.bad { background: #fde8e6; color: #9b1c12; }
+.ad-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.ad-actions .btn, .ad-actions .pill-btn { height: 34px; padding: 0 14px; font-size: 13px; white-space: nowrap; }
+.ad-barcell { position: relative; display: block; min-width: 90px; padding-left: 4px; }
+.ad-barcell i { position: absolute; left: 0; top: 2px; bottom: 2px; background: #e4e4dd; border-radius: 4px; z-index: 0; }
+.ad-barcell { z-index: 1; }
+.ad-barcell::after { content: ""; }
+.ad-note { margin-top: 30px; font-size: 13px; line-height: 1.55; color: var(--ink-3); }
+.ad-note code { font-size: 12px; background: #f1f1ec; padding: 1px 5px; border-radius: 6px; }
+.ad-login { max-width: 380px; margin: 14vh auto 0; padding: 0 16px; }
+.ad-login img { width: 30px; height: auto; margin-bottom: 18px; }
+.ad-login h1 { font-size: 24px; font-weight: 500; letter-spacing: -0.03em; margin-bottom: 18px; }
+.ad-login form { display: grid; gap: 12px; }
+.ad-login input { height: 54px; border-radius: 16px; border: 1.5px solid var(--line-2, var(--line)); background: #fff; padding: 0 16px; font: inherit; font-size: 17px; color: var(--ink); outline: none; }
+.ad-login input:focus { border-color: var(--ink); box-shadow: 0 0 0 4px rgba(15, 15, 14, 0.07); }
+.ad-login .err { font-size: 13.5px; color: #b42318; }
+@media (min-width: 700px) {
+  .ad { padding-top: 40px; }
+  .ad-tiles { grid-template-columns: repeat(4, 1fr); }
+  .ad-two { grid-template-columns: 1fr 1fr; }
+  .ad-tile b { font-size: 34px; }
+}

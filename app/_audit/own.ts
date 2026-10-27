@@ -19,8 +19,10 @@ function ownList(): string[] {
   return [...OWN, ...extra];
 }
 
-/* the domain itself or any subdomain (www., rezervari., app. ...) */
+/* the domain itself or any subdomain (www., rezervari., app. ...);
+   local previews only: AUDIT_OWN_SKIP=1 in .env.local lets us check one of our own sites */
 export function isOwnSite(host: string): boolean {
+  if (process.env.NODE_ENV !== "production" && process.env.AUDIT_OWN_SKIP === "1") return false;
   const h = host.toLowerCase().replace(/\.$/, "");
   return ownList().some((d) => h === d || h.endsWith("." + d));
 }

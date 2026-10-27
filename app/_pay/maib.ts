@@ -159,7 +159,7 @@ export function langOfOrder(orderId: string | undefined): "ro" | "ru" | "en" {
 
 /* ---------- email (Brevo transactional API) ---------- */
 
-export async function sendMail(to: { email: string; name?: string }, subject: string, html: string, text: string) {
+export async function sendMail(to: { email: string; name?: string }, subject: string, html: string, text: string, attachments?: { name: string; content: string }[]) {
   const key = process.env.BREVO_API_KEY;
   if (!key) {
     console.warn("[pay] BREVO_API_KEY missing, email not sent:", subject);
@@ -175,6 +175,7 @@ export async function sendMail(to: { email: string; name?: string }, subject: st
       subject,
       htmlContent: html,
       textContent: text,
+      ...(attachments?.length ? { attachment: attachments } : {}),
     }),
     cache: "no-store",
   });

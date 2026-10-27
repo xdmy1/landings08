@@ -33,18 +33,19 @@ const shotSrcSet = (base: string) => `${base}-800.webp 800w, ${base}-1280.webp 1
 /* lt = the artwork is white/light (made for dark backgrounds): on hover it
    shows its real colors on a dark chip, otherwise the white parts vanish */
 /* dk: pale (yellow/gold) artwork, deepened a little on hover for contrast */
-const LOGOS: ReadonlyArray<{ n: string; h: number; dk?: boolean }> = [
-  { n: "davo", h: 26 },
-  { n: "glg", h: 46 },
-  { n: "interbus", h: 30 },
-  { n: "eurogard", h: 44, dk: true },
-  { n: "radx", h: 30 },
-  { n: "mobo", h: 32 },
-  { n: "inauto", h: 34 },
-  { n: "cmiea", h: 44 },
-  { n: "respectauto", h: 22 },
-  { n: "rizzaclassic", h: 36, dk: true },
-  { n: "udc", h: 42 },
+/* t = the client's name (alt text), href = its site, when it has one */
+const LOGOS: ReadonlyArray<{ n: string; t: string; h: number; dk?: boolean; href?: string }> = [
+  { n: "davo", t: "Davo", h: 26, href: "https://davo.md" },
+  { n: "glg", t: "Școala Auto GLG", h: 46, href: "https://scoalaautoglg.com" },
+  { n: "interbus", t: "Inter-Bus", h: 30, href: "https://inter-bus.md" },
+  { n: "eurogard", t: "Eurogard", h: 44, dk: true, href: "https://eurogard.md" },
+  { n: "radx", t: "RADX Cooling", h: 30, href: "https://radx.solutions" },
+  { n: "mobo", t: "Mobo", h: 32, href: "https://mobo.md" },
+  { n: "inauto", t: "InAuto", h: 34, href: "https://inauto.md" },
+  { n: "cmiea", t: "CMIEA", h: 44 },
+  { n: "respectauto", t: "Respect Auto", h: 22 },
+  { n: "rizzaclassic", t: "Rizza Classic", h: 36, dk: true },
+  { n: "udc", t: "UDC", h: 42 },
 ];
 
 type ProjectKey = (typeof PROJECTS)[number]["key"];
@@ -608,11 +609,16 @@ function Slot({ words }: { words: string[] }) {
   return (
     <span className="slot">
       <span className="slot-track" ref={track}>
-        {list.map((w, k) => (
-          <span className="slot-word" key={k} aria-hidden={k > 0}>
-            {w}
-          </span>
-        ))}
+        {list.map((w, k) =>
+          k === 0 ? (
+            <span className="slot-word" key={k}>
+              {w}
+            </span>
+          ) : (
+            /* drawn by CSS (content: attr), so the heading's text stays one clear phrase */
+            <span className="slot-word" key={k} data-w={w} aria-hidden="true" />
+          )
+        )}
       </span>
     </span>
   );
@@ -769,6 +775,18 @@ function Featured({ t }: { t: Copy }) {
     v.defaultMuted = true;
     const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (rm) return;
+    /* the file is the full 1080p reel: fetch it only once the visitor reaches it,
+       so it never competes with the first screen (on phones its edge peeks in under it) */
+    const warm = new IntersectionObserver(
+      (es) => {
+        if (!es.some((e) => e.isIntersecting)) return;
+        warm.disconnect();
+        v.preload = "auto";
+        if (v.readyState === 0) v.load();
+      },
+      { threshold: 0.05 }
+    );
+    warm.observe(v);
     const io = new IntersectionObserver(
       (es) => {
         es.forEach((e) => {
@@ -779,7 +797,10 @@ function Featured({ t }: { t: Copy }) {
       { threshold: 0.2 }
     );
     io.observe(v);
-    return () => io.disconnect();
+    return () => {
+      warm.disconnect();
+      io.disconnect();
+    };
   }, []);
 
   return (
@@ -792,11 +813,10 @@ function Featured({ t }: { t: Copy }) {
           poster="/images/mobo-crm-poster.webp"
           width={1920}
           height={1080}
-          autoPlay
           muted
           loop
           playsInline
-          preload="auto"
+          preload="none"
           disablePictureInPicture
           tabIndex={-1}
           aria-label={`${f.name}, ${f.tags.join(", ")}`}
@@ -1155,6 +1175,14 @@ function SeoRelated({ seo }: { seo: SeoPage }) {
 
 export default function SiteShell({ seo }: { seo?: SeoPage }) {
   const [lang, setLang] = useState<Lang>("ro");
+  const pickLang = (code: Lang) => {
+    setLang(code);
+    try {
+      window.localStorage.setItem("lang", code);
+    } catch {
+      /* nothing to remember, the pick still applies for this visit */
+    }
+  };
   const [fx, setFx] = useState(false);
   const lenisRef = useRef<Lenis | null>(null);
   const base = T[seo ? "ro" : lang];
@@ -1286,7 +1314,7 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
                 <span className="rl-i" style={d("0.06s")}>
                   {t.h1a}
                 </span>
-              </span>
+              </span>{" "}
               <span className="rl">
                 <span className="rl-i" style={d("0.16s")}>
                   <Slot words={t.words} />
@@ -1323,16 +1351,27 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
             <div className="logos fu" style={d("0.6s")}>
               <div className="logo-strip">
                 <div className="logo-row">
-                  {[...LOGOS, ...LOGOS].map((l, i) => (
-                    <img
-                      key={`${l.n}${i}`}
-                      className={[i >= LOGOS.length ? "dup" : "", l.dk ? "dk" : ""].filter(Boolean).join(" ") || undefined}
-                      src={`/images/logos/${l.n}.png`}
-                      alt={i >= LOGOS.length ? "" : l.n}
-                      style={{ height: l.h }}
-                      decoding="async"
-                    />
-                  ))}
+                  {[...LOGOS, ...LOGOS].map((l, i) => {
+                    const dup = i >= LOGOS.length; /* the second copy only keeps the drift seamless */
+                    const img = (
+                      <img
+                        className={[dup ? "dup" : "", l.dk ? "dk" : ""].filter(Boolean).join(" ") || undefined}
+                        src={`/images/logos/${l.n}.png`}
+                        alt={l.t}
+                        style={{ height: l.h }}
+                        decoding="async"
+                      />
+                    );
+                    return l.href ? (
+                      <a key={`${l.n}${i}`} className="logo-link" href={l.href} target="_blank" rel="noopener noreferrer" aria-label={l.t} tabIndex={dup ? -1 : undefined} aria-hidden={dup || undefined}>
+                        {img}
+                      </a>
+                    ) : (
+                      <span key={`${l.n}${i}`} className="logo-link" aria-hidden={dup || undefined}>
+                        {img}
+                      </span>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -1629,14 +1668,7 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
                   type="button"
                   className={code === lang ? "lang-btn is-on" : "lang-btn"}
                   aria-pressed={code === lang}
-                  onClick={() => {
-                    setLang(code);
-                    try {
-                      window.localStorage.setItem("lang", code);
-                    } catch {
-                      /* nothing to remember, the pick still applies for this visit */
-                    }
-                  }}
+                  onClick={() => pickLang(code)}
                 >
                   {code.toUpperCase()}
                 </button>

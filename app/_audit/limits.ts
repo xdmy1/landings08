@@ -5,7 +5,7 @@
 const hits = new Map<string, number>();
 let day = "";
 
-export function allow(kind: "start" | "ai", ip: string): "ok" | "ip" | "site" {
+export function allow(kind: "start" | "ai" | "request", ip: string): "ok" | "ip" | "site" {
   const today = new Date().toISOString().slice(0, 10);
   if (today !== day) {
     hits.clear();

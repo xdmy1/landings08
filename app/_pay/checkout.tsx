@@ -4,6 +4,54 @@ import { useEffect, useState } from "react";
 import { PLANS, type PayLang, type PlanId } from "./plans";
 
 const TELEGRAM = "https://t.me/damiqqn";
+const WHATSAPP = "https://wa.me/37368327082";
+const MIA_PHONE = "+373 68 327 082";
+
+/* while card payments are off: pay through MIA to the phone number, confirm in a chat */
+const OFF: Record<PayLang, { title: string; text: string; wa: string; tg: string; fine: string; msg: (plan: string, eur: number, mdl: string) => string }> = {
+  ro: {
+    title: "Plata online e sistată temporar.",
+    text: `Până o pornim din nou, poți plăti prin MIA, la numărul ${MIA_PHONE}, din aplicația băncii tale. Scrie-ne și îți confirmăm activarea pe loc.`,
+    wa: "Scrie pe WhatsApp",
+    tg: "Scrie pe Telegram",
+    fine: "MIA: plată instant la număr de telefon, din aplicația oricărei bănci din Moldova.",
+    msg: (plan, eur, mdl) => `Bună! Vreau să plătesc pachetul ${plan} (${eur} €, ${mdl} lei) prin MIA.`,
+  },
+  ru: {
+    title: "Онлайн-оплата временно приостановлена.",
+    text: `Пока она не работает, можно оплатить через MIA на номер ${MIA_PHONE} из приложения вашего банка. Напишите нам, и мы сразу подтвердим активацию.`,
+    wa: "Написать в WhatsApp",
+    tg: "Написать в Telegram",
+    fine: "MIA: мгновенный платёж по номеру телефона из приложения любого банка Молдовы.",
+    msg: (plan, eur, mdl) => `Здравствуйте! Хочу оплатить пакет ${plan} (${eur} €, ${mdl} лей) через MIA.`,
+  },
+  en: {
+    title: "Online payment is paused for now.",
+    text: `Until it is back, you can pay through MIA to ${MIA_PHONE} from your banking app (any bank in Moldova). Message us and we confirm the activation right away.`,
+    wa: "Message on WhatsApp",
+    tg: "Message on Telegram",
+    fine: "MIA: instant payment to a phone number from any Moldovan bank app.",
+    msg: (plan, eur, mdl) => `Hi! I want to pay for the ${plan} plan (€${eur}, ${mdl} MDL) through MIA.`,
+  },
+};
+
+function PayOff({ lang, plan, eur, mdl }: { lang: PayLang; plan: string; eur: number; mdl: string }) {
+  const o = OFF[lang];
+  const text = encodeURIComponent(o.msg(plan, eur, mdl));
+  return (
+    <div className="co-form co-off">
+      <p className="co-off-title">{o.title}</p>
+      <p className="co-off-text">{o.text}</p>
+      <a className="btn btn-lg co-pay" href={`${WHATSAPP}?text=${text}`} target="_blank" rel="noopener noreferrer" data-track="Plata MIA: WhatsApp">
+        {o.wa}
+      </a>
+      <a className="pill-btn co-off-tg" href={`${TELEGRAM}?text=${text}`} target="_blank" rel="noopener noreferrer" data-track="Plata MIA: Telegram">
+        {o.tg}
+      </a>
+      <p className="co-secure">{o.fine}</p>
+    </div>
+  );
+}
 
 const L: Record<
   PayLang,
@@ -123,7 +171,7 @@ function detectLang(): PayLang {
 
 const nf = (n: number) => n.toLocaleString("ro-RO").replace(/ /g, " ");
 
-export default function Checkout({ planId, mdl, rateDate }: { planId: PlanId; mdl: number; rateDate: string }) {
+export default function Checkout({ planId, mdl, rateDate, online }: { planId: PlanId; mdl: number; rateDate: string; online: boolean }) {
   const [lang, setLang] = useState<PayLang>("ro");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
@@ -204,6 +252,8 @@ export default function Checkout({ planId, mdl, rateDate }: { planId: PlanId; md
         </p>
       </div>
 
+      {!online && <PayOff lang={lang} plan={plan.name[lang]} eur={plan.eur} mdl={mdlTxt} />}
+      {online && (
       <form className="co-form" onSubmit={submit} noValidate>
         <label className="co-field">
           <span>{t.name}</span>
@@ -248,6 +298,7 @@ export default function Checkout({ planId, mdl, rateDate }: { planId: PlanId; md
         </button>
         <p className="co-secure">{t.secure}</p>
       </form>
+      )}
     </div>
   );
 }
