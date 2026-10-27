@@ -38,10 +38,11 @@ function Login({ error }: { error: string }) {
   );
 }
 
-/* a plain table; `num` = the columns that hold numbers (right-aligned) */
-function Table({ head, rows, num = [], empty = "Nimic încă." }: { head: string[]; rows: React.ReactNode[][]; num?: number[]; empty?: string }) {
+/* a plain table; `num` = the columns that hold numbers (right-aligned);
+   `cards` = on a phone each row becomes a block with label + value; `wide` = the columns that stack there */
+function Table({ head, rows, num = [], wide = [], cards = false, empty = "Nimic încă." }: { head: string[]; rows: React.ReactNode[][]; num?: number[]; wide?: number[]; cards?: boolean; empty?: string }) {
   return (
-    <div className="ad-wrap">
+    <div className={cards ? "ad-wrap ad-cards" : "ad-wrap"}>
       <table>
         <thead>
           <tr>
@@ -57,7 +58,7 @@ function Table({ head, rows, num = [], empty = "Nimic încă." }: { head: string
             rows.map((r, i) => (
               <tr key={i}>
                 {r.map((c, j) => (
-                  <td key={j} className={num.includes(j) ? "n" : undefined}>
+                  <td key={j} className={[num.includes(j) ? "n" : "", wide.includes(j) ? "w" : ""].filter(Boolean).join(" ") || undefined} data-l={head[j]}>
                     {c}
                   </td>
                 ))}
@@ -81,6 +82,7 @@ const srcTable = (list: SrcRow[], head: string, empty?: string) => (
   <Table
     head={[head, "Sesiuni", "Timp", "Plecați", "Verificări", "Chat", "Cereri", "Au făcut ceva"]}
     num={[1, 2, 3, 4, 5, 6, 7]}
+    cards
     rows={list.slice(0, 20).map((r) => [r.k, r.n, fmtDur(r.dur), pct(r.bounce), r.checks, r.chats, r.requests, pct(r.conv)])}
     empty={empty}
   />
@@ -140,8 +142,10 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
 
       <h2 id="cereri">Cereri de raport complet</h2>
       <Table
-        head={["Când", "Site", "Scor", "Client", "Stare", ""]}
+        head={["Când", "Site", "Scor", "Client", "Stare", "Acțiuni"]}
         num={[2]}
+        wide={[3, 5]}
+        cards
         rows={requests.slice(0, 60).map((r) => [
           fmtTime(r.t),
           r.host,
@@ -174,7 +178,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
       />
 
       <h2>Pe zile</h2>
-      <Table head={["Ziua", "Sesiuni", "Vizitatori", "Verificări", "Cereri", "Chat"]} num={[1, 2, 3, 4, 5]} rows={st.byDay.map((d) => [fmtDay(d.day), d.sessions, d.visitors, d.checks, d.requests, d.chats])} />
+      <Table head={["Ziua", "Sesiuni", "Vizitatori", "Verificări", "Cereri", "Chat"]} num={[1, 2, 3, 4, 5]} cards rows={st.byDay.map((d) => [fmtDay(d.day), d.sessions, d.visitors, d.checks, d.requests, d.chats])} />
 
       <h2>Pe ore (Chișinău)</h2>
       <div className="ad-two">
@@ -191,6 +195,8 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
       <Table
         head={["Când", "Site", "Scor", "Sursa", "De unde", "Raportul", "Apoi"]}
         num={[2]}
+        wide={[6]}
+        cards
         rows={st.checks.slice(0, 80).map((c) => [
           fmtTime(c.t),
           c.host,
@@ -210,7 +216,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
         </div>
         <div>
           <h2>Pagini</h2>
-          <Table head={["Pagina", "Afișări", "Timp", "Scroll", "Ieșiri"]} num={[1, 2, 3, 4]} rows={st.byPath.slice(0, 16).map((p) => [p.k, p.n, fmtDur(p.dur), p.scroll ? pct(p.scroll) : "—", p.exits])} />
+          <Table head={["Pagina", "Afișări", "Timp", "Scroll", "Ieșiri"]} num={[1, 2, 3, 4]} cards rows={st.byPath.slice(0, 16).map((p) => [p.k, p.n, fmtDur(p.dur), p.scroll ? pct(p.scroll) : "—", p.exits])} />
         </div>
       </div>
 
@@ -263,6 +269,8 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
       <Table
         head={["Când", "Sursa", "De unde", "Drumul prin site", "Timp", "Scroll", "A făcut"]}
         num={[4, 5]}
+        wide={[3, 6]}
+        cards
         rows={st.sessions.slice(0, 80).map((s) => [
           <span key="t">
             {fmtTime(s.t)}

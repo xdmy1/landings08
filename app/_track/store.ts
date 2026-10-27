@@ -55,7 +55,7 @@ export type ReportRequest = {
 };
 
 const TZ = "Europe/Chisinau";
-const ready = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN);
+const ready = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN) && (process.env.NODE_ENV === "production" || process.env.TRACK_DEV === "1");
 const OPT = { access: "private" as const, contentType: "application/json", addRandomSuffix: false, allowOverwrite: true };
 
 /* the day a moment belongs to, by Chișinău time */

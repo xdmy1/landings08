@@ -10,3 +10,7 @@ scripts/og/*.profile
 .env*.local
 .vercel
 .env*
+
+# local build info and stray screenshots
+tsconfig.tsbuildinfo
+/*.png

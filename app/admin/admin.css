@@ -43,6 +43,22 @@
 .ad-login input { height: 54px; border-radius: 16px; border: 1.5px solid var(--line-2, var(--line)); background: #fff; padding: 0 16px; font: inherit; font-size: 17px; color: var(--ink); outline: none; }
 .ad-login input:focus { border-color: var(--ink); box-shadow: 0 0 0 4px rgba(15, 15, 14, 0.07); }
 .ad-login .err { font-size: 13.5px; color: #b42318; }
+/* on a phone, the wide tables become stacked cards: label on the left, value on the right */
+@media (max-width: 699px) {
+  .ad-cards table, .ad-cards tbody, .ad-cards tr, .ad-cards td { display: block; }
+  .ad-cards thead { display: none; }
+  .ad-cards tr { padding: 10px 14px 12px; border-top: 1px solid var(--line); }
+  .ad-cards tr:first-child { border-top: 0; }
+  .ad-cards td { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; padding: 4px 0; border: 0; text-align: right; line-height: 1.35; }
+  .ad-cards td::before { content: attr(data-l); flex: none; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); text-align: left; }
+  .ad-cards td:first-child { font-weight: 500; }
+  .ad-cards td.w { flex-direction: column; align-items: flex-start; text-align: left; gap: 3px; }
+  .ad-cards td.w .ad-actions { flex-direction: row; flex-wrap: wrap; }
+  .ad-cards td.empty { display: block; text-align: left; padding: 14px 0 6px; }
+  .ad-cards td.empty::before { content: none; }
+  .ad-cards td.w .dim { display: block; }
+}
+
 @media (min-width: 700px) {
   .ad { padding-top: 40px; }
   .ad-tiles { grid-template-columns: repeat(4, 1fr); }
