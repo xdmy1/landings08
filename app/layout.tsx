@@ -3,7 +3,7 @@ import { Analytics } from "@vercel/analytics/react";
 import Track from "./_track/track";
 import "./globals.css";
 
-const SITE = "https://landings.md";
+const SITE = "https://www.landings.md";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),

@@ -8,7 +8,7 @@ export const COMPANY = {
   address: "mun. Chișinău, Republica Moldova",
   email: "contact@landings.md",
   phone: "+373 68 327 082",
-  site: "https://landings.md",
+  site: "https://www.landings.md",
 } as const;
 
 export type PlanId = "start" | "business" | "prioritar";

@@ -1173,8 +1173,8 @@ function SeoRelated({ seo }: { seo: SeoPage }) {
 /* page                                                                */
 /* ------------------------------------------------------------------ */
 
-export default function SiteShell({ seo }: { seo?: SeoPage }) {
-  const [lang, setLang] = useState<Lang>("ro");
+export default function SiteShell({ seo, initialLang }: { seo?: SeoPage; initialLang?: Lang }) {
+  const [lang, setLang] = useState<Lang>(initialLang || "ro");
   const pickLang = (code: Lang) => {
     setLang(code);
     try {
@@ -1182,6 +1182,8 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
     } catch {
       /* nothing to remember, the pick still applies for this visit */
     }
+    const path = code === "ro" ? "/" : `/${code}`;
+    if (window.location.pathname !== path) window.location.href = path;
   };
   const [fx, setFx] = useState(false);
   const lenisRef = useRef<Lenis | null>(null);
@@ -1210,7 +1212,8 @@ export default function SiteShell({ seo }: { seo?: SeoPage }) {
   }, []);
 
   useEffect(() => {
-    if (seo) return;
+    if (seo || initialLang) return;
+    if (/bot|crawl|spider|slurp|lighthouse/i.test(navigator.userAgent)) return;
     try {
       const saved = window.localStorage.getItem("lang");
       if (saved && (LANGS as readonly string[]).includes(saved)) {

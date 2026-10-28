@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { SeoPage } from "./types";
 
-const SITE = "https://landings.md";
+const SITE = "https://www.landings.md";
 
 export function seoMetadata(page: SeoPage): Metadata {
   const url = `${SITE}/${page.slug}`;

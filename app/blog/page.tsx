@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/blog" },
   openGraph: {
     type: "website",
-    url: "https://landings.md/blog",
+    url: "https://www.landings.md/blog",
     siteName: "landings.md",
     title: "Blog | landings.md",
     description: "Ghiduri practice despre site-uri, SEO și publicitate online.",
@@ -30,15 +30,15 @@ export default function BlogIndex() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Blog",
-    "@id": "https://landings.md/blog#blog",
-    url: "https://landings.md/blog",
+    "@id": "https://www.landings.md/blog#blog",
+    url: "https://www.landings.md/blog",
     name: "Blog landings.md",
     inLanguage: "ro",
-    publisher: { "@id": "https://landings.md/#org" },
+    publisher: { "@id": "https://www.landings.md/#org" },
     blogPost: posts.map((p) => ({
       "@type": "BlogPosting",
       headline: p.title,
-      url: `https://landings.md/blog/${p.slug}`,
+      url: `https://www.landings.md/blog/${p.slug}`,
       datePublished: p.date,
     })),
   };

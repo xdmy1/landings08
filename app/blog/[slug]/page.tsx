@@ -6,7 +6,7 @@ import { POSTS } from "../posts";
 import { BlogReveal, BlogTopBar, BlogOrb, CtaBand, CtaFinal, OtherPostsLabel } from "../chrome";
 import { fmtDate } from "../format";
 
-const SITE = "https://landings.md";
+const SITE = "https://www.landings.md";
 
 export function generateStaticParams() {
   return POSTS.map((p) => ({ slug: p.slug }));

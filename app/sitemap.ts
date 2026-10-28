@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
 import { POSTS } from "./blog/posts";
 import { SEO_SLUGS } from "./_seo/index";
+import { LANGS } from "./_shell/langs";
 
-const SITE = "https://landings.md";
+const SITE = "https://www.landings.md";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
@@ -12,6 +13,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 1,
     },
+    ...LANGS.filter((l) => l !== "ro").map((l) => ({
+      url: `${SITE}/${l}`,
+      lastModified: new Date("2026-10-28"),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
     {
       url: `${SITE}/blog`,
       lastModified: new Date("2026-08-29"),

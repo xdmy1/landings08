@@ -1,4 +1,8 @@
+import type { Metadata } from "next";
 import SiteShell from "./_shell/site";
+import { LANG_ALTERNATES } from "./_shell/langs";
+
+export const metadata: Metadata = { alternates: { canonical: "/", languages: LANG_ALTERNATES } };
 
 /* questions and answers for Google's FAQ rich result; the home page only */
 const faqLd = {
