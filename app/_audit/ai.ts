@@ -22,12 +22,28 @@ export function aiReady(): boolean {
 
 let client: Anthropic | null = null;
 // a key that isn't scoped to one workspace needs the workspace named on every request
-export const ai = () =>
-  (client ??= new Anthropic({
-    maxRetries: 1,
-    timeout: 55_000,
-    defaultHeaders: process.env.ANTHROPIC_WORKSPACE_ID ? { "anthropic-workspace-id": process.env.ANTHROPIC_WORKSPACE_ID } : undefined,
-  }));
+export const ai = () => (client ??= withUsageLog(new Anthropic({
+  maxRetries: 1,
+  timeout: 55_000,
+  defaultHeaders: process.env.ANTHROPIC_WORKSPACE_ID ? { "anthropic-workspace-id": process.env.ANTHROPIC_WORKSPACE_ID } : undefined,
+})));
+
+/* every call logs its token usage, so one run's cost can be added up from the server log
+   (parse() goes through create(), so only create() is wrapped) */
+function withUsageLog(c: Anthropic): Anthropic {
+  const messages = c.beta.messages as unknown as { create: (...a: unknown[]) => Promise<unknown> };
+  const orig = messages.create.bind(c.beta.messages);
+  messages.create = async (...args: unknown[]) => {
+    const r = (await orig(...args)) as { model?: string; usage?: Record<string, unknown> } | undefined;
+    const u = r?.usage;
+    if (u) {
+      const st = u.server_tool_use as { web_search_requests?: number } | undefined;
+      console.log(`[audit] usage model=${r?.model ?? (args[0] as { model?: string })?.model ?? "?"} in=${u.input_tokens ?? 0} out=${u.output_tokens ?? 0} cw=${u.cache_creation_input_tokens ?? 0} cr=${u.cache_read_input_tokens ?? 0} ws=${st?.web_search_requests ?? 0}`);
+    }
+    return r;
+  };
+  return c;
+}
 
 const CAT = z.enum(["viteza", "seo", "design", "vanzare", "mobil", "siguranta"]);
 
