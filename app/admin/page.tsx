@@ -42,7 +42,7 @@ function Login({ error }: { error: string }) {
    `cards` = on a phone each row becomes a block with label + value; `wide` = the columns that stack there */
 function Table({ head, rows, num = [], wide = [], cards = false, empty = "Nimic încă." }: { head: string[]; rows: React.ReactNode[][]; num?: number[]; wide?: number[]; cards?: boolean; empty?: string }) {
   return (
-    <div className={cards ? "ad-wrap ad-cards" : "ad-wrap"}>
+    <div className={cards ? "pn-wrap pn-cards" : "pn-wrap"}>
       <table>
         <thead>
           <tr>
@@ -106,7 +106,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
     ]);
 
   return (
-    <main className="ad">
+    <main className="pn">
       <div className="ad-top">
         <h1>Analitici</h1>
         <nav className="ad-range" aria-label="Perioada">
