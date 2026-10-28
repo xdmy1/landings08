@@ -2,19 +2,19 @@ import type { SeoPage } from "../types";
 
 const page: SeoPage = {
   slug: "creare-website-chisinau-moldova",
-  kw: "creare website",
-  title: "Creare website Chișinău, Moldova. Site-uri scrise de la zero",
-  desc: "Creare website în Chișinău: site de prezentare, magazin online sau platformă. Cod scris de la zero, SEO inclus, livrare în 2 până la 4 săptămâni.",
+  kw: "creare site",
+  title: "Creare site în Chișinău, Moldova. Website scris de la zero",
+  desc: "Creare site în Chișinău: site de prezentare, magazin online sau platformă. Cod scris de la zero, SEO inclus, livrare în 2 până la 4 săptămâni.",
 
-  h1a: "Creare website în Chișinău,",
+  h1a: "Creare site în Chișinău,",
   words: ["rapid.", "curat.", "care vinde."],
-  sub: "Facem creare website pentru firme din Moldova și Europa: site de prezentare, magazin online sau platformă cu cont și panou de administrare. Cod scris de la zero, cu SEO direct în cod, livrat în două până la patru săptămâni.",
+  sub: "Facem creare site pentru firme din Moldova și Europa: site de prezentare, magazin online sau platformă cu cont și panou de administrare. Cod scris de la zero, cu SEO direct în cod, livrat în două până la patru săptămâni.",
 
-  introLabel: "Creare website",
-  introTitle: "Creare website înseamnă cod scris de la zero, nu un șablon cumpărat.",
+  introLabel: "Creare site",
+  introTitle: "Creare site înseamnă cod scris de la zero, nu un șablon cumpărat.",
   introParas: [
-    "Mare parte din ofertele de creare website din Chișinău înseamnă același template cumpărat o dată și revândut de zeci de ori. Se vede în viteză, se vede în Google și se vede pe telefon, acolo unde intră astăzi majoritatea oamenilor. Noi scriem fiecare pagină în cod, de la zero, ca site-ul să încarce instant și să fie al tău, nu al unui plugin.",
-    "Un proiect de creare website începe la noi cu ce vinzi și cui. Designul vine după. Structura paginilor, textele, butoanele și formularele sunt gândite ca omul care intră de pe telefon să înțeleagă în zece secunde ce faci și să te contacteze, nu să se piardă prin meniuri.",
+    "Mare parte din ofertele de creare site din Chișinău înseamnă același template cumpărat o dată și revândut de zeci de ori. Se vede în viteză, se vede în Google și se vede pe telefon, acolo unde intră astăzi majoritatea oamenilor. Noi scriem fiecare pagină în cod, de la zero, ca site-ul să încarce instant și să fie al tău, nu al unui plugin.",
+    "Un proiect de creare site începe la noi cu ce vinzi și cui. Designul vine după. Structura paginilor, textele, butoanele și formularele sunt gândite ca omul care intră de pe telefon să înțeleagă în zece secunde ce faci și să te contacteze, nu să se piardă prin meniuri.",
     "Site-ul pleacă la drum cu SEO tehnic scris direct în cod: titluri, date structurate, sitemap, viteză, indexare. După creare website nu mai plătești separat pentru optimizarea de bază. Dacă vrei mai mult, continuăm cu SEO lunar și backlinkuri, exact cum am făcut pentru Davo.md.",
   ],
   introPoints: [
@@ -23,7 +23,7 @@ const page: SeoPage = {
     { t: "Livrare în 2 până la 4 săptămâni", d: "Un site de prezentare iese în două săptămâni. Un magazin online sau o platformă cu conturi, în trei sau patru." },
   ],
 
-  servLabel: "Ce include creare website",
+  servLabel: "Ce include creare site",
   services: [
     { name: "Creare website de prezentare", desc: "Paginile care explică ce faci, pentru cine și de ce să te aleagă pe tine. O singură pagină sau un site complet, cu o pagină pentru fiecare serviciu." },
     { name: "Creare website cu magazin", desc: "Catalog, coș, plăți online și panou de administrare, pentru firmele care vând direct de pe site." },
@@ -33,7 +33,7 @@ const page: SeoPage = {
   ],
 
   casesLabel: "Case studies",
-  casesLine: "Trei proiecte de creare website livrate din Chișinău, cu cifre care se pot verifica.",
+  casesLine: "Trei proiecte de creare site livrate din Chișinău, cu cifre care se pot verifica.",
   cases: [
     {
       key: "davo",
