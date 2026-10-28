@@ -529,6 +529,13 @@ button {
   gap: 14px;
   flex-wrap: wrap;
 }
+.hero-meta {
+  flex-wrap: wrap;
+}
+/* on a narrow screen the email drops under the buttons, still on the right */
+.hero-meta-links:last-child {
+  margin-left: auto;
+}
 
 .icon-btn {
   width: 40px;
@@ -1614,6 +1621,27 @@ button {
   display: inline-block;
 }
 
+/* the Google rating, next to the chat buttons */
+.g-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 4px;
+  font-size: 13px;
+  color: var(--ink-2);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.g-rating svg {
+  color: #e8a317;
+}
+.g-rating b {
+  font-weight: 600;
+  color: var(--ink);
+}
+.g-rating:hover {
+  color: var(--ink);
+}
 .mail-link {
   font: inherit;
   color: inherit;

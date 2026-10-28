@@ -531,6 +531,16 @@ const T: Record<Lang, Copy> = {
 const SECTION_IDS = ["proiecte", "servicii", "mentenanta", "contact"];
 const EMAIL = "contact@landings.md";
 const WHATSAPP = "https://wa.me/37368327082";
+/* the Google Business profile: the rating and count as Google shows them (updated by hand) */
+const GOOGLE = { url: "https://www.google.com/maps?cid=2444846298228085928", rating: "5,0", count: 3 };
+const G_LABEL: Record<Lang, (n: number) => string> = {
+  ro: (n) => `pe Google, ${n} recenzii`,
+  en: (n) => `on Google, ${n} reviews`,
+  de: (n) => `bei Google, ${n} Bewertungen`,
+  fr: (n) => `sur Google, ${n} avis`,
+  es: (n) => `en Google, ${n} reseñas`,
+  ru: (n) => `в Google, ${n} отзыва`,
+};
 const TELEGRAM = "https://t.me/damiqqn";
 const INSTAGRAM = "https://www.instagram.com/landings.md";
 
@@ -1345,6 +1355,12 @@ export default function SiteShell({ seo, initialLang }: { seo?: SeoPage; initial
                 </a>
                 <a className="icon-btn" href={TELEGRAM} target="_blank" rel="noopener noreferrer" aria-label="Telegram">
                   <TelegramIcon />
+                </a>
+                <a className="g-rating" href={GOOGLE.url} target="_blank" rel="noopener noreferrer" data-track="Recenzii Google">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3l-5.9 3.3 1.3-6.6L2.5 9.4l6.6-.8z" />
+                  </svg>
+                  <b>{GOOGLE.rating}</b> {G_LABEL[lang](GOOGLE.count)}
                 </a>
               </div>
               <div className="hero-meta-links">
