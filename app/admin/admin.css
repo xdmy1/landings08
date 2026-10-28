@@ -30,10 +30,8 @@
 .pn-flash.bad { background: #fde8e6; color: #9b1c12; }
 .pn-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
 .pn-actions .btn, .pn-actions .pill-btn { height: 34px; padding: 0 14px; font-size: 13px; white-space: nowrap; }
-.pn-barcell { position: relative; display: block; min-width: 90px; padding-left: 4px; }
-.pn-barcell i { position: absolute; left: 0; top: 2px; bottom: 2px; background: #e4e4dd; border-radius: 4px; z-index: 0; }
-.pn-barcell { z-index: 1; }
-.pn-barcell::after { content: ""; }
+.pn-barcell { position: relative; isolation: isolate; display: block; min-width: 90px; padding-left: 4px; }
+.pn-barcell i { position: absolute; left: 0; top: 2px; bottom: 2px; background: #e4e4dd; border-radius: 4px; z-index: -1; }
 .pn-note { margin-top: 30px; font-size: 13px; line-height: 1.55; color: var(--ink-3); }
 .pn-note code { font-size: 12px; background: #f1f1ec; padding: 1px 5px; border-radius: 6px; }
 .pn-login { max-width: 380px; margin: 14vh auto 0; padding: 0 16px; }
