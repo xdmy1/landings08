@@ -1621,6 +1621,22 @@ button {
   display: inline-block;
 }
 
+/* how a website is priced, under the Services label */
+.serv-note {
+  max-width: 640px;
+  margin-top: 18px;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.serv-note .tlink {
+  white-space: nowrap;
+}
+.maint-only {
+  color: var(--ink);
+  font-weight: 500;
+}
+
 /* the Google rating, next to the chat buttons */
 .g-rating {
   display: inline-flex;

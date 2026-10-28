@@ -533,6 +533,15 @@ const EMAIL = "contact@landings.md";
 const WHATSAPP = "https://wa.me/37368327082";
 /* the Google Business profile: the rating and count as Google shows them (updated by hand) */
 const GOOGLE = { url: "https://www.google.com/maps?cid=2444846298228085928", rating: "5,0", count: 3 };
+/* how a website is priced: said plainly next to the services and above the maintenance plans */
+const PRICE_NOTE: Record<Lang, { serv: string; maint: string }> = {
+  ro: { serv: "Un site nu are preț de listă: fiecare proiect e altfel. Spune-ne ce îți trebuie și primești în aceeași zi un preț fix, înainte să începem.", maint: "Prețurile de mai jos sunt doar pentru întreținerea lunară, după lansare. Crearea unui site se ofertează separat." },
+  en: { serv: "There is no price list for a website: every project is different. Tell us what you need and you get a fixed price the same day, before we start.", maint: "The prices below are only for monthly maintenance, after launch. Building a website is quoted separately." },
+  de: { serv: "Für eine Website gibt es keine Preisliste: jedes Projekt ist anders. Sag uns, was du brauchst, und du bekommst noch am selben Tag einen Festpreis, bevor wir anfangen.", maint: "Die Preise unten gelten nur für die monatliche Betreuung nach dem Start. Der Bau einer Website wird separat angeboten." },
+  fr: { serv: "Un site n’a pas de prix catalogue : chaque projet est différent. Dites-nous ce qu’il vous faut et vous recevez un prix fixe le jour même, avant de commencer.", maint: "Les prix ci-dessous concernent uniquement la maintenance mensuelle, après la mise en ligne. La création d’un site fait l’objet d’un devis séparé." },
+  es: { serv: "Un sitio web no tiene precio de lista: cada proyecto es distinto. Cuéntanos qué necesitas y recibes un precio fijo el mismo día, antes de empezar.", maint: "Los precios de abajo son solo para el mantenimiento mensual, después del lanzamiento. La creación de un sitio se presupuesta aparte." },
+  ru: { serv: "У сайта нет прайс-листа: каждый проект разный. Расскажите, что вам нужно, и в тот же день получите фиксированную цену, до начала работы.", maint: "Цены ниже — только за ежемесячное сопровождение после запуска. Создание сайта оценивается отдельно." },
+};
 const G_LABEL: Record<Lang, (n: number) => string> = {
   ro: (n) => `pe Google, ${n} recenzii`,
   en: (n) => `on Google, ${n} reviews`,
@@ -1415,6 +1424,12 @@ export default function SiteShell({ seo, initialLang }: { seo?: SeoPage; initial
                   {t.servLabel}
                 </h2>
               </div>
+              <p className="serv-note fu" style={d("0.08s")}>
+                {PRICE_NOTE[lang].serv}{" "}
+                <a className="tlink" href="#contact" onClick={(e) => goto(e, "contact")}>
+                  {t.ctaP}
+                </a>
+              </p>
             </div>
             <div className="srv-list" style={{ marginTop: 44 }}>
               {t.services.map((s, i) => (
@@ -1464,6 +1479,9 @@ export default function SiteShell({ seo, initialLang }: { seo?: SeoPage; initial
               </div>
               <p className="maint-lead fu" style={d("0.08s")}>
                 {t.maint.lead}
+              </p>
+              <p className="maint-lead maint-only fu" style={d("0.14s")}>
+                {PRICE_NOTE[lang].maint}
               </p>
             </div>
             <div className="price-grid rv" style={{ marginTop: 40 }}>
