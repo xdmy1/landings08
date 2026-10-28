@@ -11,7 +11,9 @@ import { z } from "zod/v4";
 import type { Analysis, Audit, GooglePos } from "./types";
 import { googlePages, serpReady } from "./serp";
 
+/* the model behind the check; AUDIT_MODEL (e.g. claude-opus-5-5) overrides it for one run */
 export const MODEL = "claude-sonnet-5-5";
+export const model = () => process.env.AUDIT_MODEL || MODEL;
 export const BETAS = ["server-side-fallback-2026-07-01"];
 
 export function aiReady(): boolean {
@@ -88,7 +90,7 @@ export async function analyse(a: Audit): Promise<Analysis> {
   });
 
   const r = await ai().beta.messages.parse({
-    model: MODEL,
+    model: model(),
     max_tokens: 12000,
     betas: BETAS,
     fallbacks: "default",
@@ -127,7 +129,7 @@ const PICK_SYSTEM = `Pick the single search phrase a local customer is most like
 
 async function pickKeyword(brief: string): Promise<string> {
   const r = await ai().beta.messages.create({
-    model: MODEL,
+    model: model(),
     max_tokens: 400,
     betas: BETAS,
     fallbacks: "default",
@@ -158,7 +160,7 @@ async function viaGoogle(a: Audit): Promise<GooglePos> {
   const keyword = a.keyword || (await pickKeyword(brief));
   const { rows, position, page } = await googlePages(keyword, a.host);
   const r = await ai().beta.messages.parse({
-    model: MODEL,
+    model: model(),
     max_tokens: 6000,
     betas: BETAS,
     fallbacks: "default",
@@ -180,7 +182,7 @@ async function viaSearch(a: Audit): Promise<GooglePos> {
   const messages: Anthropic.Beta.BetaMessageParam[] = [{ role: "user", content: `${briefOf(a)}\nSearch phrase from the owner: ${a.keyword || "(none, choose one)"}` }];
   for (let turn = 0; turn < 3; turn++) {
     const r = await ai().beta.messages.parse({
-      model: MODEL,
+      model: model(),
       max_tokens: 6000,
       betas: BETAS,
       fallbacks: "default",

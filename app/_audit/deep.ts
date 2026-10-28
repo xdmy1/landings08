@@ -5,7 +5,7 @@ import type Anthropic from "@anthropic-ai/sdk";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod/v4";
 import { parse } from "node-html-parser";
-import { BETAS, MODEL, ai, briefOf, img } from "./ai";
+import { BETAS, ai, briefOf, img, model } from "./ai";
 import { collectFacts, normaliseUrl, pageSpeed, safeFetch, text } from "./collect";
 import type { Audit, Deep, Facts, Vitals } from "./types";
 
@@ -26,7 +26,7 @@ async function ask<T>(system: string, user: Anthropic.Beta.BetaContentBlockParam
   const messages: Anthropic.Beta.BetaMessageParam[] = [{ role: "user", content: user }];
   for (let turn = 0; turn < 4; turn++) {
     const r = await ai().beta.messages.parse({
-      model: MODEL,
+      model: model(),
       max_tokens: opts.maxTokens ?? 8000,
       betas: BETAS,
       fallbacks: "default",
@@ -54,7 +54,7 @@ async function research(system: string, user: string, maxUses: number): Promise<
     let out = "";
     for (let turn = 0; turn < 4; turn++) {
       const r = await ai().beta.messages.create({
-        model: MODEL,
+        model: model(),
         max_tokens: 6000,
         betas: BETAS,
         fallbacks: "default",
