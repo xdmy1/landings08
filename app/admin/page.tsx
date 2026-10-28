@@ -23,7 +23,7 @@ const pct = (n: number) => `${n}%`;
 
 function Login({ error }: { error: string }) {
   return (
-    <main className="ad-login">
+    <main className="pn-login">
       <img src="/images/logo-mark.webp" alt="landings.md" width={57} height={96} />
       <h1>Analitici</h1>
       <form method="post" action="/api/admin/login">
@@ -99,7 +99,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
   const hourRows = (from: number) =>
     st.byHour.slice(from, from + 12).map((n, i) => [
       `${String(from + i).padStart(2, "0")}:00`,
-      <span key="b" className="ad-barcell">
+      <span key="b" className="pn-barcell">
         <i style={{ width: `${Math.round((n / hourMax) * 100)}%` }} />
         {n}
       </span>,
@@ -107,37 +107,37 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
 
   return (
     <main className="pn">
-      <div className="ad-top">
+      <div className="pn-top">
         <h1>Analitici</h1>
-        <nav className="ad-range" aria-label="Perioada">
+        <nav className="pn-range" aria-label="Perioada">
           {Object.entries(RANGES).map(([k, r]) => (
             <a key={k} href={`/admin?r=${k}`} className={k === rk ? "on" : undefined}>
               {r.label}
             </a>
           ))}
         </nav>
-        <a className="ad-out" href="/api/admin/logout">
+        <a className="pn-out" href="/api/admin/logout">
           Ieși
         </a>
       </div>
-      {searchParams.ok && <p className="ad-flash ok">Raportul a fost trimis pe email și e deschis pentru client.</p>}
-      {searchParams.err === "email" && <p className="ad-flash bad">Raportul e aprobat și deschis, dar emailul nu a plecat. Apasă „Retrimite”.</p>}
-      {(searchParams.err === "lipsa" || searchParams.err === "date") && <p className="ad-flash bad">Nu am găsit datele cererii.</p>}
-      {searchParams.err === "server" && <p className="ad-flash bad">Aprobarea nu a mers. Încearcă din nou; dacă se repetă, spune-mi.</p>}
+      {searchParams.ok && <p className="pn-flash ok">Raportul a fost trimis pe email și e deschis pentru client.</p>}
+      {searchParams.err === "email" && <p className="pn-flash bad">Raportul e aprobat și deschis, dar emailul nu a plecat. Apasă „Retrimite”.</p>}
+      {(searchParams.err === "lipsa" || searchParams.err === "date") && <p className="pn-flash bad">Nu am găsit datele cererii.</p>}
+      {searchParams.err === "server" && <p className="pn-flash bad">Aprobarea nu a mers. Încearcă din nou; dacă se repetă, spune-mi.</p>}
 
-      <div className="ad-tiles">
-        <div className="ad-tile"><b>{st.visitors}</b><span>vizitatori</span></div>
-        <div className="ad-tile"><b>{st.sessions.length}</b><span>vizite (sesiuni)</span></div>
-        <div className="ad-tile"><b>{pct(st.returning)}</b><span>s-au mai întors</span></div>
-        <div className="ad-tile"><b>{st.views}</b><span>pagini deschise</span></div>
-        <div className="ad-tile"><b>{fmtDur(st.avgDur)}</b><span>timp mediu pe vizită{st.medDur ? `, median ${fmtDur(st.medDur)}` : ""}</span></div>
-        <div className="ad-tile"><b>{pct(st.bounce)}</b><span>au plecat sub 10 s fără să facă nimic</span></div>
-        <div className="ad-tile"><b>{st.checks.length}</b><span>site-uri verificate</span></div>
-        <div className="ad-tile"><b>{st.avgScore ?? "—"}</b><span>scor mediu la verificări</span></div>
-        <div className="ad-tile"><b>{st.reportsOpened}</b><span>rapoarte deschise</span></div>
-        <div className="ad-tile"><b>{st.requests}</b><span>cereri de raport complet</span></div>
-        <div className="ad-tile"><b>{st.chats}</b><span>apăsări pe WhatsApp sau Telegram</span></div>
-        <div className="ad-tile"><b>{st.clicks}</b><span>apăsări în total pe butoanele importante</span></div>
+      <div className="pn-tiles">
+        <div className="pn-tile"><b>{st.visitors}</b><span>vizitatori</span></div>
+        <div className="pn-tile"><b>{st.sessions.length}</b><span>vizite (sesiuni)</span></div>
+        <div className="pn-tile"><b>{pct(st.returning)}</b><span>s-au mai întors</span></div>
+        <div className="pn-tile"><b>{st.views}</b><span>pagini deschise</span></div>
+        <div className="pn-tile"><b>{fmtDur(st.avgDur)}</b><span>timp mediu pe vizită{st.medDur ? `, median ${fmtDur(st.medDur)}` : ""}</span></div>
+        <div className="pn-tile"><b>{pct(st.bounce)}</b><span>au plecat sub 10 s fără să facă nimic</span></div>
+        <div className="pn-tile"><b>{st.checks.length}</b><span>site-uri verificate</span></div>
+        <div className="pn-tile"><b>{st.avgScore ?? "—"}</b><span>scor mediu la verificări</span></div>
+        <div className="pn-tile"><b>{st.reportsOpened}</b><span>rapoarte deschise</span></div>
+        <div className="pn-tile"><b>{st.requests}</b><span>cereri de raport complet</span></div>
+        <div className="pn-tile"><b>{st.chats}</b><span>apăsări pe WhatsApp sau Telegram</span></div>
+        <div className="pn-tile"><b>{st.clicks}</b><span>apăsări în total pe butoanele importante</span></div>
       </div>
 
       <h2 id="cereri">Cereri de raport complet</h2>
@@ -163,7 +163,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
           ) : (
             <span key="s" className="sc mid">așteaptă plata</span>
           ),
-          <span key="a" className="ad-actions">
+          <span key="a" className="pn-actions">
             <a className="pill-btn btn-sm" href={`/r/${r.id}?k=${linkKey(r.id)}`} target="_blank" rel="noopener">
               Vezi raportul
             </a>
@@ -181,7 +181,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
       <Table head={["Ziua", "Sesiuni", "Vizitatori", "Verificări", "Cereri", "Chat"]} num={[1, 2, 3, 4, 5]} cards rows={st.byDay.map((d) => [fmtDay(d.day), d.sessions, d.visitors, d.checks, d.requests, d.chats])} />
 
       <h2>Pe ore (Chișinău)</h2>
-      <div className="ad-two">
+      <div className="pn-two">
         <Table head={["Ora", "Sesiuni"]} rows={hourRows(0)} />
         <Table head={["Ora", "Sesiuni"]} rows={hourRows(12)} />
       </div>
@@ -209,7 +209,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
         empty="Nicio verificare în perioada asta."
       />
 
-      <div className="ad-two">
+      <div className="pn-two">
         <div>
           <h2>Ce apasă</h2>
           <Table head={["Buton", "Apăsări"]} num={[1]} rows={rowsOf(st.byClick, 20)} />
@@ -220,7 +220,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
         </div>
       </div>
 
-      <div className="ad-two">
+      <div className="pn-two">
         <div>
           <h2>Secțiuni văzute pe pagina de acasă</h2>
           <Table head={["Secțiunea", "Vizite"]} num={[1]} rows={st.bySeen.map((r) => [SECTION[r.k] || r.k, r.n])} />
@@ -233,7 +233,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
         </div>
       </div>
 
-      <div className="ad-two">
+      <div className="pn-two">
         <div>
           <h2>Dispozitive</h2>
           <Table head={["Dispozitiv", "Vizite"]} num={[1]} rows={rowsOf(st.byDev)} />
@@ -250,7 +250,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
         </div>
       </div>
 
-      <div className="ad-two">
+      <div className="pn-two">
         <div>
           <h2>Țări</h2>
           <Table head={["Țara", "Vizite"]} num={[1]} rows={rowsOf(st.byCountry, 10)} />
@@ -286,7 +286,7 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
         empty="Nicio vizită în perioada asta."
       />
 
-      <p className="ad-note">
+      <p className="pn-note">
         Orele sunt pe Chișinău. O vizită = un tab; după 30 de minute de pauză începe alta. Timpul e numărat doar cât pagina e pe ecran. Vizitele tale nu se numără din browserul în care ai intrat aici. Reclamele din Meta apar ca „Meta (reclamă)” după fbclid chiar și fără UTM; ca să vezi și campania, pune pe link{" "}
         <code>?utm_source=facebook&amp;utm_medium=cpc&amp;utm_campaign=numele-campaniei&amp;utm_content=reclama-1</code>.
       </p>
