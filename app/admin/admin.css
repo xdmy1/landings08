@@ -28,6 +28,8 @@
 .pn-flash { margin: 0 0 14px; padding: 12px 14px; border-radius: 14px; font-size: 14px; }
 .pn-flash.ok { background: #e7f5ec; color: #135c32; }
 .pn-flash.bad { background: #fde8e6; color: #9b1c12; }
+.pn-ipform { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.pn-ipform .pill-btn { height: 30px; padding: 0 12px; font-size: 12.5px; }
 .pn-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
 .pn-actions .btn, .pn-actions .pill-btn { height: 34px; padding: 0 14px; font-size: 13px; white-space: nowrap; }
 .pn-barcell { position: relative; isolation: isolate; display: block; min-width: 90px; padding-left: 4px; }

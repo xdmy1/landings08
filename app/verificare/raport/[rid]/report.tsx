@@ -149,6 +149,11 @@ function RequestReport({ parts, rid, host, eur, mdl }: { parts: Record<string, u
     try {
       const r = await fetch("/api/audit/request", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...parts, deep: readParts(rid), email: email.trim(), phone: "" }) });
       const j = await r.json().catch(() => ({}));
+      if (j.error === "banned") {
+        setErr("Banat pe IP. Nice try.");
+        setBusy(false);
+        return;
+      }
       if (!r.ok || !j.id) throw new Error(j.error || "request");
       const s = { id: j.id as string, email: email.trim() };
       try {

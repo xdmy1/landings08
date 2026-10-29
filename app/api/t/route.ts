@@ -1,4 +1,5 @@
 import { fromRequest, logEvent, type Ev, type EvKind } from "../../_track/store";
+import { isBanned } from "../../_track/bans";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +18,7 @@ export async function POST(req: Request) {
   }
   if (!b || !KINDS.includes(b.k as EvKind)) return done();
   const who = fromRequest(req);
-  if (who.me || who.bot) return done();
+  if (who.me || who.bot || (await isBanned(who.ip))) return done();
   const ev: Ev = {
     t: new Date().toISOString(),
     k: b.k as EvKind,

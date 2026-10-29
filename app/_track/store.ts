@@ -38,6 +38,7 @@ export type Ev = {
   score?: number | null; // its score (done, request)
   email?: string; // (request, approve)
   req?: string; // request id (request, approve)
+  ip?: string; // only on check, done, request: to spot and block abuse
 };
 
 export type ReportRequest = {
@@ -88,7 +89,7 @@ export function uaInfo(ua: string): { dev: string; br: string; os: string; app: 
 }
 
 /* who is behind a request, from the tracker's cookies and Vercel's headers */
-export function fromRequest(req: Request): Pick<Ev, "sid" | "vid" | "dev" | "br" | "os" | "app" | "country" | "city"> & { me: boolean; bot: boolean } {
+export function fromRequest(req: Request): Pick<Ev, "sid" | "vid" | "dev" | "br" | "os" | "app" | "country" | "city"> & { me: boolean; bot: boolean; ip: string } {
   const jar: Record<string, string> = {};
   for (const c of (req.headers.get("cookie") || "").split(";")) {
     const i = c.indexOf("=");
@@ -118,6 +119,7 @@ export function fromRequest(req: Request): Pick<Ev, "sid" | "vid" | "dev" | "br"
     city: city.slice(0, 40),
     me: jar.lmd_me === "1",
     bot: u.bot,
+    ip: (req.headers.get("x-forwarded-for")?.split(",")[0].trim() || req.headers.get("x-real-ip") || "").slice(0, 45),
   };
 }
 

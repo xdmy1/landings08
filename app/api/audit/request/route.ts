@@ -6,6 +6,7 @@ import { AUDIT_EUR } from "../../../_audit/price";
 import { categoryScores, overallScore } from "../../../_audit/score";
 import { readAudit, readJson } from "../../../_audit/state";
 import { fromRequest, logEvent, saveRequest, saveRequestParts, type ReportRequest } from "../../../_track/store";
+import { isBanned } from "../../../_track/bans";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -21,7 +22,9 @@ export async function POST(req: Request) {
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase().slice(0, 60) : "";
   const phone = typeof body.phone === "string" ? body.phone.replace(/\s+/g, " ").trim().slice(0, 30) : "";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return json({ error: "email" }, 400);
-  if ((await allow("request", clientIp(req))) !== "ok") return json({ error: "limit" }, 429);
+  if (await isBanned(clientIp(req))) return json({ error: "banned" }, 429);
+  const gate = await allow("request", clientIp(req));
+  if (gate !== "ok") return json({ error: gate === "banned" ? "banned" : "limit" }, 429);
 
   const id = newRid();
   const now = new Date().toISOString();
@@ -41,6 +44,6 @@ export async function POST(req: Request) {
     sendMail({ email: adminEmail() }, m.studio.subject, m.studio.html, m.studio.text).catch(() => false),
   ]);
   const who = fromRequest(req);
-  if (!who.me) await logEvent({ t: now, k: "request", host: a.host, rid: a.id, req: id, email, score: r.score, sid: who.sid, vid: who.vid, dev: who.dev, br: who.br, os: who.os, app: who.app, country: who.country, city: who.city });
+  if (!who.me) await logEvent({ t: now, k: "request", host: a.host, rid: a.id, req: id, email, score: r.score, sid: who.sid, vid: who.vid, dev: who.dev, br: who.br, os: who.os, app: who.app, country: who.country, city: who.city, ip: who.ip });
   return json({ ok: true, id });
 }

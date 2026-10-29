@@ -21,6 +21,7 @@ const ERR: Record<string, string> = {
   not_configured: "Verificarea pornește în curând. Până atunci, scrie-ne pe WhatsApp și verificăm noi site-ul.",
   net: "Nu am putut trimite cererea. Verifică internetul și încearcă din nou.",
   own: "Site-ul ăsta e făcut de noi, la landings.md, așa că nu îl evaluăm singuri. Vrei unul la fel? Scrie-ne pe WhatsApp.",
+  banned: "Banat pe IP. Nice try.",
 };
 
 const post = async (url: string, body?: unknown) => {

@@ -3,13 +3,15 @@
    Without the store (local development) the counters live in memory. */
 
 import { adminEmail, sendMail } from "../_pay/maib";
+import { ban } from "../_track/bans";
 import { dayOf, readStoreJson, storeWritable, writeStoreJson } from "../_track/store";
 
-type Day = { start: number; request: number; ip: Record<string, number>; notified?: boolean };
+type Day = { start: number; request: number; ip: Record<string, number>; over?: Record<string, number>; notified?: boolean };
 type Kind = "start" | "request";
 
 const CAP = () => Number(process.env.AUDIT_PER_DAY || 50); // checks per day, the whole site
 const CAP_IP = () => Number(process.env.AUDIT_PER_IP_DAY || 5); // checks per day, one visitor
+const OVER_BAN = 3; // keeps trying past the visitor's limit this many times: blocked for good
 
 const mem = new Map<string, Day>();
 const blank = (): Day => ({ start: 0, request: 0, ip: {} });
@@ -23,8 +25,9 @@ async function save(day: string, d: Day): Promise<void> {
   else mem.set(day, d);
 }
 
-/* one more check (or report request) from this visitor today: allowed, or over the visitor's or the site's limit */
-export async function allow(kind: Kind, ip: string): Promise<"ok" | "ip" | "site"> {
+/* one more check (or report request) from this visitor today: allowed, over the visitor's or the
+   site's limit, or blocked for good after too many tries past the limit */
+export async function allow(kind: Kind, ip: string): Promise<"ok" | "ip" | "site" | "banned"> {
   const day = dayOf(new Date());
   const d = await load(day);
   const key = `${kind}:${ip}`;
@@ -36,7 +39,16 @@ export async function allow(kind: Kind, ip: string): Promise<"ok" | "ip" | "site
     }
     return "site";
   }
-  if ((d.ip[key] || 0) >= CAP_IP()) return "ip";
+  if ((d.ip[key] || 0) >= CAP_IP()) {
+    d.over ??= {};
+    d.over[ip] = (d.over[ip] || 0) + 1;
+    await save(day, d);
+    if (d.over[ip] >= OVER_BAN) {
+      await ban(ip, `automat: a încercat de ${d.over[ip]} ori peste limita zilnică`);
+      return "banned";
+    }
+    return "ip";
+  }
   d[kind] += 1;
   d.ip[key] = (d.ip[key] || 0) + 1;
   await save(day, d);

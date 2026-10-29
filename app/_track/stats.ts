@@ -24,11 +24,11 @@ export type Session = {
   pages: Page[];
   dur: number;
   scroll: number;
-  checks: { host: string; score: number | null; rid: string }[];
+  checks: { host: string; score: number | null; rid: string; ip: string }[];
   clicks: string[];
   requests: string[];
 };
-export type Check = { t: string; host: string; score: number | null; src: string; country: string; city: string; dev: string; opened: boolean; reportDur: number; requested: boolean; clicks: string[] };
+export type Check = { t: string; host: string; score: number | null; src: string; country: string; city: string; dev: string; ip: string; opened: boolean; reportDur: number; requested: boolean; clicks: string[] };
 export type Row = { k: string; n: number };
 export type SrcRow = Row & { dur: number; bounce: number; checks: number; chats: number; requests: number; conv: number };
 export type PathRow = Row & { dur: number; scroll: number; exits: number };
@@ -192,7 +192,7 @@ export function stats(evs: Ev[]): Stats {
         }
       }
       if (e.k === "click" && e.to) s.clicks.push(e.to);
-      if (e.k === "check" && e.host) s.checks.push({ host: e.host, score: null, rid: e.rid || "" });
+      if (e.k === "check" && e.host) s.checks.push({ host: e.host, score: null, rid: e.rid || "", ip: e.ip || "" });
       if (e.k === "done" && e.host) {
         const c = s.checks.find((x) => x.host === e.host && x.score === null) || s.checks.find((x) => x.host === e.host);
         if (c) c.score = e.score ?? null;
@@ -217,7 +217,7 @@ export function stats(evs: Ev[]): Stats {
     for (const c of s.checks) {
       const rp = c.rid ? pagesByRid.get(c.rid) || [] : [];
       const when = evs.find((e) => e.k === "check" && e.host === c.host && (e.sid || e.vid) === s.sid.split("#")[0])?.t || s.t;
-      checks.push({ t: when, host: c.host, score: c.score, src: s.src, country: s.country, city: s.city, dev: s.dev, opened: rp.length > 0, reportDur: rp.reduce((n, p) => n + p.dur, 0), requested: requests.some((r) => r.rid === c.rid), clicks: s.clicks.filter((x) => /Raport|WhatsApp|Telegram/i.test(x)) });
+      checks.push({ t: when, host: c.host, score: c.score, src: s.src, country: s.country, city: s.city, dev: s.dev, ip: c.ip, opened: rp.length > 0, reportDur: rp.reduce((n, p) => n + p.dur, 0), requested: requests.some((r) => r.rid === c.rid), clicks: s.clicks.filter((x) => /Raport|WhatsApp|Telegram/i.test(x)) });
     }
   }
   checks.sort((a, b) => b.t.localeCompare(a.t));

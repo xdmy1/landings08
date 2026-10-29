@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { COOKIE, linkKey, tokenOk } from "../_track/admin";
 import { dayOf, fmtTime, lastDays, listRequests, loadDay } from "../_track/store";
+import { loadBans } from "../_track/bans";
 import { stats, type Row, type SrcRow } from "../_track/stats";
 import "./admin.css";
 
@@ -93,7 +94,19 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
   const rk = RANGES[searchParams.r || ""] ? (searchParams.r as string) : "7";
   const today = dayOf(new Date());
   const days = lastDays(RANGES[rk].n);
-  const [events, requests] = await Promise.all([Promise.all(days.map((d) => loadDay(d, today))).then((x) => x.flat()), listRequests()]);
+  const [events, requests, bans] = await Promise.all([Promise.all(days.map((d) => loadDay(d, today))).then((x) => x.flat()), listRequests(), loadBans(true)]);
+  const banBtn = (ip: string) =>
+    !ip ? (
+      <span className="dim">—</span>
+    ) : bans[ip] ? (
+      <span className="dim">{ip}<br />blocat</span>
+    ) : (
+      <form method="post" action="/api/admin/ban" className="pn-ipform">
+        <input type="hidden" name="ip" value={ip} />
+        <span className="dim">{ip}</span>
+        <button className="pill-btn btn-sm" type="submit" title="Nu mai poate porni verificări">Blochează</button>
+      </form>
+    );
   const st = stats(events);
   const hourMax = Math.max(1, ...st.byHour);
   const hourRows = (from: number) =>
@@ -193,9 +206,9 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
 
       <h2>Site-uri verificate</h2>
       <Table
-        head={["Când", "Site", "Scor", "Sursa", "De unde", "Raportul", "Apoi"]}
+        head={["Când", "Site", "Scor", "Sursa", "De unde", "Raportul", "Apoi", "IP"]}
         num={[2]}
-        wide={[6]}
+        wide={[6, 7]}
         cards
         rows={st.checks.slice(0, 80).map((c) => [
           fmtTime(c.t),
@@ -205,8 +218,27 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
           <span key="w" className="dim">{[c.city || c.country, c.dev].filter(Boolean).join(", ")}</span>,
           c.opened ? `deschis, ${fmtDur(c.reportDur)}` : <span className="dim">nedeschis</span>,
           [c.requested ? "a cerut raportul" : "", ...c.clicks].filter(Boolean).join(", ") || <span className="dim">nimic</span>,
+          <span key="ip">{banBtn(c.ip)}</span>,
         ])}
         empty="Nicio verificare în perioada asta."
+      />
+
+      <h2 id="ban">IP-uri blocate</h2>
+      <Table
+        head={["IP", "De când", "Notă", ""]}
+        rows={Object.entries(bans)
+          .sort((a, b) => b[1].t.localeCompare(a[1].t))
+          .map(([ip, b]) => [
+            ip,
+            fmtTime(b.t),
+            b.note || <span className="dim">—</span>,
+            <form key="u" method="post" action="/api/admin/ban">
+              <input type="hidden" name="ip" value={ip} />
+              <input type="hidden" name="action" value="unban" />
+              <button className="pill-btn btn-sm" type="submit">Deblochează</button>
+            </form>,
+          ])}
+        empty="Niciun IP blocat. Apasă „Blochează” lângă o verificare ca să oprești adresa aceea."
       />
 
       <div className="pn-two">

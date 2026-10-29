@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   try {
     const analysis = await analyse(a);
     const who = fromRequest(req);
-    if (!who.me && !who.bot) await logEvent({ t: new Date().toISOString(), k: "done", host: a.host, rid: a.id, score: overallScore(categoryScores({ ...a, analysis })), sid: who.sid, vid: who.vid, dev: who.dev, br: who.br, os: who.os, app: who.app, country: who.country, city: who.city });
+    if (!who.me && !who.bot) await logEvent({ t: new Date().toISOString(), k: "done", host: a.host, rid: a.id, score: overallScore(categoryScores({ ...a, analysis })), sid: who.sid, vid: who.vid, dev: who.dev, br: who.br, os: who.os, app: who.app, country: who.country, city: who.city, ip: who.ip });
     return json({ ok: true, analysis: seal(analysis) });
   } catch (e) {
     console.error("[audit] analyse", a.id, e);
