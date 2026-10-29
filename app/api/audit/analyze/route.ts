@@ -1,6 +1,6 @@
 import { analyse } from "../../../_audit/ai";
-import { allow } from "../../../_audit/limits";
-import { clientIp, json } from "../../../_audit/http";
+import { once } from "../../../_audit/limits";
+import { json } from "../../../_audit/http";
 import { seal } from "../../../_audit/seal";
 import { readAudit, readJson } from "../../../_audit/state";
 import { categoryScores, overallScore } from "../../../_audit/score";
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
   const body = await readJson(req);
   const a = body && readAudit({ base: body.base, speed: body.speed, shots: body.shots });
   if (!a) return json({ error: "bad_request" }, 400);
-  if (allow("ai", clientIp(req)) !== "ok") return json({ error: "limit" }, 429);
+  if (!(await once(a.id, "analyze"))) return json({ error: "limit" }, 429);
   try {
     const analysis = await analyse(a);
     const who = fromRequest(req);

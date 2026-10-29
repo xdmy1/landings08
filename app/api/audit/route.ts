@@ -21,7 +21,7 @@ export async function POST(req: Request) {
   if (isOwnSite(u.hostname)) return json({ error: "own" }, 409);
   const keyword = typeof body.keyword === "string" ? body.keyword.replace(/\s+/g, " ").trim().slice(0, 80) : "";
 
-  const gate = allow("start", clientIp(req));
+  const gate = await allow("start", clientIp(req));
   if (gate !== "ok") return json({ error: gate === "ip" ? "limit_ip" : "limit_site" }, 429);
 
   try {

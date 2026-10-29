@@ -1,6 +1,6 @@
 import { googlePosition } from "../../../_audit/ai";
-import { allow } from "../../../_audit/limits";
-import { clientIp, json } from "../../../_audit/http";
+import { once } from "../../../_audit/limits";
+import { json } from "../../../_audit/http";
 import { seal } from "../../../_audit/seal";
 import { readAudit, readJson } from "../../../_audit/state";
 
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   const body = await readJson(req);
   const a = body && readAudit({ base: body.base });
   if (!a) return json({ error: "bad_request" }, 400);
-  if (allow("ai", clientIp(req)) !== "ok") return json({ error: "limit" }, 429);
+  if (!(await once(a.id, "google"))) return json({ error: "limit" }, 429);
   try {
     return json({ ok: true, google: seal(await googlePosition(a)) });
   } catch (e) {

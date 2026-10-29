@@ -21,7 +21,7 @@ export async function POST(req: Request) {
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase().slice(0, 60) : "";
   const phone = typeof body.phone === "string" ? body.phone.replace(/\s+/g, " ").trim().slice(0, 30) : "";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return json({ error: "email" }, 400);
-  if (allow("request", clientIp(req)) !== "ok") return json({ error: "limit" }, 429);
+  if ((await allow("request", clientIp(req))) !== "ok") return json({ error: "limit" }, 429);
 
   const id = newRid();
   const now = new Date().toISOString();

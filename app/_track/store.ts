@@ -58,6 +58,7 @@ const TZ = "Europe/Chisinau";
 const ready = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 /* local development reads the live store but never writes into it (TRACK_DEV=1 in .env.local allows it) */
 const canWrite = () => ready() && (process.env.NODE_ENV === "production" || process.env.TRACK_DEV === "1");
+export const storeWritable = () => canWrite();
 const OPT = { access: "private" as const, contentType: "application/json", addRandomSuffix: false, allowOverwrite: true };
 
 /* the day a moment belongs to, by Chișinău time */
@@ -128,6 +129,13 @@ export async function logEvent(ev: Ev): Promise<void> {
   } catch (e) {
     console.error("[track] put", e);
   }
+}
+
+export async function readStoreJson<T>(pathname: string): Promise<T | null> {
+  return readJson<T>(pathname);
+}
+export async function writeStoreJson(pathname: string, value: unknown): Promise<void> {
+  await put(pathname, JSON.stringify(value), OPT);
 }
 
 async function readJson<T>(pathname: string): Promise<T | null> {
