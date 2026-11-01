@@ -4,6 +4,26 @@ export const LANGS = ["ro", "en", "de", "fr", "es", "ru"] as const;
 export type Lang = (typeof LANGS)[number];
 
 export const isLang = (v: string): v is Lang => (LANGS as readonly string[]).includes(v);
+
+/* The language a visitor gets when the page does not fix one: the one they picked
+   in the footer, otherwise Romanian. A browser set to English does not make the
+   site English (most visitors in Moldova have English browsers and read Romanian);
+   a browser that puts Russian before Romanian gets Russian, the other local language. */
+export function preferredLang(): Lang {
+  try {
+    const saved = window.localStorage.getItem("lang");
+    if (saved && isLang(saved)) return saved;
+  } catch {
+    /* private mode: no saved choice */
+  }
+  const prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
+  for (const p of prefs) {
+    const c = (p || "").toLowerCase().slice(0, 2);
+    if (c === "ro" || c === "mo") return "ro";
+    if (c === "ru") return "ru";
+  }
+  return "ro";
+}
 export const langPath = (l: Lang) => (l === "ro" ? "/" : `/${l}`);
 
 /* every language points at every other one; x-default = Romanian */

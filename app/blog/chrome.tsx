@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ThinkingOrb } from "thinking-orbs";
 import { HeroOrb } from "../fx";
+import { preferredLang } from "../_shell/langs";
 
 const LANGS = ["ro", "en", "de", "fr", "es", "ru"] as const;
 type Lang = (typeof LANGS)[number];
@@ -106,14 +107,7 @@ function useChrome(fixed?: Lang) {
   const [lang, setLang] = useState<Lang>(fixed || "ro");
   useEffect(() => {
     if (fixed) return; // a page that exists in one language keeps its bar in that language
-    const prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
-    for (const p of prefs) {
-      const code = (p || "").toLowerCase().slice(0, 2);
-      if ((LANGS as readonly string[]).includes(code)) {
-        setLang(code as Lang);
-        return;
-      }
-    }
+    setLang(preferredLang());
   }, [fixed]);
   return C[lang];
 }

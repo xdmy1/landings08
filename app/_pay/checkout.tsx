@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { PLANS, type PayLang, type PlanId } from "./plans";
+import { preferredLang } from "../_shell/langs";
 
 const TELEGRAM = "https://t.me/damiqqn";
 const WHATSAPP = "https://wa.me/37368327082";
@@ -154,19 +155,15 @@ const L: Record<
   },
 };
 
+/* the page has ro / ru / en: the visitor's language (see preferredLang), the other
+   site languages read the English version */
 function detectLang(): PayLang {
   try {
-    const prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
-    for (const p of prefs) {
-      const c = (p || "").toLowerCase().slice(0, 2);
-      if (c === "ro" || c === "mo") return "ro";
-      if (c === "ru") return "ru";
-      if (c === "en" || c === "de" || c === "fr" || c === "es") return "en";
-    }
+    const l = preferredLang();
+    return l === "ro" || l === "ru" ? l : "en";
   } catch {
-    /* default below */
+    return "ro";
   }
-  return "ro";
 }
 
 const nf = (n: number) => n.toLocaleString("ro-RO").replace(/ /g, " ");

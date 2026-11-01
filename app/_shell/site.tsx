@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { preferredLang } from "./langs";
 import type { ReactNode } from "react";
 import Lenis from "lenis";
 import { ThinkingOrb } from "thinking-orbs";
@@ -1240,23 +1241,7 @@ export default function SiteShell({ seo, initialLang }: { seo?: SeoPage; initial
   useEffect(() => {
     if (seo || initialLang) return;
     if (/bot|crawl|spider|slurp|lighthouse/i.test(navigator.userAgent)) return;
-    try {
-      const saved = window.localStorage.getItem("lang");
-      if (saved && (LANGS as readonly string[]).includes(saved)) {
-        setLang(saved as Lang);
-        return;
-      }
-    } catch {
-      /* private mode, fall through to the browser languages */
-    }
-    const prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
-    for (const p of prefs) {
-      const code = (p || "").toLowerCase().slice(0, 2);
-      if ((LANGS as readonly string[]).includes(code)) {
-        setLang(code as Lang);
-        return;
-      }
-    }
+    setLang(preferredLang());
   }, []);
 
   useEffect(() => {
