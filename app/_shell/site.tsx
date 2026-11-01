@@ -81,6 +81,7 @@ type Copy = {
   };
   proofLabel: string;
   proofLine: string;
+  proofLine2: string;
   statCards: { v: string; l: string; s: string }[];
   contactLabel: string;
   contactTitle: string;
@@ -144,6 +145,7 @@ const T: Record<Lang, Copy> = {
     },
     proofLabel: "Rezultate",
     proofLine: "SEO făcut de noi pentru Davo.md, măsurat în Ahrefs.",
+    proofLine2: "SEO făcut de noi pentru InAuto.md: locul 1–2 în Google în Moldova pentru „parcare auto”.",
     statCards: [
       { v: "50", l: "Domain Rating", s: "din 100, măsurat în Ahrefs" },
       { v: "2.6K", l: "Backlink-uri", s: "13% dofollow" },
@@ -216,6 +218,7 @@ const T: Record<Lang, Copy> = {
     },
     proofLabel: "Results",
     proofLine: "Our SEO for Davo.md, measured in Ahrefs.",
+    proofLine2: "Our SEO for InAuto.md: position 1–2 on Google in Moldova for “parcare auto”.",
     statCards: [
       { v: "50", l: "Domain Rating", s: "out of 100, measured in Ahrefs" },
       { v: "2.6K", l: "Backlinks", s: "13% dofollow" },
@@ -288,6 +291,7 @@ const T: Record<Lang, Copy> = {
     },
     proofLabel: "Ergebnisse",
     proofLine: "SEO von uns fur Davo.md, gemessen in Ahrefs.",
+    proofLine2: "SEO von uns fur InAuto.md: Platz 1–2 bei Google in Moldau fur „parcare auto“.",
     statCards: [
       { v: "50", l: "Domain Rating", s: "von 100, gemessen in Ahrefs" },
       { v: "2.6K", l: "Backlinks", s: "13% dofollow" },
@@ -360,6 +364,7 @@ const T: Record<Lang, Copy> = {
     },
     proofLabel: "Resultats",
     proofLine: "SEO realise par nous pour Davo.md, mesure dans Ahrefs.",
+    proofLine2: "SEO realise par nous pour InAuto.md : position 1–2 sur Google en Moldavie pour « parcare auto ».",
     statCards: [
       { v: "50", l: "Domain Rating", s: "sur 100, mesure dans Ahrefs" },
       { v: "2.6K", l: "Backlinks", s: "13% dofollow" },
@@ -432,6 +437,7 @@ const T: Record<Lang, Copy> = {
     },
     proofLabel: "Resultados",
     proofLine: "SEO hecho por nosotros para Davo.md, medido en Ahrefs.",
+    proofLine2: "SEO hecho por nosotros para InAuto.md: posición 1–2 en Google en Moldavia para “parcare auto”.",
     statCards: [
       { v: "50", l: "Domain Rating", s: "de 100, medido en Ahrefs" },
       { v: "2.6K", l: "Backlinks", s: "13% dofollow" },
@@ -504,6 +510,7 @@ const T: Record<Lang, Copy> = {
     },
     proofLabel: "Результаты",
     proofLine: "Наше SEO для Davo.md, измерено в Ahrefs.",
+    proofLine2: "Наше SEO для InAuto.md: 1–2 место в Google в Молдове по запросу «parcare auto».",
     statCards: [
       { v: "50", l: "Domain Rating", s: "из 100, измерено в Ahrefs" },
       { v: "2.6K", l: "Беклинки", s: "13% dofollow" },
@@ -1561,6 +1568,17 @@ export default function SiteShell({ seo, initialLang }: { seo?: SeoPage; initial
                   <div className="stat-sub">{c.s}</div>
                 </div>
               ))}
+            </div>
+            <div className="rv">
+              <p className="proof-line proof-line-2 fu">{t.proofLine2}</p>
+              <div className="proof-pair fu" style={d("0.1s")}>
+                <div className="proof-frame">
+                  <img src="/images/inauto-ahrefs.png" alt="Ahrefs: inauto.md pe locul 2 în Google pentru „parcare auto”, după cipauto.md" width={1914} height={1650} loading="lazy" decoding="async" />
+                </div>
+                <div className="proof-frame">
+                  <img src="/images/inauto-google.png" alt="Google, căutarea „parcare auto”: inauto.md pe primul loc" width={2000} height={1708} loading="lazy" decoding="async" />
+                </div>
+              </div>
             </div>
           </div>
         </section>

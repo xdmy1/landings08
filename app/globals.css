@@ -1330,6 +1330,24 @@ button {
   height: auto;
   display: block;
 }
+/* the second case (InAuto): its two proofs side by side, stacked on a phone */
+.proof-line-2 {
+  margin-top: 64px;
+}
+.proof-pair {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 24px;
+}
+.proof-pair .proof-frame {
+  margin-top: 0;
+}
+@media (min-width: 760px) {
+  .proof-pair {
+    grid-template-columns: 1fr 1fr;
+  }
+}
 
 .stats {
   display: grid;
@@ -2450,6 +2468,16 @@ button {
   .proof-frame img {
     width: 700px;
     max-width: none;
+  }
+
+  /* the InAuto shots are almost square: they fit the screen whole, no swipe */
+  .proof-pair .proof-frame {
+    overflow: hidden;
+  }
+
+  .proof-pair .proof-frame img {
+    width: 100%;
+    max-width: 100%;
   }
 }
 
