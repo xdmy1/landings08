@@ -54,15 +54,27 @@ export function toMdl(eur: number, rate: number): number {
 type MaibErr = { errorCode: string; errorMessage: string };
 type MaibRes<T> = { ok: boolean; result?: T; errors?: MaibErr[] };
 
+/* maib limits API calls: one access token is reused until shortly before it expires */
+let cached: { token: string; until: number } | null = null;
+
 async function token(): Promise<string> {
+  if (cached && Date.now() < cached.until) return cached.token;
   const r = await fetch(`${API}/generate-token`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ projectId: process.env.MAIB_PROJECT_ID, projectSecret: process.env.MAIB_PROJECT_SECRET }),
     cache: "no-store",
   });
-  const j = (await r.json()) as MaibRes<{ accessToken: string }>;
+  const raw = await r.text();
+  let j: MaibRes<{ accessToken: string; expiresIn?: number }>;
+  try {
+    j = JSON.parse(raw);
+  } catch {
+    throw new Error(`maib token: ${r.status} ${raw.slice(0, 80)}`);
+  }
   if (!j.ok || !j.result) throw new Error(`maib token: ${j.errors?.[0]?.errorMessage || r.status}`);
+  const life = Math.max(60, Number(j.result.expiresIn || 300) - 60) * 1000;
+  cached = { token: j.result.accessToken, until: Date.now() + life };
   return j.result.accessToken;
 }
 
