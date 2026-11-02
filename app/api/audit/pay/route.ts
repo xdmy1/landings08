@@ -23,19 +23,21 @@ export async function POST(req: Request) {
   const ip = clientIp(req);
   const title = `Raport complet de verificare pentru ${base.host}`.slice(0, 128);
   try {
-    const { payUrl } = await createPay({
+    const orderId = `RAP-${base.id}-${rnd}-RO`;
+    const { payUrl, payId } = await createPay({
       amount,
       currency: "MDL",
       clientIp: /^\d{1,3}(\.\d{1,3}){3}$/.test(ip) ? ip : "127.0.0.1",
       language: "ro",
       description: `${COMPANY.brand}: ${title}`.slice(0, 124),
       email,
-      orderId: `RAP-${base.id}-${rnd}-RO`, // the report id inside proves which report was paid
+      orderId, // the report id inside proves which report was paid
       items: [{ id: "raport", name: title, price: amount, quantity: 1 }],
       callbackUrl: `${SITE}/api/plata/callback`,
       okUrl: `${SITE}/verificare/raport/${base.id}`,
       failUrl: `${SITE}/verificare/raport/${base.id}`,
     });
+    console.log("[pay] created", orderId, payId, `${amount} MDL`);
     return json({ payUrl });
   } catch (e) {
     console.error("[audit] pay", base.id, e);

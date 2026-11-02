@@ -40,7 +40,7 @@ export async function POST(req: Request) {
   const clientIp = /^\d{1,3}(\.\d{1,3}){3}$/.test(fwd) ? fwd : "127.0.0.1";
 
   try {
-    const { payUrl } = await createPay({
+    const { payUrl, payId } = await createPay({
       amount,
       currency: "MDL",
       clientIp,
@@ -55,6 +55,8 @@ export async function POST(req: Request) {
       okUrl: `${SITE}/plata/rezultat`,
       failUrl: `${SITE}/plata/rezultat`,
     });
+    // maib support always asks for the Pay ID: keep it in the log next to our order number
+    console.log("[pay] created", orderId, payId, `${amount} MDL`);
     return NextResponse.json({ payUrl });
   } catch (e) {
     console.error("[pay] create", e);
