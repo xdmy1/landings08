@@ -68,6 +68,7 @@ const L: Record<
     phone: string;
     acceptA: string;
     acceptLink: string;
+    recurringA: string;
     pay: (mdl: string) => string;
     paying: string;
     secure: string;
@@ -79,7 +80,7 @@ const L: Record<
     kicker: "Mentenanță lunară",
     perMonth: "/lună",
     approx: (m, d) => `${m} lei la cursul BNM din ${d}`,
-    period: "Perioada: 30 de zile de la activare. Fără reînnoire automată.",
+    period: "Abonament lunar: plata se ia automat de pe card în fiecare lună, în aceeași zi, până anulezi. Anulezi oricând, din linkul din chitanță.",
     delivery: "Activare în cel mult o zi lucrătoare după plată. Lucrăm la distanță, prin Telegram și email.",
     name: "Nume și prenume",
     company: "Firma (opțional)",
@@ -87,6 +88,7 @@ const L: Record<
     phone: "Telefon",
     acceptA: "Am citit și accept",
     acceptLink: "Termenii și condițiile",
+    recurringA: "Sunt de acord ca suma pachetului să fie retrasă automat de pe card în fiecare lună, până anulez.",
     pay: (m) => `Plătește ${m} lei`,
     paying: "Se deschide plata…",
     secure: "Plata se face pe pagina securizată maib, cu 3-D Secure. Datele cardului nu ajung la noi.",
@@ -96,6 +98,7 @@ const L: Record<
       email: "Adresa de email nu e validă.",
       phone: "Numărul de telefon nu e valid.",
       terms: "Bifați acceptarea termenilor.",
+      recurring: "Bifați acordul pentru plata lunară automată.",
       not_configured: "Plata online se activează în curând. Până atunci scrieți-ne pe Telegram și vă trimitem factura.",
       maib: "Plata nu a putut fi pornită. Încercați din nou peste un minut.",
       net: "Nu am putut trimite datele. Verificați conexiunea și încercați din nou.",
@@ -105,7 +108,7 @@ const L: Record<
     kicker: "Ежемесячное сопровождение",
     perMonth: "/мес",
     approx: (m, d) => `${m} лей по курсу НБМ на ${d}`,
-    period: "Срок: 30 дней с момента активации. Без автопродления.",
+    period: "Ежемесячная подписка: платёж списывается с карты автоматически каждый месяц в тот же день, пока вы не отмените. Отменить можно в любой момент по ссылке из чека.",
     delivery: "Активация в течение одного рабочего дня после оплаты. Работаем удалённо, через Telegram и email.",
     name: "Имя и фамилия",
     company: "Компания (необязательно)",
@@ -113,6 +116,7 @@ const L: Record<
     phone: "Телефон",
     acceptA: "Я прочитал(а) и принимаю",
     acceptLink: "Условия",
+    recurringA: "Я согласен(на), что стоимость пакета будет автоматически списываться с карты каждый месяц, пока я не отменю подписку.",
     pay: (m) => `Оплатить ${m} лей`,
     paying: "Открываем оплату…",
     secure: "Оплата проходит на защищённой странице maib с 3-D Secure. Данные карты к нам не попадают.",
@@ -122,6 +126,7 @@ const L: Record<
       email: "Неверный email.",
       phone: "Неверный номер телефона.",
       terms: "Отметьте согласие с условиями.",
+      recurring: "Отметьте согласие на автоматический ежемесячный платёж.",
       not_configured: "Онлайн-оплата скоро заработает. А пока напишите нам в Telegram, и мы пришлём счёт.",
       maib: "Не удалось начать оплату. Попробуйте через минуту.",
       net: "Не удалось отправить данные. Проверьте соединение и попробуйте снова.",
@@ -131,7 +136,7 @@ const L: Record<
     kicker: "Monthly maintenance",
     perMonth: "/month",
     approx: (m, d) => `${m} MDL at the BNM rate of ${d}`,
-    period: "Period: 30 days from activation. No automatic renewal.",
+    period: "Monthly subscription: the payment is taken from your card automatically every month on the same day, until you cancel. Cancel anytime from the link in the receipt.",
     delivery: "Activated within one working day after payment. We work remotely, over Telegram and email.",
     name: "Full name",
     company: "Company (optional)",
@@ -139,6 +144,7 @@ const L: Record<
     phone: "Phone",
     acceptA: "I have read and accept the",
     acceptLink: "Terms and conditions",
+    recurringA: "I agree that the plan price is taken from my card automatically every month, until I cancel.",
     pay: (m) => `Pay ${m} MDL`,
     paying: "Opening the payment…",
     secure: "Payment happens on the secure maib page, with 3-D Secure. Your card details never reach us.",
@@ -148,6 +154,7 @@ const L: Record<
       email: "The email address is not valid.",
       phone: "The phone number is not valid.",
       terms: "Tick the box to accept the terms.",
+      recurring: "Tick the box to agree to the automatic monthly payment.",
       not_configured: "Online payment is being switched on. Until then, message us on Telegram and we send you an invoice.",
       maib: "The payment could not start. Try again in a minute.",
       net: "We could not send the form. Check your connection and try again.",
@@ -173,6 +180,7 @@ export default function Checkout({ planId, mdl, rateDate, online }: { planId: Pl
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
   const [accept, setAccept] = useState(false);
+  const [recurring, setRecurring] = useState(false);
   useEffect(() => setLang(detectLang()), []);
 
   const t = L[lang];
@@ -184,6 +192,7 @@ export default function Checkout({ planId, mdl, rateDate, online }: { planId: Pl
     if (busy) return;
     const f = new FormData(e.currentTarget);
     if (!accept) return setErr("terms");
+    if (!recurring) return setErr("recurring");
     setErr("");
     setBusy(true);
     try {
@@ -198,6 +207,7 @@ export default function Checkout({ planId, mdl, rateDate, online }: { planId: Pl
           email: f.get("email"),
           phone: f.get("phone"),
           accept,
+          recurring,
         }),
       });
       const j = await r.json().catch(() => ({}));
@@ -276,6 +286,10 @@ export default function Checkout({ planId, mdl, rateDate, online }: { planId: Pl
               {t.acceptLink}
             </a>
           </span>
+        </label>
+        <label className="co-check">
+          <input type="checkbox" checked={recurring} onChange={(e) => setRecurring(e.target.checked)} />
+          <span>{t.recurringA}</span>
         </label>
         {err && (
           <p className="co-err" role="alert">

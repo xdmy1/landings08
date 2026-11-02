@@ -4,6 +4,8 @@ import { cookies } from "next/headers";
 import { COOKIE, linkKey, tokenOk } from "../_track/admin";
 import { dayOf, fmtTime, lastDays, listRequests, loadDay } from "../_track/store";
 import { loadBans } from "../_track/bans";
+import { PLANS } from "../_pay/plans";
+import { fmtDay as subDay, listSubs } from "../_pay/subs";
 import { stats, type Row, type SrcRow } from "../_track/stats";
 import "./admin.css";
 
@@ -94,7 +96,8 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
   const rk = RANGES[searchParams.r || ""] ? (searchParams.r as string) : "7";
   const today = dayOf(new Date());
   const days = lastDays(RANGES[rk].n);
-  const [events, requests, bans] = await Promise.all([Promise.all(days.map((d) => loadDay(d, today))).then((x) => x.flat()), listRequests(), loadBans(true)]);
+  const [events, requests, bans, subs] = await Promise.all([Promise.all(days.map((d) => loadDay(d, today))).then((x) => x.flat()), listRequests(), loadBans(true), listSubs()]);
+  const SUB_ST: Record<string, [string, string]> = { pending: ["neplătit", "mid"], active: ["activ", "good"], past_due: ["plata a eșuat", "bad"], cancelled: ["anulat", ""], stopped: ["oprit", "bad"] };
   const banBtn = (ip: string) =>
     !ip ? (
       <span className="dim">—</span>
@@ -188,6 +191,38 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
           </span>,
         ])}
         empty="Nicio cerere încă. Apar aici când cineva lasă emailul pe pagina raportului."
+      />
+
+      <h2 id="abonamente">Abonamente lunare</h2>
+      <Table
+        head={["Client", "Pachet", "Stare", "De la", "Următoarea plată", "Plăți", ""]}
+        wide={[0, 6]}
+        cards
+        rows={subs
+          .filter((s) => s.status !== "pending" || Date.now() - Date.parse(s.createdAt) < 7 * 86400000)
+          .map((s) => [
+            <span key="c">
+              {s.name}
+              {s.company && <span className="dim"><br />{s.company}</span>}
+              <span className="dim"><br />{s.email}, {s.phone}</span>
+            </span>,
+            `${PLANS[s.plan].name.ro}, €${PLANS[s.plan].eur}`,
+            <span key="s">
+              <span className={`sc ${SUB_ST[s.status]?.[1] || ""}`}>{SUB_ST[s.status]?.[0] || s.status}</span>
+              {s.lastError && s.status !== "active" && <span className="dim"><br />{s.lastError}</span>}
+            </span>,
+            s.startedAt ? subDay(s.startedAt, "ro") : <span className="dim">—</span>,
+            s.status === "active" || s.status === "past_due" ? (s.nextChargeAt ? subDay(s.nextChargeAt, "ro") : "—") : <span className="dim">—</span>,
+            `${s.charges.filter((c) => c.ok).length}${s.charges.some((c) => !c.ok) ? `, ${s.charges.filter((c) => !c.ok).length} eșuate` : ""}`,
+            s.status === "active" || s.status === "past_due" ? (
+              <form key="x" method="post" action={`/api/admin/sub/${s.id}/cancel`}>
+                <button className="pill-btn btn-sm" type="submit">Oprește</button>
+              </form>
+            ) : (
+              <span key="x" className="dim">{s.cancelledBy === "client" ? "anulat de client" : s.cancelledBy === "system" ? "oprit după 3 plăți eșuate" : s.cancelledBy === "studio" ? "oprit de tine" : ""}</span>
+            ),
+          ])}
+        empty="Niciun abonament încă. Apar aici după prima plată cu cardul pentru un pachet de mentenanță."
       />
 
       <h2>Pe zile</h2>

@@ -4,6 +4,8 @@ import { LegalFooter } from "../../_pay/legal-footer";
 import { COMPANY, isPlanId } from "../../_pay/plans";
 import { langOfOrder, maibReady, payInfo, type PayInfo } from "../../_pay/maib";
 import { RC, fmtDateTime, fmtMoney } from "../../_pay/receipt";
+import { activateSub } from "../../_pay/subflow";
+import { fmtDay, loadSub } from "../../_pay/subs";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 /* maib sends the customer here (okUrl / failUrl) with ?payId=…&orderId=… */
-export default async function PayResult({ searchParams }: { searchParams: { payId?: string; orderId?: string } }) {
+export default async function PayResult({ searchParams }: { searchParams: { payId?: string; orderId?: string; billerId?: string } }) {
   const payId = String(searchParams.payId || "");
   const orderId = String(searchParams.orderId || "").slice(0, 36);
   const lang = langOfOrder(orderId);
@@ -30,6 +32,19 @@ export default async function PayResult({ searchParams }: { searchParams: { payI
 
   const status = info?.status || "";
   const ok = status === "OK";
+
+  let nextCharge = "";
+  if (ok && info && /^LMD-/.test(orderId)) {
+    const sub = await loadSub(orderId);
+    if (sub) {
+      try {
+        await activateSub(sub, { ...info, billerId: info.billerId || String(searchParams.billerId || "") });
+      } catch (e) {
+        console.error("[pay] result subscription", orderId, e);
+      }
+      if (sub.nextChargeAt) nextCharge = fmtDay(sub.nextChargeAt, lang);
+    }
+  }
   const failed = Boolean(info) && !ok && status !== "PENDING" && status !== "CREATED";
   const item = info?.items?.[0];
   const retryPlan = item && isPlanId(item.id) ? item.id : "business";
@@ -44,6 +59,7 @@ export default async function PayResult({ searchParams }: { searchParams: { payI
   if (info?.amount !== undefined) rows.push([t.amount, fmtMoney(info.amount, info.currency)]);
   rows.push([t.date, fmtDateTime(new Date(), lang)]);
   if (info?.cardNumber) rows.push([t.card, info.cardNumber]);
+  if (nextCharge) rows.push([t.nextCharge, nextCharge]);
   if (info?.statusMessage) rows.push([t.status, info.statusMessage]);
 
   const title = ok ? t.okTitle : failed ? t.failTitle : t.pendingTitle;

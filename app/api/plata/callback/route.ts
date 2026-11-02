@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { adminEmail, langOfOrder, payInfo, sendMail, signatureOk } from "../../../_pay/maib";
 import { fmtDateTime, fmtMoney, receiptEmail, studioEmail } from "../../../_pay/receipt";
+import { activateSub } from "../../../_pay/subflow";
+import { isChargeOrder, loadSub } from "../../../_pay/subs";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +27,29 @@ export async function POST(req: Request) {
   console.log("[pay] callback", orderId, payId, status, result.statusCode);
 
   if (status !== "OK") return NextResponse.json({ ok: true });
+
+  // a monthly charge: its receipt went out when the charge was made
+  if (await isChargeOrder(orderId)) return NextResponse.json({ ok: true });
+
+  // the first payment of a subscription: the card is saved, the subscription starts
+  const sub = await loadSub(orderId);
+  if (sub) {
+    try {
+      const info = await payInfo(payId);
+      await activateSub(sub, {
+        payId,
+        orderId,
+        billerId: String(result.billerId || info?.billerId || ""),
+        billerExpiry: String(result.billerExpiry || info?.billerExpiry || ""),
+        cardNumber: info?.cardNumber || String(result.cardNumber || ""),
+        amount: info?.amount ?? Number(result.amount),
+        currency: info?.currency || String(result.currency || "MDL"),
+      });
+    } catch (e) {
+      console.error("[pay] callback subscription", orderId, e);
+    }
+    return NextResponse.json({ ok: true });
+  }
 
   try {
     const info = await payInfo(payId);

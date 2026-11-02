@@ -107,8 +107,39 @@ export async function createPay(body: PayRequest): Promise<{ payId: string; payU
   return j.result;
 }
 
+/* first payment of a subscription: charges the first month and saves the card for the next ones */
+export async function saveCardRecurring(body: PayRequest & { billerExpiry: string }): Promise<{ payId: string; payUrl: string }> {
+  const t = await token();
+  const r = await fetch(`${API}/savecard-recurring`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${t}` },
+    body: JSON.stringify(body),
+    cache: "no-store",
+  });
+  const j = (await r.json()) as MaibRes<{ payId: string; payUrl: string }>;
+  if (!j.ok || !j.result) throw new Error(`maib savecard: ${j.errors?.[0]?.errorMessage || r.status}`);
+  return j.result;
+}
+
+export type RecurringResult = { payId?: string; billerId?: string; orderId?: string; status?: string; statusCode?: string; statusMessage?: string; rrn?: string; approval?: string; cardNumber?: string; amount?: number; currency?: string };
+
+/* a monthly charge on a saved card; answers right away, no customer in the loop */
+export async function executeRecurring(body: { billerId: string; amount: number; currency: "MDL"; description: string; orderId: string; items: PayRequest["items"] }): Promise<{ ok: boolean; result?: RecurringResult; error?: string }> {
+  const t = await token();
+  const r = await fetch(`${API}/execute-recurring`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${t}` },
+    body: JSON.stringify(body),
+    cache: "no-store",
+  });
+  const j = (await r.json().catch(() => ({ ok: false }))) as MaibRes<RecurringResult>;
+  return { ok: Boolean(j.ok && j.result?.status === "OK"), result: j.result, error: j.errors?.[0]?.errorMessage || (j.result?.status !== "OK" ? j.result?.statusMessage || j.result?.status : undefined) };
+}
+
 export type PayInfo = {
   payId: string;
+  billerId?: string;
+  billerExpiry?: string;
   orderId?: string;
   status?: string;
   statusCode?: string;

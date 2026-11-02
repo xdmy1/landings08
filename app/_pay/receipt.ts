@@ -23,7 +23,10 @@ export const RC: Record<
     card: string;
     status: string;
     next: string;
+    nextRenewal: string;
     nextReport: string;
+    nextCharge: string;
+    cancelSub: string;
     retry: string;
     home: string;
     subject: string;
@@ -47,7 +50,10 @@ export const RC: Record<
     date: "Data plății",
     card: "Card",
     status: "Stare",
-    next: "În cel mult o zi lucrătoare vă adăugăm în grupul Telegram și pachetul începe din acea zi, pentru 30 de zile.",
+    next: "În cel mult o zi lucrătoare vă adăugăm în grupul Telegram. Abonamentul se reînnoiește automat în fiecare lună, în aceeași zi; îl puteți anula oricând din linkul din email.",
+    nextRenewal: "Abonamentul continuă. Următoarea plată se ia automat la data de mai sus; îl puteți anula oricând din linkul de mai jos.",
+    nextCharge: "Următoarea plată",
+    cancelSub: "Anulează abonamentul",
     nextReport: "Raportul complet s-a deschis pe pagina raportului, în browserul în care ați plătit. De acolo îl puteți descărca și în PDF.",
     retry: "Încearcă din nou",
     home: "Înapoi pe site",
@@ -71,7 +77,10 @@ export const RC: Record<
     date: "Дата оплаты",
     card: "Карта",
     status: "Статус",
-    next: "В течение одного рабочего дня мы добавим вас в группу Telegram, и пакет начнёт действовать с этого дня на 30 дней.",
+    next: "В течение одного рабочего дня мы добавим вас в группу Telegram. Подписка продлевается автоматически каждый месяц в тот же день; отменить её можно в любой момент по ссылке из письма.",
+    nextRenewal: "Подписка продолжается. Следующий платёж спишется автоматически в указанную выше дату; отменить подписку можно в любой момент по ссылке ниже.",
+    nextCharge: "Следующий платёж",
+    cancelSub: "Отменить подписку",
     nextReport: "Полный отчёт открылся на странице отчёта, в браузере, в котором вы оплатили. Оттуда его можно скачать и в PDF.",
     retry: "Попробовать снова",
     home: "Вернуться на сайт",
@@ -95,7 +104,10 @@ export const RC: Record<
     date: "Payment date",
     card: "Card",
     status: "Status",
-    next: "Within one working day we add you to the Telegram group, and the plan runs for 30 days from that day.",
+    next: "Within one working day we add you to the Telegram group. The subscription renews automatically every month on the same day; you can cancel it anytime from the link in the email.",
+    nextRenewal: "Your subscription continues. The next payment is taken automatically on the date above; you can cancel anytime from the link below.",
+    nextCharge: "Next payment",
+    cancelSub: "Cancel subscription",
     nextReport: "The full report opened on the report page, in the browser you paid in. You can also download it as a PDF from there.",
     retry: "Try again",
     home: "Back to the website",
@@ -126,10 +138,11 @@ export function fmtMoney(amount: number | undefined, currency: string | undefine
 export function receiptEmail(
   lang: PayLang,
   o: { orderId: string; name: string; service: string; qty: number; amount: string; date: string; card?: string },
-  kind: "plan" | "report" = "plan"
+  kind: "plan" | "report" | "renewal" = "plan",
+  sub?: { next: string; cancelUrl: string }
 ) {
   const t = RC[lang];
-  const next = kind === "report" ? t.nextReport : t.next;
+  const next = kind === "report" ? t.nextReport : kind === "renewal" ? t.nextRenewal : t.next;
   const rowsList: [string, string][] = [
     [t.order, o.orderId],
     [t.merchant, COMPANY.legalName],
@@ -140,6 +153,7 @@ export function receiptEmail(
     [t.date, o.date],
   ];
   if (o.card) rowsList.push([t.card, o.card]);
+  if (sub) rowsList.push([t.nextCharge, sub.next]);
 
   const text = [
     `${t.hello}${o.name ? `, ${o.name}` : ""}!`,
@@ -149,6 +163,7 @@ export function receiptEmail(
     ...rowsList.map(([k, v]) => `${k}: ${v}`),
     "",
     next,
+    ...(sub ? ["", `${t.cancelSub}: ${sub.cancelUrl}`] : []),
     "",
     `${t.questions} ${COMPANY.email}, ${COMPANY.phone}.`,
     "",
@@ -164,7 +179,8 @@ export function receiptEmail(
 <div style="margin-top:18px">${rows(rowsList)}</div>
 ${p(esc(next))}
 ${p(`${esc(t.questions)} <a href="mailto:${COMPANY.email}" style="color:#0f0f0e">${COMPANY.email}</a>, <span style="white-space:nowrap">${esc(COMPANY.phone)}</span>.`)}
-<div style="margin-top:22px">${button(WA, lang === "ru" ? "Написать в WhatsApp" : lang === "en" ? "Write on WhatsApp" : "Scrie-ne pe WhatsApp", "light")}</div>`,
+<div style="margin-top:22px">${button(WA, lang === "ru" ? "Написать в WhatsApp" : lang === "en" ? "Write on WhatsApp" : "Scrie-ne pe WhatsApp", "light")}</div>
+${sub ? p(`<a href="${esc(sub.cancelUrl)}" style="color:#7a7a73;text-decoration:underline">${esc(t.cancelSub)}</a>`, "#7a7a73") : ""}`,
   });
 
   return { subject: `${t.subject} ${o.orderId} · landings.md`, html, text };

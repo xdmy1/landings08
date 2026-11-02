@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { COMPANY, PLANS, isPayLang, isPlanId, planTitle } from "../../_pay/plans";
-import { createPay, eurRate, maibReady, newOrderId, toMdl } from "../../_pay/maib";
+import { eurRate, maibReady, newOrderId, saveCardRecurring, toMdl } from "../../_pay/maib";
+import { billerExpiry, saveSub } from "../../_pay/subs";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,7 @@ export async function POST(req: Request) {
 
   if (!isPlanId(planId) || !isPayLang(lang)) return NextResponse.json({ error: "bad_request" }, { status: 400 });
   if (body.accept !== true) return NextResponse.json({ error: "terms" }, { status: 400 });
+  if (body.recurring !== true) return NextResponse.json({ error: "recurring" }, { status: 400 });
   if (name.length < 2) return NextResponse.json({ error: "name" }, { status: 400 });
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return NextResponse.json({ error: "email" }, { status: 400 });
   if (phone.replace(/\D/g, "").length < 6) return NextResponse.json({ error: "phone" }, { status: 400 });
@@ -40,7 +42,10 @@ export async function POST(req: Request) {
   const clientIp = /^\d{1,3}(\.\d{1,3}){3}$/.test(fwd) ? fwd : "127.0.0.1";
 
   try {
-    const { payUrl, payId } = await createPay({
+    // the subscription exists before the payment, so the confirmation can find it by order number
+    await saveSub({ id: orderId, plan: planId, lang, name, company, email, phone, status: "pending", createdAt: new Date().toISOString(), failures: 0, charges: [] });
+    const { payUrl, payId } = await saveCardRecurring({
+      billerExpiry: billerExpiry(),
       amount,
       currency: "MDL",
       clientIp,

@@ -136,7 +136,7 @@ const T: Record<Lang, Copy> = {
       lead: "Ne scrieți pe Telegram ce aveți nevoie: poze noi, texte, produse, o reclamă de verificat. Ne ocupăm noi, fără să mai căutați pe cineva.",
       per: "/lună",
       cta: "Alege pachetul",
-      note: "O cerere înseamnă o sarcină de până la 30 de minute. Bugetul pentru reclame se plătește separat. Lucrările mari, cum ar fi un site nou, au ofertă separată. Plata se face lunar cu cardul, în lei, la cursul BNM din ziua plății.",
+      note: "O cerere înseamnă o sarcină de până la 30 de minute. Bugetul pentru reclame se plătește separat. Lucrările mari, cum ar fi un site nou, au ofertă separată. Plata se ia automat în fiecare lună de pe card, în lei, la cursul BNM din ziua plății; anulezi oricând.",
       terms: "Termeni și condiții",
       plans: [
         { id: "start", name: "Start", price: "€50", feats: ["Grup Telegram cu echipa noastră", "Răspuns în 48 de ore, luni–vineri", "Până la 5 cereri pe lună", "Poze, texte, prețuri și produse actualizate", "Site-ul verificat și ținut în funcțiune"] },
@@ -209,7 +209,7 @@ const T: Record<Lang, Copy> = {
       lead: "Message us on Telegram what you need: new photos, text, products, an ad to check. We take care of it, so you don't have to look for someone.",
       per: "/month",
       cta: "Choose plan",
-      note: "One request is a task of up to 30 minutes. Ad budget is paid separately. Big work, like a new website, is quoted separately. Paid monthly by card, in MDL at the National Bank of Moldova rate on the day of payment.",
+      note: "One request is a task of up to 30 minutes. Ad budget is paid separately. Big work, like a new website, is quoted separately. Charged automatically every month to your card, in MDL at the National Bank of Moldova rate on the day of payment; cancel anytime.",
       terms: "Terms and conditions",
       plans: [
         { id: "start", name: "Start", price: "€50", feats: ["Telegram group with our team", "Reply within 48 hours, Monday to Friday", "Up to 5 requests a month", "Photos, text, prices and products kept up to date", "Website checked and kept running"] },
@@ -282,7 +282,7 @@ const T: Record<Lang, Copy> = {
       lead: "Schreiben Sie uns auf Telegram, was Sie brauchen: neue Fotos, Texte, Produkte, eine Anzeige zum Prüfen. Wir kümmern uns darum.",
       per: "/Monat",
       cta: "Paket wählen",
-      note: "Eine Anfrage ist eine Aufgabe bis 30 Minuten. Das Werbebudget wird separat bezahlt. Große Arbeiten wie eine neue Website werden separat angeboten. Monatliche Zahlung per Karte, in MDL zum Kurs der Nationalbank Moldaus am Zahlungstag.",
+      note: "Eine Anfrage ist eine Aufgabe bis 30 Minuten. Das Werbebudget wird separat bezahlt. Große Arbeiten wie eine neue Website werden separat angeboten. Automatische monatliche Abbuchung von der Karte, in MDL zum Kurs der Nationalbank Moldaus am Zahlungstag; jederzeit kündbar.",
       terms: "AGB",
       plans: [
         { id: "start", name: "Start", price: "€50", feats: ["Telegram-Gruppe mit unserem Team", "Antwort innerhalb von 48 Stunden, Mo–Fr", "Bis zu 5 Anfragen pro Monat", "Fotos, Texte, Preise und Produkte aktuell", "Website geprüft und am Laufen gehalten"] },
@@ -355,7 +355,7 @@ const T: Record<Lang, Copy> = {
       lead: "Écrivez-nous sur Telegram ce dont vous avez besoin : nouvelles photos, textes, produits, une publicité à vérifier. On s'en occupe.",
       per: "/mois",
       cta: "Choisir",
-      note: "Une demande est une tâche de 30 minutes maximum. Le budget publicitaire est payé à part. Les gros travaux, comme un nouveau site, font l'objet d'un devis. Paiement mensuel par carte, en MDL au taux de la Banque nationale de Moldavie du jour du paiement.",
+      note: "Une demande est une tâche de 30 minutes maximum. Le budget publicitaire est payé à part. Les gros travaux, comme un nouveau site, font l'objet d'un devis. Prélèvement automatique chaque mois sur la carte, en MDL au taux de la Banque nationale de Moldavie du jour du paiement ; résiliable à tout moment.",
       terms: "Conditions générales",
       plans: [
         { id: "start", name: "Start", price: "€50", feats: ["Groupe Telegram avec notre équipe", "Réponse sous 48 heures, du lundi au vendredi", "Jusqu'à 5 demandes par mois", "Photos, textes, prix et produits à jour", "Site vérifié et maintenu en ligne"] },
@@ -428,7 +428,7 @@ const T: Record<Lang, Copy> = {
       lead: "Escríbenos por Telegram lo que necesitas: fotos nuevas, textos, productos, un anuncio que revisar. Nos encargamos nosotros.",
       per: "/mes",
       cta: "Elegir plan",
-      note: "Una solicitud es una tarea de hasta 30 minutos. El presupuesto de anuncios se paga aparte. Los trabajos grandes, como una web nueva, se presupuestan aparte. Pago mensual con tarjeta, en MDL al tipo del Banco Nacional de Moldavia del día del pago.",
+      note: "Una solicitud es una tarea de hasta 30 minutos. El presupuesto de anuncios se paga aparte. Los trabajos grandes, como una web nueva, se presupuestan aparte. Cobro automático cada mes con tarjeta, en MDL al tipo del Banco Nacional de Moldavia del día del pago; cancelas cuando quieras.",
       terms: "Términos y condiciones",
       plans: [
         { id: "start", name: "Start", price: "€50", feats: ["Grupo de Telegram con nuestro equipo", "Respuesta en 48 horas, de lunes a viernes", "Hasta 5 solicitudes al mes", "Fotos, textos, precios y productos al día", "Web revisada y funcionando"] },
@@ -501,7 +501,7 @@ const T: Record<Lang, Copy> = {
       lead: "Пишите нам в Telegram, что нужно: новые фото, тексты, товары, проверить рекламу. Мы всё сделаем, вам не нужно никого искать.",
       per: "/мес",
       cta: "Выбрать",
-      note: "Один запрос — это задача до 30 минут. Рекламный бюджет оплачивается отдельно. Крупные работы, например новый сайт, оцениваются отдельно. Оплата ежемесячно картой, в леях по курсу НБМ на день оплаты.",
+      note: "Один запрос — это задача до 30 минут. Рекламный бюджет оплачивается отдельно. Крупные работы, например новый сайт, оцениваются отдельно. Оплата списывается с карты автоматически каждый месяц, в леях по курсу НБМ на день оплаты; отменить можно в любой момент.",
       terms: "Условия",
       plans: [
         { id: "start", name: "Старт", price: "€50", feats: ["Группа в Telegram с нашей командой", "Ответ в течение 48 часов, пн–пт", "До 5 запросов в месяц", "Фото, тексты, цены и товары всегда актуальны", "Сайт под контролем и работает"] },

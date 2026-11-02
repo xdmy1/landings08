@@ -54,7 +54,10 @@ const SECTIONS: Sec[] = [
     after: [
       "Prețurile sunt afișate în euro. Plata se încasează în lei moldovenești (MDL), la cursul oficial al Băncii Naționale a Moldovei din ziua plății. Suma exactă în lei este afișată pe pagina de comandă, înainte de plată.",
       "Datele cardului se introduc doar pe pagina băncii maib, protejată cu 3-D Secure. Noi nu vedem și nu păstrăm datele cardului.",
-      "Pachetele se plătesc lunar și nu se reînnoiesc automat. Nu retragem bani de pe card fără o plată nouă făcută de Client.",
+      "Pachetele de mentenanță sunt abonamente lunare. La prima plată, Clientul bifează separat acordul pentru plata lunară automată, iar cardul său este salvat de banca maib (noi nu vedem și nu păstrăm datele cardului). Apoi suma pachetului se retrage automat de pe același card în fiecare lună, în aceeași zi (dacă luna e mai scurtă, în ultima ei zi), în lei, la cursul BNM din ziua plății, până la anulare.",
+      "Pentru fiecare plată lunară, Clientul primește pe email chitanța și data următoarei plăți, împreună cu linkul de anulare a abonamentului.",
+      "Dacă o plată lunară nu trece (card expirat, fonduri insuficiente), încercăm din nou în următoarele două zile și îl anunțăm pe Client pe email. După trei încercări nereușite abonamentul se oprește și nu se mai retrag bani.",
+      "Raportul complet de verificare se plătește o singură dată și nu este abonament.",
     ],
   },
   {
@@ -63,7 +66,7 @@ const SECTIONS: Sec[] = [
     p: ["Serviciile se prestează la distanță, online. Nu există livrare fizică de bunuri."],
     list: [
       "În cel mult o zi lucrătoare de la confirmarea plății, îl adăugăm pe Client în grupul Telegram dedicat și îi confirmăm activarea pe email.",
-      "Pachetul este activ 30 de zile din ziua activării.",
+      "Fiecare plată lunară acoperă o lună de serviciu, până în ziua următoarei plăți.",
       "Programul de lucru este luni–vineri, 10:00–18:00, ora Moldovei. Pentru pachetul Prioritar programul este luni–sâmbătă, iar urgențele (site căzut, eroare care oprește vânzările) se rezolvă și în weekend.",
       "Timpii de răspuns din fiecare pachet se socotesc în programul de lucru.",
       "Clientul ne oferă accesele necesare (site, conturi de reclame) și materialele (poze, texte, prețuri). Termenele încep din momentul în care avem materialele.",
@@ -74,9 +77,9 @@ const SECTIONS: Sec[] = [
     id: "retur",
     h: "5. Politica de anulare, retur și rambursare",
     list: [
-      "Clientul poate renunța oricând. Pachetul rămâne activ până la sfârșitul celor 30 de zile plătite, iar luna următoare pur și simplu nu se mai plătește.",
+      "Clientul poate anula abonamentul oricând, fără cont și fără motiv: din linkul „Anulează abonamentul” din orice chitanță primită pe email, sau scriindu-ne pe email, Telegram ori WhatsApp. După anulare nu se mai retrag bani de pe card, iar pachetul rămâne activ până la sfârșitul lunii deja plătite.",
       "Rambursăm integral suma dacă cererea vine în 14 zile de la plată și nu am executat încă nicio cerere din pachet.",
-      "Dacă am executat deja cereri, rambursăm suma proporțional cu zilele rămase din perioada de 30 de zile.",
+      "Dacă am executat deja cereri, rambursăm suma proporțional cu zilele rămase din luna plătită.",
       "Dacă nu putem presta serviciul din vina noastră, rambursăm integral partea neprestată.",
       "Pentru raportul de verificare: dacă după plată raportul complet nu se deblochează din cauza unei erori tehnice și nu o rezolvăm în 24 de ore, rambursăm integral suma.",
       "Cererea de rambursare se trimite la " + COMPANY.email + ", cu numărul comenzii. Răspundem în cel mult 3 zile lucrătoare.",
