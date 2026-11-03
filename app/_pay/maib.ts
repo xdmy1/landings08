@@ -134,6 +134,21 @@ export async function payInfo(payId: string): Promise<PayInfo | null> {
   return j.ok && j.result ? j.result : null;
 }
 
+export type RefundResult = { payId?: string; orderId?: string; status?: string; statusCode?: string; statusMessage?: string; refundAmount?: number };
+
+/* money back to the card: the whole payment, or `amount` lei of it; maib allows one refund per payment */
+export async function refund(payId: string, amount?: number): Promise<{ ok: boolean; result?: RefundResult; error?: string }> {
+  const t = await token();
+  const r = await fetch(`${API}/refund`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${t}` },
+    body: JSON.stringify(amount ? { payId, refundAmount: amount } : { payId }),
+    cache: "no-store",
+  });
+  const j = (await r.json().catch(() => ({ ok: false }))) as MaibRes<RefundResult>;
+  return { ok: Boolean(j.ok && j.result?.status === "OK"), result: j.result, error: j.errors?.[0]?.errorMessage || (j.result?.status !== "OK" ? j.result?.statusMessage || j.result?.status : undefined) };
+}
+
 /* callback signature: values of `result` sorted by key, joined with ":",
    signature key appended, SHA-256 (raw bytes), Base64 */
 export function signatureOk(result: Record<string, unknown>, signature: string): boolean {
