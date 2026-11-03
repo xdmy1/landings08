@@ -91,7 +91,7 @@ const srcTable = (list: SrcRow[], head: string, empty?: string) => (
   />
 );
 
-export default async function AdminPage({ searchParams }: { searchParams: { r?: string; e?: string; ok?: string; err?: string } }) {
+export default async function AdminPage({ searchParams }: { searchParams: { r?: string; e?: string; ok?: string; err?: string; rf?: string; rm?: string; ro?: string; rs?: string; rc?: string } }) {
   if (!tokenOk(cookies().get(COOKIE)?.value)) return <Login error={searchParams.e || ""} />;
   const rk = RANGES[searchParams.r || ""] ? (searchParams.r as string) : "7";
   const today = dayOf(new Date());
@@ -224,6 +224,23 @@ export default async function AdminPage({ searchParams }: { searchParams: { r?: 
           ])}
         empty="Niciun abonament încă. Apar aici după prima plată cu cardul pentru un pachet de mentenanță."
       />
+
+      <h2 id="rambursare">Rambursare</h2>
+      {searchParams.rf === "ok" && (
+        <p className="pn-flash ok">
+          Banii s-au întors pe card: {searchParams.rs} {searchParams.rc}
+          {searchParams.ro ? `, comanda ${searchParams.ro}` : ""}.
+        </p>
+      )}
+      {searchParams.rf === "err" && <p className="pn-flash bad">Rambursarea nu a mers: {searchParams.rm}.</p>}
+      <form method="post" action="/api/admin/refund" className="pn-form">
+        <input name="payId" placeholder="Pay ID (din emailul comenzii)" required autoComplete="off" spellCheck={false} aria-label="Pay ID" />
+        <input name="amount" placeholder="Suma, lei (gol = toată plata)" inputMode="decimal" autoComplete="off" aria-label="Suma" />
+        <button className="btn btn-sm" type="submit">
+          Rambursează
+        </button>
+      </form>
+      <p className="pn-note">maib permite o singură rambursare pe plată. Dacă dai doar o parte din bani, restul se mai poate întoarce numai prin suportul maib.</p>
 
       <h2>Pe zile</h2>
       <Table head={["Ziua", "Sesiuni", "Vizitatori", "Verificări", "Cereri", "Chat"]} num={[1, 2, 3, 4, 5]} cards rows={st.byDay.map((d) => [fmtDay(d.day), d.sessions, d.visitors, d.checks, d.requests, d.chats])} />
