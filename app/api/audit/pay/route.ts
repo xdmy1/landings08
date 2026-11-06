@@ -15,6 +15,7 @@ export async function POST(req: Request) {
   if (!body || !base) return json({ error: "bad_request" }, 400);
   const email = typeof body.email === "string" ? body.email.trim().toLowerCase().slice(0, 40) : "";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return json({ error: "email" }, 400);
+  if (body.accept !== true) return json({ error: "terms" }, 400); // maib: terms must be ticked before paying
   if (!maibReady()) return json({ error: "not_configured" }, 503);
 
   const { rate } = await eurRate();

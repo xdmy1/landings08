@@ -492,3 +492,5 @@
 .vr-receipt dt { font-size: 13px; color: #4b7a5d; }
 .vr-receipt dd { font-size: 15px; color: var(--ink); margin-top: 1px; word-break: break-word; }
 @media (min-width: 641px) { .vr-success > .btn { grid-column: 3; grid-row: 1; } }
+.vr-terms { margin-top: 2px; text-align: left; }
+.vr-terms a { text-decoration: underline; }
