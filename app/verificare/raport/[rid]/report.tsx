@@ -207,15 +207,17 @@ function RequestReport({ parts, rid, host, eur, mdl }: { parts: Record<string, u
 
 function Pay({ base, parts, rid, eur, mdl, host, online }: { base: string; parts: Record<string, unknown>; rid: string; eur: number; mdl: number; host: string; online: boolean }) {
   const [email, setEmail] = useState("");
+  const [accept, setAccept] = useState(false);
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
   async function go(e: React.FormEvent) {
     e.preventDefault();
     setErr("");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) return setErr("Scrie o adresă de email validă.");
+    if (!accept) return setErr("Bifează acceptarea Termenilor și condițiilor.");
     setBusy(true);
     try {
-      const r = await fetch("/api/audit/pay", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ base, email }) });
+      const r = await fetch("/api/audit/pay", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ base, email, accept }) });
       const j = await r.json().catch(() => ({}));
       if (j.payUrl) {
         window.location.href = j.payUrl;
@@ -226,7 +228,9 @@ function Pay({ base, parts, rid, eur, mdl, host, online }: { base: string; parts
           ? "Plata cu cardul pornește în curând. Până atunci, scrie-ne pe WhatsApp și îți trimitem raportul complet."
           : j.error === "email"
             ? "Scrie o adresă de email validă."
-            : "Plata nu a putut fi pornită. Încearcă din nou peste un minut."
+            : j.error === "terms"
+              ? "Bifează acceptarea Termenilor și condițiilor."
+              : "Plata nu a putut fi pornită. Încearcă din nou peste un minut."
       );
     } catch {
       setErr("Nu am putut porni plata. Verifică internetul și încearcă din nou.");
@@ -244,10 +248,14 @@ function Pay({ base, parts, rid, eur, mdl, host, online }: { base: string; parts
         <span>Emailul tău, pentru chitanță</span>
         <input type="email" inputMode="email" autoComplete="email" placeholder="nume@firma.md" value={email} onChange={(e) => setEmail(e.target.value)} disabled={busy} />
       </label>
+      <label className="co-check vr-terms">
+        <input type="checkbox" checked={accept} onChange={(e) => setAccept(e.target.checked)} disabled={busy} />
+        <span>Am citit și accept <a href="/termeni-si-conditii" target="_blank" rel="noopener">Termenii și condițiile</a></span>
+      </label>
       <button className="btn vr-paybtn" type="submit" disabled={busy}>{busy ? "Se deschide plata…" : `Plătește ${eur} € cu cardul`}</button>
       {err && <p className="vr-pay-err" role="alert">{err} {/WhatsApp/.test(err) && <a href={`https://wa.me/${WA}`} target="_blank" rel="noopener">Deschide WhatsApp</a>}</p>}
       <div className="vr-marks">{PAY_MARKS.map((m) => <img key={m.n} src={`/images/pay/${m.n}.svg`} alt={m.n} style={{ height: m.h }} />)}</div>
-      <p className="vr-fine">Plata se face pe pagina securizată maib, cu 3-D Secure. Apăsând „Plătește”, accepți <a href="/termeni-si-conditii" target="_blank">Termenii și condițiile</a>.</p>
+      <p className="vr-fine">Plata se face pe pagina securizată maib, cu 3-D Secure.</p>
     </form>
   );
 }
